@@ -1,0 +1,26 @@
+specVersion: 0.0.1
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: MasterDeployer
+    network: mainnet
+    source:
+      address: "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0"
+      abi: MasterDeployer
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.2
+      language: wasm/assemblyscript
+      entities:
+        - NewPoolCreated
+        - OwnershipTransferred
+      abis:
+        - name: MasterDeployer
+          file: ./abis/MasterDeployer.json
+      eventHandlers:
+        - event: NewPoolCreated(indexed address)
+          handler: handleNewPoolCreated
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+      file: ./src/mapping.ts
