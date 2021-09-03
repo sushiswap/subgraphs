@@ -1,9 +1,21 @@
 [
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_barFee", "type": "uint256" },
-      { "internalType": "address", "name": "_barFeeTo", "type": "address" },
-      { "internalType": "address", "name": "_bento", "type": "address" }
+      {
+        "internalType": "uint256",
+        "name": "_barFee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_barFeeTo",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_bento",
+        "type": "address"
+      }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
@@ -14,7 +26,13 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "poolAddress",
+        "name": "_factory",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "pool",
         "type": "address"
       }
     ],
@@ -27,22 +45,45 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "previousOwner",
+        "name": "from",
         "type": "address"
       },
       {
         "indexed": true,
         "internalType": "address",
-        "name": "newOwner",
+        "name": "to",
         "type": "address"
       }
     ],
-    "name": "OwnershipTransferred",
+    "name": "TransferOwnership",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      }
+    ],
+    "name": "TransferOwnershipClaim",
     "type": "event"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_factory", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "_factory",
+        "type": "address"
+      }
     ],
     "name": "addToWhitelist",
     "outputs": [],
@@ -52,32 +93,69 @@
   {
     "inputs": [],
     "name": "barFee",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "barFeeTo",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "bento",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "claimOwner",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
-      { "internalType": "address", "name": "_factory", "type": "address" },
-      { "internalType": "bytes", "name": "_deployData", "type": "bytes" }
+      {
+        "internalType": "address",
+        "name": "_factory",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "_deployData",
+        "type": "bytes"
+      }
     ],
     "name": "deployPool",
     "outputs": [
-      { "internalType": "address", "name": "poolAddress", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "pool",
+        "type": "address"
+      }
     ],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -85,13 +163,68 @@
   {
     "inputs": [],
     "name": "owner",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pendingOwner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_factory", "type": "address" }
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "pools",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "poolsCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "count",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_factory",
+        "type": "address"
+      }
     ],
     "name": "removeFromWhitelist",
     "outputs": [],
@@ -99,15 +232,12 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
-      { "internalType": "uint256", "name": "_barFee", "type": "uint256" }
+      {
+        "internalType": "uint256",
+        "name": "_barFee",
+        "type": "uint256"
+      }
     ],
     "name": "setBarFee",
     "outputs": [],
@@ -116,7 +246,16 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "newOwner", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "direct",
+        "type": "bool"
+      }
     ],
     "name": "transferOwnership",
     "outputs": [],
@@ -124,9 +263,21 @@
     "type": "function"
   },
   {
-    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "name": "whitelistedFactories",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   }

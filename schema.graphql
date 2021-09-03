@@ -1,5 +1,15 @@
-type ExampleEntity @entity {
+type MasterDeployer @entity {
   id: ID!
-  count: BigInt!
-  poolAddress: Bytes! # address
+  factoryLength: BigInt!
+}
+
+type ConstantProductPoolFactory @entity {
+  id: ID!
+  poolLength: BigInt!
+  pools: [ConstantProductPool!]! @derivedFrom(field: "factory")
+}
+
+type ConstantProductPool @entity {
+  id: ID!
+  factory: ConstantProductPoolFactory!
 }

@@ -1,55 +1,61 @@
-import { BigInt } from "@graphprotocol/graph-ts"
+import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
 import {
+  ConstantProductPool,
+  ConstantProductPoolFactory,
   MasterDeployer,
+} from "../generated/schema";
+import {
+  MasterDeployer as MasterDeployerContract,
   NewPoolCreated,
-  OwnershipTransferred
-} from "../generated/MasterDeployer/MasterDeployer"
-import { ExampleEntity } from "../generated/schema"
+} from "../generated/MasterDeployer/MasterDeployer";
 
-export function handleNewPoolCreated(event: NewPoolCreated): void {
-  // Entities can be loaded from the store using a string ID; this ID
-  // needs to be unique across all entities of the same type
-  let entity = ExampleEntity.load(event.transaction.from.toHex())
+function getOrCreateMasterDeployer(id: Address): MasterDeployer {
+  let masterDeployer = MasterDeployer.load(id.toHex());
 
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-  if (entity == null) {
-    entity = new ExampleEntity(event.transaction.from.toHex())
-
-    // Entity fields can be set using simple assignments
-    entity.count = BigInt.fromI32(0)
+  if (masterDeployer == null) {
+    masterDeployer = new MasterDeployer(id.toHex());
+    masterDeployer.factoryLength = BigInt.fromI32(0);
+    masterDeployer.save();
   }
 
-  // BigInt and BigDecimal math are supported
-  entity.count = entity.count + BigInt.fromI32(1)
-
-  // Entity fields can be set based on event parameters
-  entity.poolAddress = event.params.poolAddress
-
-  // Entities can be written to the store with `.save()`
-  entity.save()
-
-  // Note: If a handler doesn't require existing field values, it is faster
-  // _not_ to load the entity from the store. Instead, create it fresh with
-  // `new Entity(...)`, set the fields that should be updated and save the
-  // entity back to the store. Fields that were not set or unset remain
-  // unchanged, allowing for partial updates to be applied.
-
-  // It is also possible to access smart contracts from mappings. For
-  // example, the contract that has emitted the event can be connected to
-  // with:
-  //
-  // let contract = Contract.bind(event.address)
-  //
-  // The following functions can then be called on this contract to access
-  // state variables and other data:
-  //
-  // - contract.barFee(...)
-  // - contract.barFeeTo(...)
-  // - contract.bento(...)
-  // - contract.deployPool(...)
-  // - contract.owner(...)
-  // - contract.whitelistedFactories(...)
+  return masterDeployer as MasterDeployer;
 }
 
-export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
+function getOrCreateConstantProductPoolFactory(
+  id: Address
+): ConstantProductPoolFactory {
+  let factory = ConstantProductPoolFactory.load(id.toHex());
+
+  if (factory == null) {
+    factory = new ConstantProductPoolFactory(id.toHex());
+    factory.poolLength = BigInt.fromI32(0);
+    factory.save();
+  }
+
+  return factory as ConstantProductPoolFactory;
+}
+
+function getOrCreateConstantProductPool(id: Address): ConstantProductPool {
+  let pool = ConstantProductPool.load(id.toHex());
+
+  if (pool == null) {
+    pool = new ConstantProductPool(id.toHex());
+    pool.factory = CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS.toHex();
+    pool.save();
+  }
+
+  return pool as ConstantProductPool;
+}
+
+const CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS = Address.fromString("");
+const CONCENTRATED_LIQUIDITY_FACTORY_ADDRESS = Address.fromString("");
+
+export function handleNewPoolCreated(event: NewPoolCreated): void {
+  const masterDeployer = getOrCreateMasterDeployer(event.transaction.from);
+
+  let pool;
+
+  if (event.params._factory == CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS) {
+    pool = getOrCreateConstantProductPool(event.params.pool);
+  }
+}
