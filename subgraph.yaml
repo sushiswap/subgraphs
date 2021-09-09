@@ -4,25 +4,58 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: MasterDeployer
-    network: mainnet
+    network: kovan
     source:
-      address: "0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0"
+      address: "0xa2A7Aa74cb94f37221FD49F5BA6F3fF876092700"
+      startBlock: 27109221
       abi: MasterDeployer
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
-        - NewPoolCreated
-        - OwnershipTransferred
+        - MasterDeployer
+        - ConstantProductPoolFactory
+        - ConstantProductPool
       abis:
         - name: MasterDeployer
-          file: ./abis/MasterDeployer.json
+          file: ./node_modules/@sushiswap/trident/artifacts/contracts/deployer/MasterDeployer.sol/MasterDeployer.json
       eventHandlers:
-        - event: NewPoolCreated(indexed address,indexed address)
-          handler: handleNewPoolCreated
-        - event: TransferOwnership(indexed address,indexed address)
-          handler: handleOwnershipTransferred
-        - event: TransferOwnershipClaim(indexed address,indexed address)
-          handler: handleTransferOwnershipClaim
-      file: ./src/mapping.ts
+        - event: DeployPool(indexed address,indexed address)
+          handler: onDeployPool
+        - event: TransferOwner(indexed address,indexed address)
+          handler: onTransferOwner
+        - event: TransferOwnerClaim(indexed address,indexed address)
+          handler: onTransferOwnerClaim
+      file: ./src/master-deployer.ts
+templates:
+  - kind: ethereum/contract
+    name: ConstantProductPool
+    network: kovan
+    source:
+      abi: ConstantProductPool
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      file: ./src/constant-product-pool.ts
+      entities:
+        - User
+      abis:
+        - name: ConstantProductPool
+          file: ./node_modules/@sushiswap/trident/artifacts/contracts/pool/ConstantProductPool.sol/ConstantProductPool.json
+        - name: ConstantProductPoolFactory
+          file: ./node_modules/@sushiswap/trident/artifacts/contracts/pool/ConstantProductPoolFactory.sol/ConstantProductPoolFactory.json
+      eventHandlers:
+        - event: Mint(indexed address,uint256,uint256,indexed address)
+          handler: onMint
+        - event: Burn(indexed address,uint256,uint256,indexed address)
+          handler: onBurn
+        - event: Sync(uint256,uint256)
+          handler: onSync
+        - event: Swap(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: onSwap
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: onApproval
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: onTransfer
