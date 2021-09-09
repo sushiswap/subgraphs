@@ -1,3 +1,7 @@
+enum Fee {
+  DEFAULT
+}
+
 type MasterDeployer @entity {
   id: ID!
   factoryLength: BigInt!
@@ -12,4 +16,20 @@ type ConstantProductPoolFactory @entity {
 type ConstantProductPool @entity {
   id: ID!
   factory: ConstantProductPoolFactory!
+  # token0: Bytes!
+  # token1: Bytes!
+  reserve0: BigInt!
+  reserve1: BigInt!
+  totalSupply: BigInt!
+
+  txCount: BigInt!
+
+
+  # fee: Fee!
+  # twap: Boolean!
+}
+
+type Token @entity {
+  id: ID!
+  derived: BigDecimal!
 }

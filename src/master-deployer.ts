@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
+import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts";
 import {
   ConstantProductPool,
   ConstantProductPoolFactory,
@@ -12,7 +12,6 @@ import {
 } from "../generated/MasterDeployer/MasterDeployer";
 
 import { ConstantProductPool as ConstantProductPoolTemplate } from "../generated/templates";
-import { log } from "@graphprotocol/graph-ts";
 
 const MASTER_DEPLOYER_ADDRESS = Address.fromString(
   "0xa2A7Aa74cb94f37221FD49F5BA6F3fF876092700"
@@ -32,11 +31,11 @@ const INDEX_POOL_FACTORY_ADDRESS = Address.fromString(
   "0x6c27a62230B46BF52084C8110b05FEd34e480489"
 );
 
-function getOrCreateMasterDeployer(): MasterDeployer {
-  let masterDeployer = MasterDeployer.load(MASTER_DEPLOYER_ADDRESS.toHex());
+export function getOrCreateMasterDeployer(id: Address): MasterDeployer {
+  let masterDeployer = MasterDeployer.load(id.toHex());
 
   if (masterDeployer == null) {
-    masterDeployer = new MasterDeployer(MASTER_DEPLOYER_ADDRESS.toHex());
+    masterDeployer = new MasterDeployer(id.toHex());
     masterDeployer.factoryLength = BigInt.fromI32(0);
     masterDeployer.save();
   }
@@ -44,7 +43,7 @@ function getOrCreateMasterDeployer(): MasterDeployer {
   return masterDeployer as MasterDeployer;
 }
 
-function getOrCreateConstantProductPoolFactory(): ConstantProductPoolFactory {
+export function getOrCreateConstantProductPoolFactory(): ConstantProductPoolFactory {
   let factory = ConstantProductPoolFactory.load(
     CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS.toHex()
   );
@@ -55,27 +54,49 @@ function getOrCreateConstantProductPoolFactory(): ConstantProductPoolFactory {
     );
     factory.poolLength = BigInt.fromI32(0);
     factory.save();
+
+    const masterDeployer = getOrCreateMasterDeployer(MASTER_DEPLOYER_ADDRESS);
+    masterDeployer.factoryLength = masterDeployer.factoryLength.plus(
+      BigInt.fromI32(1)
+    );
+    masterDeployer.save();
   }
 
   return factory as ConstantProductPoolFactory;
 }
 
-function getOrCreateConstantProductPool(id: Address): ConstantProductPool {
+export function getOrCreateConstantProductPool(
+  id: Address
+): ConstantProductPool {
   let pool = ConstantProductPool.load(id.toHex());
 
   if (pool == null) {
+    const factory = getOrCreateConstantProductPoolFactory();
+
+    getOrCreateConstantProductPool(id);
+
     pool = new ConstantProductPool(id.toHex());
-    pool.factory = CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS.toHex();
+    pool.factory = factory.id;
+
+    pool.reserve0 = BigInt.fromI32(0);
+    pool.reserve1 = BigInt.fromI32(0);
+    pool.totalSupply = BigInt.fromI32(0);
+
+    pool.txCount = BigInt.fromI32(0);
+
     pool.save();
+
+    factory.poolLength = factory.poolLength.plus(BigInt.fromI32(1));
+    factory.save();
   }
 
   return pool as ConstantProductPool;
 }
 
 export function onDeployPool(event: DeployPool): void {
-  log.info("onDeployPool...", []);
+  log.debug("onDeployPool...", []);
 
-  getOrCreateMasterDeployer();
+  getOrCreateMasterDeployer(event.address);
 
   if (event.params._factory == CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS) {
     getOrCreateConstantProductPool(event.params.pool);
@@ -89,9 +110,9 @@ export function onDeployPool(event: DeployPool): void {
 }
 
 export function onTransferOwner(event: TransferOwner): void {
-  log.info("onTransferOwner...", []);
+  log.debug("onTransferOwner...", []);
 }
 
 export function onTransferOwnerClaim(event: TransferOwnerClaim): void {
-  log.info("onTransferOwnerClaim...", []);
+  log.debug("onTransferOwnerClaim...", []);
 }

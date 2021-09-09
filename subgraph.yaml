@@ -7,7 +7,7 @@ dataSources:
     network: kovan
     source:
       address: "0xa2A7Aa74cb94f37221FD49F5BA6F3fF876092700"
-      startBlock: 27109221
+      startBlock: 27109220
       abi: MasterDeployer
     mapping:
       kind: ethereum/events
