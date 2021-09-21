@@ -17,6 +17,8 @@ dataSources:
         - MasterDeployer
         - ConstantProductPoolFactory
         - ConstantProductPool
+        - HybridPoolFactory
+        - HybridPool
       abis:
         - name: MasterDeployer
           file: ./node_modules/@sushiswap/trident/artifacts/contracts/deployer/MasterDeployer.sol/MasterDeployer.json
@@ -53,6 +55,64 @@ templates:
           handler: onBurn
         - event: Sync(uint256,uint256)
           handler: onSync
+        - event: Swap(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: onSwap
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: onApproval
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: onTransfer
+  - kind: ethereum/contract
+    name: HybridPool
+    network: kovan
+    source:
+      abi: HybridPool
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/hybrid-pool.ts
+      entities:
+        - User
+      abis:
+        - name: HybridPool
+          file: ./node_modules/@sushiswap/trident/artifacts/contracts/pool/HybridPool.sol/HybridPool.json
+        - name: HybridPoolFactory
+          file: ./node_modules/@sushiswap/trident/artifacts/contracts/pool/HybridPoolFactory.sol/HybridPoolFactory.json
+      eventHandlers:
+        - event: Mint(indexed address,uint256,uint256,indexed address)
+          handler: onMint
+        - event: Burn(indexed address,uint256,uint256,indexed address)
+          handler: onBurn
+        - event: Sync(uint256,uint256)
+          handler: onSync
+        - event: Swap(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: onSwap
+        - event: Approval(indexed address,indexed address,uint256)
+          handler: onApproval
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: onTransfer
+  - kind: ethereum/contract
+    name: IndexPool
+    network: kovan
+    source:
+      abi: IndexPool
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/index-pool.ts
+      entities:
+        - User
+      abis:
+        - name: IndexPool
+          file: ./node_modules/@sushiswap/trident/artifacts/contracts/pool/IndexPool.sol/IndexPool.json
+        - name: IndexPoolFactory
+          file: ./node_modules/@sushiswap/trident/artifacts/contracts/pool/IndexPoolFactory.sol/IndexPoolFactory.json
+      eventHandlers:
+        - event: Mint(indexed address,address,uint256,indexed address)
+          handler: onMint
+        - event: Burn(indexed address,address,uint256,indexed address)
+          handler: onBurn
         - event: Swap(indexed address,indexed address,indexed address,uint256,uint256)
           handler: onSwap
         - event: Approval(indexed address,indexed address,uint256)
