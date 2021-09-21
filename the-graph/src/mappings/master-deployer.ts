@@ -1,13 +1,17 @@
 import {
+  AddToWhitelist,
+  BarFeeUpdated,
+  DeployPool,
+  MigratorUpdated,
+  RemoveFromWhitelist,
+  TransferOwner,
+  TransferOwnerClaim,
+} from "../../generated/MasterDeployer/MasterDeployer";
+import {
   CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS,
   HYBRID_POOL_FACTORY_ADDRESS,
   INDEX_POOL_FACTORY_ADDRESS,
 } from "../constants";
-import {
-  DeployPool,
-  TransferOwner,
-  TransferOwnerClaim,
-} from "../../generated/MasterDeployer/MasterDeployer";
 import {
   getOrCreateConstantProductPool,
   getOrCreateMasterDeployer,
@@ -37,4 +41,20 @@ export function onTransferOwner(event: TransferOwner): void {
 
 export function onTransferOwnerClaim(event: TransferOwnerClaim): void {
   log.debug("[MasterDeployer] onTransferOwnerClaim...", []);
+}
+
+export function onAddToWhitelist(event: AddToWhitelist): void {
+  log.debug("[MasterDeployer] onAddToWhitelist...", []);
+}
+
+export function onRemoveFromWhitelist(event: RemoveFromWhitelist): void {
+  log.debug("[MasterDeployer] onRemoveFromWhitelist...", []);
+}
+
+export function onBarFeeUpdated(event: BarFeeUpdated): void {
+  log.debug("[MasterDeployer] onBarFeeUpdated...", []);
+}
+
+export function onMigratorUpdated(event: MigratorUpdated): void {
+  log.debug("[MasterDeployer] onMigratorUpdated...", []);
 }

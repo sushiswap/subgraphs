@@ -29,6 +29,14 @@ dataSources:
           handler: onTransferOwner
         - event: TransferOwnerClaim(indexed address,indexed address)
           handler: onTransferOwnerClaim
+        - event: AddToWhitelist(indexed address)
+          handler: onAddToWhitelist
+        - event: RemoveFromWhitelist(indexed address)
+          handler: onRemoveFromWhitelist
+        - event: BarFeeUpdated(indexed uint256)
+          handler: onBarFeeUpdated
+        - event: MigratorUpdated(indexed address)
+          handler: onMigratorUpdated
       file: ./src/mappings/master-deployer.ts
 templates:
   - kind: ethereum/contract
