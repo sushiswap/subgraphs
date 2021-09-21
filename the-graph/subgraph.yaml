@@ -27,7 +27,7 @@ dataSources:
           handler: onTransferOwner
         - event: TransferOwnerClaim(indexed address,indexed address)
           handler: onTransferOwnerClaim
-      file: ./src/master-deployer.ts
+      file: ./src/mappings/master-deployer.ts
 templates:
   - kind: ethereum/contract
     name: ConstantProductPool
@@ -38,7 +38,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/constant-product-pool.ts
+      file: ./src/mappings/constant-product-pool.ts
       entities:
         - User
       abis:

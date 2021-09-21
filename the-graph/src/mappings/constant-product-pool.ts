@@ -6,15 +6,16 @@ import {
   Swap,
   Sync,
   Transfer,
-} from "../generated/templates/ConstantProductPool/ConstantProductPool";
+} from "../../generated/templates/ConstantProductPool/ConstantProductPool";
 
-import { getOrCreateConstantProductPool } from "./master-deployer";
+import { ADDRESS_ZERO } from "../constants";
+import { getOrCreateConstantProductPool } from "../functions";
 
 export function onMint(event: Mint): void {
   log.debug("onMint...", []);
 
   const pool = getOrCreateConstantProductPool(event.address);
-  pool.txCount = pool.txCount.plus(BigInt.fromI32(1));
+  pool.transactionLength = pool.transactionLength.plus(BigInt.fromI32(1));
 
   pool.save();
 }
@@ -23,7 +24,7 @@ export function onBurn(event: Burn): void {
   log.debug("onBurn...", []);
 
   const pool = getOrCreateConstantProductPool(event.address);
-  pool.txCount = pool.txCount.plus(BigInt.fromI32(1));
+  pool.transactionLength = pool.transactionLength.plus(BigInt.fromI32(1));
 
   pool.save();
 }
@@ -57,10 +58,7 @@ export function onTransfer(event: Transfer): void {
   const pool = getOrCreateConstantProductPool(event.address);
 
   // If sender is black hole, we're mintin'
-  if (
-    event.params.sender ==
-    Address.fromString("0x0000000000000000000000000000000000000000")
-  ) {
+  if (event.params.sender == ADDRESS_ZERO) {
     pool.totalSupply = pool.totalSupply.plus(event.params.amount);
     pool.save();
   }
@@ -68,8 +66,7 @@ export function onTransfer(event: Transfer): void {
   // If recipient is black hole we're burnin'
   if (
     event.params.sender.toHex() == pool.id &&
-    event.params.recipient ==
-      Address.fromString("0x0000000000000000000000000000000000000000")
+    event.params.recipient == ADDRESS_ZERO
   ) {
     pool.totalSupply = pool.totalSupply.minus(event.params.amount);
     pool.save();

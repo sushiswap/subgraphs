@@ -22,7 +22,7 @@ type ConstantProductPool @entity {
   reserve1: BigInt!
   totalSupply: BigInt!
 
-  txCount: BigInt!
+  transactionLength: BigInt!
 
 
   # fee: Fee!
@@ -32,4 +32,13 @@ type ConstantProductPool @entity {
 type Token @entity {
   id: ID!
   derived: BigDecimal!
+}
+
+type Transaction @entity {
+  id: ID!
+  block: BigInt!
+  timestamp: BigInt!
+  gasUsed: BigInt!
+  gasLimit: BigInt!
+  gasPrice: BigInt!
 }
