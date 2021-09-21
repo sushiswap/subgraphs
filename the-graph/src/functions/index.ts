@@ -19,7 +19,7 @@ import {
 export function getOrCreateMasterDeployer(id: Address): MasterDeployer {
   let masterDeployer = MasterDeployer.load(id.toHex());
 
-  if (masterDeployer == null) {
+  if (masterDeployer === null) {
     masterDeployer = new MasterDeployer(id.toHex());
     masterDeployer.factoryLength = BigInt.fromI32(0);
     masterDeployer.save();
@@ -33,7 +33,7 @@ export function getOrCreateConstantProductPoolFactory(): ConstantProductPoolFact
     CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS.toHex()
   );
 
-  if (factory == null) {
+  if (factory === null) {
     factory = new ConstantProductPoolFactory(
       CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS.toHex()
     );
@@ -55,7 +55,7 @@ export function getOrCreateConstantProductPool(
 ): ConstantProductPool {
   let pool = ConstantProductPool.load(id.toHex());
 
-  if (pool == null) {
+  if (pool === null) {
     const factory = getOrCreateConstantProductPoolFactory();
 
     pool = new ConstantProductPool(id.toHex());
@@ -64,7 +64,6 @@ export function getOrCreateConstantProductPool(
     pool.reserve0 = BigInt.fromI32(0);
     pool.reserve1 = BigInt.fromI32(0);
     pool.totalSupply = BigInt.fromI32(0);
-
     pool.transactionLength = BigInt.fromI32(0);
 
     pool.save();
@@ -79,7 +78,7 @@ export function getOrCreateConstantProductPool(
 export function getOrCreateHybridPoolFactory(): HybridPoolFactory {
   let factory = HybridPoolFactory.load(HYBRID_POOL_FACTORY_ADDRESS.toHex());
 
-  if (factory == null) {
+  if (factory === null) {
     factory = new HybridPoolFactory(HYBRID_POOL_FACTORY_ADDRESS.toHex());
     factory.poolLength = BigInt.fromI32(0);
     factory.save();
@@ -97,7 +96,7 @@ export function getOrCreateHybridPoolFactory(): HybridPoolFactory {
 export function getOrCreateHybridPool(id: Address): HybridPool {
   let pool = HybridPool.load(id.toHex());
 
-  if (pool == null) {
+  if (pool === null) {
     const factory = getOrCreateHybridPoolFactory();
 
     pool = new HybridPool(id.toHex());
@@ -123,7 +122,7 @@ export function getOrCreateHybridPool(id: Address): HybridPool {
 export function getOrCreateIndexPoolFactory(): IndexPoolFactory {
   let factory = IndexPoolFactory.load(INDEX_POOL_FACTORY_ADDRESS.toHex());
 
-  if (factory == null) {
+  if (factory === null) {
     factory = new IndexPoolFactory(INDEX_POOL_FACTORY_ADDRESS.toHex());
     factory.poolLength = BigInt.fromI32(0);
     factory.save();
@@ -141,7 +140,7 @@ export function getOrCreateIndexPoolFactory(): IndexPoolFactory {
 export function getOrCreateIndexPool(id: Address): IndexPool {
   let pool = IndexPool.load(id.toHex());
 
-  if (pool == null) {
+  if (pool === null) {
     const factory = getOrCreateIndexPoolFactory();
 
     pool = new IndexPool(id.toHex());
@@ -171,7 +170,6 @@ export function getOrCreateTransaction(event: ethereum.Event): Transaction {
 
   transaction.block = event.block.number;
   transaction.timestamp = event.block.timestamp;
-  //   transaction.gasUsed = event.block.gasUsed;
   transaction.gasLimit = event.transaction.gasLimit;
   transaction.gasPrice = event.transaction.gasPrice;
   transaction.save();
