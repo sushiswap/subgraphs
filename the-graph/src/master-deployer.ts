@@ -21,8 +21,6 @@ const CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS = Address.fromString(
   "0x5e343eD1586e13d5e34A204667FAb0D81F85a2c2"
 );
 
-// const CONCENTRATED_LIQUIDITY_POOL_FACTORY_ADDRESS = Address.fromString("");
-
 const HYBRID_POOL_FACTORY_ADDRESS = Address.fromString(
   "0x0FaBb19C1362cbdd83a13D9b53F54934b05fC771"
 );
@@ -30,6 +28,8 @@ const HYBRID_POOL_FACTORY_ADDRESS = Address.fromString(
 const INDEX_POOL_FACTORY_ADDRESS = Address.fromString(
   "0x6c27a62230B46BF52084C8110b05FEd34e480489"
 );
+
+// const CONCENTRATED_LIQUIDITY_POOL_FACTORY_ADDRESS = Address.fromString("");
 
 export function getOrCreateMasterDeployer(id: Address): MasterDeployer {
   let masterDeployer = MasterDeployer.load(id.toHex());
