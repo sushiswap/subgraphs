@@ -29,6 +29,53 @@ type ConstantProductPool @entity {
   # twap: Boolean!
 }
 
+type HybridPoolFactory @entity {
+  id: ID!
+  poolLength: BigInt!
+  pools: [HybridPool!]! @derivedFrom(field: "factory")
+}
+
+type HybridPool @entity {
+  id: ID!
+  factory: HybridPoolFactory!
+  # token0: Bytes!
+  # token1: Bytes!
+  token0PrecisionMultiplier: BigInt!
+  token1PrecisionMultiplier: BigInt!
+  reserve0: BigInt!
+  reserve1: BigInt!
+  totalSupply: BigInt!
+
+  txCount: BigInt!
+
+
+  # fee: Fee!
+  # twap: Boolean!
+}
+
+type IndexPoolFactory @entity {
+  id: ID!
+  poolLength: BigInt!
+  pools: [IndexPool!]! @derivedFrom(field: "factory")
+}
+
+type IndexPool @entity {
+  id: ID!
+  factory: IndexPoolFactory!
+  # token0: Bytes!
+  # token1: Bytes!
+
+  reserve0: BigInt!
+  reserve1: BigInt!
+  totalSupply: BigInt!
+
+  txCount: BigInt!
+
+
+  # fee: Fee!
+  # twap: Boolean!
+}
+
 type Token @entity {
   id: ID!
   derived: BigDecimal!
