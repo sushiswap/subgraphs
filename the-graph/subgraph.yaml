@@ -6,7 +6,7 @@ dataSources:
     name: MasterDeployer
     network: kovan
     source:
-      address: "0xa2A7Aa74cb94f37221FD49F5BA6F3fF876092700"
+      address: "0xB8ef8579EEBDCCCf69305418E49a3A545301b393"
       startBlock: 27109220
       abi: MasterDeployer
     mapping:
