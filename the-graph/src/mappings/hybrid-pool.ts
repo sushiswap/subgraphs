@@ -11,7 +11,7 @@ import {
 import { getOrCreateHybridPool } from "../functions";
 
 export function onMint(event: Mint): void {
-  log.debug("onMint...", []);
+  log.debug("[Hybrid] onMint...", []);
 
   const pool = getOrCreateHybridPool(event.address);
   pool.txCount = pool.txCount.plus(BigInt.fromI32(1));
@@ -20,7 +20,7 @@ export function onMint(event: Mint): void {
 }
 
 export function onBurn(event: Burn): void {
-  log.debug("onBurn...", []);
+  log.debug("[Hybrid] onBurn...", []);
 
   const pool = getOrCreateHybridPool(event.address);
   pool.txCount = pool.txCount.plus(BigInt.fromI32(1));
@@ -29,7 +29,7 @@ export function onBurn(event: Burn): void {
 }
 
 export function onSync(event: Sync): void {
-  log.debug("onSync...", []);
+  log.debug("[Hybrid] onSync...", []);
 
   const pool = getOrCreateHybridPool(event.address);
 
@@ -40,15 +40,15 @@ export function onSync(event: Sync): void {
 }
 
 export function onSwap(event: Swap): void {
-  log.debug("onSwap...", []);
+  log.debug("[Hybrid] onSwap...", []);
 }
 
 export function onApproval(event: Approval): void {
-  log.debug("onApproval...", []);
+  log.debug("[Hybrid] onApproval...", []);
 }
 
 export function onTransfer(event: Transfer): void {
-  log.debug("onTransfer... {} {} {}", [
+  log.debug("[Hybrid] onTransfer... {} {} {}", [
     event.params.amount.divDecimal(BigDecimal.fromString("1e18")).toString(),
     event.params.recipient.toHex(),
     event.params.sender.toHex(),

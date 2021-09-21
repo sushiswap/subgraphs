@@ -12,7 +12,7 @@ import { ADDRESS_ZERO } from "../constants";
 import { getOrCreateConstantProductPool } from "../functions";
 
 export function onMint(event: Mint): void {
-  log.debug("onMint...", []);
+  log.debug("[ConstantProduct] onMint...", []);
 
   const pool = getOrCreateConstantProductPool(event.address);
   pool.transactionLength = pool.transactionLength.plus(BigInt.fromI32(1));
@@ -21,7 +21,7 @@ export function onMint(event: Mint): void {
 }
 
 export function onBurn(event: Burn): void {
-  log.debug("onBurn...", []);
+  log.debug("[ConstantProduct] onBurn...", []);
 
   const pool = getOrCreateConstantProductPool(event.address);
   pool.transactionLength = pool.transactionLength.plus(BigInt.fromI32(1));
@@ -30,7 +30,7 @@ export function onBurn(event: Burn): void {
 }
 
 export function onSync(event: Sync): void {
-  log.debug("onSync...", []);
+  log.debug("[ConstantProduct] onSync...", []);
 
   const pool = getOrCreateConstantProductPool(event.address);
 
@@ -41,15 +41,15 @@ export function onSync(event: Sync): void {
 }
 
 export function onSwap(event: Swap): void {
-  log.debug("onSwap...", []);
+  log.debug("[ConstantProduct] onSwap...", []);
 }
 
 export function onApproval(event: Approval): void {
-  log.debug("onApproval...", []);
+  log.debug("[ConstantProduct] onApproval...", []);
 }
 
 export function onTransfer(event: Transfer): void {
-  log.debug("onTransfer... {} {} {}", [
+  log.debug("[ConstantProduct] onTransfer... {} {} {}", [
     event.params.amount.divDecimal(BigDecimal.fromString("1e18")).toString(),
     event.params.recipient.toHex(),
     event.params.sender.toHex(),
@@ -60,7 +60,6 @@ export function onTransfer(event: Transfer): void {
   // If sender is black hole, we're mintin'
   if (event.params.sender == ADDRESS_ZERO) {
     pool.totalSupply = pool.totalSupply.plus(event.params.amount);
-    pool.save();
   }
 
   // If recipient is black hole we're burnin'
@@ -69,6 +68,7 @@ export function onTransfer(event: Transfer): void {
     event.params.recipient == ADDRESS_ZERO
   ) {
     pool.totalSupply = pool.totalSupply.minus(event.params.amount);
-    pool.save();
   }
+
+  pool.save();
 }
