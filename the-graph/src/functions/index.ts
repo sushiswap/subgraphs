@@ -1,10 +1,20 @@
-import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts";
 import {
+  ADDRESS_ZERO,
   CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS,
   HYBRID_POOL_FACTORY_ADDRESS,
   INDEX_POOL_FACTORY_ADDRESS,
   MASTER_DEPLOYER_ADDRESS,
 } from "../constants";
+import {
+  Address,
+  BigDecimal,
+  BigInt,
+  ByteArray,
+  Bytes,
+  crypto,
+  ethereum,
+  log,
+} from "@graphprotocol/graph-ts";
 import {
   ConstantProductPool,
   ConstantProductPoolFactory,
@@ -13,6 +23,7 @@ import {
   IndexPool,
   IndexPoolFactory,
   MasterDeployer,
+  Token,
   Transaction,
 } from "../../generated/schema";
 
@@ -21,7 +32,10 @@ export function getOrCreateMasterDeployer(id: Address): MasterDeployer {
 
   if (masterDeployer === null) {
     masterDeployer = new MasterDeployer(id.toHex());
-    masterDeployer.factoryLength = BigInt.fromI32(0);
+    masterDeployer.owner = ADDRESS_ZERO;
+    masterDeployer.migrator = ADDRESS_ZERO;
+    masterDeployer.barFee = BigInt.fromI32(0);
+    masterDeployer.factoryCount = BigInt.fromI32(0);
     masterDeployer.save();
   }
 
@@ -37,11 +51,11 @@ export function getOrCreateConstantProductPoolFactory(): ConstantProductPoolFact
     factory = new ConstantProductPoolFactory(
       CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS.toHex()
     );
-    factory.poolLength = BigInt.fromI32(0);
+    factory.poolCount = BigInt.fromI32(0);
     factory.save();
 
     const masterDeployer = getOrCreateMasterDeployer(MASTER_DEPLOYER_ADDRESS);
-    masterDeployer.factoryLength = masterDeployer.factoryLength.plus(
+    masterDeployer.factoryCount = masterDeployer.factoryCount.plus(
       BigInt.fromI32(1)
     );
     masterDeployer.save();
@@ -57,18 +71,18 @@ export function getOrCreateConstantProductPool(
 
   if (pool === null) {
     const factory = getOrCreateConstantProductPoolFactory();
-
     pool = new ConstantProductPool(id.toHex());
     pool.factory = factory.id;
-
     pool.reserve0 = BigInt.fromI32(0);
     pool.reserve1 = BigInt.fromI32(0);
+    pool.totalValueLocked = BigDecimal.zero();
+    pool.volume = BigDecimal.zero();
     pool.totalSupply = BigInt.fromI32(0);
-    pool.transactionLength = BigInt.fromI32(0);
+    pool.transactionCount = BigInt.fromI32(0);
 
     pool.save();
 
-    factory.poolLength = factory.poolLength.plus(BigInt.fromI32(1));
+    factory.poolCount = factory.poolCount.plus(BigInt.fromI32(1));
     factory.save();
   }
 
@@ -80,11 +94,11 @@ export function getOrCreateHybridPoolFactory(): HybridPoolFactory {
 
   if (factory === null) {
     factory = new HybridPoolFactory(HYBRID_POOL_FACTORY_ADDRESS.toHex());
-    factory.poolLength = BigInt.fromI32(0);
+    factory.poolCount = BigInt.fromI32(0);
     factory.save();
 
     const masterDeployer = getOrCreateMasterDeployer(MASTER_DEPLOYER_ADDRESS);
-    masterDeployer.factoryLength = masterDeployer.factoryLength.plus(
+    masterDeployer.factoryCount = masterDeployer.factoryCount.plus(
       BigInt.fromI32(1)
     );
     masterDeployer.save();
@@ -101,18 +115,15 @@ export function getOrCreateHybridPool(id: Address): HybridPool {
 
     pool = new HybridPool(id.toHex());
     pool.factory = factory.id;
-
     pool.token0PrecisionMultiplier = BigInt.fromI32(0);
     pool.token1PrecisionMultiplier = BigInt.fromI32(0);
     pool.reserve0 = BigInt.fromI32(0);
     pool.reserve1 = BigInt.fromI32(0);
     pool.totalSupply = BigInt.fromI32(0);
-
-    pool.txCount = BigInt.fromI32(0);
-
+    pool.transactionCount = BigInt.fromI32(0);
     pool.save();
 
-    factory.poolLength = factory.poolLength.plus(BigInt.fromI32(1));
+    factory.poolCount = factory.poolCount.plus(BigInt.fromI32(1));
     factory.save();
   }
 
@@ -124,11 +135,11 @@ export function getOrCreateIndexPoolFactory(): IndexPoolFactory {
 
   if (factory === null) {
     factory = new IndexPoolFactory(INDEX_POOL_FACTORY_ADDRESS.toHex());
-    factory.poolLength = BigInt.fromI32(0);
+    factory.poolCount = BigInt.fromI32(0);
     factory.save();
 
     const masterDeployer = getOrCreateMasterDeployer(MASTER_DEPLOYER_ADDRESS);
-    masterDeployer.factoryLength = masterDeployer.factoryLength.plus(
+    masterDeployer.factoryCount = masterDeployer.factoryCount.plus(
       BigInt.fromI32(1)
     );
     masterDeployer.save();
@@ -150,11 +161,11 @@ export function getOrCreateIndexPool(id: Address): IndexPool {
     pool.reserve1 = BigInt.fromI32(0);
     pool.totalSupply = BigInt.fromI32(0);
 
-    pool.txCount = BigInt.fromI32(0);
+    pool.transactionCount = BigInt.fromI32(0);
 
     pool.save();
 
-    factory.poolLength = factory.poolLength.plus(BigInt.fromI32(1));
+    factory.poolCount = factory.poolCount.plus(BigInt.fromI32(1));
     factory.save();
   }
 
@@ -175,4 +186,19 @@ export function getOrCreateTransaction(event: ethereum.Event): Transaction {
   transaction.save();
 
   return transaction as Transaction;
+}
+
+export function getOrCreateToken(id: Address): Token {
+  let token = Token.load(id.toHex());
+
+  if (token === null) {
+    token = new Token(id.toHex());
+    token.name = "test";
+    token.symbol = "TEST";
+    token.decimals = BigInt.fromI32(0);
+    token.totalSupply = BigInt.fromI32(0);
+    token.save();
+  }
+
+  return token as Token;
 }
