@@ -2,83 +2,111 @@ enum Fee {
   DEFAULT
 }
 
+interface Factory {
+  id: ID!
+  pools: [Pool!]! @derivedFrom(field: "factory")
+  poolCount: BigInt!
+}
+
+interface Pool {
+  id: ID!
+  factory: Factory!
+}
+
 type MasterDeployer @entity {
   id: ID!
-  factoryLength: BigInt!
+  owner: Bytes!
+  migrator: Bytes!
+  barFee: BigInt!
+  factoryCount: BigInt!
 }
 
-type ConstantProductPoolFactory @entity {
+type ConstantProductPoolFactory implements Factory @entity {
   id: ID!
-  poolLength: BigInt!
-  pools: [ConstantProductPool!]! @derivedFrom(field: "factory")
+  pools: [Pool!]! @derivedFrom(field: "factory")
+  poolCount: BigInt!
 }
 
-type ConstantProductPool @entity {
+type ConstantProductPool implements Pool @entity {
   id: ID!
-  factory: ConstantProductPoolFactory!
-  # token0: Bytes!
-  # token1: Bytes!
+  factory: Factory!
+  token0: Token!
+  token1: Token!
   reserve0: BigInt!
   reserve1: BigInt!
   totalSupply: BigInt!
-
-  transactionLength: BigInt!
-
-
-  # fee: Fee!
-  # twap: Boolean!
+  transactionCount: BigInt!
+  totalValueLocked: BigDecimal!
+  volume: BigDecimal!
 }
 
-type HybridPoolFactory @entity {
+type HybridPoolFactory implements Factory @entity {
   id: ID!
-  poolLength: BigInt!
-  pools: [HybridPool!]! @derivedFrom(field: "factory")
+  pools: [Pool!]! @derivedFrom(field: "factory")
+  poolCount: BigInt!
 }
 
-type HybridPool @entity {
+type HybridPool implements Pool @entity {
   id: ID!
-  factory: HybridPoolFactory!
-  # token0: Bytes!
-  # token1: Bytes!
+  factory: Pool!
+  token0: Token!
+  token1: Token!
   token0PrecisionMultiplier: BigInt!
   token1PrecisionMultiplier: BigInt!
   reserve0: BigInt!
   reserve1: BigInt!
   totalSupply: BigInt!
-
-  txCount: BigInt!
-
-
-  # fee: Fee!
-  # twap: Boolean!
+  transactionCount: BigInt!
+  totalValueLocked: BigDecimal!
+  volume: BigDecimal!
 }
 
-type IndexPoolFactory @entity {
+type IndexPoolFactory implements Factory @entity {
   id: ID!
-  poolLength: BigInt!
-  pools: [IndexPool!]! @derivedFrom(field: "factory")
+  pools: [Pool!]! @derivedFrom(field: "factory")
+  poolCount: BigInt!
 }
 
-type IndexPool @entity {
+type IndexPool implements Pool @entity {
   id: ID!
-  factory: IndexPoolFactory!
-  # token0: Bytes!
-  # token1: Bytes!
-
+  factory: Factory!
+  token0: Token!
+  token1: Token!
   reserve0: BigInt!
   reserve1: BigInt!
   totalSupply: BigInt!
+  transactionCount: BigInt!
+  totalValueLocked: BigDecimal!
+  volume: BigDecimal!
+}
 
-  txCount: BigInt!
-
-
-  # fee: Fee!
-  # twap: Boolean!
+type Price @entity {
+  id: ID!
+  priceUSD: BigDecimal!
 }
 
 type Token @entity {
   id: ID!
-  derived: BigDecimal!
+  symbol: String!
+  name: String!
+  decimals: BigInt!
+  totalSupply: BigInt!
+}
+
+type Mint @entity {
+  id: ID!
+  pool: Pool!
+  transaction: Transaction!
+}
+type Burn @entity {
+  id: ID!
+  pool: Pool!
+  transaction: Transaction!
+}
+type Swap @entity {
+  id: ID!
+  pool: Pool!
+  transaction: Transaction!
 }
 
 type Transaction @entity {
@@ -88,4 +116,7 @@ type Transaction @entity {
   gasUsed: BigInt!
   gasLimit: BigInt!
   gasPrice: BigInt!
+  mints: [Mint!]! @derivedFrom(field: "transaction")
+  burns: [Burn!]! @derivedFrom(field: "transaction")
+  swaps: [Swap!]! @derivedFrom(field: "transaction")
 }
