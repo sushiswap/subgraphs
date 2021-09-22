@@ -4,12 +4,14 @@ enum Fee {
 
 interface Factory {
   id: ID!
+  masterDeployer: MasterDeployer!
   pools: [Pool!]! @derivedFrom(field: "factory")
   poolCount: BigInt!
 }
 
 interface Pool {
   id: ID!
+  masterDeployer: MasterDeployer!
   factory: Factory!
 }
 
