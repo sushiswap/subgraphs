@@ -14,7 +14,7 @@ export function onMint(event: Mint): void {
   log.debug("[Hybrid] onMint...", []);
 
   const pool = getOrCreateHybridPool(event.address);
-  pool.txCount = pool.txCount.plus(BigInt.fromI32(1));
+  pool.transactionCount = pool.transactionCount.plus(BigInt.fromI32(1));
 
   pool.save();
 }
@@ -23,7 +23,7 @@ export function onBurn(event: Burn): void {
   log.debug("[Hybrid] onBurn...", []);
 
   const pool = getOrCreateHybridPool(event.address);
-  pool.txCount = pool.txCount.plus(BigInt.fromI32(1));
+  pool.transactionCount = pool.transactionCount.plus(BigInt.fromI32(1));
 
   pool.save();
 }

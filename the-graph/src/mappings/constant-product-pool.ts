@@ -15,7 +15,7 @@ export function onMint(event: Mint): void {
   log.debug("[ConstantProduct] onMint...", []);
 
   const pool = getOrCreateConstantProductPool(event.address);
-  pool.transactionLength = pool.transactionLength.plus(BigInt.fromI32(1));
+  pool.transactionCount = pool.transactionCount.plus(BigInt.fromI32(1));
 
   pool.save();
 }
@@ -24,7 +24,7 @@ export function onBurn(event: Burn): void {
   log.debug("[ConstantProduct] onBurn...", []);
 
   const pool = getOrCreateConstantProductPool(event.address);
-  pool.transactionLength = pool.transactionLength.plus(BigInt.fromI32(1));
+  pool.transactionCount = pool.transactionCount.plus(BigInt.fromI32(1));
 
   pool.save();
 }
