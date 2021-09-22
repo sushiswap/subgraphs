@@ -13,11 +13,17 @@ import {
   INDEX_POOL_FACTORY_ADDRESS,
 } from "../constants";
 import {
+  ConstantProductPool,
+  HybridPool,
+  IndexPool,
+} from "../../generated/templates";
+import {
   getOrCreateConstantProductPool,
+  getOrCreateHybridPool,
+  getOrCreateIndexPool,
   getOrCreateMasterDeployer,
 } from "../functions";
 
-import { ConstantProductPool as ConstantProductPoolTemplate } from "../../generated/templates";
 import { log } from "@graphprotocol/graph-ts";
 
 export function onDeployPool(event: DeployPool): void {
@@ -27,11 +33,13 @@ export function onDeployPool(event: DeployPool): void {
 
   if (event.params._factory == CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS) {
     getOrCreateConstantProductPool(event.params.pool);
-    ConstantProductPoolTemplate.create(event.params.pool);
+    ConstantProductPool.create(event.params.pool);
   } else if (event.params._factory == HYBRID_POOL_FACTORY_ADDRESS) {
-    //
+    getOrCreateHybridPool(event.params.pool);
+    HybridPool.create(event.params.pool);
   } else if (event.params._factory == INDEX_POOL_FACTORY_ADDRESS) {
-    //
+    getOrCreateIndexPool(event.params.pool);
+    IndexPool.create(event.params.pool);
   }
 }
 
