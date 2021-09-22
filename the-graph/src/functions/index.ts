@@ -51,6 +51,7 @@ export function getOrCreateConstantProductPoolFactory(): ConstantProductPoolFact
     factory = new ConstantProductPoolFactory(
       CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS.toHex()
     );
+    factory.masterDeployer = MASTER_DEPLOYER_ADDRESS;
     factory.poolCount = BigInt.fromI32(0);
     factory.save();
 
@@ -72,6 +73,7 @@ export function getOrCreateConstantProductPool(
   if (pool === null) {
     const factory = getOrCreateConstantProductPoolFactory();
     pool = new ConstantProductPool(id.toHex());
+    pool.masterDeployer = MASTER_DEPLOYER_ADDRESS;
     pool.factory = factory.id;
     pool.reserve0 = BigInt.fromI32(0);
     pool.reserve1 = BigInt.fromI32(0);
@@ -94,6 +96,7 @@ export function getOrCreateHybridPoolFactory(): HybridPoolFactory {
 
   if (factory === null) {
     factory = new HybridPoolFactory(HYBRID_POOL_FACTORY_ADDRESS.toHex());
+    factory.masterDeployer = MASTER_DEPLOYER_ADDRESS;
     factory.poolCount = BigInt.fromI32(0);
     factory.save();
 
@@ -114,6 +117,7 @@ export function getOrCreateHybridPool(id: Address): HybridPool {
     const factory = getOrCreateHybridPoolFactory();
 
     pool = new HybridPool(id.toHex());
+    pool.masterDeployer = MASTER_DEPLOYER_ADDRESS;
     pool.factory = factory.id;
     pool.token0PrecisionMultiplier = BigInt.fromI32(0);
     pool.token1PrecisionMultiplier = BigInt.fromI32(0);
@@ -135,6 +139,7 @@ export function getOrCreateIndexPoolFactory(): IndexPoolFactory {
 
   if (factory === null) {
     factory = new IndexPoolFactory(INDEX_POOL_FACTORY_ADDRESS.toHex());
+    factory.masterDeployer = MASTER_DEPLOYER_ADDRESS;
     factory.poolCount = BigInt.fromI32(0);
     factory.save();
 
@@ -155,6 +160,7 @@ export function getOrCreateIndexPool(id: Address): IndexPool {
     const factory = getOrCreateIndexPoolFactory();
 
     pool = new IndexPool(id.toHex());
+    pool.masterDeployer = MASTER_DEPLOYER_ADDRESS;
     pool.factory = factory.id;
 
     pool.reserve0 = BigInt.fromI32(0);
