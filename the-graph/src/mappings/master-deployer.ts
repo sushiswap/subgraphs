@@ -61,8 +61,14 @@ export function onRemoveFromWhitelist(event: RemoveFromWhitelist): void {
 
 export function onBarFeeUpdated(event: BarFeeUpdated): void {
   log.debug("[MasterDeployer] onBarFeeUpdated...", []);
+  const masterDeployer = getOrCreateMasterDeployer(event.address);
+  masterDeployer.barFee = event.params._barFee;
+  masterDeployer.save();
 }
 
 export function onMigratorUpdated(event: MigratorUpdated): void {
   log.debug("[MasterDeployer] onMigratorUpdated...", []);
+  const masterDeployer = getOrCreateMasterDeployer(event.address);
+  masterDeployer.migrator = event.params._migrator;
+  masterDeployer.save();
 }
