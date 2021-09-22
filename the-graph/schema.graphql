@@ -18,7 +18,10 @@ type MasterDeployer @entity {
   owner: Bytes!
   migrator: Bytes!
   barFee: BigInt!
+  factories: [Factory!]! @derivedFrom(field: "masterDeployer")
   factoryCount: BigInt!
+  pools: [Pool!]! @derivedFrom(field: "masterDeployer")
+  poolCount: BigInt!
 }
 
 type ConstantProductPoolFactory implements Factory @entity {
