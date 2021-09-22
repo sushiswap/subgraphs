@@ -28,6 +28,7 @@ type MasterDeployer @entity {
 
 type ConstantProductPoolFactory implements Factory @entity {
   id: ID!
+  masterDeployer: MasterDeployer!
   pools: [Pool!]! @derivedFrom(field: "factory")
   poolCount: BigInt!
 }
@@ -48,6 +49,7 @@ type ConstantProductPool implements Pool @entity {
 
 type HybridPoolFactory implements Factory @entity {
   id: ID!
+  masterDeployer: MasterDeployer!
   pools: [Pool!]! @derivedFrom(field: "factory")
   poolCount: BigInt!
 }
@@ -70,6 +72,7 @@ type HybridPool implements Pool @entity {
 
 type IndexPoolFactory implements Factory @entity {
   id: ID!
+  masterDeployer: MasterDeployer!
   pools: [Pool!]! @derivedFrom(field: "factory")
   poolCount: BigInt!
 }
