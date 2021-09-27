@@ -12,8 +12,8 @@
     "deploy:kovan": "graph deploy --product hosted-service sushiswap/trident"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "0.22.0",
-    "@graphprotocol/graph-ts": "0.22.0",
+    "@graphprotocol/graph-cli": "0.22.1",
+    "@graphprotocol/graph-ts": "0.22.1",
     "@sushiswap/trident": "latest"
   }
 }
