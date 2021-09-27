@@ -57,7 +57,7 @@ type HybridPoolFactory implements Factory @entity {
 type HybridPool implements Pool @entity {
   id: ID!
   masterDeployer: MasterDeployer!
-  factory: Pool!
+  factory: Factory!
   token0: Token!
   token1: Token!
   token0PrecisionMultiplier: BigInt!
@@ -101,7 +101,6 @@ type Token @entity {
   symbol: String!
   name: String!
   decimals: BigInt!
-  totalSupply: BigInt!
 }
 
 type Mint @entity {
