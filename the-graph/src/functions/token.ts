@@ -8,11 +8,11 @@ import { Token } from "../../generated/schema";
 export function getOrCreateToken(id: Address): Token {
   let token = Token.load(id.toHex());
 
-  const decimals = getTokenDecimals(id);
-  const name = getTokenName(id);
-  const symbol = getTokenSymbol(id);
-
   if (token === null) {
+    const decimals = getTokenDecimals(id);
+    const name = getTokenName(id);
+    const symbol = getTokenSymbol(id);
+
     token = new Token(id.toHex());
     token.name = name.value;
     token.nameSuccess = name.success;
