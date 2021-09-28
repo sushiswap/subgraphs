@@ -1,4 +1,11 @@
 import {
+  ADDRESS_ZERO,
+  CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS,
+  HYBRID_POOL_FACTORY_ADDRESS,
+  INDEX_POOL_FACTORY_ADDRESS,
+  MASTER_DEPLOYER_ADDRESS,
+} from "../constants";
+import {
   AddToWhitelist,
   BarFeeUpdated,
   DeployPool,
@@ -7,11 +14,6 @@ import {
   TransferOwner,
   TransferOwnerClaim,
 } from "../../generated/MasterDeployer/MasterDeployer";
-import {
-  CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS,
-  HYBRID_POOL_FACTORY_ADDRESS,
-  INDEX_POOL_FACTORY_ADDRESS,
-} from "../constants";
 import {
   ConstantProductPool,
   HybridPool,
@@ -23,8 +25,9 @@ import {
   getOrCreateIndexPool,
   getOrCreateMasterDeployer,
 } from "../functions";
+import { log, store } from "@graphprotocol/graph-ts";
 
-import { log } from "@graphprotocol/graph-ts";
+import { WhitelistedFactory } from "../../generated/schema";
 
 export function onDeployPool(event: DeployPool): void {
   log.debug("[MasterDeployer] onDeployPool...", []);
@@ -45,18 +48,41 @@ export function onDeployPool(event: DeployPool): void {
 
 export function onTransferOwner(event: TransferOwner): void {
   log.debug("[MasterDeployer] onTransferOwner...", []);
+  const masterDeployer = getOrCreateMasterDeployer(event.address);
+  masterDeployer.previousOwner = event.params.sender;
+  if (masterDeployer.pendingOwner == event.params.recipient) {
+    masterDeployer.pendingOwner = ADDRESS_ZERO;
+  }
+  masterDeployer.owner = event.params.recipient;
+  masterDeployer.save();
 }
 
 export function onTransferOwnerClaim(event: TransferOwnerClaim): void {
   log.debug("[MasterDeployer] onTransferOwnerClaim...", []);
+  const masterDeployer = getOrCreateMasterDeployer(event.address);
+  masterDeployer.previousOwner = event.params.sender;
+  masterDeployer.pendingOwner = event.params.recipient;
+  masterDeployer.save();
 }
 
 export function onAddToWhitelist(event: AddToWhitelist): void {
   log.debug("[MasterDeployer] onAddToWhitelist...", []);
+
+  let whitelistedFactory = WhitelistedFactory.load(
+    event.params._factory.toHex()
+  );
+
+  if (whitelistedFactory === null) {
+    whitelistedFactory = new WhitelistedFactory(event.params._factory.toHex());
+    whitelistedFactory.masterDeployer = MASTER_DEPLOYER_ADDRESS.toHex();
+  }
+
+  whitelistedFactory.save();
 }
 
 export function onRemoveFromWhitelist(event: RemoveFromWhitelist): void {
   log.debug("[MasterDeployer] onRemoveFromWhitelist...", []);
+  store.remove("WhitelistedFactory", event.params._factory.toHex());
 }
 
 export function onBarFeeUpdated(event: BarFeeUpdated): void {
