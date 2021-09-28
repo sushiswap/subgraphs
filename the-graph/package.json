@@ -9,11 +9,14 @@
     "create-local": "graph create --node http://localhost:8020/ sushiswap/trient",
     "remove-local": "graph remove --node http://localhost:8020/ sushiswap/trient",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/trient",
-    "deploy:kovan": "graph deploy --product hosted-service sushiswap/trident"
+    "deploy:kovan": "graph deploy --product hosted-service sushiswap/trident",
+    "logs": "sh ./logs.sh"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.22.1",
     "@graphprotocol/graph-ts": "0.22.1",
-    "@sushiswap/trident": "latest"
-  }
+    "@sushiswap/trident": "latest",
+    "assemblyscript": "0.19.10"
+  },
+  "packageManager": "yarn@3.0.2"
 }
