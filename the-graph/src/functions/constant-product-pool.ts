@@ -42,11 +42,15 @@ export function getOrCreateConstantProductPool(
   if (pool === null) {
     const contract = ConstantProductPoolContract.bind(id);
     const factory = getOrCreateConstantProductPoolFactory();
+    const assets = contract.getAssets();
+    const token0 = getOrCreateToken(assets[0]);
+    const token1 = getOrCreateToken(assets[1]);
     pool = new ConstantProductPool(id.toHex());
     pool.masterDeployer = MASTER_DEPLOYER_ADDRESS.toHex();
+    // pool.template = "CONSTANT_PRODUCT";
     pool.factory = factory.id;
-    pool.token0 = getOrCreateToken(contract.token0()).id;
-    pool.token1 = getOrCreateToken(contract.token1()).id;
+    pool.token0 = token0.id;
+    pool.token1 = token1.id;
     pool.save();
     factory.poolCount = factory.poolCount.plus(BigInt.fromI32(1));
     factory.save();
