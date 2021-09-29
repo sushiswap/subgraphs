@@ -1,18 +1,4 @@
-# Graph
-
-## Trident Subgraph
-
-### Codegen
-
-```sh
-yarn workspace @sushiswap/trident-subgraph codegen
-```
-
-### Build
-
-```sh
-yarn workspace @sushiswap/trident-subgraph build
-```
+# The Graph
 
 ## CLI
 
@@ -33,4 +19,19 @@ node . deploy trident kovan
 ```sh
 node . log sushiswap/trident
 ```
+
+## Trident Subgraph
+
+### Codegen
+
+```sh
+yarn workspace @sushiswap/trident-subgraph codegen
+```
+
+### Build
+
+```sh
+yarn workspace @sushiswap/trident-subgraph build
+```
+
 

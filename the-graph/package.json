@@ -11,9 +11,6 @@
   },
   "author": "Matthew Lilley <hello@matthewlilley.com>",
   "license": "MIT",
-  "scripts": {
-    "logs": "sh ./logs.sh"
-  },
   "devDependencies": {
     "@sushiswap/prettier-config": "^0.1.0",
     "prettier": "^2.4.0",
