@@ -1,4 +1,0 @@
-{
-    "extends": "../the-graph/node_modules/assemblyscript/std/assembly.json",
-    "include": ["src"]
-}

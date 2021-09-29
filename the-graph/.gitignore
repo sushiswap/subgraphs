@@ -4,6 +4,7 @@ dist
 node_modules
 package-lock.json
 yarn.lock
+subgraph.yaml
 
 .yarn/*
 !.yarn/patches

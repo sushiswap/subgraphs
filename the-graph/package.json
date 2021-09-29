@@ -1,22 +1,22 @@
 {
   "name": "subgraphs",
   "private": true,
-  "license": "UNLICENSED",
+  "workspaces": [
+    "packages/*",
+    "subgraphs/*"
+  ],
+  "author": "Matthew Lilley <hello@matthewlilley.com>",
+  "license": "MIT",
   "scripts": {
-    "codegen": "graph codegen",
-    "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ sushiswap/trient",
-    "create-local": "graph create --node http://localhost:8020/ sushiswap/trient",
-    "remove-local": "graph remove --node http://localhost:8020/ sushiswap/trient",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/trient",
-    "deploy:kovan": "graph deploy --product hosted-service sushiswap/trident",
     "logs": "sh ./logs.sh"
   },
-  "dependencies": {
+  "devDependencies": {
     "@graphprotocol/graph-cli": "0.22.1",
     "@graphprotocol/graph-ts": "0.22.1",
-    "@sushiswap/trident": "latest",
-    "assemblyscript": "0.19.10"
+    "@sushiswap/prettier-config": "^0.1.0",
+    "assemblyscript": "0.19.10",
+    "mustache": "^4.2.0",
+    "prettier": "^2.4.1"
   },
   "packageManager": "yarn@3.0.2"
 }
