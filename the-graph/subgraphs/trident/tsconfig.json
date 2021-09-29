@@ -3,6 +3,6 @@
   "include": ["src"],
   "compilerOptions": {
     "baseUrl": ".",
-    "rootDir": "./src"
+    "rootDir": "src",
   }
 }

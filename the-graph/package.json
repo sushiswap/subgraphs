@@ -5,6 +5,10 @@
     "packages/*",
     "subgraphs/*"
   ],
+  "main": "./bin/index.js",
+  "bin": {
+    "subgraph-cli": "./bin/index.js"
+  },
   "author": "Matthew Lilley <hello@matthewlilley.com>",
   "license": "MIT",
   "scripts": {
