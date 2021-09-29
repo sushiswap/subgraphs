@@ -4,10 +4,10 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: MasterDeployer
-    network: { { network } }
+    network: {{ network }}
     source:
-      address: { { masterDeployer.address } }
-      startBlock: { { masterDeployer.startBlock } }
+      address: '{{ masterDeployer.address }}'
+      startBlock: {{ masterDeployer.startBlock }}
       abi: MasterDeployer
     mapping:
       kind: ethereum/events
@@ -67,7 +67,7 @@ dataSources:
 templates:
   - kind: ethereum/contract
     name: ConstantProductPool
-    network: { { network } }
+    network: {{ network }}
     source:
       abi: ConstantProductPool
     mapping:
@@ -107,7 +107,7 @@ templates:
           handler: onTransfer
   - kind: ethereum/contract
     name: ConcentratedLiquidityPool
-    network: { { network } }
+    network: {{ network }}
     source:
       abi: ConcentratedLiquidityPool
     mapping:
@@ -141,7 +141,7 @@ templates:
           handler: onSwap
   - kind: ethereum/contract
     name: HybridPool
-    network: { { network } }
+    network: {{ network }}
     source:
       abi: HybridPool
     mapping:
@@ -171,7 +171,7 @@ templates:
           handler: onTransfer
   - kind: ethereum/contract
     name: IndexPool
-    network: { { network } }
+    network: {{ network }}
     source:
       abi: IndexPool
     mapping:

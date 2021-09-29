@@ -20,7 +20,10 @@
     "prepare:kovan": "mustache ../../config/kovan.js template.yaml > subgraph.yaml"
   },
   "devDependencies": {
+    "@graphprotocol/graph-cli": "0.22.1",
+    "@graphprotocol/graph-ts": "0.22.1",
     "@sushiswap/trident": "latest",
+    "assemblyscript": "0.19.10",
     "mustache": "latest"
   }
 }
