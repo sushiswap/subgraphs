@@ -74,6 +74,31 @@ type ConstantProductPool implements Pool @entity {
   # volumeUSD: BigDecimal!
 }
 
+type ConcentratedLiquidityPoolFactory implements Factory @entity {
+  id: ID!
+  masterDeployer: MasterDeployer!
+  pools: [Pool!]! @derivedFrom(field: "factory")
+  poolCount: BigInt!
+  transactionCount: BigInt!
+}
+
+type ConcentratedLiquidityPool implements Pool @entity {
+  id: ID!
+  masterDeployer: MasterDeployer!
+  factory: Factory!
+  # template: PoolTemplate!
+  token0: Token!
+  token1: Token!
+  reserve0: BigDecimal!
+  reserve1: BigDecimal!
+  totalSupply: BigInt!
+  transactionCount: BigInt!
+  totalValueLocked: BigDecimal!
+  # totalValueLockedUSD: BigDecimal!
+  volume: BigDecimal!
+  # volumeUSD: BigDecimal!
+}
+
 type HybridPoolFactory implements Factory @entity {
   id: ID!
   masterDeployer: MasterDeployer!

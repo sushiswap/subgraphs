@@ -17,6 +17,8 @@ dataSources:
         - MasterDeployer
         - ConstantProductPoolFactory
         - ConstantProductPool
+        - ConcentratedLiquidityPoolFactory
+        - ConcentratedLiquidityPool
         - HybridPoolFactory
         - HybridPool
         - IndexPoolFactory
@@ -28,6 +30,10 @@ dataSources:
           file: ./node_modules/@sushiswap/trident/artifacts/contracts/pool/ConstantProductPool.sol/ConstantProductPool.json
         - name: ConstantProductPoolFactory
           file: ./node_modules/@sushiswap/trident/artifacts/contracts/pool/ConstantProductPoolFactory.sol/ConstantProductPoolFactory.json
+        - name: ConcentratedLiquidityPool
+          file: ./abis/ConcentratedLiquidityPool.json
+        - name: ConcentratedLiquidityPoolFactory
+          file: ./abis/ConcentratedLiquidityPoolFactory.json
         - name: HybridPool
           file: ./node_modules/@sushiswap/trident/artifacts/contracts/pool/HybridPool.sol/HybridPool.json
         - name: HybridPoolFactory
@@ -99,6 +105,40 @@ templates:
           handler: onApproval
         - event: Transfer(indexed address,indexed address,uint256)
           handler: onTransfer
+  - kind: ethereum/contract
+    name: ConcentratedLiquidityPool
+    network: kovan
+    source:
+      abi: ConcentratedLiquidityPool
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/concentrated-liquidity-pool.ts
+      entities:
+        - User
+      abis:
+        - name: ConcentratedLiquidityPool
+          file: ./abis/ConcentratedLiquidityPool.json
+        - name: ConcentratedLiquidityPoolFactory
+          file: ./abis/ConcentratedLiquidityPoolFactory.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: NameBytes32
+          file: ./abis/NameBytes32.json
+        - name: SymbolBytes32
+          file: ./abis/SymbolBytes32.json
+      eventHandlers:
+        - event: Mint(indexed address,uint256,uint256,indexed address)
+          handler: onMint
+        - event: Burn(indexed address,uint256,uint256,indexed address)
+          handler: onBurn
+        - event: Collect(indexed address,uint256,uint256)
+          handler: onCollect
+        - event: Sync(uint256,uint256)
+          handler: onSync
+        - event: Swap(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: onSwap
   - kind: ethereum/contract
     name: HybridPool
     network: kovan
