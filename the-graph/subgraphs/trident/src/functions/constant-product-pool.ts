@@ -6,11 +6,13 @@ import { ConstantProductPool as ConstantProductPoolContract } from '../../genera
 import { getOrCreateMasterDeployer } from './master-deployer'
 import { getOrCreateToken } from './token'
 
-export function getOrCreateConstantProductPoolFactory(): ConstantProductPoolFactory {
-  let factory = ConstantProductPoolFactory.load(CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS.toHex())
+export function getOrCreateConstantProductPoolFactory(
+  id: Address = CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS
+): ConstantProductPoolFactory {
+  let factory = ConstantProductPoolFactory.load(id.toHex())
 
   if (factory === null) {
-    factory = new ConstantProductPoolFactory(CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS.toHex())
+    factory = new ConstantProductPoolFactory(id.toHex())
     factory.masterDeployer = MASTER_DEPLOYER_ADDRESS.toHex()
     factory.save()
 

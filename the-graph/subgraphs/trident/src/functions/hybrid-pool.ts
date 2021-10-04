@@ -4,11 +4,11 @@ import { HybridPool, HybridPoolFactory } from '../../generated/schema'
 
 import { getOrCreateMasterDeployer } from './master-deployer'
 
-export function getOrCreateHybridPoolFactory(): HybridPoolFactory {
-  let factory = HybridPoolFactory.load(HYBRID_POOL_FACTORY_ADDRESS.toHex())
+export function getOrCreateHybridPoolFactory(id: Address = HYBRID_POOL_FACTORY_ADDRESS): HybridPoolFactory {
+  let factory = HybridPoolFactory.load(id.toHex())
 
   if (factory === null) {
-    factory = new HybridPoolFactory(HYBRID_POOL_FACTORY_ADDRESS.toHex())
+    factory = new HybridPoolFactory(id.toHex())
     factory.masterDeployer = MASTER_DEPLOYER_ADDRESS.toHex()
     factory.poolCount = BigInt.fromI32(0)
     factory.save()

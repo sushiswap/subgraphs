@@ -1,10 +1,10 @@
+import { ADDRESS_ZERO, MASTER_DEPLOYER_ADDRESS } from '../constants'
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 
-import { ADDRESS_ZERO } from '../constants'
 import { MasterDeployer } from '../../generated/schema'
 import { MasterDeployer as MasterDeployerContract } from '../../generated/MasterDeployer/MasterDeployer'
 
-export function getOrCreateMasterDeployer(id: Address): MasterDeployer {
+export function getOrCreateMasterDeployer(id: Address = MASTER_DEPLOYER_ADDRESS): MasterDeployer {
   let masterDeployer = MasterDeployer.load(id.toHex())
 
   if (masterDeployer === null) {

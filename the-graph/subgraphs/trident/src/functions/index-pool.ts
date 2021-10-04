@@ -4,11 +4,11 @@ import { IndexPool, IndexPoolFactory } from '../../generated/schema'
 
 import { getOrCreateMasterDeployer } from './master-deployer'
 
-export function getOrCreateIndexPoolFactory(): IndexPoolFactory {
-  let factory = IndexPoolFactory.load(INDEX_POOL_FACTORY_ADDRESS.toHex())
+export function getOrCreateIndexPoolFactory(id: Address = INDEX_POOL_FACTORY_ADDRESS): IndexPoolFactory {
+  let factory = IndexPoolFactory.load(id.toHex())
 
   if (factory === null) {
-    factory = new IndexPoolFactory(INDEX_POOL_FACTORY_ADDRESS.toHex())
+    factory = new IndexPoolFactory(id.toHex())
     factory.masterDeployer = MASTER_DEPLOYER_ADDRESS.toHex()
     factory.save()
 

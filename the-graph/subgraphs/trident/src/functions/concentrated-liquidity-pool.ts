@@ -4,11 +4,13 @@ import { ConcentratedLiquidityPool, ConcentratedLiquidityPoolFactory } from '../
 
 import { getOrCreateMasterDeployer } from './master-deployer'
 
-export function getOrCreateConcentratedLiquidityPoolFactory(): ConcentratedLiquidityPoolFactory {
-  let factory = ConcentratedLiquidityPoolFactory.load(CONCENTRATED_LIQUIDITY_POOL_FACTORY_ADDRESS.toHex())
+export function getOrCreateConcentratedLiquidityPoolFactory(
+  id: Address = CONCENTRATED_LIQUIDITY_POOL_FACTORY_ADDRESS
+): ConcentratedLiquidityPoolFactory {
+  let factory = ConcentratedLiquidityPoolFactory.load(id.toHex())
 
   if (factory === null) {
-    factory = new ConcentratedLiquidityPoolFactory(CONCENTRATED_LIQUIDITY_POOL_FACTORY_ADDRESS.toHex())
+    factory = new ConcentratedLiquidityPoolFactory(id.toHex())
     factory.masterDeployer = MASTER_DEPLOYER_ADDRESS.toHex()
     factory.save()
 
