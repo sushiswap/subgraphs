@@ -6,7 +6,17 @@ enum PoolTemplate {
   CONSTANT_PRODUCT
   HYBRID
   INDEX
-  CONCENTRATED
+  CONCENTRATED_LIQUDITY
+}
+
+enum Tracking {
+  TRACKED
+  UNTRACKED
+}
+
+enum UntrackedReason {
+  LOW_LIQUDITY
+  INVALID_TOKEN
 }
 
 interface Factory {
@@ -21,12 +31,9 @@ interface Pool {
   id: ID!
   masterDeployer: MasterDeployer!
   factory: Factory!
-  # template: PoolTemplate!
-}
-
-type Price @entity {
-  id: ID!
-  priceUSD: BigDecimal!
+  assets: [Token!]!
+  swapFee: BigInt!
+  twapEnabled: Boolean!
 }
 
 type MasterDeployer @entity {
@@ -61,7 +68,6 @@ type ConstantProductPool implements Pool @entity {
   id: ID!
   masterDeployer: MasterDeployer!
   factory: Factory!
-  # template: PoolTemplate!
   token0: Token!
   token1: Token!
   reserve0: BigDecimal!
@@ -69,9 +75,12 @@ type ConstantProductPool implements Pool @entity {
   totalSupply: BigInt!
   transactionCount: BigInt!
   totalValueLocked: BigDecimal!
-  # totalValueLockedUSD: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
   volume: BigDecimal!
-  # volumeUSD: BigDecimal!
+  volumeUSD: BigDecimal!
+  assets: [Token!]!
+  swapFee: BigInt!
+  twapEnabled: Boolean!
 }
 
 type ConcentratedLiquidityPoolFactory implements Factory @entity {
@@ -86,7 +95,6 @@ type ConcentratedLiquidityPool implements Pool @entity {
   id: ID!
   masterDeployer: MasterDeployer!
   factory: Factory!
-  # template: PoolTemplate!
   token0: Token!
   token1: Token!
   reserve0: BigDecimal!
@@ -94,9 +102,12 @@ type ConcentratedLiquidityPool implements Pool @entity {
   totalSupply: BigInt!
   transactionCount: BigInt!
   totalValueLocked: BigDecimal!
-  # totalValueLockedUSD: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
   volume: BigDecimal!
-  # volumeUSD: BigDecimal!
+  volumeUSD: BigDecimal!
+  assets: [Token!]!
+  swapFee: BigInt!
+  twapEnabled: Boolean!
 }
 
 type HybridPoolFactory implements Factory @entity {
@@ -120,7 +131,12 @@ type HybridPool implements Pool @entity {
   totalSupply: BigInt!
   transactionCount: BigInt!
   totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
   volume: BigDecimal!
+  volumeUSD: BigDecimal!
+  assets: [Token!]!
+  swapFee: BigInt!
+  twapEnabled: Boolean!
 }
 
 type IndexPoolFactory implements Factory @entity {
@@ -142,7 +158,12 @@ type IndexPool implements Pool @entity {
   totalSupply: BigInt!
   transactionCount: BigInt!
   totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
   volume: BigDecimal!
+  volumeUSD: BigDecimal!
+  assets: [Token!]!
+  swapFee: BigInt!
+  twapEnabled: Boolean!
 }
 
 type Token @entity {
