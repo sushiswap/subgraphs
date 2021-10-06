@@ -39,6 +39,8 @@ export function getOrCreateConstantProductPool(id: Address): ConstantProductPool
     pool.factory = factory.id
     pool.token0 = token0.id
     pool.token1 = token1.id
+    pool.assets = [token0.id, token1.id]
+    pool.swapFee = contract.swapFee()
     pool.save()
     factory.poolCount = factory.poolCount.plus(BigInt.fromI32(1))
     factory.save()
