@@ -3,23 +3,41 @@ import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { ERC20 } from '../../generated/MasterDeployer/ERC20'
 import { NameBytes32 } from '../../generated/MasterDeployer/NameBytes32'
 import { SymbolBytes32 } from '../../generated/MasterDeployer/SymbolBytes32'
-import { Token } from '../../generated/schema'
+import { Token, TokenMetaData } from '../../generated/schema'
+
+export function getOrCreateTokenMetaData(token: Address): TokenMetaData {
+  const id = token.toHex().concat(":meta")
+
+  let metaData = TokenMetaData.load(id)
+
+  if (metaData === null) {
+    const decimals = getTokenDecimals(token)
+    const name = getTokenName(token)
+    const symbol = getTokenSymbol(token)
+    metaData = new TokenMetaData(id)
+    metaData.token = token.toHex()
+    metaData.name = name.value
+    metaData.nameSuccess = name.success
+    metaData.symbol = symbol.value
+    metaData.symbolSuccess = symbol.success
+    metaData.decimals = decimals.value
+    metaData.decimalsSuccess = decimals.success
+    metaData.save()
+  }
+
+  return metaData as TokenMetaData
+}
 
 export function getOrCreateToken(id: Address): Token {
   let token = Token.load(id.toHex())
 
   if (token === null) {
-    const decimals = getTokenDecimals(id)
-    const name = getTokenName(id)
-    const symbol = getTokenSymbol(id)
-
     token = new Token(id.toHex())
-    token.name = name.value
-    token.nameSuccess = name.success
-    token.symbol = symbol.value
-    token.symbolSuccess = symbol.success
-    token.decimals = decimals.value
-    token.decimalsSuccess = decimals.success
+    
+    const metaData = getOrCreateTokenMetaData(id)
+
+    token.metaData = metaData.id
+
     token.save()
   }
 
