@@ -1,3 +1,11 @@
+enum Timeframe {
+  HOUR
+  DAY
+  WEEK
+  MONTH
+  YEAR
+}
+
 enum Fee {
   DEFAULT
 }
@@ -14,17 +22,30 @@ enum Tracking {
   UNTRACKED
 }
 
-enum UntrackedReason {
+enum Untracked {
   LOW_LIQUDITY
   INVALID_TOKEN
+}
+
+interface History {
+  totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeUSD: BigDecimal!
+  transactionCount: BigInt!
+  timeframe: Timeframe!
 }
 
 interface Factory {
   id: ID!
   masterDeployer: MasterDeployer!
   pools: [Pool!]! @derivedFrom(field: "factory")
-  poolCount: BigInt!
+  totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeUSD: BigDecimal!
   transactionCount: BigInt!
+  poolCount: BigInt!
 }
 
 interface Pool {
@@ -32,8 +53,13 @@ interface Pool {
   masterDeployer: MasterDeployer!
   factory: Factory!
   assets: [Token!]!
-  swapFee: BigInt!
-  twapEnabled: Boolean!
+  reserves: [BigDecimal!]!
+  transactions: [Transaction!]!
+  totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeUSD: BigDecimal!
+  data: Bytes!
 }
 
 type MasterDeployer @entity {
@@ -62,6 +88,10 @@ type ConstantProductPoolFactory implements Factory @entity {
   pools: [Pool!]! @derivedFrom(field: "factory")
   poolCount: BigInt!
   transactionCount: BigInt!
+  totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeUSD: BigDecimal!
 }
 
 type ConstantProductPool implements Pool @entity {
@@ -79,8 +109,11 @@ type ConstantProductPool implements Pool @entity {
   volume: BigDecimal!
   volumeUSD: BigDecimal!
   assets: [Token!]!
+  reserves: [BigDecimal!]!
   swapFee: BigInt!
   twapEnabled: Boolean!
+  transactions: [Transaction!]!
+  data: Bytes!
 }
 
 type ConcentratedLiquidityPoolFactory implements Factory @entity {
@@ -89,6 +122,10 @@ type ConcentratedLiquidityPoolFactory implements Factory @entity {
   pools: [Pool!]! @derivedFrom(field: "factory")
   poolCount: BigInt!
   transactionCount: BigInt!
+  totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeUSD: BigDecimal!
 }
 
 type ConcentratedLiquidityPool implements Pool @entity {
@@ -106,8 +143,9 @@ type ConcentratedLiquidityPool implements Pool @entity {
   volume: BigDecimal!
   volumeUSD: BigDecimal!
   assets: [Token!]!
-  swapFee: BigInt!
-  twapEnabled: Boolean!
+  reserves: [BigDecimal!]!
+  transactions: [Transaction!]!
+  data: Bytes!
 }
 
 type HybridPoolFactory implements Factory @entity {
@@ -116,6 +154,10 @@ type HybridPoolFactory implements Factory @entity {
   pools: [Pool!]! @derivedFrom(field: "factory")
   poolCount: BigInt!
   transactionCount: BigInt!
+  totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeUSD: BigDecimal!
 }
 
 type HybridPool implements Pool @entity {
@@ -135,8 +177,9 @@ type HybridPool implements Pool @entity {
   volume: BigDecimal!
   volumeUSD: BigDecimal!
   assets: [Token!]!
-  swapFee: BigInt!
-  twapEnabled: Boolean!
+  reserves: [BigDecimal!]!
+  transactions: [Transaction!]!
+  data: Bytes!
 }
 
 type IndexPoolFactory implements Factory @entity {
@@ -145,6 +188,10 @@ type IndexPoolFactory implements Factory @entity {
   pools: [Pool!]! @derivedFrom(field: "factory")
   poolCount: BigInt!
   transactionCount: BigInt!
+  totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeUSD: BigDecimal!
 }
 
 type IndexPool implements Pool @entity {
@@ -162,20 +209,30 @@ type IndexPool implements Pool @entity {
   volume: BigDecimal!
   volumeUSD: BigDecimal!
   assets: [Token!]!
-  swapFee: BigInt!
-  twapEnabled: Boolean!
+  reserves: [BigDecimal!]!
+  transactions: [Transaction!]!
+  data: Bytes!
 }
 
 type Token @entity {
   id: ID!
+  metaData: TokenMetaData! 
+  totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type TokenMetaData @entity {
+  id: ID!
+  token: Token!
   symbol: String!
   symbolSuccess: Boolean!
   name: String!
   nameSuccess: Boolean!
   decimals: BigInt!
   decimalsSuccess: Boolean!
-  transactionCount: BigInt!
-  totalValueLocked: BigDecimal!
 }
 
 type Mint @entity {
@@ -220,6 +277,8 @@ type Swap @entity {
 
 type Transaction @entity {
   id: ID!
+  pool: Pool!
+  factory: Factory!
   gasUsed: BigInt!
   gasLimit: BigInt!
   gasPrice: BigInt!
