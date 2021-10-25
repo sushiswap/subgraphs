@@ -49,7 +49,7 @@ dataSources:
         - name: SymbolBytes32
           file: ../../abis/SymbolBytes32.json
       eventHandlers:
-        - event: DeployPool(indexed address,indexed address)
+        - event: DeployPool(indexed address,indexed address,bytes)
           handler: onDeployPool
         - event: TransferOwner(indexed address,indexed address)
           handler: onTransferOwner
@@ -61,8 +61,6 @@ dataSources:
           handler: onRemoveFromWhitelist
         - event: BarFeeUpdated(indexed uint256)
           handler: onBarFeeUpdated
-        - event: MigratorUpdated(indexed address)
-          handler: onMigratorUpdated
       file: ./src/mappings/master-deployer.ts
 templates:
   - kind: ethereum/contract
