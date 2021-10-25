@@ -5,6 +5,7 @@ import { ConstantProductPool, ConstantProductPoolFactory } from '../../generated
 import { ConstantProductPool as ConstantProductPoolContract } from '../../generated/templates/ConstantProductPool/ConstantProductPool'
 import { getOrCreateMasterDeployer } from './master-deployer'
 import { getOrCreateToken } from './token'
+import { DeployPool__Params } from '../../generated/MasterDeployer/MasterDeployer'
 
 export function getOrCreateConstantProductPoolFactory(
   id: Address = CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS
@@ -24,27 +25,29 @@ export function getOrCreateConstantProductPoolFactory(
   return factory as ConstantProductPoolFactory
 }
 
-export function getOrCreateConstantProductPool(id: Address): ConstantProductPool {
-  let pool = ConstantProductPool.load(id.toHex())
-
-  if (pool === null) {
-    const contract = ConstantProductPoolContract.bind(id)
-    const factory = getOrCreateConstantProductPoolFactory()
-    const assets = contract.getAssets()
-    const token0 = getOrCreateToken(assets[0])
-    const token1 = getOrCreateToken(assets[1])
-    pool = new ConstantProductPool(id.toHex())
-    pool.masterDeployer = MASTER_DEPLOYER_ADDRESS.toHex()
-    // pool.template = "CONSTANT_PRODUCT";
-    pool.factory = factory.id
-    pool.token0 = token0.id
-    pool.token1 = token1.id
-    pool.assets = [token0.id, token1.id]
-    pool.swapFee = contract.swapFee()
-    pool.save()
-    factory.poolCount = factory.poolCount.plus(BigInt.fromI32(1))
-    factory.save()
-  }
+export function createConstantProductPool(deployParams: DeployPool__Params): ConstantProductPool {
+  const id = deployParams.pool.toHex()
+  const contract = ConstantProductPoolContract.bind(deployParams.pool)
+  const factory = getOrCreateConstantProductPoolFactory()
+  const assets = contract.getAssets()
+  const token0 = getOrCreateToken(assets[0])
+  const token1 = getOrCreateToken(assets[1])
+  const pool = new ConstantProductPool(id)
+  pool.masterDeployer = MASTER_DEPLOYER_ADDRESS.toHex()
+  // pool.template = "CONSTANT_PRODUCT";
+  pool.factory = factory.id
+  pool.token0 = token0.id
+  pool.token1 = token1.id
+  pool.assets = [token0.id, token1.id]
+  pool.swapFee = contract.swapFee()
+  pool.data = deployParams.deployData
+  pool.save()
+  factory.poolCount = factory.poolCount.plus(BigInt.fromI32(1))
+  factory.save()
 
   return pool as ConstantProductPool
+}
+
+export function getConstantProductPool(id: Address): ConstantProductPool {
+  return ConstantProductPool.load(id.toHex()) as ConstantProductPool
 }
