@@ -9,9 +9,10 @@ import {
 } from '../../generated/templates/ConstantProductPool/ConstantProductPool'
 import { Burn, Mint, Swap } from '../../generated/schema'
 import {
-  getOrCreateConstantProductPool,
+  getConstantProductPool,
   getOrCreateConstantProductPoolFactory,
   getOrCreateToken,
+  getOrCreateTokenMetaData,
   getOrCreateTransaction,
 } from '../functions'
 
@@ -23,24 +24,27 @@ export function onMint(event: MintEvent): void {
   const factory = getOrCreateConstantProductPoolFactory()
   factory.transactionCount = factory.transactionCount.plus(BigInt.fromI32(1))
 
-  const pool = getOrCreateConstantProductPool(event.address)
+  const pool = getConstantProductPool(event.address)
 
   const token0 = getOrCreateToken(Address.fromString(pool.token0))
+  const token0MetaData = getOrCreateTokenMetaData(Address.fromString(pool.token0))
   token0.transactionCount = token0.transactionCount.plus(BigInt.fromI32(1))
 
   const token1 = getOrCreateToken(Address.fromString(pool.token1))
+
+  const token1MetaData = getOrCreateTokenMetaData(Address.fromString(pool.token1))
   token1.transactionCount = token1.transactionCount.plus(BigInt.fromI32(1))
 
   const amount0 = event.params.amount0.divDecimal(
     BigInt.fromI32(10)
-      .pow(token0.decimals.toI32() as u8)
+      .pow(token0MetaData.decimals.toI32() as u8)
       .toBigDecimal()
   )
   token0.totalValueLocked = token0.totalValueLocked.plus(amount0)
 
   const amount1 = event.params.amount1.divDecimal(
     BigInt.fromI32(10)
-      .pow(token1.decimals.toI32() as u8)
+      .pow(token1MetaData.decimals.toI32() as u8)
       .toBigDecimal()
   )
   token1.totalValueLocked = token1.totalValueLocked.plus(amount1)
@@ -89,24 +93,28 @@ export function onBurn(event: BurnEvent): void {
   const factory = getOrCreateConstantProductPoolFactory()
   factory.transactionCount = factory.transactionCount.plus(BigInt.fromI32(1))
 
-  const pool = getOrCreateConstantProductPool(event.address)
+  const pool = getConstantProductPool(event.address)
 
   const token0 = getOrCreateToken(Address.fromString(pool.token0))
+  const token0MetaData = getOrCreateTokenMetaData(Address.fromString(pool.token0))
+
   token0.transactionCount = token0.transactionCount.plus(BigInt.fromI32(1))
 
   const token1 = getOrCreateToken(Address.fromString(pool.token1))
+  const token1MetaData = getOrCreateTokenMetaData(Address.fromString(pool.token1))
+
   token1.transactionCount = token1.transactionCount.plus(BigInt.fromI32(1))
 
   const amount0 = event.params.amount0.divDecimal(
     BigInt.fromI32(10)
-      .pow(token0.decimals.toI32() as u8)
+      .pow(token0MetaData.decimals.toI32() as u8)
       .toBigDecimal()
   )
   token0.totalValueLocked = token0.totalValueLocked.minus(amount0)
 
   const amount1 = event.params.amount1.divDecimal(
     BigInt.fromI32(10)
-      .pow(token1.decimals.toI32() as u8)
+      .pow(token1MetaData.decimals.toI32() as u8)
       .toBigDecimal()
   )
   token1.totalValueLocked = token1.totalValueLocked.minus(amount1)
@@ -122,7 +130,7 @@ export function onBurn(event: BurnEvent): void {
   //     .toBigDecimal()
   // );
 
-  // pool.totalValueLocked = pool.totalValueLocked.plus(
+  // pool.liquidity = pool.liquidity.plus(
   //   liquidity
   // );
 
@@ -155,9 +163,9 @@ export function onSync(event: Sync): void {
     event.params.reserve1.toString(),
   ])
 
-  const pool = getOrCreateConstantProductPool(event.address)
-  const token0 = getOrCreateToken(Address.fromString(pool.token0))
-  const token1 = getOrCreateToken(Address.fromString(pool.token1))
+  const pool = getConstantProductPool(event.address)
+  const token0MetaData = getOrCreateTokenMetaData(Address.fromString(pool.token0))
+  const token1MetaData = getOrCreateTokenMetaData(Address.fromString(pool.token1))
 
   log.debug('[ConstantProduct] onSync [BEFORE] pool.reserve0: {} pool.reserve1: {}', [
     pool.reserve0.toString(),
@@ -166,15 +174,20 @@ export function onSync(event: Sync): void {
 
   pool.reserve0 = event.params.reserve0.divDecimal(
     BigInt.fromI32(10)
-      .pow(token0.decimals.toI32() as u8)
+      .pow(token0MetaData.decimals.toI32() as u8)
       .toBigDecimal()
   )
 
   pool.reserve1 = event.params.reserve1.divDecimal(
     BigInt.fromI32(10)
-      .pow(token1.decimals.toI32() as u8)
+      .pow(token1MetaData.decimals.toI32() as u8)
       .toBigDecimal()
   )
+
+  pool.reserves = [
+    pool.reserve0,
+    pool.reserve1
+  ]
 
   log.debug('[ConstantProduct] onSync [AFTER] pool.reserve0: {} pool.reserve1: {}', [
     pool.reserve0.toString(),
@@ -190,12 +203,15 @@ export function onSwap(event: SwapEvent): void {
   const factory = getOrCreateConstantProductPoolFactory()
   factory.transactionCount = factory.transactionCount.plus(BigInt.fromI32(1))
 
-  const pool = getOrCreateConstantProductPool(event.address)
+  const pool = getConstantProductPool(event.address)
 
   const tokenIn = getOrCreateToken(event.params.tokenIn)
+  const tokenInMetaData = getOrCreateTokenMetaData(event.params.tokenIn)
+
   tokenIn.transactionCount = tokenIn.transactionCount.plus(BigInt.fromI32(1))
 
   const tokenOut = getOrCreateToken(event.params.tokenOut)
+  const tokenOutMetaData = getOrCreateTokenMetaData(event.params.tokenOut)
   tokenOut.transactionCount = tokenOut.transactionCount.plus(BigInt.fromI32(1))
 
   const transaction = getOrCreateTransaction(event)
@@ -208,12 +224,12 @@ export function onSwap(event: SwapEvent): void {
   swap.tokenOut = tokenOut.id
   swap.amountIn = event.params.amountIn.divDecimal(
     BigInt.fromI32(10)
-      .pow(tokenIn.decimals.toI32() as u8)
+      .pow(tokenInMetaData.decimals.toI32() as u8)
       .toBigDecimal()
   )
   swap.amountOut = event.params.amountOut.divDecimal(
     BigInt.fromI32(10)
-      .pow(tokenOut.decimals.toI32() as u8)
+      .pow(tokenOutMetaData.decimals.toI32() as u8)
       .toBigDecimal()
   )
   swap.recipient = event.params.recipient
@@ -239,7 +255,7 @@ export function onTransfer(event: Transfer): void {
     event.params.sender.toHex(),
   ])
 
-  const pool = getOrCreateConstantProductPool(event.address)
+  const pool = getConstantProductPool(event.address)
 
   // If sender is black hole, we're mintin'
   if (event.params.sender == ADDRESS_ZERO) {
