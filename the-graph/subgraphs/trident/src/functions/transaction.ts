@@ -2,10 +2,10 @@ import { Transaction } from '../../generated/schema'
 import { ethereum } from '@graphprotocol/graph-ts'
 
 export function getOrCreateTransaction(event: ethereum.Event): Transaction {
-  let transaction = Transaction.load(event.transaction.hash.toHexString())
+  let transaction = Transaction.load(event.transaction.hash.toHex())
 
   if (transaction === null) {
-    transaction = new Transaction(event.transaction.hash.toHexString())
+    transaction = new Transaction(event.transaction.hash.toHex())
   }
 
   transaction.block = event.block.number
