@@ -19,6 +19,16 @@ program
   .action((subgraph) => {
     // TODO: Impl
     console.log('deploy command called', { subgraph })
+    exec(
+      `node_modules/.bin/graph deploy --product hosted-service sushiswap/${subgraph} subgraphs/${subgraph}/subgraph.yaml`,
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(error)
+          return
+        }
+        console.log(stdout)
+      }
+    ).stdout.pipe(process.stdout)
   })
 
 program
