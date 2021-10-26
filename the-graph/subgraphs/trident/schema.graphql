@@ -54,7 +54,6 @@ interface Pool {
   factory: Factory!
   assets: [Token!]!
   reserves: [BigDecimal!]!
-  transactions: [Transaction!]!
   totalValueLocked: BigDecimal!
   totalValueLockedUSD: BigDecimal!
   volume: BigDecimal!
@@ -72,7 +71,7 @@ type MasterDeployer @entity {
   barFeeTo: Bytes!
   bento: Bytes!
   factories: [Factory!]! @derivedFrom(field: "masterDeployer")
-  factoryCount: BigInt!
+  factoryCount: BigInt!  
   pools: [Pool!]! @derivedFrom(field: "masterDeployer")
   poolCount: BigInt!
 }
@@ -112,7 +111,6 @@ type ConstantProductPool implements Pool @entity {
   reserves: [BigDecimal!]!
   swapFee: BigInt!
   twapEnabled: Boolean!
-  transactions: [Transaction!]!
   data: Bytes!
 }
 
@@ -144,7 +142,6 @@ type ConcentratedLiquidityPool implements Pool @entity {
   volumeUSD: BigDecimal!
   assets: [Token!]!
   reserves: [BigDecimal!]!
-  transactions: [Transaction!]!
   data: Bytes!
 }
 
@@ -178,7 +175,6 @@ type HybridPool implements Pool @entity {
   volumeUSD: BigDecimal!
   assets: [Token!]!
   reserves: [BigDecimal!]!
-  transactions: [Transaction!]!
   data: Bytes!
 }
 
@@ -210,7 +206,6 @@ type IndexPool implements Pool @entity {
   volumeUSD: BigDecimal!
   assets: [Token!]!
   reserves: [BigDecimal!]!
-  transactions: [Transaction!]!
   data: Bytes!
 }
 
@@ -277,8 +272,6 @@ type Swap @entity {
 
 type Transaction @entity {
   id: ID!
-  pool: Pool!
-  factory: Factory!
   gasUsed: BigInt!
   gasLimit: BigInt!
   gasPrice: BigInt!
