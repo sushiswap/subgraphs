@@ -14,6 +14,7 @@
   "devDependencies": {
     "@sushiswap/prettier-config": "^0.1.0",
     "commander": "^8.2.0",
+    "matchstick-as": "^0.2.0",
     "prettier": "^2.4.0"
   },
   "packageManager": "yarn@3.0.2"

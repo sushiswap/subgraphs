@@ -34,4 +34,9 @@ yarn workspace @sushiswap/trident-subgraph codegen
 yarn workspace @sushiswap/trident-subgraph build
 ```
 
+## Testing
+
+https://thegraph.com/docs/developer/matchstick
+
+graph test Gravity <ONE-OR-MORE-TEST-NAMES>
 
