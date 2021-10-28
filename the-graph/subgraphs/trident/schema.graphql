@@ -1,40 +1,23 @@
-enum Timeframe {
-  HOUR
-  DAY
-  WEEK
-  MONTH
-  YEAR
-}
+# enum Fee {
+#   DEFAULT
+# }
 
-enum Fee {
-  DEFAULT
-}
+# enum PoolTemplate {
+#   CONSTANT_PRODUCT
+#   HYBRID
+#   INDEX
+#   CONCENTRATED_LIQUDITY
+# }
 
-enum PoolTemplate {
-  CONSTANT_PRODUCT
-  HYBRID
-  INDEX
-  CONCENTRATED_LIQUDITY
-}
+# enum Tracking {
+#   TRACKED
+#   UNTRACKED
+# }
 
-enum Tracking {
-  TRACKED
-  UNTRACKED
-}
-
-enum Untracked {
-  LOW_LIQUDITY
-  INVALID_TOKEN
-}
-
-interface History {
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
-  volume: BigDecimal!
-  volumeUSD: BigDecimal!
-  transactionCount: BigInt!
-  timeframe: Timeframe!
-}
+# enum Untracked {
+#   LOW_LIQUDITY
+#   INVALID_TOKEN
+# }
 
 interface Factory {
   id: ID!
@@ -46,19 +29,8 @@ interface Factory {
   volumeUSD: BigDecimal!
   transactionCount: BigInt!
   poolCount: BigInt!
-}
-
-interface Pool {
-  id: ID!
-  masterDeployer: MasterDeployer!
-  factory: Factory!
-  assets: [Token!]!
-  reserves: [BigDecimal!]!
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
-  volume: BigDecimal!
-  volumeUSD: BigDecimal!
-  data: Bytes!
+  block: BigInt!
+  timestamp: BigInt!
 }
 
 type MasterDeployer @entity {
@@ -81,37 +53,102 @@ type WhitelistedFactory @entity {
   masterDeployer: MasterDeployer!
 }
 
-type ConstantProductPoolFactory implements Factory @entity {
+type WhitelistedPool @entity {
   id: ID!
-  masterDeployer: MasterDeployer!
-  pools: [Pool!]! @derivedFrom(field: "factory")
-  poolCount: BigInt!
-  transactionCount: BigInt!
+  token: Token!
+}
+
+interface FactoryKpi {
+  id: ID!
   totalValueLocked: BigDecimal!
   totalValueLockedUSD: BigDecimal!
   volume: BigDecimal!
   volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesUSD: BigDecimal!
+  poolCount: BigInt!
+  transactionCount: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type ConstantProductPoolFactory implements Factory @entity {
+  id: ID!
+  masterDeployer: MasterDeployer!
+  pools: [Pool!]! @derivedFrom(field: "factory")
+  totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesUSD: BigDecimal!
+  poolCount: BigInt!
+  transactionCount: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+interface Pool {
+  id: ID!
+  masterDeployer: MasterDeployer!
+  factory: Factory!
+  assets: [PoolAsset!]! @derivedFrom(field: "pool")
+  kpi: PoolKpi!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+interface PoolAsset {
+  id: ID!
+  pool: Pool!
+  token: Token!
+  reserve: BigDecimal!
+}
+
+type ConstantProductPoolAsset implements PoolAsset @entity {
+  id: ID!
+  pool: Pool!
+  token: Token!
+  reserve: BigDecimal!
+}
+
+interface PoolKpi {
+  id: ID!
+  totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type ConstantProductPoolKpi implements PoolKpi @entity {
+  id: ID!
+  totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+  totalSupply: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
 }
 
 type ConstantProductPool implements Pool @entity {
   id: ID!
   masterDeployer: MasterDeployer!
   factory: Factory!
-  token0: Token!
-  token1: Token!
-  reserve0: BigDecimal!
-  reserve1: BigDecimal!
-  totalSupply: BigInt!
-  transactionCount: BigInt!
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
-  volume: BigDecimal!
-  volumeUSD: BigDecimal!
-  assets: [Token!]!
-  reserves: [BigDecimal!]!
+  assets: [PoolAsset!]! @derivedFrom(field: "pool")
+  kpi: PoolKpi!
   swapFee: BigInt!
   twapEnabled: Boolean!
-  data: Bytes!
+  block: BigInt!
+  timestamp: BigInt!
 }
 
 type ConcentratedLiquidityPoolFactory implements Factory @entity {
@@ -124,25 +161,34 @@ type ConcentratedLiquidityPoolFactory implements Factory @entity {
   totalValueLockedUSD: BigDecimal!
   volume: BigDecimal!
   volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesUSD: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
 }
 
 type ConcentratedLiquidityPool implements Pool @entity {
   id: ID!
   masterDeployer: MasterDeployer!
   factory: Factory!
-  token0: Token!
-  token1: Token!
-  reserve0: BigDecimal!
-  reserve1: BigDecimal!
-  totalSupply: BigInt!
-  transactionCount: BigInt!
+  assets: [PoolAsset!]! @derivedFrom(field: "pool")
+  kpi: PoolKpi!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type ConcentratedLiquidityPoolKpi implements PoolKpi @entity {
+  id: ID!
   totalValueLocked: BigDecimal!
   totalValueLockedUSD: BigDecimal!
   volume: BigDecimal!
   volumeUSD: BigDecimal!
-  assets: [Token!]!
-  reserves: [BigDecimal!]!
-  data: Bytes!
+  fees: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+  totalSupply: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
 }
 
 type HybridPoolFactory implements Factory @entity {
@@ -155,79 +201,67 @@ type HybridPoolFactory implements Factory @entity {
   totalValueLockedUSD: BigDecimal!
   volume: BigDecimal!
   volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesUSD: BigDecimal!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type HybridPoolAsset implements PoolAsset @entity {
+  id: ID!
+  pool: Pool!
+  token: Token!
+  precisionMultiplier: BigInt!
+  reserve: BigDecimal!
 }
 
 type HybridPool implements Pool @entity {
   id: ID!
   masterDeployer: MasterDeployer!
   factory: Factory!
-  token0: Token!
-  token1: Token!
-  token0PrecisionMultiplier: BigInt!
-  token1PrecisionMultiplier: BigInt!
-  reserve0: BigInt!
-  reserve1: BigInt!
-  totalSupply: BigInt!
-  transactionCount: BigInt!
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
-  volume: BigDecimal!
-  volumeUSD: BigDecimal!
-  assets: [Token!]!
-  reserves: [BigDecimal!]!
-  data: Bytes!
+  assets: [PoolAsset!]! @derivedFrom(field: "pool")
+  kpi: PoolKpi!
+  block: BigInt!
+  timestamp: BigInt!
 }
 
 type IndexPoolFactory implements Factory @entity {
   id: ID!
   masterDeployer: MasterDeployer!
   pools: [Pool!]! @derivedFrom(field: "factory")
-  poolCount: BigInt!
-  transactionCount: BigInt!
   totalValueLocked: BigDecimal!
   totalValueLockedUSD: BigDecimal!
   volume: BigDecimal!
   volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesUSD: BigDecimal!
+  poolCount: BigInt!
+  transactionCount: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
 }
 
 type IndexPool implements Pool @entity {
   id: ID!
   masterDeployer: MasterDeployer!
   factory: Factory!
-  token0: Token!
-  token1: Token!
-  reserve0: BigInt!
-  reserve1: BigInt!
-  totalSupply: BigInt!
-  transactionCount: BigInt!
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
-  volume: BigDecimal!
-  volumeUSD: BigDecimal!
-  assets: [Token!]!
-  reserves: [BigDecimal!]!
-  data: Bytes!
+  assets: [PoolAsset!]! @derivedFrom(field: "pool")
+  kpi: PoolKpi!
+  block: BigInt!
+  timestamp: BigInt!
 }
 
-type Token @entity {
+type Transaction @entity {
   id: ID!
-  metaData: TokenMetaData! 
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
-  volume: BigDecimal!
-  volumeUSD: BigDecimal!
-  transactionCount: BigInt!
-}
-
-type TokenMetaData @entity {
-  id: ID!
-  token: Token!
-  symbol: String!
-  symbolSuccess: Boolean!
-  name: String!
-  nameSuccess: Boolean!
-  decimals: BigInt!
-  decimalsSuccess: Boolean!
+  gasUsed: BigInt!
+  gasLimit: BigInt!
+  gasPrice: BigInt!
+  mints: [Mint!]! @derivedFrom(field: "transaction")
+  burns: [Burn!]! @derivedFrom(field: "transaction")
+  swaps: [Swap!]! @derivedFrom(field: "transaction")
+  collects: [Collect!]! @derivedFrom(field: "transaction")
+  block: BigInt!
+  timestamp: BigInt!
 }
 
 type Mint @entity {
@@ -241,7 +275,10 @@ type Mint @entity {
   amount1: BigDecimal!
   sender: Bytes!
   recipient: Bytes!
+  origin: Bytes!
   logIndex: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
 }
 
 type Burn @entity {
@@ -255,7 +292,10 @@ type Burn @entity {
   amount1: BigDecimal!
   sender: Bytes!
   recipient: Bytes!
+  origin: Bytes!
   logIndex: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
 }
 
 type Swap @entity {
@@ -266,18 +306,111 @@ type Swap @entity {
   tokenOut: Token!
   amountIn: BigDecimal!
   amountOut: BigDecimal!
+  sender: Bytes!
   recipient: Bytes!
+  origin: Bytes!
   logIndex: BigInt!
-}
-
-type Transaction @entity {
-  id: ID!
-  gasUsed: BigInt!
-  gasLimit: BigInt!
-  gasPrice: BigInt!
-  mints: [Mint!]! @derivedFrom(field: "transaction")
-  burns: [Burn!]! @derivedFrom(field: "transaction")
-  swaps: [Swap!]! @derivedFrom(field: "transaction")
   block: BigInt!
   timestamp: BigInt!
+}
+
+type Collect @entity {
+  id: ID!
+  pool: Pool!
+  transaction: Transaction!
+  logIndex: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type Token @entity {
+  id: ID!
+  kpi: TokenKpi!
+  whitelistedPools: [WhitelistedPool!]! @derivedFrom(field: "token")
+  symbol: String!
+  symbolSuccess: Boolean!
+  name: String!
+  nameSuccess: Boolean!
+  decimals: BigInt!
+  decimalsSuccess: Boolean!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type TokenKpi @entity {
+  id: ID!
+  token: Token!
+  totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+interface Bucket {
+  id: ID!
+  date: Int!
+  totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type PoolHourBucket implements Bucket @entity {
+  id: ID!
+  date: Int!
+  pool: Pool!
+  totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type PoolDayBucket implements Bucket @entity {
+  id: ID!
+  date: Int!
+  pool: Pool!
+  totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type TokenHourBucket implements Bucket @entity {
+  id: ID!
+  date: Int!
+  token: Token!
+  totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type TokenDayBucket implements Bucket @entity {
+  id: ID!
+  date: Int!
+  token: Token!
+  totalValueLocked: BigDecimal!
+  totalValueLockedUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
 }

@@ -1,6 +1,10 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { CONCENTRATED_LIQUIDITY_POOL_FACTORY_ADDRESS, MASTER_DEPLOYER_ADDRESS } from '../constants'
-import { ConcentratedLiquidityPool, ConcentratedLiquidityPoolFactory } from '../../generated/schema'
+import { CONCENTRATED_LIQUIDITY_POOL_FACTORY_ADDRESS, MASTER_DEPLOYER_ADDRESS } from '../constants/addresses'
+import {
+  ConcentratedLiquidityPool,
+  ConcentratedLiquidityPoolFactory,
+  ConcentratedLiquidityPoolKpi,
+} from '../../generated/schema'
 
 import { getOrCreateMasterDeployer } from './master-deployer'
 
@@ -20,6 +24,16 @@ export function getOrCreateConcentratedLiquidityPoolFactory(
   }
 
   return factory as ConcentratedLiquidityPoolFactory
+}
+
+export function getConcentratedLiquidityPoolKpi(id: Address): ConcentratedLiquidityPoolKpi {
+  return ConcentratedLiquidityPoolKpi.load(id.toHex()) as ConcentratedLiquidityPoolKpi
+}
+
+export function createConcentratedLiquidityPoolKpi(id: Address): ConcentratedLiquidityPoolKpi {
+  const kpi = new ConcentratedLiquidityPoolKpi(id.toHex())
+  kpi.save()
+  return kpi as ConcentratedLiquidityPoolKpi
 }
 
 export function getOrCreateConcentratedLiquidityPool(id: Address): ConcentratedLiquidityPool {

@@ -8,10 +8,10 @@ export function getOrCreateTransaction(event: ethereum.Event): Transaction {
     transaction = new Transaction(event.transaction.hash.toHex())
   }
 
-  transaction.block = event.block.number
-  transaction.timestamp = event.block.timestamp
   transaction.gasLimit = event.transaction.gasLimit
   transaction.gasPrice = event.transaction.gasPrice
+  transaction.block = event.block.number
+  transaction.timestamp = event.block.timestamp
   transaction.save()
 
   return transaction as Transaction

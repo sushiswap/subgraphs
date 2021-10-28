@@ -1,13 +1,1 @@
-import { Address } from '@graphprotocol/graph-ts'
-
-export const ADDRESS_ZERO = Address.fromString('0x0000000000000000000000000000000000000000')
-
-export const MASTER_DEPLOYER_ADDRESS = Address.fromString('0xBe8bdb5A8341808e4665207C77B76aDC30598EAE')
-
-export const CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS = Address.fromString('0x390591f8F68d86068ABD965a43fAB61d5d3A0f12')
-
-export const HYBRID_POOL_FACTORY_ADDRESS = Address.fromString('0x4A115e81C601F96Cc2189eC05AB31f33433a2ac6')
-
-export const INDEX_POOL_FACTORY_ADDRESS = Address.fromString('0xe473F7EdC96325285E4a0a6b7825a79E15Df5167')
-
-export const CONCENTRATED_LIQUIDITY_POOL_FACTORY_ADDRESS = Address.fromString('0x390591f8F68d86068ABD965a43fAB61d5d3A0f12')
+export * from './addresses'

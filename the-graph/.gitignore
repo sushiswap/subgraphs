@@ -4,8 +4,8 @@ dist
 node_modules
 package-lock.json
 yarn.lock
+addresses.ts
 subgraph.yaml
-
 .yarn/*
 !.yarn/patches
 !.yarn/releases

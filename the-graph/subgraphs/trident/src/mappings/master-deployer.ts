@@ -5,7 +5,7 @@ import {
   HYBRID_POOL_FACTORY_ADDRESS,
   INDEX_POOL_FACTORY_ADDRESS,
   MASTER_DEPLOYER_ADDRESS,
-} from '../constants'
+} from '../constants/addresses'
 import {
   AddToWhitelist,
   BarFeeUpdated,

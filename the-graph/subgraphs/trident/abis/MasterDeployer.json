@@ -26,7 +26,33 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "_factory",
+        "name": "factory",
+        "type": "address"
+      }
+    ],
+    "name": "AddToWhitelist",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "barFee",
+        "type": "uint256"
+      }
+    ],
+    "name": "BarFeeUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "factory",
         "type": "address"
       },
       {
@@ -34,9 +60,15 @@
         "internalType": "address",
         "name": "pool",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "deployData",
+        "type": "bytes"
       }
     ],
-    "name": "NewPoolCreated",
+    "name": "DeployPool",
     "type": "event"
   },
   {
@@ -45,17 +77,11 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "from",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "to",
+        "name": "factory",
         "type": "address"
       }
     ],
-    "name": "TransferOwnership",
+    "name": "RemoveFromWhitelist",
     "type": "event"
   },
   {
@@ -64,17 +90,36 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "from",
+        "name": "sender",
         "type": "address"
       },
       {
         "indexed": true,
         "internalType": "address",
-        "name": "to",
+        "name": "recipient",
         "type": "address"
       }
     ],
-    "name": "TransferOwnershipClaim",
+    "name": "TransferOwner",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      }
+    ],
+    "name": "TransferOwnerClaim",
     "type": "event"
   },
   {
@@ -189,30 +234,17 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "pools",
-    "outputs": [
-      {
         "internalType": "address",
         "name": "",
         "type": "address"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "poolsCount",
+    "name": "pools",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "count",
-        "type": "uint256"
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -257,7 +289,7 @@
         "type": "bool"
       }
     ],
-    "name": "transferOwnership",
+    "name": "transferOwner",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

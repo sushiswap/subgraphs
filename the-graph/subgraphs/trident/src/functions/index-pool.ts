@@ -1,5 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { INDEX_POOL_FACTORY_ADDRESS, MASTER_DEPLOYER_ADDRESS } from '../constants'
+import { INDEX_POOL_FACTORY_ADDRESS, MASTER_DEPLOYER_ADDRESS } from '../constants/addresses'
 import { IndexPool, IndexPoolFactory } from '../../generated/schema'
 
 import { getOrCreateMasterDeployer } from './master-deployer'

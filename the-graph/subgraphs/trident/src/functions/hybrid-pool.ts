@@ -1,5 +1,5 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { HYBRID_POOL_FACTORY_ADDRESS, MASTER_DEPLOYER_ADDRESS } from '../constants'
+import { HYBRID_POOL_FACTORY_ADDRESS, MASTER_DEPLOYER_ADDRESS } from '../constants/addresses'
 import { HybridPool, HybridPoolFactory } from '../../generated/schema'
 
 import { getOrCreateMasterDeployer } from './master-deployer'
@@ -30,8 +30,9 @@ export function getOrCreateHybridPool(id: Address): HybridPool {
     pool = new HybridPool(id.toHex())
     pool.masterDeployer = MASTER_DEPLOYER_ADDRESS.toHex()
     pool.factory = factory.id
-    pool.token0PrecisionMultiplier = BigInt.fromI32(0)
-    pool.token1PrecisionMultiplier = BigInt.fromI32(0)
+
+    // pool.token0PrecisionMultiplier = BigInt.fromI32(0)
+    // pool.token1PrecisionMultiplier = BigInt.fromI32(0)
     pool.save()
 
     factory.poolCount = factory.poolCount.plus(BigInt.fromI32(1))

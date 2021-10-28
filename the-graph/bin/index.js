@@ -11,13 +11,15 @@ program
     exec(
       `node_modules/.bin/mustache config/${network}.js subgraphs/${subgraph}/template.yaml > subgraphs/${subgraph}/subgraph.yaml`
     )
+    exec(
+      `node_modules/.bin/mustache config/${network}.js subgraphs/${subgraph}/src/constants/addresses.template.ts > subgraphs/${subgraph}/src/constants/addresses.ts`
+    )
   })
 
 program
   .command('deploy')
   .arguments('<subgraph>')
   .action((subgraph) => {
-    // TODO: Impl
     console.log('deploy command called', { subgraph })
     exec(
       `node_modules/.bin/graph deploy --product hosted-service sushiswap/${subgraph} subgraphs/${subgraph}/subgraph.yaml`,
