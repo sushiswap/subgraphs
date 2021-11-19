@@ -18,9 +18,9 @@ import {
   getConstantProductPoolAsset,
 } from '../functions'
 
-import { ADDRESS_ZERO } from '../constants/addresses'
+import { ADDRESS_ZERO, STABLE_POOL_ADDRESSES } from '../constants/addresses'
 import { getBundle } from '../functions/bundle'
-import { getNativePrice } from '../modules/pricing'
+import { getDerivedPerToken, getNativePrice } from '../modules/pricing'
 
 export function onMint(event: MintEvent): void {
   log.debug('[ConstantProduct] onMint...', [])
@@ -198,10 +198,12 @@ export function onSync(event: Sync): void {
     asset1.price.toString(),
   ])
 
-  // update native price now that reserves could have changed
-  const bundle = getBundle()
-  bundle.price = getNativePrice()
-  bundle.save()
+  // If the pool is one in which we care about the reserves changing, update the native price.
+  if (STABLE_POOL_ADDRESSES.includes(pool.id)) {
+    const bundle = getBundle()
+    bundle.price = getNativePrice()
+    bundle.save()
+  }
 
   // log.debug('[ConstantProduct] onSync [AFTER] pool.reserve0: {} pool.reserve1: {}', [
   //   asset0.reserve.toString(),
