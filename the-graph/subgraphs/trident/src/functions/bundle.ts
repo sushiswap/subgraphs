@@ -1,4 +1,4 @@
-import { Budnle } from '../../generated/schema'
+import { Bundle } from '../../generated/schema'
 
 export function getBundle(): Bundle {
   let bundle = Bundle.load('0')
