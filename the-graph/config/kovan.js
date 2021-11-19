@@ -1,16 +1,34 @@
 module.exports = {
   network: 'kovan',
-  sushi: { address: '0x0769fd68dfb93167989c6f7254cd0d766fb2841f' },
-  weth: { address: '0xc778417e063141139fce010982780140aa0cd5ab' },
-  masterDeployer: { address: '0xeC740F802c913F833d97117CE3c233a99d2B3f03', startBlock: 28003369 },
+  native: { address: '0xd0A1E359811322d97991E03f863a0C30C2cF029C' },
+  sushi: { address: '0x0769fd68dFb93167989C6f7254cd0D766Fb2841F' },
+  weth: { address: '0xd0A1E359811322d97991E03f863a0C30C2cF029C' },
+  masterDeployer: { address: '0xBe8bdb5A8341808e4665207C77B76aDC30598EAE', startBlock: 27660363 },
   concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
-  constantProductPoolFactory: { address: '0xed209FCd57EFafFa202a80AbbAcC6Aef2d320563' },
-  hybridPoolFactory: { address: '0xA3A739568d558a235472939777DBaD6fFc48D2b7' },
-  indexPoolFactory: { address: '0xf12330e5470D139BF4d0775f563482Ac499E86dD' },
+  constantProductPoolFactory: { address: '0x390591f8F68d86068ABD965a43fAB61d5d3A0f12' },
+  hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
+  indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
   array: [
     // ...
     '0x0000000000000000000000000000000000000000',
     // ...
     '0x0000000000000000000000000000000000000000',
+    // ...
+    '0x0000000000000000000000000000000000000000',
+  ],
+  stableTokenAddresses: [
+    // USDC
+    '0xb7a4F3E9097C08dA09517b5aB877F7a917224ede',
+    // USDT
+    '0x07de306FF27a2B630B1141956844eB1552B956B5',
+    // DAI
+    '0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa',
+  ],
+  // List of STABLE/NATIVE pools to use to price NATIVE in USD
+  stablePoolAddresses: [
+    // USDC/WETH
+    '0x1f5e6df7499b6159dd74854d94fd97c409f8d04b',
+    // DAI/WETH
+    '0x7e199cb3b5a92ad4b4b386543e09b433de99ee33',
   ],
 }
