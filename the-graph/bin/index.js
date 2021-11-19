@@ -25,10 +25,14 @@ program
       `node_modules/.bin/graph deploy --product hosted-service sushiswap/${subgraph} subgraphs/${subgraph}/subgraph.yaml`,
       (error, stdout, stderr) => {
         if (error) {
-          console.error(error)
+          console.log('error', error.message)
           return
         }
-        console.log(stdout)
+        if (stderr) {
+          console.log('stderr', stderr)
+          return
+        }
+        console.log('data', stdout)
       }
     ).stdout.pipe(process.stdout)
   })
@@ -53,7 +57,7 @@ program
           return
         }
         if (stderr) {
-          console.log('data', stdout)
+          console.log('stderr', stderr)
           return
         }
         console.log('data', stdout)
