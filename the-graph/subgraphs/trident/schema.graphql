@@ -58,6 +58,17 @@ type WhitelistedPool @entity {
   token: Token!
 }
 
+type StablePool @entity {
+  # NATIVE:STABLE
+  id: ID!
+  pool: Pool!
+}
+
+type Bundle @entity {
+  id: ID!
+  price: BigDecimal!
+}
+
 interface FactoryKpi {
   id: ID!
   totalValueLocked: BigDecimal!
@@ -103,6 +114,8 @@ interface PoolAsset {
   pool: Pool!
   token: Token!
   reserve: BigDecimal!
+  # Price in terms of the pool
+  price: BigDecimal!
 }
 
 type ConstantProductPoolAsset implements PoolAsset @entity {
@@ -110,6 +123,7 @@ type ConstantProductPoolAsset implements PoolAsset @entity {
   pool: Pool!
   token: Token!
   reserve: BigDecimal!
+  price: BigDecimal!
 }
 
 interface PoolKpi {
@@ -213,6 +227,7 @@ type HybridPoolAsset implements PoolAsset @entity {
   token: Token!
   precisionMultiplier: BigInt!
   reserve: BigDecimal!
+  price: BigDecimal!
 }
 
 type HybridPool implements Pool @entity {
@@ -347,6 +362,7 @@ type TokenKpi @entity {
   fees: BigDecimal!
   feesUSD: BigDecimal!
   transactionCount: BigInt!
+  derived: BigDecimal!
   block: BigInt!
   timestamp: BigInt!
 }
