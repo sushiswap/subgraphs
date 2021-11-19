@@ -12,12 +12,8 @@
   "author": "Matthew Lilley <hello@matthewlilley.com>",
   "license": "MIT",
   "devDependencies": {
-    "@graphprotocol/graph-cli": "0.23.0",
-    "@graphprotocol/graph-ts": "0.23.0",
     "@sushiswap/prettier-config": "^0.1.0",
-    "assemblyscript": "0.19.10",
-    "commander": "^8.2.0",
-    "matchstick-as": "^0.2.0",
+    "commander": "^8.3.0",
     "mustache": "latest",
     "prettier": "^2.4.0"
   },

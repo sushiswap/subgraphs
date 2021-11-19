@@ -19,6 +19,8 @@ import {
 } from '../functions'
 
 import { ADDRESS_ZERO } from '../constants/addresses'
+import { getBundle } from '../functions/bundle'
+import { getNativePrice } from '../modules/pricing'
 
 export function onMint(event: MintEvent): void {
   log.debug('[ConstantProduct] onMint...', [])
@@ -183,10 +185,28 @@ export function onSync(event: Sync): void {
       .toBigDecimal()
   )
 
-  log.debug('[ConstantProduct] onSync [AFTER] pool.reserve0: {} pool.reserve1: {}', [
-    asset0.reserve.toString(),
-    asset1.reserve.toString(),
+  if (asset1.reserve.notEqual(BigDecimal.fromString('0'))) {
+    asset0.price = asset0.reserve.div(asset1.reserve)
+  }
+
+  if (asset0.reserve.notEqual(BigDecimal.fromString('0'))) {
+    asset1.price = asset1.reserve.div(asset0.reserve)
+  }
+
+  log.debug('[ConstantProduct] onSync [AFTER] asset0.price: {} asset1.price: {}', [
+    asset0.price.toString(),
+    asset1.price.toString(),
   ])
+
+  // update native price now that reserves could have changed
+  const bundle = getBundle()
+  bundle.price = getNativePrice()
+  bundle.save()
+
+  // log.debug('[ConstantProduct] onSync [AFTER] pool.reserve0: {} pool.reserve1: {}', [
+  //   asset0.reserve.toString(),
+  //   asset1.reserve.toString(),
+  // ])
 
   asset0.save()
   asset1.save()
