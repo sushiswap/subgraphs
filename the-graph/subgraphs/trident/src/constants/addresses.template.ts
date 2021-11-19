@@ -13,3 +13,9 @@ export const INDEX_POOL_FACTORY_ADDRESS = Address.fromString('{{ indexPoolFactor
 export const CONCENTRATED_LIQUIDITY_POOL_FACTORY_ADDRESS = Address.fromString(
   '{{ concentratedLiquidityPoolFactory.address }}'
 )
+
+export const NATIVE_ADDRESS = Address.fromString('{{ native.address }}')
+
+export const STABLE_TOKEN_ADDRESSES: string[] = '{{ stableTokenAddresses }}'.split(',')
+
+export const STABLE_POOL_ADDRESSES: string[] = '{{ stablePoolAddresses }}'.split(',')
