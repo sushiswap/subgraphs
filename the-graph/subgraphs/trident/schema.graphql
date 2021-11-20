@@ -355,6 +355,8 @@ type Token @entity {
 type TokenKpi @entity {
   id: ID!
   token: Token!
+  totalSupplyBase: BigDecimal!
+  totalSupplyElastic: BigDecimal!
   totalValueLocked: BigDecimal!
   totalValueLockedUSD: BigDecimal!
   volume: BigDecimal!
