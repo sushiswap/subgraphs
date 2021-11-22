@@ -8,21 +8,23 @@ module.exports = {
   constantProductPoolFactory: { address: '0x390591f8F68d86068ABD965a43fAB61d5d3A0f12' },
   hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
   indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
-  array: [
-    // ...
-    '0x0000000000000000000000000000000000000000',
-    // ...
-    '0x0000000000000000000000000000000000000000',
-    // ...
-    '0x0000000000000000000000000000000000000000',
+  whitelistedTokenAddresses: [
+    // WETH
+    '0xd0a1e359811322d97991e03f863a0c30c2cf029c',
+    // USDC
+    '0xb7a4f3e9097c08da09517b5ab877f7a917224ede',
+    // USDT
+    '0x07de306ff27a2b630b1141956844eb1552b956b5',
+    // DAI
+    '0x4f96fe3b7a6cf9725f59d353f723c1bdb64ca6aa',
   ],
   stableTokenAddresses: [
     // USDC
-    '0xb7a4F3E9097C08dA09517b5aB877F7a917224ede',
+    '0xb7a4f3e9097c08da09517b5ab877f7a917224ede',
     // USDT
-    '0x07de306FF27a2B630B1141956844eB1552B956B5',
+    '0x07de306ff27a2b630b1141956844eb1552b956b5',
     // DAI
-    '0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa',
+    '0x4f96fe3b7a6cf9725f59d353f723c1bdb64ca6aa',
   ],
   // List of STABLE/NATIVE pools to use to price NATIVE in USD
   stablePoolAddresses: [
