@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { Address, BigInt, ethereum, log } from '@graphprotocol/graph-ts'
 import { CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS, MASTER_DEPLOYER_ADDRESS } from '../constants/addresses'
 import {
   ConstantProductPool,
@@ -8,7 +8,10 @@ import {
 } from '../../generated/schema'
 import { getOrCreateMasterDeployer } from './master-deployer'
 import { getOrCreateToken } from './token'
+import { getOrCreateTokenPrice } from './token-price'
 import { DeployPool__Params } from '../../generated/MasterDeployer/MasterDeployer'
+import { WHITELISTED_TOKEN_ADDRESSES } from '../constants/addresses'
+import { createWhitelistedPool } from './whitelisted-pool'
 
 export function getOrCreateConstantProductPoolFactory(
   id: Address = CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS
@@ -71,6 +74,21 @@ export function createConstantProductPool(deployParams: DeployPool__Params): Con
     const asset = new ConstantProductPoolAsset(pool.id.concat(':asset:').concat(i.toString()))
     asset.pool = id
     asset.token = token.id
+
+    if (WHITELISTED_TOKEN_ADDRESSES.includes(token.id)) {
+      const tokenPrice = getOrCreateTokenPrice(token.id)
+
+      const whitelistedPool = createWhitelistedPool(
+        token.id.concat(':').concat(tokenPrice.whitelistedPoolCount.toString())
+      )
+      whitelistedPool.pool = id
+      whitelistedPool.price = tokenPrice.id
+      whitelistedPool.save()
+
+      tokenPrice.whitelistedPoolCount = tokenPrice.whitelistedPoolCount.plus(BigInt.fromI32(1))
+      tokenPrice.save()
+    }
+
     asset.save()
   }
 
