@@ -55,7 +55,8 @@ type WhitelistedFactory @entity {
 
 type WhitelistedPool @entity {
   id: ID!
-  token: Token!
+  price: TokenPrice!
+  pool: Pool!
 }
 
 type StablePool @entity {
@@ -341,7 +342,6 @@ type Collect @entity {
 type Token @entity {
   id: ID!
   kpi: TokenKpi!
-  whitelistedPools: [WhitelistedPool!]! @derivedFrom(field: "token")
   symbol: String!
   symbolSuccess: Boolean!
   name: String!
@@ -362,9 +362,18 @@ type TokenKpi @entity {
   fees: BigDecimal!
   feesUSD: BigDecimal!
   transactionCount: BigInt!
-  derived: BigDecimal!
   block: BigInt!
   timestamp: BigInt!
+}
+
+type TokenPrice @entity {
+  id: ID!
+  # preferredPool: Pool!
+  token: Token!
+  derivedNative: BigDecimal!
+  derivedUSD: BigDecimal!
+  whitelistedPoolCount: BigInt!
+  whitelistedPools: [WhitelistedPool!]! @derivedFrom(field: "price")
 }
 
 interface Bucket {
