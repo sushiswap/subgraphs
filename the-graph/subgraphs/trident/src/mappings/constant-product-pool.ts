@@ -7,7 +7,7 @@ import {
   Sync,
   Transfer,
 } from '../../generated/templates/ConstantProductPool/ConstantProductPool'
-import { Burn, Mint, Swap } from '../../generated/schema'
+import { Burn, Mint, Swap, TokenPrice } from '../../generated/schema'
 import {
   getConstantProductPool,
   getConstantProductPoolKpi,
@@ -18,9 +18,8 @@ import {
   getConstantProductPoolAsset,
 } from '../functions'
 
-import { ADDRESS_ZERO, STABLE_POOL_ADDRESSES } from '../constants/addresses'
-import { getBundle } from '../functions/bundle'
-import { getDerivedPerToken, getNativePrice } from '../modules/pricing'
+import { ADDRESS_ZERO, STABLE_POOL_ADDRESSES, NATIVE_ADDRESS } from '../constants/addresses'
+import { updateTokenPrice } from '../modules/pricing'
 
 export function onMint(event: MintEvent): void {
   log.debug('[ConstantProduct] onMint...', [])
@@ -200,15 +199,12 @@ export function onSync(event: Sync): void {
 
   // If the pool is one in which we care about the reserves changing, update the native price.
   if (STABLE_POOL_ADDRESSES.includes(pool.id)) {
-    const bundle = getBundle()
-    bundle.price = getNativePrice()
-    bundle.save()
+    const nativeToken = getOrCreateToken(NATIVE_ADDRESS)
+    updateTokenPrice(nativeToken)
   }
 
-  // log.debug('[ConstantProduct] onSync [AFTER] pool.reserve0: {} pool.reserve1: {}', [
-  //   asset0.reserve.toString(),
-  //   asset1.reserve.toString(),
-  // ])
+  updateTokenPrice(token0)
+  updateTokenPrice(token1)
 
   asset0.save()
   asset1.save()
@@ -278,7 +274,6 @@ export function onTransfer(event: Transfer): void {
     event.params.sender.toHex(),
   ])
 
-  // const pool = getConstantProductPool(event.address)
   const poolKpi = getConstantProductPoolKpi(event.address)
 
   // If sender is black hole, we're mintin'
@@ -290,5 +285,6 @@ export function onTransfer(event: Transfer): void {
   if (event.params.sender.toHex() == poolKpi.id && event.params.recipient == ADDRESS_ZERO) {
     poolKpi.totalSupply = poolKpi.totalSupply.minus(event.params.amount)
   }
+
   poolKpi.save()
 }
