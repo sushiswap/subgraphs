@@ -1,4 +1,5 @@
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
+import { getOrCreateRebase } from '../../src/functions/rebase'
 import {
   LogDeposit,
   LogWithdraw,
@@ -6,8 +7,7 @@ import {
   LogStrategyProfit,
   LogStrategyLoss,
 } from '../../generated/BentoBox/BentoBox'
-import { TokenKpi } from '../../generated/schema'
-import { getTokenKpi, getOrCreateToken } from '../functions'
+import { getOrCreateToken } from '../functions'
 
 export function onLogDeposit(event: LogDeposit): void {
   const token = getOrCreateToken(event.params.token)
@@ -24,10 +24,10 @@ export function onLogDeposit(event: LogDeposit): void {
       .toBigDecimal()
   )
 
-  const kpi = getTokenKpi(event.params.token)
-  kpi.totalSupplyBase = kpi.totalSupplyBase.plus(share)
-  kpi.totalSupplyElastic = kpi.totalSupplyElastic.plus(amount)
-  kpi.save()
+  const rebase = getOrCreateRebase(event.params.token)
+  rebase.base = rebase.base.plus(share)
+  rebase.elastic = rebase.elastic.plus(amount)
+  rebase.save()
 }
 
 export function onLogWithdraw(event: LogWithdraw): void {
@@ -45,10 +45,10 @@ export function onLogWithdraw(event: LogWithdraw): void {
       .toBigDecimal()
   )
 
-  const kpi = getTokenKpi(event.params.token)
-  kpi.totalSupplyBase = kpi.totalSupplyBase.minus(share)
-  kpi.totalSupplyElastic = kpi.totalSupplyElastic.minus(amount)
-  kpi.save()
+  const rebase = getOrCreateRebase(event.params.token)
+  rebase.base = rebase.base.minus(share)
+  rebase.elastic = rebase.elastic.minus(amount)
+  rebase.save()
 }
 
 export function onLogStrategyProfit(event: LogStrategyProfit): void {
@@ -60,9 +60,9 @@ export function onLogStrategyProfit(event: LogStrategyProfit): void {
       .toBigDecimal()
   )
 
-  const kpi = getTokenKpi(event.params.token)
-  kpi.totalSupplyElastic = kpi.totalSupplyElastic.plus(amount)
-  kpi.save()
+  const rebase = getOrCreateRebase(event.params.token)
+  rebase.elastic = rebase.elastic.plus(amount)
+  rebase.save()
 }
 
 export function onLogStrategyLoss(event: LogStrategyLoss): void {
@@ -74,9 +74,9 @@ export function onLogStrategyLoss(event: LogStrategyLoss): void {
       .toBigDecimal()
   )
 
-  const kpi = getTokenKpi(event.params.token)
-  kpi.totalSupplyElastic = kpi.totalSupplyElastic.minus(amount)
-  kpi.save()
+  const rebase = getOrCreateRebase(event.params.token)
+  rebase.elastic = rebase.elastic.minus(amount)
+  rebase.save()
 }
 
 export function onLogFlashLoan(event: LogFlashLoan): void {
@@ -88,7 +88,7 @@ export function onLogFlashLoan(event: LogFlashLoan): void {
       .toBigDecimal()
   )
 
-  const kpi = getTokenKpi(event.params.token)
-  kpi.totalSupplyElastic = kpi.totalSupplyElastic.plus(feeAmount)
-  kpi.save()
+  const rebase = getOrCreateRebase(event.params.token)
+  rebase.elastic = rebase.elastic.plus(feeAmount)
+  rebase.save()
 }

@@ -341,6 +341,7 @@ type Collect @entity {
 type Token @entity {
   id: ID!
   kpi: TokenKpi!
+  totals: Rebase! @derivedFrom(field: "token")
   whitelistedPools: [WhitelistedPool!]! @derivedFrom(field: "token")
   symbol: String!
   symbolSuccess: Boolean!
@@ -355,8 +356,6 @@ type Token @entity {
 type TokenKpi @entity {
   id: ID!
   token: Token!
-  totalSupplyBase: BigDecimal!
-  totalSupplyElastic: BigDecimal!
   totalValueLocked: BigDecimal!
   totalValueLockedUSD: BigDecimal!
   volume: BigDecimal!
@@ -431,4 +430,11 @@ type TokenDayBucket implements Bucket @entity {
   fees: BigDecimal!
   feesUSD: BigDecimal!
   transactionCount: BigInt!
+}
+
+type Rebase @entity {
+  id: ID!
+  token: Token!
+  base: BigDecimal!
+  elastic: BigDecimal!
 }
