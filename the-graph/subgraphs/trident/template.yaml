@@ -62,6 +62,38 @@ dataSources:
         - event: BarFeeUpdated(indexed uint256)
           handler: onBarFeeUpdated
       file: ./src/mappings/master-deployer.ts
+  - kind: ethereum/contract
+    name: BentoBox
+    network: {{ network }}
+    source:
+      address: '{{ bentobox.address }}'
+      startBlock: {{ bentobox.startBlock }}
+      abi: BentoBox
+    mapping:
+      kind: ethereun/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/bentobox.ts
+      entities:
+        - Token
+      abis:
+        - name: BentoBox
+          file: ./abis/BentoBox.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: SymbolBytes32
+          file: ./abis/SymbolBytes32.json
+      eventHandlers:
+        - event: LogDeposit(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: onLogDeposit
+        - event: LogWithdraw(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: onLogWithdraw
+        - event: LogFlashLoan(indexed address,indexed address,uint256,uint256,indexed address)
+          handler: onLogFlashLoan
+        - event: LogStrategyProfit(indexed address,uint256)
+          handler: onLogStrategyProfit
+        - event: LogStrategyLoss(indexed address,uint256)
+          handler: onLogStrategyLoss
 templates:
   - kind: ethereum/contract
     name: ConstantProductPool

@@ -439,3 +439,10 @@ type TokenDayBucket implements Bucket @entity {
   feesUSD: BigDecimal!
   transactionCount: BigInt!
 }
+
+type Rebase @entity {
+  id: ID!
+  token: Token!
+  base: BigDecimal!
+  elastic: BigDecimal!
+}
