@@ -30,7 +30,7 @@ module.exports = {
   // List of STABLE/NATIVE pools to use to price NATIVE in USD
   stablePoolAddresses: [
     // USDC/WETH
-    '0x1f5e6df7499b6159dd74854d94fd97c409f8d04b',
+    // '0x1f5e6df7499b6159dd74854d94fd97c409f8d04b',
     // DAI/WETH
     '0x7e199cb3b5a92ad4b4b386543e09b433de99ee33',
   ],

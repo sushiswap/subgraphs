@@ -35,14 +35,14 @@ export function getConstantProductPoolAsset(id: string): ConstantProductPoolAsse
   return ConstantProductPoolAsset.load(id) as ConstantProductPoolAsset
 }
 
-export function createConstantProductPoolKpi(id: Address): ConstantProductPoolKpi {
-  const kpi = new ConstantProductPoolKpi(id.toHex())
+export function createConstantProductPoolKpi(id: string): ConstantProductPoolKpi {
+  const kpi = new ConstantProductPoolKpi(id)
   kpi.save()
   return kpi as ConstantProductPoolKpi
 }
 
-export function getConstantProductPoolKpi(id: Address): ConstantProductPoolKpi {
-  return ConstantProductPoolKpi.load(id.toHex()) as ConstantProductPoolKpi
+export function getConstantProductPoolKpi(id: string): ConstantProductPoolKpi {
+  return ConstantProductPoolKpi.load(id) as ConstantProductPoolKpi
 }
 
 export function createConstantProductPool(deployParams: DeployPool__Params): ConstantProductPool {
@@ -61,7 +61,7 @@ export function createConstantProductPool(deployParams: DeployPool__Params): Con
 
   const pool = new ConstantProductPool(id)
 
-  const kpi = createConstantProductPoolKpi(deployParams.pool)
+  const kpi = createConstantProductPoolKpi(id)
 
   pool.kpi = kpi.id
 
@@ -70,7 +70,7 @@ export function createConstantProductPool(deployParams: DeployPool__Params): Con
   pool.factory = factory.id
 
   for (let i = 0; i < assets.length; i++) {
-    const token = getOrCreateToken(assets[i])
+    const token = getOrCreateToken(assets[i].toHex())
     const asset = new ConstantProductPoolAsset(pool.id.concat(':asset:').concat(i.toString()))
     asset.pool = id
     asset.token = token.id
@@ -104,6 +104,6 @@ export function createConstantProductPool(deployParams: DeployPool__Params): Con
   return pool as ConstantProductPool
 }
 
-export function getConstantProductPool(id: Address): ConstantProductPool {
-  return ConstantProductPool.load(id.toHex()) as ConstantProductPool
+export function getConstantProductPool(id: string): ConstantProductPool {
+  return ConstantProductPool.load(id) as ConstantProductPool
 }

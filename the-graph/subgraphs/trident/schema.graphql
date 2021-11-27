@@ -59,17 +59,6 @@ type WhitelistedPool @entity {
   pool: Pool!
 }
 
-type StablePool @entity {
-  # NATIVE:STABLE
-  id: ID!
-  pool: Pool!
-}
-
-type Bundle @entity {
-  id: ID!
-  price: BigDecimal!
-}
-
 interface FactoryKpi {
   id: ID!
   totalValueLocked: BigDecimal!

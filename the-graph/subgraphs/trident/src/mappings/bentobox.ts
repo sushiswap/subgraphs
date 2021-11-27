@@ -10,7 +10,8 @@ import {
 import { getOrCreateToken } from '../functions'
 
 export function onLogDeposit(event: LogDeposit): void {
-  const token = getOrCreateToken(event.params.token)
+  const tokenAddress = event.params.token.toHex()
+  const token = getOrCreateToken(tokenAddress)
 
   const share = event.params.share.divDecimal(
     BigInt.fromI32(10)
@@ -24,14 +25,15 @@ export function onLogDeposit(event: LogDeposit): void {
       .toBigDecimal()
   )
 
-  const rebase = getOrCreateRebase(event.params.token)
+  const rebase = getOrCreateRebase(tokenAddress)
   rebase.base = rebase.base.plus(share)
   rebase.elastic = rebase.elastic.plus(amount)
   rebase.save()
 }
 
 export function onLogWithdraw(event: LogWithdraw): void {
-  const token = getOrCreateToken(event.params.token)
+  const tokenAddress = event.params.token.toHex()
+  const token = getOrCreateToken(tokenAddress)
 
   const share = event.params.share.divDecimal(
     BigInt.fromI32(10)
@@ -45,14 +47,15 @@ export function onLogWithdraw(event: LogWithdraw): void {
       .toBigDecimal()
   )
 
-  const rebase = getOrCreateRebase(event.params.token)
+  const rebase = getOrCreateRebase(tokenAddress)
   rebase.base = rebase.base.minus(share)
   rebase.elastic = rebase.elastic.minus(amount)
   rebase.save()
 }
 
 export function onLogStrategyProfit(event: LogStrategyProfit): void {
-  const token = getOrCreateToken(event.params.token)
+  const tokenAddress = event.params.token.toHex()
+  const token = getOrCreateToken(tokenAddress)
 
   const amount = event.params.amount.divDecimal(
     BigInt.fromI32(10)
@@ -60,13 +63,14 @@ export function onLogStrategyProfit(event: LogStrategyProfit): void {
       .toBigDecimal()
   )
 
-  const rebase = getOrCreateRebase(event.params.token)
+  const rebase = getOrCreateRebase(tokenAddress)
   rebase.elastic = rebase.elastic.plus(amount)
   rebase.save()
 }
 
 export function onLogStrategyLoss(event: LogStrategyLoss): void {
-  const token = getOrCreateToken(event.params.token)
+  const tokenAddress = event.params.token.toHex()
+  const token = getOrCreateToken(tokenAddress)
 
   const amount = event.params.amount.divDecimal(
     BigInt.fromI32(10)
@@ -74,13 +78,14 @@ export function onLogStrategyLoss(event: LogStrategyLoss): void {
       .toBigDecimal()
   )
 
-  const rebase = getOrCreateRebase(event.params.token)
+  const rebase = getOrCreateRebase(tokenAddress)
   rebase.elastic = rebase.elastic.minus(amount)
   rebase.save()
 }
 
 export function onLogFlashLoan(event: LogFlashLoan): void {
-  const token = getOrCreateToken(event.params.token)
+  const tokenAddress = event.params.token.toHex()
+  const token = getOrCreateToken(tokenAddress)
 
   const feeAmount = event.params.feeAmount.divDecimal(
     BigInt.fromI32(10)
@@ -88,7 +93,7 @@ export function onLogFlashLoan(event: LogFlashLoan): void {
       .toBigDecimal()
   )
 
-  const rebase = getOrCreateRebase(event.params.token)
+  const rebase = getOrCreateRebase(tokenAddress)
   rebase.elastic = rebase.elastic.plus(feeAmount)
   rebase.save()
 }

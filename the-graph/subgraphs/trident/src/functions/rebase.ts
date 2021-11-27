@@ -1,13 +1,23 @@
-import { Address } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { Rebase } from '../../generated/schema'
 
-export function getOrCreateRebase(token: Address): Rebase {
-  let rebase = Rebase.load(token.toHex())
+export function getRebase(token: string): Rebase {
+  return Rebase.load(token) as Rebase
+}
+
+export function getOrCreateRebase(token: string): Rebase {
+  let rebase = Rebase.load(token)
 
   if (rebase === null) {
-    rebase = new Rebase(token.toHex())
-    rebase.token = token.toHex()
+    rebase = new Rebase(token)
+    rebase.token = token
   }
 
   return rebase as Rebase
+}
+
+export function toAmount(shares: BigInt, rebase: Rebase): BigDecimal {
+  return rebase.base.gt(BigDecimal.fromString('0'))
+    ? shares.toBigDecimal().times(rebase.elastic).div(rebase.base)
+    : BigDecimal.fromString('0')
 }

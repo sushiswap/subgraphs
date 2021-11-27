@@ -9,13 +9,15 @@ import {
 } from '../../generated/templates/ConstantProductPool/ConstantProductPool'
 import { Burn, Mint, Swap, TokenPrice } from '../../generated/schema'
 import {
-  getConstantProductPool,
   getConstantProductPoolKpi,
   getOrCreateConstantProductPoolFactory,
   getOrCreateToken,
   getTokenKpi,
   getOrCreateTransaction,
   getConstantProductPoolAsset,
+  getOrCreateTokenPrice,
+  getRebase,
+  toAmount,
 } from '../functions'
 
 import { ADDRESS_ZERO, STABLE_POOL_ADDRESSES, NATIVE_ADDRESS } from '../constants/addresses'
@@ -27,24 +29,27 @@ export function onMint(event: MintEvent): void {
   const factory = getOrCreateConstantProductPoolFactory()
   factory.transactionCount = factory.transactionCount.plus(BigInt.fromI32(1))
 
-  const pool = getConstantProductPool(event.address)
-  const poolKpi = getConstantProductPoolKpi(event.address)
+  const poolAddress = event.address.toHex()
 
-  const asset0 = getConstantProductPoolAsset(pool.id.concat(':asset:0'))
-  const asset1 = getConstantProductPoolAsset(pool.id.concat(':asset:1'))
+  const poolKpi = getConstantProductPoolKpi(poolAddress)
 
-  const token0 = getOrCreateToken(Address.fromString(asset0.token))
+  const asset0 = getConstantProductPoolAsset(poolAddress.concat(':asset:0'))
+
+  const asset1 = getConstantProductPoolAsset(poolAddress.concat(':asset:1'))
+
+  const token0 = getOrCreateToken(asset0.token)
+
   const amount0 = event.params.amount0.divDecimal(
     BigInt.fromI32(10)
       .pow(token0.decimals.toI32() as u8)
       .toBigDecimal()
   )
 
-  const token0Kpi = getTokenKpi(Address.fromString(asset0.token))
+  const token0Kpi = getTokenKpi(asset0.token)
   token0Kpi.totalValueLocked = token0Kpi.totalValueLocked.plus(amount0)
   token0Kpi.transactionCount = token0Kpi.transactionCount.plus(BigInt.fromI32(1))
 
-  const token1 = getOrCreateToken(Address.fromString(asset1.token))
+  const token1 = getOrCreateToken(asset1.token)
 
   const amount1 = event.params.amount1.divDecimal(
     BigInt.fromI32(10)
@@ -52,7 +57,7 @@ export function onMint(event: MintEvent): void {
       .toBigDecimal()
   )
 
-  const token1Kpi = getTokenKpi(Address.fromString(asset1.token))
+  const token1Kpi = getTokenKpi(asset1.token)
   token1Kpi.totalValueLocked = token1Kpi.totalValueLocked.plus(amount1)
   token1Kpi.transactionCount = token1Kpi.transactionCount.plus(BigInt.fromI32(1))
 
@@ -65,7 +70,7 @@ export function onMint(event: MintEvent): void {
   const mint = new Mint('constant-product:' + transaction.id.toString() + ':' + poolKpi.transactionCount.toString())
 
   mint.transaction = transaction.id
-  mint.pool = pool.id
+  mint.pool = poolAddress
   mint.token0 = asset0.token
   mint.token1 = asset1.token
   mint.amount0 = amount0
@@ -84,7 +89,6 @@ export function onMint(event: MintEvent): void {
   token0.save()
   token1.save()
   mint.save()
-  pool.save()
 }
 
 export function onBurn(event: BurnEvent): void {
@@ -93,24 +97,23 @@ export function onBurn(event: BurnEvent): void {
   const factory = getOrCreateConstantProductPoolFactory()
   factory.transactionCount = factory.transactionCount.plus(BigInt.fromI32(1))
 
-  const pool = getConstantProductPool(event.address)
-  const asset0 = getConstantProductPoolAsset(pool.id.concat(':asset:0'))
-  const asset1 = getConstantProductPoolAsset(pool.id.concat(':asset:1'))
+  const poolAddress = event.address.toHex()
+  const poolKpi = getConstantProductPoolKpi(poolAddress)
+  const asset0 = getConstantProductPoolAsset(poolAddress.concat(':asset:0'))
+  const asset1 = getConstantProductPoolAsset(poolAddress.concat(':asset:1'))
 
-  const poolKpi = getConstantProductPoolKpi(event.address)
-
-  const token0 = getOrCreateToken(Address.fromString(asset0.token))
+  const token0 = getOrCreateToken(asset0.token)
   const amount0 = event.params.amount0.divDecimal(
     BigInt.fromI32(10)
       .pow(token0.decimals.toI32() as u8)
       .toBigDecimal()
   )
 
-  const token0Kpi = getTokenKpi(Address.fromString(asset0.token))
+  const token0Kpi = getTokenKpi(asset0.token)
   token0Kpi.totalValueLocked = token0Kpi.totalValueLocked.minus(amount0)
   token0Kpi.transactionCount = token0Kpi.transactionCount.plus(BigInt.fromI32(1))
 
-  const token1 = getOrCreateToken(Address.fromString(asset1.token))
+  const token1 = getOrCreateToken(asset1.token)
 
   const amount1 = event.params.amount1.divDecimal(
     BigInt.fromI32(10)
@@ -118,7 +121,7 @@ export function onBurn(event: BurnEvent): void {
       .toBigDecimal()
   )
 
-  const token1Kpi = getTokenKpi(Address.fromString(asset1.token))
+  const token1Kpi = getTokenKpi(asset1.token)
   token1Kpi.totalValueLocked = token1Kpi.totalValueLocked.minus(amount1)
   token1Kpi.transactionCount = token1Kpi.transactionCount.plus(BigInt.fromI32(1))
 
@@ -131,7 +134,7 @@ export function onBurn(event: BurnEvent): void {
   const burn = new Burn('constant-product:' + transaction.id.toString() + ':' + poolKpi.transactionCount.toString())
 
   burn.transaction = transaction.id
-  burn.pool = pool.id
+  burn.pool = poolAddress
   burn.token0 = asset0.token
   burn.token1 = asset0.token
   burn.amount0 = amount0
@@ -148,7 +151,6 @@ export function onBurn(event: BurnEvent): void {
   token0.save()
   token1.save()
   burn.save()
-  pool.save()
 }
 
 export function onSync(event: Sync): void {
@@ -157,28 +159,35 @@ export function onSync(event: Sync): void {
     event.params.reserve1.toString(),
   ])
 
-  const pool = getConstantProductPool(event.address)
+  const poolAddress = event.address.toHex()
+  const poolKpi = getConstantProductPoolKpi(poolAddress)
 
-  const asset0 = getConstantProductPoolAsset(pool.id.concat(':asset:0'))
-  const asset1 = getConstantProductPoolAsset(pool.id.concat(':asset:1'))
+  const asset0 = getConstantProductPoolAsset(poolAddress.concat(':asset:0'))
+  const asset1 = getConstantProductPoolAsset(poolAddress.concat(':asset:1'))
 
   log.debug('[ConstantProduct] onSync...... pool.assets[0]: {} pool.assets[1]: {}', [asset0.id, asset1.id])
 
-  const token0 = getOrCreateToken(Address.fromString(asset0.token))
-  const token1 = getOrCreateToken(Address.fromString(asset1.token))
+  const token0 = getOrCreateToken(asset0.token)
+  const token1 = getOrCreateToken(asset1.token)
 
   log.debug('[ConstantProduct] onSync [BEFORE] pool.reserve0: {} pool.reserve1: {}', [
     asset0.reserve.toString(),
     asset1.reserve.toString(),
   ])
 
-  asset0.reserve = event.params.reserve0.divDecimal(
+  const rebase0 = getRebase(asset0.token)
+  const rebase1 = getRebase(asset1.token)
+
+  const reserve0 = toAmount(event.params.reserve0, rebase0)
+  const reserve1 = toAmount(event.params.reserve1, rebase1)
+
+  asset0.reserve = reserve0.div(
     BigInt.fromI32(10)
       .pow(token0.decimals.toI32() as u8)
       .toBigDecimal()
   )
 
-  asset1.reserve = event.params.reserve1.divDecimal(
+  asset1.reserve = reserve1.div(
     BigInt.fromI32(10)
       .pow(token1.decimals.toI32() as u8)
       .toBigDecimal()
@@ -197,38 +206,59 @@ export function onSync(event: Sync): void {
     asset1.price.toString(),
   ])
 
-  // If the pool is one in which we care about the reserves changing, update the native price.
-  if (STABLE_POOL_ADDRESSES.includes(pool.id)) {
-    const nativeToken = getOrCreateToken(NATIVE_ADDRESS)
-    updateTokenPrice(nativeToken)
+  let nativePrice: TokenPrice
+  let token0Price: TokenPrice
+  let token1Price: TokenPrice
+
+  // If the pool is one in which we want to update the native price
+  if (STABLE_POOL_ADDRESSES.includes(poolAddress)) {
+    if (token0.id == NATIVE_ADDRESS.toHex()) {
+      token0Price = updateTokenPrice(token0)
+      token1Price = updateTokenPrice(token1)
+      nativePrice = token0Price
+    } else {
+      token1Price = updateTokenPrice(token1)
+      token0Price = updateTokenPrice(token0)
+      nativePrice = token1Price
+    }
+  } else {
+    // Avoid making this call unless neccasary
+    nativePrice = getOrCreateTokenPrice(NATIVE_ADDRESS.toHex())
+    token0Price = updateTokenPrice(token0)
+    token1Price = updateTokenPrice(token1)
   }
 
-  updateTokenPrice(token0)
-  updateTokenPrice(token1)
+  poolKpi.totalValueLocked = asset0.reserve
+    .times(token0Price.derivedNative)
+    .plus(asset1.reserve.times(token1Price.derivedNative))
+
+  poolKpi.totalValueLockedUSD = poolKpi.totalValueLocked.times(nativePrice.derivedUSD)
+
+  poolKpi.save()
 
   asset0.save()
   asset1.save()
-
-  pool.save()
 }
 
 export function onSwap(event: SwapEvent): void {
   log.debug('[ConstantProduct] onSwap...', [])
 
+  const tokenInAddress = event.params.tokenIn.toHex()
+  const tokenOutAddress = event.params.tokenOut.toHex()
   const factory = getOrCreateConstantProductPoolFactory()
   factory.transactionCount = factory.transactionCount.plus(BigInt.fromI32(1))
 
-  const pool = getConstantProductPool(event.address)
-  const poolKpi = getConstantProductPoolKpi(event.address)
+  const poolAddress = event.address.toHex()
+  const poolKpi = getConstantProductPoolKpi(poolAddress)
 
-  const tokenIn = getOrCreateToken(event.params.tokenIn)
+  const tokenIn = getOrCreateToken(tokenInAddress)
 
-  const tokenInKpi = getTokenKpi(event.params.tokenIn)
+  const tokenInKpi = getTokenKpi(tokenInAddress)
   tokenInKpi.transactionCount = tokenInKpi.transactionCount.plus(BigInt.fromI32(1))
 
-  const tokenOut = getOrCreateToken(event.params.tokenOut)
+  const tokenOut = getOrCreateToken(tokenOutAddress)
 
-  const tokenOutKpi = getTokenKpi(event.params.tokenOut)
+  const tokenOutKpi = getTokenKpi(tokenOutAddress)
   tokenOutKpi.transactionCount = tokenOutKpi.transactionCount.plus(BigInt.fromI32(1))
 
   const transaction = getOrCreateTransaction(event)
@@ -236,7 +266,7 @@ export function onSwap(event: SwapEvent): void {
   const swap = new Swap('constant-product:' + transaction.id.toString() + ':' + poolKpi.transactionCount.toString())
 
   swap.transaction = transaction.id
-  swap.pool = pool.id
+  swap.pool = poolAddress
   swap.tokenIn = tokenIn.id
   swap.tokenOut = tokenOut.id
   swap.amountIn = event.params.amountIn.divDecimal(
@@ -260,7 +290,6 @@ export function onSwap(event: SwapEvent): void {
   tokenIn.save()
   tokenOut.save()
   swap.save()
-  pool.save()
 }
 
 export function onApproval(event: Approval): void {
@@ -273,8 +302,8 @@ export function onTransfer(event: Transfer): void {
     event.params.recipient.toHex(),
     event.params.sender.toHex(),
   ])
-
-  const poolKpi = getConstantProductPoolKpi(event.address)
+  const poolAddress = event.address.toHex()
+  const poolKpi = getConstantProductPoolKpi(poolAddress)
 
   // If sender is black hole, we're mintin'
   if (event.params.sender == ADDRESS_ZERO) {
