@@ -451,21 +451,7 @@ interface PoolSnapshot {
   transactionCount: BigInt!
 }
 
-interface FactorySnapshot {
-  id: ID!
-  date: Int!
-  factory: Factory!
-  liquidity: BigDecimal!
-  liquidityNative: BigDecimal!
-  liquidityUSD: BigDecimal!
-  volume: BigDecimal!
-  volumeNative: BigDecimal!
-  volumeUSD: BigDecimal!
-  fees: BigDecimal!
-  feesNative: BigDecimal!
-  feesUSD: BigDecimal!
-  transactionCount: BigInt!
-}
+
 
 type PoolHourSnapshot implements PoolSnapshot @entity {
   id: ID!
@@ -537,10 +523,26 @@ type TokenDaySnapshot implements TokenSnapshot @entity {
   transactionCount: BigInt!
 }
 
+interface FactorySnapshot {
+  id: ID!
+  date: Int!
+  factory: Factory!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
 type FactoryHourSnapshot implements FactorySnapshot @entity {
   id: ID!
   date: Int!
-  token: Factory!
+  factory: Factory!
   liquidity: BigDecimal!
   liquidityNative: BigDecimal!
   liquidityUSD: BigDecimal!
@@ -574,4 +576,16 @@ type Rebase @entity {
   token: Token!
   base: BigDecimal!
   elastic: BigDecimal!
+}
+
+type User @entity {
+  id: ID!
+  liquidityPositions: [LiquidityPosition!] @derivedFrom(field: "user")
+}
+
+type LiquidityPosition @entity {
+  id: ID!
+  pool: Pool!
+  user: User!
+  balance: BigDecimal!
 }

@@ -7,7 +7,7 @@ import {
   Sync,
   Transfer,
 } from '../../generated/templates/ConstantProductPool/ConstantProductPool'
-import { Burn, Mint, Swap, TokenDaySnapshot, TokenPrice } from '../../generated/schema'
+import { Burn, Mint, Swap, TokenPrice } from '../../generated/schema'
 import {
   getConstantProductPoolKpi,
   getOrCreateConstantProductPoolFactory,
@@ -23,13 +23,18 @@ import {
   updateTokenDaySnapshot,
   updatePoolDaySnapshot,
   updatePoolHourSnapshot,
+  getOrCreateLiquidityPosition,
+  getOrCreateUser,
+  updateTokenPrice,
 } from '../functions'
 
 import { ADDRESS_ZERO, STABLE_POOL_ADDRESSES, NATIVE_ADDRESS } from '../constants/addresses'
-import { updateTokenPrice } from '../modules/pricing'
 
 export function onMint(event: MintEvent): void {
-  log.debug('[ConstantProduct] onMint...', [])
+  // log.debug('[ConstantProduct] onMint...', [])
+
+  const recipient = event.params.recipient.toHex()
+  getOrCreateUser(recipient)
 
   const factory = getOrCreateConstantProductPoolFactory()
   factory.transactionCount = factory.transactionCount.plus(BigInt.fromI32(1))
@@ -66,7 +71,7 @@ export function onMint(event: MintEvent): void {
   token1Kpi.liquidity = token1Kpi.liquidity.plus(amount1)
   token1Kpi.transactionCount = token1Kpi.transactionCount.plus(BigInt.fromI32(1))
 
-  const liquidity = event.params.liquidity.divDecimal(BigInt.fromI32(10).pow(18).toBigDecimal())
+  const liquidity = event.params.liquidity.divDecimal(BigDecimal.fromString('1e18'))
 
   poolKpi.liquidity = poolKpi.liquidity.plus(liquidity)
 
@@ -95,16 +100,7 @@ export function onMint(event: MintEvent): void {
   token1.save()
   mint.save()
 
-  // update the LP position
-  // let liquidityPosition = createLiquidityPosition(event.address, mint.to as Address)
-  // createLiquiditySnapshot(liquidityPosition, event)
-
-  // update day entities
-  // updatePairDayData(event)
-  // updatePairHourData(event)
-  // updateUniswapDayData(event)
-  // updateTokenDayData(token0 as Token, event)
-  // updateTokenDayData(token1 as Token, event)
+  const liquidityPosition = getOrCreateLiquidityPosition(poolAddress.concat(':').concat(recipient))
 
   const nativePrice = getNativeTokenPrice()
   updatePoolDaySnapshot(event.block.timestamp, poolKpi)
@@ -114,7 +110,10 @@ export function onMint(event: MintEvent): void {
 }
 
 export function onBurn(event: BurnEvent): void {
-  log.debug('[ConstantProduct] onBurn...', [])
+  // log.debug('[ConstantProduct] onBurn...', [])
+
+  const sender = event.params.sender.toHex()
+  getOrCreateUser(sender)
 
   const factory = getOrCreateConstantProductPoolFactory()
   factory.transactionCount = factory.transactionCount.plus(BigInt.fromI32(1))
@@ -162,7 +161,7 @@ export function onBurn(event: BurnEvent): void {
   burn.origin = event.transaction.from
   burn.logIndex = event.logIndex
 
-  const liquidity = event.params.liquidity.divDecimal(BigInt.fromI32(10).pow(18).toBigDecimal())
+  const liquidity = event.params.liquidity.divDecimal(BigDecimal.fromString('1e18'))
 
   poolKpi.liquidity = poolKpi.liquidity.minus(liquidity)
   poolKpi.transactionCount = poolKpi.transactionCount.plus(BigInt.fromI32(1))
@@ -173,6 +172,8 @@ export function onBurn(event: BurnEvent): void {
   token1.save()
   burn.save()
 
+  const liquidityPosition = getOrCreateLiquidityPosition(poolAddress.concat(':').concat(sender))
+
   const nativePrice = getNativeTokenPrice()
   updatePoolDaySnapshot(event.block.timestamp, poolKpi)
   updatePoolHourSnapshot(event.block.timestamp, poolKpi)
@@ -181,10 +182,10 @@ export function onBurn(event: BurnEvent): void {
 }
 
 export function onSync(event: Sync): void {
-  log.debug('[ConstantProduct] onSync...... event.reserve0: {} event.reserve1: {}', [
-    event.params.reserve0.toString(),
-    event.params.reserve1.toString(),
-  ])
+  // log.debug('[ConstantProduct] onSync...... event.reserve0: {} event.reserve1: {}', [
+  //   event.params.reserve0.toString(),
+  //   event.params.reserve1.toString(),
+  // ])
 
   const poolAddress = event.address.toHex()
   const poolKpi = getConstantProductPoolKpi(poolAddress)
@@ -192,7 +193,7 @@ export function onSync(event: Sync): void {
   const asset0 = getConstantProductPoolAsset(poolAddress.concat(':asset:0'))
   const asset1 = getConstantProductPoolAsset(poolAddress.concat(':asset:1'))
 
-  log.debug('[ConstantProduct] onSync...... pool.assets[0]: {} pool.assets[1]: {}', [asset0.id, asset1.id])
+  // log.debug('[ConstantProduct] onSync...... pool.assets[0]: {} pool.assets[1]: {}', [asset0.id, asset1.id])
 
   const token0 = getOrCreateToken(asset0.token)
   const token1 = getOrCreateToken(asset1.token)
@@ -204,10 +205,10 @@ export function onSync(event: Sync): void {
   token0Kpi.liquidity = token0Kpi.liquidity.minus(asset0.reserve)
   token1Kpi.liquidity = token0Kpi.liquidity.minus(asset1.reserve)
 
-  log.debug('[ConstantProduct] onSync [BEFORE] pool.reserve0: {} pool.reserve1: {}', [
-    asset0.reserve.toString(),
-    asset1.reserve.toString(),
-  ])
+  // log.debug('[ConstantProduct] onSync [BEFORE] pool.reserve0: {} pool.reserve1: {}', [
+  //   asset0.reserve.toString(),
+  //   asset1.reserve.toString(),
+  // ])
 
   const rebase0 = getRebase(asset0.token)
   const rebase1 = getRebase(asset1.token)
@@ -235,10 +236,10 @@ export function onSync(event: Sync): void {
     asset1.price = asset1.reserve.div(asset0.reserve)
   }
 
-  log.debug('[ConstantProduct] onSync [AFTER] asset0.price: {} asset1.price: {}', [
-    asset0.price.toString(),
-    asset1.price.toString(),
-  ])
+  // log.debug('[ConstantProduct] onSync [AFTER] asset0.price: {} asset1.price: {}', [
+  //   asset0.price.toString(),
+  //   asset1.price.toString(),
+  // ])
 
   asset0.save()
   asset1.save()
@@ -283,7 +284,7 @@ export function onSync(event: Sync): void {
 }
 
 export function onSwap(event: SwapEvent): void {
-  log.debug('[ConstantProduct] onSwap...', [])
+  // log.debug('[ConstantProduct] onSwap...', [])
 
   const tokenInAddress = event.params.tokenIn.toHex()
   const tokenOutAddress = event.params.tokenOut.toHex()
@@ -338,15 +339,32 @@ export function onSwap(event: SwapEvent): void {
 }
 
 export function onApproval(event: Approval): void {
-  log.debug('[ConstantProduct] onApproval...', [])
+  // log.debug('[ConstantProduct] onApproval...', [])
 }
 
 export function onTransfer(event: Transfer): void {
-  log.debug('[ConstantProduct] onTransfer... {} {} {}', [
-    event.params.amount.divDecimal(BigDecimal.fromString('1e18')).toString(),
-    event.params.recipient.toHex(),
-    event.params.sender.toHex(),
-  ])
+  // ignore initial transfers for first adds
+  if (event.params.recipient == ADDRESS_ZERO && event.params.amount.equals(BigInt.fromI32(1000))) {
+    log.debug('Initial transfer, ignore...', [])
+    return
+  }
+
+  const amount = event.params.amount.divDecimal(BigDecimal.fromString('1e18'))
+
+  const sender = event.params.sender.toHex()
+
+  const recipient = event.params.recipient.toHex()
+
+  // log.debug('[ConstantProduct] onTransfer... {} {} {}', [
+  //   amount.toString(),
+  //   event.params.recipient.toHex(),
+  //   event.params.sender.toHex(),
+  // ])
+
+  getOrCreateUser(sender)
+
+  getOrCreateUser(recipient)
+
   const poolAddress = event.address.toHex()
   const poolKpi = getConstantProductPoolKpi(poolAddress)
 
@@ -356,9 +374,36 @@ export function onTransfer(event: Transfer): void {
   }
 
   // If recipient is black hole we're burnin'
-  if (event.params.sender.toHex() == poolKpi.id && event.params.recipient == ADDRESS_ZERO) {
+  if (event.params.recipient == ADDRESS_ZERO) {
     poolKpi.totalSupply = poolKpi.totalSupply.minus(event.params.amount)
   }
 
   poolKpi.save()
+
+  const senderLiquidityPosition = getOrCreateLiquidityPosition(poolAddress.concat(':').concat(sender))
+  const recipientLiquidityPosition = getOrCreateLiquidityPosition(poolAddress.concat(':').concat(recipient))
+
+  if (event.params.sender != ADDRESS_ZERO && sender != poolAddress) {
+    log.debug('[TRANSFER] TO {} BALANCE BEFORE {} BALANCE AFTER {} AMOUNT {}', [
+      sender,
+      senderLiquidityPosition.balance.toString(),
+      senderLiquidityPosition.balance.minus(amount).toString(),
+      amount.toString(),
+    ])
+
+    senderLiquidityPosition.balance = senderLiquidityPosition.balance.minus(amount)
+    senderLiquidityPosition.save()
+  }
+
+  if (event.params.recipient != ADDRESS_ZERO && recipient != poolAddress) {
+    log.debug('[TRANSFER] TO {} BALANCE BEFORE {} BALANCE AFTER {} AMOUNT {}', [
+      sender,
+      recipientLiquidityPosition.balance.toString(),
+      recipientLiquidityPosition.balance.plus(amount).toString(),
+      amount.toString(),
+    ])
+
+    recipientLiquidityPosition.balance = recipientLiquidityPosition.balance.plus(amount)
+    recipientLiquidityPosition.save()
+  }
 }
