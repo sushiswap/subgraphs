@@ -23,10 +23,15 @@ interface Factory {
   id: ID!
   masterDeployer: MasterDeployer!
   pools: [Pool!]! @derivedFrom(field: "factory")
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
   volume: BigDecimal!
+  volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
   transactionCount: BigInt!
   poolCount: BigInt!
   block: BigInt!
@@ -61,11 +66,14 @@ type WhitelistedPool @entity {
 
 interface FactoryKpi {
   id: ID!
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
   volume: BigDecimal!
+  volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
   fees: BigDecimal!
+  feesNative: BigDecimal!
   feesUSD: BigDecimal!
   poolCount: BigInt!
   transactionCount: BigInt!
@@ -77,11 +85,14 @@ type ConstantProductPoolFactory implements Factory @entity {
   id: ID!
   masterDeployer: MasterDeployer!
   pools: [Pool!]! @derivedFrom(field: "factory")
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
   volume: BigDecimal!
+  volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
   fees: BigDecimal!
+  feesNative: BigDecimal!
   feesUSD: BigDecimal!
   poolCount: BigInt!
   transactionCount: BigInt!
@@ -118,11 +129,14 @@ type ConstantProductPoolAsset implements PoolAsset @entity {
 
 interface PoolKpi {
   id: ID!
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
   volume: BigDecimal!
+  volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
   fees: BigDecimal!
+  feesNative: BigDecimal!
   feesUSD: BigDecimal!
   transactionCount: BigInt!
   block: BigInt!
@@ -131,11 +145,14 @@ interface PoolKpi {
 
 type ConstantProductPoolKpi implements PoolKpi @entity {
   id: ID!
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
   volume: BigDecimal!
+  volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
   fees: BigDecimal!
+  feesNative: BigDecimal!
   feesUSD: BigDecimal!
   transactionCount: BigInt!
   totalSupply: BigInt!
@@ -159,14 +176,17 @@ type ConcentratedLiquidityPoolFactory implements Factory @entity {
   id: ID!
   masterDeployer: MasterDeployer!
   pools: [Pool!]! @derivedFrom(field: "factory")
-  poolCount: BigInt!
-  transactionCount: BigInt!
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
   volume: BigDecimal!
+  volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
   fees: BigDecimal!
+  feesNative: BigDecimal!
   feesUSD: BigDecimal!
+  transactionCount: BigInt!
+  poolCount: BigInt!
   block: BigInt!
   timestamp: BigInt!
 }
@@ -183,11 +203,14 @@ type ConcentratedLiquidityPool implements Pool @entity {
 
 type ConcentratedLiquidityPoolKpi implements PoolKpi @entity {
   id: ID!
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
   volume: BigDecimal!
+  volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
   fees: BigDecimal!
+  feesNative: BigDecimal!
   feesUSD: BigDecimal!
   transactionCount: BigInt!
   totalSupply: BigInt!
@@ -201,11 +224,14 @@ type HybridPoolFactory implements Factory @entity {
   pools: [Pool!]! @derivedFrom(field: "factory")
   poolCount: BigInt!
   transactionCount: BigInt!
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
   volume: BigDecimal!
+  volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
   fees: BigDecimal!
+  feesNative: BigDecimal!
   feesUSD: BigDecimal!
   block: BigInt!
   timestamp: BigInt!
@@ -234,11 +260,14 @@ type IndexPoolFactory implements Factory @entity {
   id: ID!
   masterDeployer: MasterDeployer!
   pools: [Pool!]! @derivedFrom(field: "factory")
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
   volume: BigDecimal!
+  volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
   fees: BigDecimal!
+  feesNative: BigDecimal!
   feesUSD: BigDecimal!
   poolCount: BigInt!
   transactionCount: BigInt!
@@ -330,13 +359,16 @@ type Collect @entity {
 
 type Token @entity {
   id: ID!
+  price: TokenPrice!
   kpi: TokenKpi!
+  rebase: Rebase!
   symbol: String!
   symbolSuccess: Boolean!
   name: String!
   nameSuccess: Boolean!
   decimals: BigInt!
   decimalsSuccess: Boolean!
+  snapshots: [TokenSnapshot!]! @derivedFrom(field: "token")
   block: BigInt!
   timestamp: BigInt!
 }
@@ -344,11 +376,14 @@ type Token @entity {
 type TokenKpi @entity {
   id: ID!
   token: Token!
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
   volume: BigDecimal!
+  volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
   fees: BigDecimal!
+  feesNative: BigDecimal!
   feesUSD: BigDecimal!
   transactionCount: BigInt!
   block: BigInt!
@@ -365,66 +400,138 @@ type TokenPrice @entity {
   whitelistedPools: [WhitelistedPool!]! @derivedFrom(field: "price")
 }
 
-interface Bucket {
+interface Snapshot {
   id: ID!
   date: Int!
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
   volume: BigDecimal!
+  volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
   fees: BigDecimal!
+  feesNative: BigDecimal!
   feesUSD: BigDecimal!
   transactionCount: BigInt!
 }
 
-type PoolHourBucket implements Bucket @entity {
-  id: ID!
-  date: Int!
-  pool: Pool!
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
-  volume: BigDecimal!
-  volumeUSD: BigDecimal!
-  fees: BigDecimal!
-  feesUSD: BigDecimal!
-  transactionCount: BigInt!
-}
-
-type PoolDayBucket implements Bucket @entity {
-  id: ID!
-  date: Int!
-  pool: Pool!
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
-  volume: BigDecimal!
-  volumeUSD: BigDecimal!
-  fees: BigDecimal!
-  feesUSD: BigDecimal!
-  transactionCount: BigInt!
-}
-
-type TokenHourBucket implements Bucket @entity {
+interface TokenSnapshot {
   id: ID!
   date: Int!
   token: Token!
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
   volume: BigDecimal!
+  volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
   fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  price: BigDecimal!
+  priceUSD: BigDecimal!
+  priceNative: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type PoolHourSnapshot implements Snapshot @entity {
+  id: ID!
+  date: Int!
+  pool: Pool!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
   feesUSD: BigDecimal!
   transactionCount: BigInt!
 }
 
-type TokenDayBucket implements Bucket @entity {
+type PoolDaySnapshot implements Snapshot @entity {
+  id: ID!
+  date: Int!
+  pool: Pool!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type TokenHourSnapshot implements TokenSnapshot @entity {
   id: ID!
   date: Int!
   token: Token!
-  totalValueLocked: BigDecimal!
-  totalValueLockedUSD: BigDecimal!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
   volume: BigDecimal!
+  volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
   fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  price: BigDecimal!
+  priceUSD: BigDecimal!
+  priceNative: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type TokenDaySnapshot implements TokenSnapshot @entity {
+  id: ID!
+  date: Int!
+  token: Token!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  price: BigDecimal!
+  priceUSD: BigDecimal!
+  priceNative: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type FactoryHourSnapshot implements Snapshot @entity {
+  id: ID!
+  date: Int!
+  token: Factory!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type FactoryDaySnapshot implements Snapshot @entity {
+  id: ID!
+  date: Int!
+  factory: Factory!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
   feesUSD: BigDecimal!
   transactionCount: BigInt!
 }

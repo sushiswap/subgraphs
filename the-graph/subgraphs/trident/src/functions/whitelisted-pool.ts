@@ -5,8 +5,7 @@ export function getWhitelistedPool(id: string): WhitelistedPool | null {
 }
 
 export function createWhitelistedPool(id: string): WhitelistedPool {
-  const whitelistedPool = new WhitelistedPool(id)
-  return whitelistedPool
+  return new WhitelistedPool(id)
 }
 
 export function getOrCreateWhitelistedPool(id: string): WhitelistedPool {

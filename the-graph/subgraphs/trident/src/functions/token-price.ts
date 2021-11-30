@@ -8,8 +8,8 @@ export function createTokenPrice(token: string): TokenPrice {
   return tokenPrice
 }
 
-export function getTokenPrice(token: string): TokenPrice | null {
-  return TokenPrice.load(token)
+export function getTokenPrice(token: string): TokenPrice {
+  return TokenPrice.load(token) as TokenPrice
 }
 
 export function getOrCreateTokenPrice(token: string): TokenPrice {
@@ -24,5 +24,5 @@ export function getOrCreateTokenPrice(token: string): TokenPrice {
 
 // Native token price, WETH on mainnet.
 export function getNativeTokenPrice(): TokenPrice {
-  return getOrCreateTokenPrice(NATIVE_ADDRESS.toHex())
+  return getOrCreateTokenPrice(NATIVE_ADDRESS)
 }

@@ -22,7 +22,7 @@ program
   .action((subgraph) => {
     console.log('deploy command called', { subgraph })
     exec(
-      `node_modules/.bin/graph deploy --product hosted-service sushiswap/${subgraph} subgraphs/${subgraph}/subgraph.yaml`,
+      `node_modules/.bin/graph deploy --product hosted-service matthewlilley/${subgraph} subgraphs/${subgraph}/subgraph.yaml`,
       (error, stdout, stderr) => {
         if (error) {
           console.log('error', error.message)

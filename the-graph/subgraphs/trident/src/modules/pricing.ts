@@ -1,10 +1,10 @@
 // Pricing module...
 
-import { Address, BigDecimal, log, crypto, ByteArray, BigInt } from '@graphprotocol/graph-ts'
+import { BigDecimal, log } from '@graphprotocol/graph-ts'
 import { NATIVE_ADDRESS, STABLE_TOKEN_ADDRESSES, STABLE_POOL_ADDRESSES } from '../constants/addresses'
 import { ConstantProductPoolAsset, Token, TokenPrice } from '../../generated/schema'
 import {
-  getOrCreateToken,
+  getTokenPrice,
   getOrCreateTokenPrice,
   getConstantProductPoolAsset,
   getOrCreateWhitelistedPool,
@@ -12,7 +12,7 @@ import {
 } from '../functions'
 
 // Minimum liqudiity threshold in native currency
-const MINIMUM_LIQUIDITY_THRESHOLD = BigDecimal.fromString('0.00000000001')
+const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('0.0000000001')
 
 export function getNativePriceInUSD(): BigDecimal {
   // 1. Generate list of stable pairs
@@ -43,8 +43,8 @@ export function getNativePriceInUSD(): BigDecimal {
     if (
       asset0 === null ||
       asset1 === null ||
-      (asset0.token == NATIVE_ADDRESS.toHex() && asset0.reserve.le(MINIMUM_LIQUIDITY_THRESHOLD)) ||
-      (asset1.token == NATIVE_ADDRESS.toHex() && asset1.reserve.le(MINIMUM_LIQUIDITY_THRESHOLD))
+      (asset0.token == NATIVE_ADDRESS && asset0.reserve.le(MINIMUM_NATIVE_LIQUIDITY)) ||
+      (asset1.token == NATIVE_ADDRESS && asset1.reserve.le(MINIMUM_NATIVE_LIQUIDITY))
     ) {
       continue
     }
@@ -76,54 +76,61 @@ export function getNativePriceInUSD(): BigDecimal {
 export function updateTokenPrice(token: Token): TokenPrice {
   log.debug('updateTokenPrice {}', [token.symbol])
 
-  const nativeTokenAddress = NATIVE_ADDRESS.toHex()
-  const nativeTokenPrice = getOrCreateTokenPrice(nativeTokenAddress)
+  const nativeTokenPrice = getTokenPrice(NATIVE_ADDRESS)
 
-  if (token.id == nativeTokenAddress) {
+  if (token.id == NATIVE_ADDRESS) {
     // Unless this subgraph understands BentoBox shares/amounts, derivedNative will be 1e18 shares of the NATIVE token
     nativeTokenPrice.derivedNative = BigDecimal.fromString('1')
     nativeTokenPrice.derivedUSD = getNativePriceInUSD()
     nativeTokenPrice.save()
 
     return nativeTokenPrice
-  } else {
-    const tokenPriceToUpdate = getOrCreateTokenPrice(token.id)
+  }
 
-    for (let i = 0, j = tokenPriceToUpdate.whitelistedPoolCount.toI32(); i < j; i++) {
-      log.debug('Token whitelisted pool #{}', [token.id.concat(':').concat(i.toString())])
+  let mostLiquidity = BigDecimal.fromString('0')
+  const tokenPriceToUpdate = getTokenPrice(token.id)
 
-      const whitelistedPool = getOrCreateWhitelistedPool(token.id.concat(':').concat(i.toString()))
-      const whitelistedPoolKpi = getConstantProductPoolKpi(whitelistedPool.pool)
+  for (let i = 0, j = tokenPriceToUpdate.whitelistedPoolCount.toI32(); i < j; i++) {
+    log.debug('Token whitelisted pool #{}', [token.id.concat(':').concat(i.toString())])
 
-      log.debug('Got token whitelisted pool {}', [whitelistedPool.id])
+    const whitelistedPool = getOrCreateWhitelistedPool(token.id.concat(':').concat(i.toString()))
+    const whitelistedPoolKpi = getConstantProductPoolKpi(whitelistedPool.pool)
 
-      const asset0 = getConstantProductPoolAsset(whitelistedPool.pool.concat(':asset:0'))
-      const asset1 = getConstantProductPoolAsset(whitelistedPool.pool.concat(':asset:1'))
+    log.debug('Got token whitelisted pool {}', [whitelistedPool.id])
 
-      // TODO: NEEDS TO BE IMPROVED TO NOT JUST PRICE ON THE FIRST PAIR POTENTIALLY
-      if (token.id == asset0.token && whitelistedPoolKpi.totalValueLocked.ge(MINIMUM_LIQUIDITY_THRESHOLD)) {
-        const tokenPrice1 = getOrCreateTokenPrice(asset1.token)
+    const asset0 = getConstantProductPoolAsset(whitelistedPool.pool.concat(':asset:0'))
+    const asset1 = getConstantProductPoolAsset(whitelistedPool.pool.concat(':asset:1'))
+
+    if (token.id == asset0.token) {
+      const tokenPrice1 = getTokenPrice(asset1.token)
+
+      const nativeLiquidity = asset1.reserve.times(tokenPrice1.derivedNative)
+
+      if (nativeLiquidity.gt(mostLiquidity) && nativeLiquidity.gt(MINIMUM_NATIVE_LIQUIDITY)) {
+        mostLiquidity = nativeLiquidity
         const derivedNative = asset1.price.times(tokenPrice1.derivedNative)
         const derivedUSD = derivedNative.times(nativeTokenPrice.derivedUSD)
         tokenPriceToUpdate.derivedNative = derivedNative
         tokenPriceToUpdate.derivedUSD = derivedUSD
-        tokenPriceToUpdate.save()
-
-        break
       }
+    }
 
-      if (token.id == asset1.token && whitelistedPoolKpi.totalValueLocked.ge(MINIMUM_LIQUIDITY_THRESHOLD)) {
-        const tokenPrice0 = getOrCreateTokenPrice(asset0.token)
+    if (token.id == asset1.token) {
+      const tokenPrice0 = getTokenPrice(asset0.token)
+
+      const nativeLiquidity = asset0.reserve.times(tokenPrice0.derivedNative)
+
+      if (nativeLiquidity.gt(mostLiquidity) && nativeLiquidity.gt(MINIMUM_NATIVE_LIQUIDITY)) {
+        mostLiquidity = nativeLiquidity
         const derivedNative = asset0.price.times(tokenPrice0.derivedNative)
         const derivedUSD = derivedNative.times(nativeTokenPrice.derivedUSD)
         tokenPriceToUpdate.derivedNative = derivedNative
         tokenPriceToUpdate.derivedUSD = derivedUSD
-        tokenPriceToUpdate.save()
-
-        break
       }
     }
-
-    return tokenPriceToUpdate
   }
+
+  tokenPriceToUpdate.save()
+
+  return tokenPriceToUpdate
 }

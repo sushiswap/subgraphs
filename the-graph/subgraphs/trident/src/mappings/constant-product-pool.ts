@@ -7,7 +7,7 @@ import {
   Sync,
   Transfer,
 } from '../../generated/templates/ConstantProductPool/ConstantProductPool'
-import { Burn, Mint, Swap, TokenPrice } from '../../generated/schema'
+import { Burn, Mint, Swap, TokenDaySnapshot, TokenPrice } from '../../generated/schema'
 import {
   getConstantProductPoolKpi,
   getOrCreateConstantProductPoolFactory,
@@ -17,7 +17,12 @@ import {
   getConstantProductPoolAsset,
   getOrCreateTokenPrice,
   getRebase,
+  getTokenPrice,
+  getNativeTokenPrice,
   toAmount,
+  updateTokenDaySnapshot,
+  updatePoolDaySnapshot,
+  updatePoolHourSnapshot,
 } from '../functions'
 
 import { ADDRESS_ZERO, STABLE_POOL_ADDRESSES, NATIVE_ADDRESS } from '../constants/addresses'
@@ -46,7 +51,7 @@ export function onMint(event: MintEvent): void {
   )
 
   const token0Kpi = getTokenKpi(asset0.token)
-  token0Kpi.totalValueLocked = token0Kpi.totalValueLocked.plus(amount0)
+  token0Kpi.liquidity = token0Kpi.liquidity.plus(amount0)
   token0Kpi.transactionCount = token0Kpi.transactionCount.plus(BigInt.fromI32(1))
 
   const token1 = getOrCreateToken(asset1.token)
@@ -58,12 +63,12 @@ export function onMint(event: MintEvent): void {
   )
 
   const token1Kpi = getTokenKpi(asset1.token)
-  token1Kpi.totalValueLocked = token1Kpi.totalValueLocked.plus(amount1)
+  token1Kpi.liquidity = token1Kpi.liquidity.plus(amount1)
   token1Kpi.transactionCount = token1Kpi.transactionCount.plus(BigInt.fromI32(1))
 
   const liquidity = event.params.liquidity.divDecimal(BigInt.fromI32(10).pow(18).toBigDecimal())
 
-  poolKpi.totalValueLocked = poolKpi.totalValueLocked.plus(liquidity)
+  poolKpi.liquidity = poolKpi.liquidity.plus(liquidity)
 
   const transaction = getOrCreateTransaction(event)
 
@@ -89,6 +94,23 @@ export function onMint(event: MintEvent): void {
   token0.save()
   token1.save()
   mint.save()
+
+  // update the LP position
+  // let liquidityPosition = createLiquidityPosition(event.address, mint.to as Address)
+  // createLiquiditySnapshot(liquidityPosition, event)
+
+  // update day entities
+  // updatePairDayData(event)
+  // updatePairHourData(event)
+  // updateUniswapDayData(event)
+  // updateTokenDayData(token0 as Token, event)
+  // updateTokenDayData(token1 as Token, event)
+
+  const nativePrice = getNativeTokenPrice()
+  updatePoolDaySnapshot(event.block.timestamp, poolKpi)
+  updatePoolHourSnapshot(event.block.timestamp, poolKpi)
+  updateTokenDaySnapshot(event.block.timestamp, token0, token0Kpi, nativePrice)
+  updateTokenDaySnapshot(event.block.timestamp, token1, token1Kpi, nativePrice)
 }
 
 export function onBurn(event: BurnEvent): void {
@@ -110,7 +132,7 @@ export function onBurn(event: BurnEvent): void {
   )
 
   const token0Kpi = getTokenKpi(asset0.token)
-  token0Kpi.totalValueLocked = token0Kpi.totalValueLocked.minus(amount0)
+  token0Kpi.liquidity = token0Kpi.liquidity.minus(amount0)
   token0Kpi.transactionCount = token0Kpi.transactionCount.plus(BigInt.fromI32(1))
 
   const token1 = getOrCreateToken(asset1.token)
@@ -122,12 +144,8 @@ export function onBurn(event: BurnEvent): void {
   )
 
   const token1Kpi = getTokenKpi(asset1.token)
-  token1Kpi.totalValueLocked = token1Kpi.totalValueLocked.minus(amount1)
+  token1Kpi.liquidity = token1Kpi.liquidity.minus(amount1)
   token1Kpi.transactionCount = token1Kpi.transactionCount.plus(BigInt.fromI32(1))
-
-  const liquidity = event.params.liquidity.divDecimal(BigInt.fromI32(10).pow(18).toBigDecimal())
-
-  poolKpi.totalValueLocked = poolKpi.totalValueLocked.minus(liquidity)
 
   const transaction = getOrCreateTransaction(event)
 
@@ -136,7 +154,7 @@ export function onBurn(event: BurnEvent): void {
   burn.transaction = transaction.id
   burn.pool = poolAddress
   burn.token0 = asset0.token
-  burn.token1 = asset0.token
+  burn.token1 = asset1.token
   burn.amount0 = amount0
   burn.amount1 = amount1
   burn.recipient = event.params.recipient
@@ -144,6 +162,9 @@ export function onBurn(event: BurnEvent): void {
   burn.origin = event.transaction.from
   burn.logIndex = event.logIndex
 
+  const liquidity = event.params.liquidity.divDecimal(BigInt.fromI32(10).pow(18).toBigDecimal())
+
+  poolKpi.liquidity = poolKpi.liquidity.minus(liquidity)
   poolKpi.transactionCount = poolKpi.transactionCount.plus(BigInt.fromI32(1))
   poolKpi.save()
 
@@ -151,6 +172,12 @@ export function onBurn(event: BurnEvent): void {
   token0.save()
   token1.save()
   burn.save()
+
+  const nativePrice = getNativeTokenPrice()
+  updatePoolDaySnapshot(event.block.timestamp, poolKpi)
+  updatePoolHourSnapshot(event.block.timestamp, poolKpi)
+  updateTokenDaySnapshot(event.block.timestamp, token0, token0Kpi, nativePrice)
+  updateTokenDaySnapshot(event.block.timestamp, token1, token1Kpi, nativePrice)
 }
 
 export function onSync(event: Sync): void {
@@ -169,6 +196,13 @@ export function onSync(event: Sync): void {
 
   const token0 = getOrCreateToken(asset0.token)
   const token1 = getOrCreateToken(asset1.token)
+
+  const token0Kpi = getTokenKpi(asset0.token)
+  const token1Kpi = getTokenKpi(asset1.token)
+
+  // reset liquidity amounts
+  token0Kpi.liquidity = token0Kpi.liquidity.minus(asset0.reserve)
+  token1Kpi.liquidity = token0Kpi.liquidity.minus(asset1.reserve)
 
   log.debug('[ConstantProduct] onSync [BEFORE] pool.reserve0: {} pool.reserve1: {}', [
     asset0.reserve.toString(),
@@ -206,13 +240,16 @@ export function onSync(event: Sync): void {
     asset1.price.toString(),
   ])
 
+  asset0.save()
+  asset1.save()
+
   let nativePrice: TokenPrice
   let token0Price: TokenPrice
   let token1Price: TokenPrice
 
   // If the pool is one in which we want to update the native price
   if (STABLE_POOL_ADDRESSES.includes(poolAddress)) {
-    if (token0.id == NATIVE_ADDRESS.toHex()) {
+    if (token0.id == NATIVE_ADDRESS) {
       token0Price = updateTokenPrice(token0)
       token1Price = updateTokenPrice(token1)
       nativePrice = token0Price
@@ -223,21 +260,26 @@ export function onSync(event: Sync): void {
     }
   } else {
     // Avoid making this call unless neccasary
-    nativePrice = getOrCreateTokenPrice(NATIVE_ADDRESS.toHex())
+    nativePrice = getOrCreateTokenPrice(NATIVE_ADDRESS)
     token0Price = updateTokenPrice(token0)
     token1Price = updateTokenPrice(token1)
   }
 
-  poolKpi.totalValueLocked = asset0.reserve
+  poolKpi.liquidityNative = asset0.reserve
     .times(token0Price.derivedNative)
     .plus(asset1.reserve.times(token1Price.derivedNative))
-
-  poolKpi.totalValueLockedUSD = poolKpi.totalValueLocked.times(nativePrice.derivedUSD)
-
+  poolKpi.liquidityUSD = poolKpi.liquidityNative.times(nativePrice.derivedUSD)
   poolKpi.save()
 
-  asset0.save()
-  asset1.save()
+  token0Kpi.liquidity = token0Kpi.liquidity.plus(reserve0)
+  token0Kpi.liquidityNative = token0Kpi.liquidityNative.plus(reserve0.times(token0Price.derivedNative))
+  token0Kpi.liquidityUSD = token0Kpi.liquidityUSD.plus(token0Kpi.liquidityNative.times(nativePrice.derivedUSD))
+  token0Kpi.save()
+
+  token1Kpi.liquidity = token1Kpi.liquidity.plus(reserve1)
+  token1Kpi.liquidityNative = token1Kpi.liquidityNative.plus(reserve1.times(token1Price.derivedNative))
+  token1Kpi.liquidityUSD = token1Kpi.liquidityUSD.plus(token1Kpi.liquidityNative.times(nativePrice.derivedUSD))
+  token1Kpi.save()
 }
 
 export function onSwap(event: SwapEvent): void {
@@ -247,19 +289,24 @@ export function onSwap(event: SwapEvent): void {
   const tokenOutAddress = event.params.tokenOut.toHex()
   const factory = getOrCreateConstantProductPoolFactory()
   factory.transactionCount = factory.transactionCount.plus(BigInt.fromI32(1))
+  factory.save()
 
   const poolAddress = event.address.toHex()
   const poolKpi = getConstantProductPoolKpi(poolAddress)
+  poolKpi.transactionCount = poolKpi.transactionCount.plus(BigInt.fromI32(1))
+  poolKpi.save()
 
   const tokenIn = getOrCreateToken(tokenInAddress)
 
   const tokenInKpi = getTokenKpi(tokenInAddress)
   tokenInKpi.transactionCount = tokenInKpi.transactionCount.plus(BigInt.fromI32(1))
+  tokenInKpi.save()
 
   const tokenOut = getOrCreateToken(tokenOutAddress)
 
   const tokenOutKpi = getTokenKpi(tokenOutAddress)
   tokenOutKpi.transactionCount = tokenOutKpi.transactionCount.plus(BigInt.fromI32(1))
+  tokenOutKpi.save()
 
   const transaction = getOrCreateTransaction(event)
 
@@ -282,14 +329,12 @@ export function onSwap(event: SwapEvent): void {
   swap.recipient = event.params.recipient
   swap.origin = event.transaction.from
   swap.logIndex = event.logIndex
-
-  poolKpi.transactionCount = poolKpi.transactionCount.plus(BigInt.fromI32(1))
-  poolKpi.save()
-
-  factory.save()
-  tokenIn.save()
-  tokenOut.save()
   swap.save()
+
+  const nativePrice = getNativeTokenPrice()
+
+  updateTokenDaySnapshot(event.block.timestamp, tokenIn, tokenInKpi, nativePrice)
+  updateTokenDaySnapshot(event.block.timestamp, tokenOut, tokenOutKpi, nativePrice)
 }
 
 export function onApproval(event: Approval): void {

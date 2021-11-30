@@ -1,4 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { createRebase, createTokenPrice } from '.'
 
 import { ERC20 } from '../../generated/MasterDeployer/ERC20'
 import { NameBytes32 } from '../../generated/MasterDeployer/NameBytes32'
@@ -35,8 +36,15 @@ export function getOrCreateToken(id: string): Token {
     token.decimals = decimals.value
     token.decimalsSuccess = decimals.success
 
+    const price = createTokenPrice(id)
+    token.price = price.id
+
     const kpi = createTokenKpi(id)
     token.kpi = kpi.id
+
+    const rebase = createRebase(id)
+    token.rebase = rebase.id
+
     token.save()
   }
 
