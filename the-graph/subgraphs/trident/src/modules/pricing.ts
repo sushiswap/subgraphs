@@ -5,7 +5,6 @@ import { NATIVE_ADDRESS, STABLE_TOKEN_ADDRESSES, STABLE_POOL_ADDRESSES } from '.
 import { ConstantProductPoolAsset, Token, TokenPrice } from '../../generated/schema'
 import {
   getTokenPrice,
-  getOrCreateTokenPrice,
   getConstantProductPoolAsset,
   getOrCreateWhitelistedPool,
   getConstantProductPoolKpi,

@@ -400,6 +400,7 @@ type TokenPrice @entity {
   whitelistedPools: [WhitelistedPool!]! @derivedFrom(field: "price")
 }
 
+# Interface extension hasn't reached the wild yet for GraphQL schema spec, so this one is useless for now
 interface Snapshot {
   id: ID!
   date: Int!
@@ -434,7 +435,7 @@ interface TokenSnapshot {
   transactionCount: BigInt!
 }
 
-type PoolHourSnapshot implements Snapshot @entity {
+interface PoolSnapshot {
   id: ID!
   date: Int!
   pool: Pool!
@@ -450,7 +451,39 @@ type PoolHourSnapshot implements Snapshot @entity {
   transactionCount: BigInt!
 }
 
-type PoolDaySnapshot implements Snapshot @entity {
+interface FactorySnapshot {
+  id: ID!
+  date: Int!
+  factory: Factory!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type PoolHourSnapshot implements PoolSnapshot @entity {
+  id: ID!
+  date: Int!
+  pool: Pool!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type PoolDaySnapshot implements PoolSnapshot @entity {
   id: ID!
   date: Int!
   pool: Pool!
@@ -504,7 +537,7 @@ type TokenDaySnapshot implements TokenSnapshot @entity {
   transactionCount: BigInt!
 }
 
-type FactoryHourSnapshot implements Snapshot @entity {
+type FactoryHourSnapshot implements FactorySnapshot @entity {
   id: ID!
   date: Int!
   token: Factory!
@@ -520,7 +553,7 @@ type FactoryHourSnapshot implements Snapshot @entity {
   transactionCount: BigInt!
 }
 
-type FactoryDaySnapshot implements Snapshot @entity {
+type FactoryDaySnapshot implements FactorySnapshot @entity {
   id: ID!
   date: Int!
   factory: Factory!
