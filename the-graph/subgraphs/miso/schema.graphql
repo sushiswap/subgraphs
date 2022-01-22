@@ -2,7 +2,7 @@ type Role @entity {
   id: ID!
 }
 
-type AccessControls @entity {
+type AccessControl @entity {
   id: ID!
   adminCount: BigInt!
   minterCount: BigInt!
