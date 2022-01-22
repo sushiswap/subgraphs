@@ -8,7 +8,7 @@ addresses.ts
 subgraph.yaml
 .yarn/*
 !.yarn/patches
-!.yarn/releases
+!.yarn/releasesgit 
 !.yarn/plugins
 !.yarn/sdks
 !.yarn/versions

@@ -526,8 +526,8 @@ type TokenDaySnapshot implements TokenSnapshot @entity {
   feesNative: BigDecimal!
   feesUSD: BigDecimal!
   price: BigDecimal!
-  priceUSD: BigDecimal!
   priceNative: BigDecimal!
+  priceUSD: BigDecimal!
   transactionCount: BigInt!
 }
 

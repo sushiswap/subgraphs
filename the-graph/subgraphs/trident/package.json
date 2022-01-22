@@ -16,11 +16,12 @@
     "create-local": "graph create --node http://localhost:8020/ sushiswap/trident",
     "remove-local": "graph remove --node http://localhost:8020/ sushiswap/trident",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/trident",
-    "deploy:kovan": "graph deploy --product hosted-service sushiswap/trident"
+    "deploy-kovan": "graph deploy --product hosted-service sushiswap/trident"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "0.23.2",
+    "@graphprotocol/graph-cli": "0.26.0",
     "@graphprotocol/graph-ts": "0.23.1",
-    "@sushiswap/trident": "1.0.0-canary.27"
+    "@sushiswap/trident": "1.0.0-canary.28",
+    "matchstick-as": "0.2.3"
   }
 }

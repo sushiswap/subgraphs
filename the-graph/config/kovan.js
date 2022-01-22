@@ -35,4 +35,8 @@ module.exports = {
     // USDC/WETH
     '0xc1f60ef13dd52904465746e87a9becacfe76621a',
   ],
+
+  miso: {
+    accessControls: { address: '0xE3226BbdC738013912419cA75FF1C36515F85F6c', startBlock: 29157241 },
+  },
 }

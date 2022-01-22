@@ -343,8 +343,8 @@ type ConstantProductPool implements Pool @entity {
   reserve1: BigDecimal!
   totalSupply: BigInt!
   transactionCount: BigInt!
-  totalValueLocked: BigDecimal!
-  # totalValueLockedUSD: BigDecimal!
+  liquidity: BigDecimal!
+  # liquidityUSD: BigDecimal!
   volume: BigDecimal!
   # volumeUSD: BigDecimal!
 }
@@ -368,8 +368,8 @@ type ConcentratedLiquidityPool implements Pool @entity {
   reserve1: BigDecimal!
   totalSupply: BigInt!
   transactionCount: BigInt!
-  totalValueLocked: BigDecimal!
-  # totalValueLockedUSD: BigDecimal!
+  liquidity: BigDecimal!
+  # liquidityUSD: BigDecimal!
   volume: BigDecimal!
   # volumeUSD: BigDecimal!
 }
@@ -394,7 +394,7 @@ type HybridPool implements Pool @entity {
   reserve1: BigInt!
   totalSupply: BigInt!
   transactionCount: BigInt!
-  totalValueLocked: BigDecimal!
+  liquidity: BigDecimal!
   volume: BigDecimal!
 }
 
@@ -416,7 +416,7 @@ type IndexPool implements Pool @entity {
   reserve1: BigInt!
   totalSupply: BigInt!
   transactionCount: BigInt!
-  totalValueLocked: BigDecimal!
+  liquidity: BigDecimal!
   volume: BigDecimal!
 }
 
@@ -429,7 +429,7 @@ type Token @entity {
   decimals: BigInt!
   decimalsSuccess: Boolean!
   transactionCount: BigInt!
-  totalValueLocked: BigDecimal!
+  liquidity: BigDecimal!
 }
 
 type Mint @entity {
