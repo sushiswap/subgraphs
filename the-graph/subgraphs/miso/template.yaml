@@ -1,4 +1,6 @@
 specVersion: 0.0.4
+description: MISO
+repository: https://github.com/sushiswap/subgraphs
 schema:
   file: ./schema.graphql
 dataSources:
