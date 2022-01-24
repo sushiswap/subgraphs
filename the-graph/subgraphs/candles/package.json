@@ -17,10 +17,14 @@
         "remove-local": "graph remove --node http://localhost:8020/ sushiswap/candles",
         "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/candles",
         "deploy-ethereum": "graph deploy --product hosted-service sushiswap/candles",
+        "deploy-ropsten": "graph deploy --product hosted-service sushiswap/ropsten-candles",
+        "deploy-rinkeby": "graph deploy --product hosted-service sushiswap/rinkeby-candles",
+        "deploy-goerli": "graph deploy --product hosted-service sushiswap/goerli-candles",
         "deploy-kovan": "graph deploy --product hosted-service sushiswap/kovan-candles",
         "deploy-polygon": "graph deploy --product hosted-service sushiswap/polygon-candles",
         "deploy-avalanche": "graph deploy --product hosted-service sushiswap/avalanche-candles",
-        "deploy-fantom": "graph deploy --product hosted-service sushiswap/fantom-candles"
+        "deploy-fantom": "graph deploy --product hosted-service sushiswap/fantom-candles",
+        "deploy-gnosis": "graph deploy --product hosted-service sushiswap/gnosis-candles"
     },
     "devDependencies": {
         "@graphprotocol/graph-cli": "0.26.0",
