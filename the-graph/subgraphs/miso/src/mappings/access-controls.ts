@@ -16,7 +16,7 @@ export function onRoleAdminChanged(event: RoleAdminChanged): void {
 export function onRoleGranted(event: RoleGranted): void {
   log.info('[AccessControls] onRoleGranted... {}', [event.params.role.toHex()])
   const accessControls = getOrCreateAccessControls()
-  log.info('[AccessControls] onRoleGranted... got access controls {}', [accessControls.id])
+
   const role = getOrCreateRole(event.params.role)
   if (event.params.role == ADMIN) {
     accessControls.adminCount = accessControls.adminCount.plus(BigInt.fromI32(1))
