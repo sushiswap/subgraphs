@@ -1,0 +1,32 @@
+{
+    "name": "@sushiswap/candles-subgraph",
+    "author": "Matthew Lilley <hello@matthewlilley.com>",
+    "license": "MIT",
+    "repository": {
+        "url": "sushiswap/subgraphs",
+        "directory": "subgraphs/candles"
+    },
+    "files": [
+        "generated"
+    ],
+    "scripts": {
+        "codegen": "graph codegen",
+        "build": "graph build",
+        "deploy": "graph deploy --node https://api.thegraph.com/deploy/ sushiswap/candles",
+        "create-local": "graph create --node http://localhost:8020/ sushiswap/candles",
+        "remove-local": "graph remove --node http://localhost:8020/ sushiswap/candles",
+        "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/candles",
+        "deploy-ethereum": "graph deploy --product hosted-service sushiswap/candles",
+        "deploy-kovan": "graph deploy --product hosted-service sushiswap/kovan-candles",
+        "deploy-polygon": "graph deploy --product hosted-service sushiswap/polygon-candles",
+        "deploy-avalanche": "graph deploy --product hosted-service sushiswap/avalanche-candles",
+        "deploy-fantom": "graph deploy --product hosted-service sushiswap/fantom-candles"
+    },
+    "devDependencies": {
+        "@graphprotocol/graph-cli": "0.26.0",
+        "@graphprotocol/graph-ts": "0.23.1",
+        "@sushiswap/core": "^1.4.2",
+        "@sushiswap/miso": "1.0.0-canary.37",
+        "matchstick-as": "0.2.3"
+    }
+}
