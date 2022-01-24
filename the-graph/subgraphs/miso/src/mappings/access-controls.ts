@@ -1,5 +1,5 @@
 import { RoleGranted, RoleRevoked, RoleAdminChanged } from '../../generated/AccessControls/AccessControls'
-import { getOrCreateAccessControls, getOrCreateRole } from '../functions'
+import { getOrCreateAccessControls, getOrCreateRole, getOrCreateUser } from '../functions'
 import { BigInt, log } from '@graphprotocol/graph-ts'
 import { ADMIN, MINTER, OPERATOR, SMART_CONTRACT } from '../constants'
 
@@ -28,6 +28,11 @@ export function onRoleGranted(event: RoleGranted): void {
     accessControls.smartContractCount = accessControls.smartContractCount.plus(BigInt.fromI32(1))
   }
   accessControls.save()
+
+  const user = getOrCreateUser(event.params.account.toHex())
+  user.role = role.id
+  user.save()
+
   log.info('[AccessControls] onRoleGranted completed... {}', [role.id])
 }
 
