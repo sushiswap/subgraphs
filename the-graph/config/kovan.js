@@ -38,5 +38,6 @@ module.exports = {
 
   miso: {
     accessControls: { address: '0xE3226BbdC738013912419cA75FF1C36515F85F6c', startBlock: 29157241 },
+    market: { address: '0x7Fca4F27CA87F6df3b925987067Beff53f28F94C', startBlock: 29157292 },
   },
 }

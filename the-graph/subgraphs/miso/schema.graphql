@@ -1,3 +1,11 @@
+# enum Role {
+#   ADMIN # 0x0000000000000000000000000000000000000000000000000000000000000000
+#   MINTER # 0x97667070c54ef182b0f5858b034beac1b6f3089aa2d3188bb1e8929f4fa9b929
+#   OPERATOR # 0x9d49f397ae9ef1a834b569acb967799a367061e305932181a44f5773da873bfd
+#   SMART_CONTRACT # 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6
+# }
+
+
 type Role @entity {
   id: ID!
 }
@@ -10,11 +18,78 @@ type AccessControl @entity {
   smartContractCount: BigInt!
 }
 
-# enum Role {
-#   ADMIN # 0x0000000000000000000000000000000000000000000000000000000000000000
-#   MINTER # 0x97667070c54ef182b0f5858b034beac1b6f3089aa2d3188bb1e8929f4fa9b929
-#   OPERATOR # 0x9d49f397ae9ef1a834b569acb967799a367061e305932181a44f5773da873bfd
-#   SMART_CONTRACT # 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6
+type Factory @entity {
+  id: ID!
+  templates: [Template!] @derivedFrom(field: "factory")
+  auctions: [Auction!] @derivedFrom(field: "factory")
+}
+
+type Template @entity {
+  id: ID!
+  factory: Factory!
+  auctions: [Auction!] @derivedFrom(field: "template")
+  removed: Boolean!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+
+# type Organization @entity {
+#   id: ID!
+#   name: String!
+#   members: [UserOrganization]! @derivedFrom(field: "user")
+# }
+
+# type User @entity {
+#   id: ID!
+#   name: String!
+#   organizations: [UserOrganization!] @derivedFrom(field: "organization")
+# }
+
+# type UserOrganization @entity {
+#   id: ID! # Set to `${user.id}-${organization.id}`
+#   user: User!
+#   organization: Organization!
 # }
 
 
+type Auction @entity {
+  id: ID!
+  factory: Factory!
+  template: Template!
+  participants: [Participant!] @derivedFrom(field: "auction")
+  participantCount: BigInt!
+  commitments: [Commitment!] @derivedFrom(field: "auction")
+  commitmentCount: BigInt!
+  committed: BigInt!
+
+  deploymentTimestamp: BigInt!
+  finalized: Boolean!
+  finalizedTimestamp: BigInt
+  cancelled: Boolean!
+  cancelledTimestamp: BigInt
+}
+
+
+type Participant @entity {
+  id: ID!
+  auction: Auction!
+  user: User!
+  commitments: [Commitment!] @derivedFrom(field: "participant")
+}
+
+type User @entity {
+  id: ID!
+  participated: [Participant!] @derivedFrom(field: "user")
+  commitments: [Commitment!] @derivedFrom(field: "user")
+}
+
+type Commitment @entity {
+  id: ID!
+  auction: Auction!
+  user: User!
+  participant: Participant!
+  amount: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
+}
