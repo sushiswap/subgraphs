@@ -1,4 +1,6 @@
 specVersion: 0.0.4
+description: MISO
+repository: https://github.com/sushiswap/subgraphs
 schema:
   file: ./schema.graphql
 dataSources:
@@ -27,3 +29,56 @@ dataSources:
         - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
           handler: onRoleRevoked
       file: ./src/mappings/access-controls.ts
+
+  - kind: ethereum/contract
+    name: MISOMarket
+    network: {{ network }}
+    source:
+      address: '{{ miso.market.address }}'
+      abi: MISOMarket
+      startBlock: {{ miso.market.startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Factory
+        - Template
+        - Auction
+      abis:
+        - name: MISOMarket
+          file: ../../node_modules/@sushiswap/miso/artifacts/contracts/MISOMarket.sol/MISOMarket.json
+      eventHandlers:
+        - event: AuctionTemplateAdded(address,uint256)
+          handler: onAuctionTemplateAdded
+        - event: AuctionTemplateRemoved(address,uint256)
+          handler: onAuctionTemplateRemoved
+        - event: MarketCreated(indexed address,indexed address,address)
+          handler: onMarketCreated
+      file: ./src/mappings/market.ts
+
+templates:
+  - kind: ethereum/contract
+    name: MisoAuction
+    network: {{ network }}
+    source:
+      abi: MisoAuction
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/auction.ts
+      entities:
+        - AuctionUser
+        - Commitment
+      abis:
+        - name: MisoAuction
+          file: ./abis/MisoAuction.json
+          # file: ../../node_modules/@sushiswap/miso/artifacts/contracts/interfaces/IMisoAuction.sol/IMisoAuction.json
+      eventHandlers:
+        - event: AddedCommitment(address,uint256)
+          handler: handleAddedCommitment
+        - event: AuctionFinalized()
+          handler: handleAuctionFinalized
+        - event: AuctionCancelled()
+          handler: handleAuctionCancelled

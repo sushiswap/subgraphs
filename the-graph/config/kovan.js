@@ -3,6 +3,7 @@ module.exports = {
   native: { address: '0xd0a1e359811322d97991e03f863a0c30c2cf029c' },
   sushi: { address: '0x0769fd68dfb93167989c6f7254cd0d766fb2841f' },
   weth: { address: '0xd0a1e359811322d97991e03f863a0c30c2cf029c' },
+  wbtc: { address: '0xd3a691c852cdb01e281545a27064741f0b7f6825' },
   bentobox: { address: '0xc381a85ed7C7448Da073b7d6C9d4cBf1Cbf576f0', startBlock: 27205233 },
   masterDeployer: { address: '0xdCFaae69E67E4bA73d5A890Fcae097eB3C615e96', startBlock: 28497203 },
   concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
@@ -38,5 +39,12 @@ module.exports = {
 
   miso: {
     accessControls: { address: '0xE3226BbdC738013912419cA75FF1C36515F85F6c', startBlock: 29157241 },
+    market: { address: '0x7Fca4F27CA87F6df3b925987067Beff53f28F94C', startBlock: 29157292 },
+  },
+  legacy: {
+    factory: {
+      address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
+      startBlock: '23647588',
+    },
   },
 }

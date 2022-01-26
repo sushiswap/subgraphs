@@ -18,22 +18,19 @@ program
 
 program
   .command('deploy')
-  .arguments('<subgraph>')
-  .action((subgraph) => {
-    console.log('deploy command called', { subgraph })
+  .arguments('<subgraph> <network>')
+  .action((subgraph, network) => {
+    console.log('deploy command called', { subgraph, network })
     exec(
-      `node_modules/.bin/graph deploy --product hosted-service matthewlilley/${subgraph} subgraphs/${subgraph}/subgraph.yaml`,
-      (error, stdout, stderr) => {
-        if (error) {
-          console.log('error', error.message)
-          return
-        }
-        if (stderr) {
-          console.log('stderr', stderr)
-          return
-        }
-        console.log('data', stdout)
-      }
+      `node_modules/.bin/mustache config/${network}.js subgraphs/${subgraph}/template.yaml > subgraphs/${subgraph}/subgraph.yaml`
+    ).stdout.pipe(process.stdout)
+    exec(
+      `node_modules/.bin/mustache config/${network}.js subgraphs/${subgraph}/src/constants/addresses.template.ts > subgraphs/${subgraph}/src/constants/addresses.ts`
+    ).stdout.pipe(process.stdout)
+    exec(`cd subgraphs/${subgraph} && ../../node_modules/.bin/graph codegen`).stdout.pipe(process.stdout)
+    exec(`node_modules/.bin/graph build subgraphs/${subgraph}/subgraph.yaml`).stdout.pipe(process.stdout)
+    exec(
+      `node_modules/.bin/graph deploy --product hosted-service sushiswap/${subgraph}-${network} subgraphs/${subgraph}/subgraph.yaml`
     ).stdout.pipe(process.stdout)
   })
 
@@ -50,19 +47,8 @@ program
     exec(
       `curl --location --request POST 'https://api.thegraph.com/index-node/graphql' --data '{"query":"{ ${
         method[options.version]
-      }(subgraphName: \\"${subgraphName}\\") { subgraph synced fatalError { message } nonFatalErrors { message } } }"}'`,
-      (error, stdout, stderr) => {
-        if (error) {
-          console.log('error', error.message)
-          return
-        }
-        if (stderr) {
-          console.log('stderr', stderr)
-          return
-        }
-        console.log('data', stdout)
-      }
-    )
+      }(subgraphName: \\"${subgraphName}\\") { subgraph synced fatalError { message } nonFatalErrors { message } } }"}'`
+    ).stdout.pipe(process.stdout)
   })
 
 program.parse(process.argv)

@@ -1,0 +1,85 @@
+type BentoBox @entity {
+  id: ID!
+  protocols: [Protocol!] @derivedFrom(field: "bentoBox")
+  users: [User!] @derivedFrom(field: "bentoBox")
+  tokens: [Token!] @derivedFrom(field: "bentoBox")
+  masterContracts: [MasterContract!]! @derivedFrom(field: "bentoBox")
+  clones: [Clone!] @derivedFrom(field: "bentoBox")
+  flashloans: [FlashLoan!] @derivedFrom(field: "bentoBox")  
+  protocolCount: BigInt!
+  userCount: BigInt!
+  tokenCount: BigInt!
+  masterContractCount: BigInt!
+  cloneCount: BigInt!
+  flashloanCount: BigInt!
+}
+
+
+type Token @entity {
+  id: ID!
+  bentoBox: BentoBox!
+  rebase: Rebase!
+  symbol: String!
+  symbolSuccess: Boolean!
+  name: String!
+  nameSuccess: Boolean!
+  decimals: BigInt!
+  decimalsSuccess: Boolean!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type Rebase @entity {
+  id: ID!
+  token: Token!
+  base: BigDecimal!
+  elastic: BigDecimal!
+}
+
+type FlashLoan @entity {
+  id: ID!
+  bentoBox: BentoBox!
+  borrower: Bytes!
+  receiver: Bytes!
+  token: Token!
+  amount: BigInt!
+  feeAmount: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type MasterContract @entity {
+  id: ID!
+  bentoBox: BentoBox!
+  clones: [Clone!] @derivedFrom(field: "masterContract")
+  masterContractApprovals: [MasterContractApproval!] @derivedFrom(field: "masterContract")
+}
+
+type Clone @entity {
+  id: ID!
+  bentoBox: BentoBox!
+  masterContract: MasterContract!
+  data: Bytes!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type MasterContractApproval @entity {
+  id: ID!
+  masterContract: MasterContract!
+  user: User!
+  approved: Boolean!
+}
+
+type Protocol @entity {
+  id: ID!
+  bentoBox: BentoBox!
+}
+
+type User @entity {
+  id: ID!
+  bentoBox: BentoBox!
+  masterContractApprovals: [MasterContractApproval!] @derivedFrom(field: "user")
+  block: BigInt!
+  timestamp: BigInt!
+}
