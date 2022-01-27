@@ -68,7 +68,8 @@ export function createConstantProductPool(deployParams: DeployPool__Params): Con
   pool.masterDeployer = MASTER_DEPLOYER_ADDRESS.toHex()
   // pool.template = "CONSTANT_PRODUCT";
   pool.factory = factory.id
-
+  
+  const assetIds: string[] = []
   for (let i = 0; i < assets.length; i++) {
     const token = getOrCreateToken(assets[i].toHex())
     const asset = new ConstantProductPoolAsset(pool.id.concat(':asset:').concat(i.toString()))
@@ -88,10 +89,12 @@ export function createConstantProductPool(deployParams: DeployPool__Params): Con
       tokenPrice.whitelistedPoolCount = tokenPrice.whitelistedPoolCount.plus(BigInt.fromI32(1))
       tokenPrice.save()
     }
-
+  
     asset.save()
+    assetIds.push(asset.id)
   }
 
+  pool.assets = assetIds
   pool.swapFee = swapFee
   pool.twapEnabled = twapEnabled
   pool.block = deployParams._event.block.number

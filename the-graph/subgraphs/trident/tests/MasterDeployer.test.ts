@@ -1,16 +1,13 @@
-import { test, assert } from 'matchstick-as/assembly/index'
-import { onAddToWhitelist, onDeployPool } from '../src/mappings/master-deployer'
-import {
-  CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS,
-  ADDRESS_ZERO,
-  MASTER_DEPLOYER_ADDRESS,
-  WHITELISTED_TOKEN_ADDRESSES,
-} from '../src/constants/addresses'
-import { createAddToWhitelistEvent, createDeployPoolEvent } from './mocks'
 import { Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts'
+import { assert, test } from 'matchstick-as/assembly/index'
 import { clearStore } from 'matchstick-as/assembly/store'
 import { ConstantProductPoolFactory, MasterDeployer, Token, TokenPrice } from '../generated/schema'
-
+import {
+  ADDRESS_ZERO, CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS, MASTER_DEPLOYER_ADDRESS,
+  WHITELISTED_TOKEN_ADDRESSES
+} from '../src/constants/addresses'
+import { onAddToWhitelist, onDeployPool, onRemoveFromWhitelist } from '../src/mappings/master-deployer'
+import { createAddToWhitelistEvent, createDeployPoolEvent, createRemoveWhitelistEvent } from './mocks'
 
 const BENTOBOX_ADDRESS = Address.fromString('0xc381a85ed7C7448Da073b7d6C9d4cBf1Cbf576f0')
 let constantProductPoolAddress = Address.fromString('0x0000000000000000000000000000000000000420')
@@ -41,26 +38,34 @@ function cleanup(): void {
 
 test('Can whitelist a factory and deploy a pool', () => {
   setup()
-
-  let newAddToWhitelistEvent = createAddToWhitelistEvent(CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS, masterDeployerOwner)
+  let addWhitelistEvent = createAddToWhitelistEvent(CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS, masterDeployerOwner)
   let deployData = createDeployData(WHITELISTED_TOKEN_ADDRESSES[0], WHITELISTED_TOKEN_ADDRESSES[1], false)
-  let newDeployPoolEvent = createDeployPoolEvent(
+  let deployPoolEvent = createDeployPoolEvent(
     constantProductPoolAddress,
     MASTER_DEPLOYER_ADDRESS,
     CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS,
     deployData
   )
+  let removeWhitelistEvent = createRemoveWhitelistEvent(CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS, masterDeployerOwner)
 
-  onAddToWhitelist(newAddToWhitelistEvent)
+  onAddToWhitelist(addWhitelistEvent)
   assert.fieldEquals('WhitelistedFactory', constantProductPoolFactoryAddress, 'id', constantProductPoolFactoryAddress)
 
-  onDeployPool(newDeployPoolEvent)
+  onDeployPool(deployPoolEvent)
   assert.fieldEquals(
     'ConstantProductPool',
     constantProductPoolAddress.toHex(),
     'id',
     constantProductPoolAddress.toHex()
   )
+
+  let asset1 = constantProductPoolAddress.toHex() + ':asset:0'
+  let asset2 = constantProductPoolAddress.toHex() + ':asset:1'
+  assert.fieldEquals('ConstantProductPoolAsset', asset1, 'id', asset1)
+  assert.fieldEquals('ConstantProductPoolAsset', asset2, 'id', asset2)
+
+  onRemoveFromWhitelist(removeWhitelistEvent)
+  assert.notInStore('WhitelistedFactory', constantProductPoolFactoryAddress)
 
   cleanup()
 })

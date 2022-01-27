@@ -1,6 +1,6 @@
 import { Address, Bytes, ethereum } from '@graphprotocol/graph-ts'
 import { newMockEvent } from 'matchstick-as'
-import { AddToWhitelist, DeployPool } from '../generated/MasterDeployer/MasterDeployer'
+import { AddToWhitelist, DeployPool, RemoveFromWhitelist } from '../generated/MasterDeployer/MasterDeployer'
 
 
 export function createAddToWhitelistEvent(factory: Address, ownerAddress: Address): AddToWhitelist {
@@ -44,6 +44,24 @@ export function createDeployPoolEvent(
   event.parameters.push(factoryParam)
   event.parameters.push(poolParam)
   event.parameters.push(deployDataParam)
+
+  return event
+}
+
+export function createRemoveWhitelistEvent(factory: Address, ownerAddress: Address): RemoveFromWhitelist {
+  let mockEvent = newMockEvent()
+  let event = new RemoveFromWhitelist(
+    ownerAddress,
+    mockEvent.logIndex,
+    mockEvent.transactionLogIndex,
+    mockEvent.logType,
+    mockEvent.block,
+    mockEvent.transaction,
+    mockEvent.parameters
+  )
+  event.parameters = new Array()
+  let factoryParam = new ethereum.EventParam('factory', ethereum.Value.fromAddress(factory))
+  event.parameters.push(factoryParam)
 
   return event
 }
