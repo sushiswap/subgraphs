@@ -1,0 +1,122 @@
+type Factory @entity {
+  # Contract address
+  id: ID!
+
+  # Volume USD
+  volumeUSD: BigDecimal!
+
+  # Volume NATIVE
+  volumeNative: BigDecimal!
+
+  # Untracked volume
+  untrackedVolumeUSD: BigDecimal!
+
+  # Liquidity USD
+  liquidityUSD: BigDecimal!
+
+  # Liquidity NATIVE
+  liquidityNative: BigDecimal!
+
+  # Pair count
+  pairCount: BigInt!
+
+  # Transaction count
+  txCount: BigInt!
+
+  # Token count
+  tokenCount: BigInt!
+
+  # User count
+  userCount: BigInt!
+
+  # Pairs
+  pairs: [Pair!]! @derivedFrom(field: "factory")
+
+  # Tokens
+  tokens: [Token!]! @derivedFrom(field: "factory")
+}
+
+type Pair @entity {
+  # Contract address
+  id: ID!
+  # Factory
+  factory: Factory!
+  # Token 0
+  token0: Token!
+  # Token 1
+  token1: Token!
+  # Kpi
+  kpi: PairKpi!
+  # Block
+  block: BigInt!
+  # Timestamp
+  timestamp: BigInt!
+}
+
+type PairKpi @entity {
+  id: ID!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type Token @entity {
+  id: ID!
+  factory: Factory!
+  price: TokenPrice!
+  kpi: TokenKpi!
+  symbol: String!
+  symbolSuccess: Boolean!
+  name: String!
+  nameSuccess: Boolean!
+  decimals: BigInt!
+  decimalsSuccess: Boolean!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type TokenKpi @entity {
+  id: ID!
+  token: Token!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type TokenPrice @entity {
+  id: ID!
+  token: Token!
+  derivedNative: BigDecimal!
+  derivedUSD: BigDecimal!
+  whitelistedPairCount: BigInt!
+  whitelistedPairs: [WhitelistedPair!]! @derivedFrom(field: "price")
+}
+
+type WhitelistedPair @entity {
+  id: ID!
+  price: TokenPrice!
+  pair: Pair!
+}
+
+type User @entity {
+  # User address
+  id: ID!
+}
