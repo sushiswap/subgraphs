@@ -1,9 +1,10 @@
-import { ConstantProductPoolKpi, PoolDaySnapshot, ConstantProductPool } from '../../generated/schema'
 import { BigInt } from '@graphprotocol/graph-ts'
+import { ConstantProductPoolKpi, PoolDaySnapshot } from '../../generated/schema'
+import { DAY_IN_SECONDS, HOUR_IN_SECONDS } from '../constants'
 
 export function updatePoolHourSnapshot(timestamp: BigInt, poolKpi: ConstantProductPoolKpi): void {
-  let hourIndex = timestamp.toI32() / 3600 // get unique hour within unix history
-  let hourStartUnix = hourIndex * 3600 // want the rounded effect
+  let hourIndex = timestamp.toI32() / HOUR_IN_SECONDS // get unique hour within unix history
+  let hourStartUnix = hourIndex * HOUR_IN_SECONDS // want the rounded effect
   let dayPairID = poolKpi.id.concat('-').concat(BigInt.fromI32(hourIndex).toString())
 
   let snapshot = PoolDaySnapshot.load(dayPairID)
@@ -22,8 +23,8 @@ export function updatePoolHourSnapshot(timestamp: BigInt, poolKpi: ConstantProdu
 }
 
 export function updatePoolDaySnapshot(timestamp: BigInt, poolKpi: ConstantProductPoolKpi): void {
-  let dayID = timestamp.toI32() / 86400
-  let dayStartTimestamp = dayID * 86400
+  let dayID = timestamp.toI32() / DAY_IN_SECONDS
+  let dayStartTimestamp = dayID * DAY_IN_SECONDS
   let dayPairID = poolKpi.id.concat('-').concat(BigInt.fromI32(dayID).toString())
 
   let snapshot = PoolDaySnapshot.load(dayPairID)

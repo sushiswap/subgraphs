@@ -87,7 +87,6 @@ export function onMint(event: MintEvent): void {
   mint.amount1 = amount1
   mint.recipient = event.params.recipient
   mint.sender = event.params.sender
-  mint.sender = event.params.sender
   mint.origin = event.transaction.from
 
   mint.logIndex = event.logIndex
@@ -100,7 +99,7 @@ export function onMint(event: MintEvent): void {
   token1.save()
   mint.save()
 
-  const liquidityPosition = getOrCreateLiquidityPosition(poolAddress.concat(':').concat(recipient))
+  getOrCreateLiquidityPosition(poolAddress.concat(':').concat(recipient))
 
   const nativePrice = getNativeTokenPrice()
   updatePoolDaySnapshot(event.block.timestamp, poolKpi)
@@ -172,7 +171,7 @@ export function onBurn(event: BurnEvent): void {
   token1.save()
   burn.save()
 
-  const liquidityPosition = getOrCreateLiquidityPosition(poolAddress.concat(':').concat(sender))
+  getOrCreateLiquidityPosition(poolAddress.concat(':').concat(sender))
 
   const nativePrice = getNativeTokenPrice()
   updatePoolDaySnapshot(event.block.timestamp, poolKpi)
@@ -203,7 +202,7 @@ export function onSync(event: Sync): void {
 
   // reset liquidity amounts
   token0Kpi.liquidity = token0Kpi.liquidity.minus(asset0.reserve)
-  token1Kpi.liquidity = token0Kpi.liquidity.minus(asset1.reserve)
+  token1Kpi.liquidity = token1Kpi.liquidity.minus(asset1.reserve)
 
   // log.debug('[ConstantProduct] onSync [BEFORE] pool.reserve0: {} pool.reserve1: {}', [
   //   asset0.reserve.toString(),

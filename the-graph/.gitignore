@@ -13,4 +13,4 @@ subgraph.yaml
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
-**/tests/.bin/
+**/tests/.*/

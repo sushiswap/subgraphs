@@ -12,6 +12,7 @@ import { getOrCreateTokenPrice } from './token-price'
 import { DeployPool__Params } from '../../generated/MasterDeployer/MasterDeployer'
 import { WHITELISTED_TOKEN_ADDRESSES } from '../constants/addresses'
 import { createWhitelistedPool } from './whitelisted-pool'
+import { logStore } from 'matchstick-as'
 
 export function getOrCreateConstantProductPoolFactory(
   id: Address = CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS
@@ -69,7 +70,6 @@ export function createConstantProductPool(deployParams: DeployPool__Params): Con
   // pool.template = "CONSTANT_PRODUCT";
   pool.factory = factory.id
   
-  const assetIds: string[] = []
   for (let i = 0; i < assets.length; i++) {
     const token = getOrCreateToken(assets[i].toHex())
     const asset = new ConstantProductPoolAsset(pool.id.concat(':asset:').concat(i.toString()))
@@ -91,10 +91,8 @@ export function createConstantProductPool(deployParams: DeployPool__Params): Con
     }
   
     asset.save()
-    assetIds.push(asset.id)
   }
 
-  pool.assets = assetIds
   pool.swapFee = swapFee
   pool.twapEnabled = twapEnabled
   pool.block = deployParams._event.block.number
