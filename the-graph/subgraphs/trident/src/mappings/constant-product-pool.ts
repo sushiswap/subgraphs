@@ -203,7 +203,7 @@ export function onSync(event: Sync): void {
 
   // reset liquidity amounts
   token0Kpi.liquidity = token0Kpi.liquidity.minus(asset0.reserve)
-  token1Kpi.liquidity = token0Kpi.liquidity.minus(asset1.reserve)
+  token1Kpi.liquidity = token1Kpi.liquidity.minus(asset1.reserve)
 
   // log.debug('[ConstantProduct] onSync [BEFORE] pool.reserve0: {} pool.reserve1: {}', [
   //   asset0.reserve.toString(),

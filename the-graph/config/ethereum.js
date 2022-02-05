@@ -14,6 +14,8 @@ module.exports = {
     '0xdac17f958d2ee523a2206206994597c13d831ec7',
     // DAI
     '0x6b175474e89094c44da98b954eedeac495271d0f',
+    // SUSHI
+    '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2',
   ],
   stableTokenAddresses: [
     // USDC
@@ -35,6 +37,7 @@ module.exports = {
   legacy: {
     factory: {
       address: '0xc0aee478e3658e2610c5f7a4a2e1777ce9e4f2ac',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
       startBlock: 10794229,
     },
   },
