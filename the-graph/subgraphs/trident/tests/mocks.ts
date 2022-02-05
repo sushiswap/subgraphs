@@ -1,5 +1,5 @@
 import { Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts'
-import { createMockedFunction, mockFunction, newMockEvent } from 'matchstick-as'
+import { createMockedFunction, newMockEvent } from 'matchstick-as'
 import { AddToWhitelist, DeployPool, RemoveFromWhitelist } from '../generated/MasterDeployer/MasterDeployer'
 import { Burn as BurnEvent, Mint as MintEvent, Swap as SwapEvent, Sync as SyncEvent, Transfer as TransferEvent } from '../generated/templates/ConstantProductPool/ConstantProductPool'
 

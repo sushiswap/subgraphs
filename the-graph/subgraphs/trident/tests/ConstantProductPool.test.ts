@@ -1,6 +1,6 @@
-import { Address, BigDecimal, BigInt, ByteArray, Bytes, ethereum, log } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts'
 import { assert, newMockEvent, test } from 'matchstick-as/assembly/index'
-import { clearStore, logStore } from 'matchstick-as/assembly/store'
+import { clearStore } from 'matchstick-as/assembly/store'
 import { ConstantProductPoolFactory, MasterDeployer } from '../generated/schema'
 import {
   ADDRESS_ZERO,
@@ -8,10 +8,15 @@ import {
   MASTER_DEPLOYER_ADDRESS,
   WHITELISTED_TOKEN_ADDRESSES,
 } from '../src/constants/addresses'
+import {
+  getConstantProductPoolKpi,
+  getPoolDaySnapshotId,
+  getPoolHourSnapshotId,
+  getTokenDaySnapshotId,
+  getTokenKpi,
+} from '../src/functions'
 import { onBurn, onMint, onSwap, onSync, onTransfer } from '../src/mappings/constant-product-pool'
 import { onAddToWhitelist, onDeployPool } from '../src/mappings/master-deployer'
-import { getConstantProductPoolKpi, getTokenKpi } from '../src/functions'
-import { getTokenDaySnapshotId, getPoolHourSnapshotId, getPoolDaySnapshotId } from '../src/functions'
 import {
   createAddToWhitelistEvent,
   createBurnEvent,
@@ -184,7 +189,6 @@ test('Mint, assert KPIs and snapshots', () => {
   assert.fieldEquals('TokenDaySnapshot', token1SnapshotId, 'liquidity', '6300.000001')
   assert.fieldEquals('PoolDaySnapshot', poolDaySnapshotId, 'liquidity', '8.999999999999999999')
   assert.fieldEquals('PoolHourSnapshot', poolHourSnapshotId, 'liquidity', '8.999999999999999999')
-
 
   mintEvent.block.timestamp = TIMESTAMP2
   mintEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2B') as Bytes
@@ -410,17 +414,6 @@ function updateTokenKpiLiquidity(liqudity0: BigDecimal, liqudity1: BigDecimal): 
   token1Kpi.liquidity = liqudity1
   token1Kpi.save()
 }
-
-// test('Syncing', () => {
-//   setup()
-//   let syncEvent = createSyncEvent(poolAddress, 100000000, 100000000)
-//   onSync(syncEvent)
-
-//   // let id = 'constant-product:' + syncEvent.transaction.hash.toHex() + ':0'
-//   // logStore()
-//   // assert.fieldEquals('Sync', id, 'id', id)
-//   cleanup()
-// })
 
 function createDeployData(tokenAddress1: string, tokenAddress2: string, twapEnabled: boolean): Bytes {
   let tupleArray: Array<ethereum.Value> = [
