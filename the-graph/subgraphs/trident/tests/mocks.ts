@@ -122,15 +122,8 @@ export function createBurnEvent(pool: Address, sender: Address, amount0: BigInt,
   return event
 }
 
-/**
- * NOTE: The arguments amount0 and amount1 is mapped to the event arguments: reserve0 and reserve1
- * The Sync event in ConstantProductPool contract has the wrong argument names, it's expecting amounts, not reserve.
- * @param pool 
- * @param amount0 
- * @param amount1 
- * @returns event
- */
-export function createSyncEvent(pool: Address, amount0: BigInt, amount1: BigInt): SyncEvent {
+
+export function createSyncEvent(pool: Address, reserve0: BigInt, reserve1: BigInt): SyncEvent {
   let mockEvent = newMockEvent()
   let event = new SyncEvent(
     pool,
@@ -142,8 +135,8 @@ export function createSyncEvent(pool: Address, amount0: BigInt, amount1: BigInt)
     mockEvent.parameters
   )
   event.parameters = new Array()
-  let reserve0Param = new ethereum.EventParam("reserve0", ethereum.Value.fromUnsignedBigInt(amount0))
-  let reserve1Param = new ethereum.EventParam("reserve1", ethereum.Value.fromUnsignedBigInt(amount1))
+  let reserve0Param = new ethereum.EventParam("reserve0", ethereum.Value.fromUnsignedBigInt(reserve0))
+  let reserve1Param = new ethereum.EventParam("reserve1", ethereum.Value.fromUnsignedBigInt(reserve1))
 
   event.parameters.push(reserve0Param)
   event.parameters.push(reserve1Param)

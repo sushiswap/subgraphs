@@ -197,8 +197,6 @@ export function onSync(event: Sync): void {
   const asset0 = getConstantProductPoolAsset(poolAddress.concat(':asset:0'))
   const asset1 = getConstantProductPoolAsset(poolAddress.concat(':asset:1'))
 
-  // log.debug('[ConstantProduct] onSync...... pool.assets[0]: {} pool.assets[1]: {}', [asset0.id, asset1.id])
-
   const token0 = getOrCreateToken(asset0.token)
   const token1 = getOrCreateToken(asset1.token)
 
@@ -208,11 +206,6 @@ export function onSync(event: Sync): void {
   // reset liquidity amounts
   token0Kpi.liquidity = token0Kpi.liquidity.minus(asset0.reserve)
   token1Kpi.liquidity = token1Kpi.liquidity.minus(asset1.reserve)
-
-  // log.debug('[ConstantProduct] onSync [BEFORE] pool.reserve0: {} pool.reserve1: {}', [
-  //   asset0.reserve.toString(),
-  //   asset1.reserve.toString(),
-  // ])
 
   const rebase0 = getRebase(asset0.token)
   const rebase1 = getRebase(asset1.token)
@@ -240,11 +233,6 @@ export function onSync(event: Sync): void {
     asset1.price = asset1.reserve.div(asset0.reserve)
   }
 
-  // log.debug('[ConstantProduct] onSync [AFTER] asset0.price: {} asset1.price: {}', [
-  //   asset0.price.toString(),
-  //   asset1.price.toString(),
-  // ])
-
   asset0.save()
   asset1.save()
 
@@ -265,10 +253,12 @@ export function onSync(event: Sync): void {
     }
   } else {
     // Avoid making this call unless neccasary
+    log.debug('get native price', [])
     nativePrice = getOrCreateTokenPrice(NATIVE_ADDRESS)
     token0Price = updateTokenPrice(token0)
     token1Price = updateTokenPrice(token1)
   }
+  log.debug("native price {} {} {}", [nativePrice.id, nativePrice.derivedUSD.toString(), nativePrice.derivedNative.toString()])
 
   poolKpi.liquidityNative = asset0.reserve
     .times(token0Price.derivedNative)
@@ -356,19 +346,10 @@ export function onTransfer(event: Transfer): void {
   }
 
   const amount = event.params.amount.divDecimal(BigDecimal.fromString('1e18'))
-
   const sender = event.params.sender.toHex()
-
   const recipient = event.params.recipient.toHex()
 
-  // log.debug('[ConstantProduct] onTransfer... {} {} {}', [
-  //   amount.toString(),
-  //   event.params.recipient.toHex(),
-  //   event.params.sender.toHex(),
-  // ])
-
   getOrCreateUser(sender)
-
   getOrCreateUser(recipient)
 
   const poolAddress = event.address.toHex()
@@ -390,25 +371,11 @@ export function onTransfer(event: Transfer): void {
   const recipientLiquidityPosition = getOrCreateLiquidityPosition(poolAddress.concat(':').concat(recipient))
 
   if (event.params.sender != ADDRESS_ZERO && sender != poolAddress) {
-    log.debug('[TRANSFER] TO {} BALANCE BEFORE {} BALANCE AFTER {} AMOUNT {}', [
-      sender,
-      senderLiquidityPosition.balance.toString(),
-      senderLiquidityPosition.balance.minus(amount).toString(),
-      amount.toString(),
-    ])
-
     senderLiquidityPosition.balance = senderLiquidityPosition.balance.minus(amount)
     senderLiquidityPosition.save()
   }
 
   if (event.params.recipient != ADDRESS_ZERO && recipient != poolAddress) {
-    log.debug('[TRANSFER] TO {} BALANCE BEFORE {} BALANCE AFTER {} AMOUNT {}', [
-      sender,
-      recipientLiquidityPosition.balance.toString(),
-      recipientLiquidityPosition.balance.plus(amount).toString(),
-      amount.toString(),
-    ])
-
     recipientLiquidityPosition.balance = recipientLiquidityPosition.balance.plus(amount)
     recipientLiquidityPosition.save()
   }

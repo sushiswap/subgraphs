@@ -1,6 +1,6 @@
 import { Address, BigDecimal, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts'
 import { assert, newMockEvent, test } from 'matchstick-as/assembly/index'
-import { clearStore } from 'matchstick-as/assembly/store'
+import { clearStore, logStore } from 'matchstick-as/assembly/store'
 import { ConstantProductPoolFactory, MasterDeployer } from '../generated/schema'
 import {
   ADDRESS_ZERO,
@@ -15,7 +15,7 @@ import {
   getTokenDaySnapshotId,
   getTokenKpi
 } from '../src/functions'
-import { createMintId, createSwapId, onBurn, onMint, onSwap, onSync, onTransfer } from '../src/mappings/constant-product-pool'
+import { createBurnId, createMintId, createSwapId, onBurn, onMint, onSwap, onSync, onTransfer } from '../src/mappings/constant-product-pool'
 import { onAddToWhitelist, onDeployPool } from '../src/mappings/master-deployer'
 import {
   createAddToWhitelistEvent,
@@ -83,7 +83,7 @@ test('Initial transfer is ignored', () => {
   setup()
 
   let mockEvent = newMockEvent()
-  let transferEvent = createTransferEvent(mockEvent.transaction, poolAddress, ADDRESS_ZERO, BIGINT_ETH_AMOUNT)
+  let transferEvent = createTransferEvent(mockEvent.transaction, poolAddress, ADDRESS_ZERO, BigInt.fromString("1000"))
   let transactionId = transferEvent.transaction.hash.toHex()
   onTransfer(transferEvent)
 
@@ -151,6 +151,7 @@ test('onMint creates a mint object with the expected fields', () => {
 
   cleanup()
 })
+
 
 test('Mint, assert KPIs and snapshots', () => {
   setup()
@@ -233,7 +234,7 @@ test('Mint, assert KPIs and snapshots', () => {
 
   // And: the latest burn event created a new PoolHourSnapshot with updated liquidity
   assert.fieldEquals('PoolHourSnapshot', poolHourSnapshotId3, 'liquidity', '15.888888888888888887')
-
+    // logStore()
   cleanup()
 })
 
@@ -249,11 +250,10 @@ test('onBurn creates a Burn object with the expected field values', () => {
     poolLiquidityInt
   )
 
-  let id = 'constant-product:' + burnEvent.transaction.hash.toHex() + ':0'
   let transactionId = burnEvent.transaction.hash.toHex()
+  let id = createBurnId(transactionId, BigInt.fromString("0"))
   let transferEvent = createTransferEvent(burnEvent.transaction, poolAddress, ADDRESS_ZERO, BIGINT_ETH_AMOUNT)
   let transferEvent2 = createTransferEvent(burnEvent.transaction, poolAddress, ADDRESS_ZERO, BIGINT_USD_AMOUNT)
-
   let syncEvent = createSyncEvent(poolAddress, BIGINT_USD_AMOUNT, BIGINT_USD_AMOUNT)
 
   // When: A burn event is triggered
@@ -351,11 +351,11 @@ test('Burn, assert KPIs and snapshots', () => {
   assert.fieldEquals('TokenDaySnapshot', token1SnapshotId2, 'liquidity', '7299.999998')
   assert.fieldEquals('PoolDaySnapshot', poolDaySnapshotId2, 'liquidity', '5.55555555555555355')
   assert.fieldEquals('PoolHourSnapshot', poolHourSnapshotId2, 'liquidity', '5.55555555555555355')
-
+  
   burnEvent.block.timestamp = TIMESTAMP3
   burnEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2C') as Bytes
   transferEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC1B') as Bytes
-  // When: Annother burn event is triggered (an hour later)
+  // When: Another burn event is triggered (an hour later)
   onTransfer(transferEvent)
   onTransfer(transferEvent2)
   onSync(syncEvent)

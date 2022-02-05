@@ -5,7 +5,6 @@ import { DAY_IN_SECONDS, HOUR_IN_SECONDS } from '../constants'
 
 export function updatePoolHourSnapshot(timestamp: BigInt, poolKpi: ConstantProductPoolKpi): void {
 
-  log.debug("updatePoolHourSnapshot burnEvent block timestamp {} ", [timestamp.toString()])
   let id = getPoolHourSnapshotId(poolKpi.id, timestamp)
 
   let snapshot = PoolHourSnapshot.load(id)
