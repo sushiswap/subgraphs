@@ -13,9 +13,9 @@ import {
   getPoolDaySnapshotId,
   getPoolHourSnapshotId,
   getTokenDaySnapshotId,
-  getTokenKpi,
+  getTokenKpi
 } from '../src/functions'
-import { onBurn, onMint, onSwap, onSync, onTransfer } from '../src/mappings/constant-product-pool'
+import { createMintId, createSwapId, onBurn, onMint, onSwap, onSync, onTransfer } from '../src/mappings/constant-product-pool'
 import { onAddToWhitelist, onDeployPool } from '../src/mappings/master-deployer'
 import {
   createAddToWhitelistEvent,
@@ -129,13 +129,15 @@ test('onMint creates a mint object with the expected fields', () => {
     bob,
     poolLiquidityInt
   )
+  let transferEvent = createTransferEvent(mintEvent.transaction, poolAddress, ADDRESS_ZERO, BIGINT_ETH_AMOUNT)
   let syncEvent = createSyncEvent(poolAddress, BIGINT_USD_AMOUNT, BIGINT_USD_AMOUNT)
 
+  onTransfer(transferEvent)
   onSync(syncEvent)
   onMint(mintEvent)
 
-  let transactionId = mintEvent.transaction.hash.toHex()
-  let id = 'constant-product:' + transactionId + ':0'
+  let transactionId = transferEvent.transaction.hash.toHex()
+  let id = createMintId(transactionId, BigInt.fromString("0"))
   assert.fieldEquals('Mint', id, 'transaction', transactionId)
   assert.fieldEquals('Mint', id, 'pool', poolAddress.toHex())
   assert.fieldEquals('Mint', id, 'token0', WHITELISTED_TOKEN_ADDRESSES[0])
@@ -170,8 +172,10 @@ test('Mint, assert KPIs and snapshots', () => {
     poolLiquidityInt
   )
   mintEvent.block.timestamp = TIMESTAMP1
+  let transferEvent = createTransferEvent(mintEvent.transaction, poolAddress, ADDRESS_ZERO, BIGINT_ETH_AMOUNT)
   let syncEvent = createSyncEvent(poolAddress, BIGINT_USD_AMOUNT, BIGINT_USD_AMOUNT)
 
+  onTransfer(transferEvent)
   onSync(syncEvent)
   onMint(mintEvent)
 
@@ -192,7 +196,9 @@ test('Mint, assert KPIs and snapshots', () => {
 
   mintEvent.block.timestamp = TIMESTAMP2
   mintEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2B') as Bytes
+  transferEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC1A') as Bytes
   // When: Annother mint event is triggered (a day later)
+  onTransfer(transferEvent)
   onSync(syncEvent)
   onMint(mintEvent)
 
@@ -215,7 +221,9 @@ test('Mint, assert KPIs and snapshots', () => {
 
   mintEvent.block.timestamp = TIMESTAMP3
   mintEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2C') as Bytes
+  transferEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC1B') as Bytes
   // When: Another mint event is triggered (an hour later)
+  onTransfer(transferEvent)
   onSync(syncEvent)
   onMint(mintEvent)
 
@@ -320,6 +328,7 @@ test('Burn, assert KPIs and snapshots', () => {
 
   burnEvent.block.timestamp = TIMESTAMP2
   burnEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2B') as Bytes
+  transferEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC1A') as Bytes
   // When: Another burn event is triggered (a day later)
   onTransfer(transferEvent)
   onTransfer(transferEvent2)
@@ -345,6 +354,7 @@ test('Burn, assert KPIs and snapshots', () => {
 
   burnEvent.block.timestamp = TIMESTAMP3
   burnEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2C') as Bytes
+  transferEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC1B') as Bytes
   // When: Annother burn event is triggered (an hour later)
   onTransfer(transferEvent)
   onTransfer(transferEvent2)
@@ -376,8 +386,9 @@ test('Swap', () => {
   let tokenOut = Address.fromString(WHITELISTED_TOKEN_ADDRESSES[1])
   let swapEvent = createSwapEvent(poolAddress, bob, tokenIn, tokenOut, BIGINT_ETH_AMOUNT, BIGINT_USD_AMOUNT)
 
-  let id = 'constant-product:' + swapEvent.transaction.hash.toHex() + ':1'
+
   let transactionId = swapEvent.transaction.hash.toHex()
+  let id = createSwapId(transactionId, BigInt.fromString("0"))
   let transferEvent = createTransferEvent(mockEvent.transaction, poolAddress, ADDRESS_ZERO, BIGINT_ETH_AMOUNT)
 
   onTransfer(transferEvent)

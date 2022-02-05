@@ -29,6 +29,7 @@ import {
 } from '../functions'
 
 import { ADDRESS_ZERO, STABLE_POOL_ADDRESSES, NATIVE_ADDRESS } from '../constants/addresses'
+import { CONSTANT_PRODUCT_PREFIX } from '../constants/id'
 
 export function onMint(event: MintEvent): void {
   // log.debug('[ConstantProduct] onMint...', [])
@@ -77,7 +78,7 @@ export function onMint(event: MintEvent): void {
 
   const transaction = getOrCreateTransaction(event)
 
-  const mint = new Mint('constant-product:' + transaction.id.toString() + ':' + poolKpi.transactionCount.toString())
+  const mint = new Mint(createMintId(transaction.id, poolKpi.transactionCount))
 
   mint.transaction = transaction.id
   mint.pool = poolAddress
@@ -149,7 +150,7 @@ export function onBurn(event: BurnEvent): void {
 
   const transaction = getOrCreateTransaction(event)
 
-  const burn = new Burn('constant-product:' + transaction.id.toString() + ':' + poolKpi.transactionCount.toString())
+  const burn = new Burn(createBurnId(transaction.id, poolKpi.transactionCount))
 
   burn.transaction = transaction.id
   burn.pool = poolAddress
@@ -296,9 +297,6 @@ export function onSwap(event: SwapEvent): void {
   factory.save()
 
   const poolAddress = event.address.toHex()
-  const poolKpi = getConstantProductPoolKpi(poolAddress)
-  poolKpi.transactionCount = poolKpi.transactionCount.plus(BigInt.fromI32(1))
-  poolKpi.save()
 
   const tokenIn = getOrCreateToken(tokenInAddress)
 
@@ -314,7 +312,12 @@ export function onSwap(event: SwapEvent): void {
 
   const transaction = getOrCreateTransaction(event)
 
-  const swap = new Swap('constant-product:' + transaction.id.toString() + ':' + poolKpi.transactionCount.toString())
+  const poolKpi = getConstantProductPoolKpi(poolAddress)
+
+  const swap = new Swap(createSwapId(transaction.id, poolKpi.transactionCount))
+
+  poolKpi.transactionCount = poolKpi.transactionCount.plus(BigInt.fromI32(1))
+  poolKpi.save()
 
   swap.transaction = transaction.id
   swap.pool = poolAddress
@@ -409,4 +412,20 @@ export function onTransfer(event: Transfer): void {
     recipientLiquidityPosition.balance = recipientLiquidityPosition.balance.plus(amount)
     recipientLiquidityPosition.save()
   }
+}
+
+export function createMintId(transactionId: string, poolKpiTransactionCount: BigInt): string {
+  return createId(transactionId, poolKpiTransactionCount)
+}
+
+export function createBurnId(transactionId: string, poolKpiTransactionCount: BigInt): string {
+  return createId(transactionId, poolKpiTransactionCount)
+}
+
+export function createSwapId(transactionId: string, poolKpiTransactionCount: BigInt): string {
+  return createId(transactionId, poolKpiTransactionCount)
+}
+
+function createId(transactionId: string, poolKpiTransactionCount: BigInt): string {
+  return CONSTANT_PRODUCT_PREFIX + transactionId + ':' + poolKpiTransactionCount.toString()
 }
