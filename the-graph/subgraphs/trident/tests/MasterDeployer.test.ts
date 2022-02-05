@@ -55,7 +55,7 @@ test('Can manage whitelisting and deploy a pool', () => {
   assert.fieldEquals('WhitelistedFactory', constantProductPoolFactoryAddress, 'id', constantProductPoolFactoryAddress)
 
   getOrCreateTokenMock(WHITELISTED_TOKEN_ADDRESSES[0], 18, 'Wrapped Ether', 'WETH')
-  getOrCreateTokenMock(WHITELISTED_TOKEN_ADDRESSES[1], 18, 'USD Coin', 'USDC')
+  getOrCreateTokenMock(WHITELISTED_TOKEN_ADDRESSES[1], 6, 'USD Coin', 'USDC')
   onDeployPool(deployPoolEvent)
   assert.fieldEquals(
     'ConstantProductPool',

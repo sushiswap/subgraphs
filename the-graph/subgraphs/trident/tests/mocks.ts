@@ -1,5 +1,5 @@
 import { Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts'
-import { createMockedFunction, newMockEvent } from 'matchstick-as'
+import { createMockedFunction, mockFunction, newMockEvent } from 'matchstick-as'
 import { AddToWhitelist, DeployPool, RemoveFromWhitelist } from '../generated/MasterDeployer/MasterDeployer'
 import { Burn as BurnEvent, Mint as MintEvent, Swap as SwapEvent, Sync as SyncEvent, Transfer as TransferEvent } from '../generated/templates/ConstantProductPool/ConstantProductPool'
 
@@ -67,7 +67,7 @@ export function createRemoveWhitelistEvent(factory: Address, ownerAddress: Addre
   return event
 }
 
-export function createMintEvent(pool: Address, sender: Address, amount0: number, amount1: number, recipient: Address, liquidity: number): MintEvent {
+export function createMintEvent(pool: Address, sender: Address, amount0: BigInt, amount1: BigInt, recipient: Address, liquidity: BigInt): MintEvent {
   let mockEvent = newMockEvent()
   let event = new MintEvent(
     pool,
@@ -80,10 +80,10 @@ export function createMintEvent(pool: Address, sender: Address, amount0: number,
   )
   event.parameters = new Array()
   let senderParam = new ethereum.EventParam("sender", ethereum.Value.fromAddress(sender))
-  let amount0Param = new ethereum.EventParam("amount0", ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(amount0 as i32)))
-  let amount1Param = new ethereum.EventParam("amount1", ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(amount1 as i32)))
+  let amount0Param = new ethereum.EventParam("amount0", ethereum.Value.fromUnsignedBigInt(amount0))
+  let amount1Param = new ethereum.EventParam("amount1", ethereum.Value.fromUnsignedBigInt(amount1))
   let recipientParam = new ethereum.EventParam("recipient", ethereum.Value.fromAddress(recipient))
-  let liquidityParam = new ethereum.EventParam("liquidity", ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(liquidity as i32)))
+  let liquidityParam = new ethereum.EventParam("liquidity", ethereum.Value.fromUnsignedBigInt(liquidity))
 
   event.parameters.push(senderParam)
   event.parameters.push(amount0Param)
@@ -95,7 +95,7 @@ export function createMintEvent(pool: Address, sender: Address, amount0: number,
 }
 
 
-export function createBurnEvent(pool: Address, sender: Address, amount0: number, amount1: number, recipient: Address, liquidity: number): BurnEvent {
+export function createBurnEvent(pool: Address, sender: Address, amount0: BigInt, amount1: BigInt, recipient: Address, liquidity: BigInt): BurnEvent {
   let mockEvent = newMockEvent()
   let event = new BurnEvent(
     pool,
@@ -108,10 +108,10 @@ export function createBurnEvent(pool: Address, sender: Address, amount0: number,
   )
   event.parameters = new Array()
   let senderParam = new ethereum.EventParam("sender", ethereum.Value.fromAddress(sender))
-  let amount0Param = new ethereum.EventParam("amount0", ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(amount0 as i32)))
-  let amount1Param = new ethereum.EventParam("amount1", ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(amount1 as i32)))
+  let amount0Param = new ethereum.EventParam("amount0", ethereum.Value.fromUnsignedBigInt(amount0))
+  let amount1Param = new ethereum.EventParam("amount1", ethereum.Value.fromUnsignedBigInt(amount1))
   let recipientParam = new ethereum.EventParam("recipient", ethereum.Value.fromAddress(recipient))
-  let liquidityParam = new ethereum.EventParam("liquidity", ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(liquidity as i32)))
+  let liquidityParam = new ethereum.EventParam("liquidity", ethereum.Value.fromUnsignedBigInt(liquidity))
 
   event.parameters.push(senderParam)
   event.parameters.push(amount0Param)
@@ -122,8 +122,15 @@ export function createBurnEvent(pool: Address, sender: Address, amount0: number,
   return event
 }
 
-
-export function createSyncEvent(pool: Address, reserve0: number, reserve1: number): SyncEvent {
+/**
+ * NOTE: The arguments amount0 and amount1 is mapped to the event arguments: reserve0 and reserve1
+ * The Sync event in ConstantProductPool contract has the wrong argument names, it's expecting amounts, not reserve.
+ * @param pool 
+ * @param amount0 
+ * @param amount1 
+ * @returns event
+ */
+export function createSyncEvent(pool: Address, amount0: BigInt, amount1: BigInt): SyncEvent {
   let mockEvent = newMockEvent()
   let event = new SyncEvent(
     pool,
@@ -135,8 +142,8 @@ export function createSyncEvent(pool: Address, reserve0: number, reserve1: numbe
     mockEvent.parameters
   )
   event.parameters = new Array()
-  let reserve0Param = new ethereum.EventParam("reserve0", ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(reserve0 as i32)))
-  let reserve1Param = new ethereum.EventParam("reserve1", ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(reserve1 as i32)))
+  let reserve0Param = new ethereum.EventParam("reserve0", ethereum.Value.fromUnsignedBigInt(amount0))
+  let reserve1Param = new ethereum.EventParam("reserve1", ethereum.Value.fromUnsignedBigInt(amount1))
 
   event.parameters.push(reserve0Param)
   event.parameters.push(reserve1Param)
@@ -144,7 +151,7 @@ export function createSyncEvent(pool: Address, reserve0: number, reserve1: numbe
   return event
 }
 
-export function createTransferEvent(transaction: ethereum.Transaction, sender: Address, recipient: Address, amount: number): TransferEvent {
+export function createTransferEvent(transaction: ethereum.Transaction, sender: Address, recipient: Address, amount: BigInt): TransferEvent {
   let mockEvent = newMockEvent()
   let event = new TransferEvent(
     sender,
@@ -159,7 +166,7 @@ export function createTransferEvent(transaction: ethereum.Transaction, sender: A
 
   let senderParam = new ethereum.EventParam("sender", ethereum.Value.fromAddress(sender))
   let recipientParam = new ethereum.EventParam("recipient", ethereum.Value.fromAddress(recipient))
-  let amountParam = new ethereum.EventParam("reserve0", ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(amount as i32)))
+  let amountParam = new ethereum.EventParam("reserve0", ethereum.Value.fromUnsignedBigInt(amount))
 
   event.parameters.push(senderParam)
   event.parameters.push(recipientParam)
@@ -173,8 +180,8 @@ export function createSwapEvent(
   recipient: Address,
   tokenIn: Address,
   tokenOut: Address,
-  amountIn: number,
-  amountOut: number
+  amountIn: BigInt,
+  amountOut: BigInt
   ): SwapEvent {
   let mockEvent = newMockEvent()
   let event = new SwapEvent(
@@ -190,8 +197,8 @@ export function createSwapEvent(
   let recipientParam = new ethereum.EventParam("recipient", ethereum.Value.fromAddress(recipient))
   let tokenInParam = new ethereum.EventParam("tokenIn", ethereum.Value.fromAddress(tokenIn))
   let tokenOutParam = new ethereum.EventParam("tokenOut", ethereum.Value.fromAddress(tokenOut))
-  let amountInParam = new ethereum.EventParam("amountIn", ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(amountIn as i32)))
-  let amountOutParam = new ethereum.EventParam("amountOut", ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(amountOut as i32)))
+  let amountInParam = new ethereum.EventParam("amountIn", ethereum.Value.fromUnsignedBigInt(amountIn))
+  let amountOutParam = new ethereum.EventParam("amountOut", ethereum.Value.fromUnsignedBigInt(amountOut))
 
   event.parameters.push(recipientParam)
   event.parameters.push(tokenInParam)
@@ -203,10 +210,10 @@ export function createSwapEvent(
 }
 
 
-export function getOrCreateTokenMock(contractAddress: string, decimals: number, name: string, symbol: string): void {
+export function getOrCreateTokenMock(contractAddress: string, decimals: i32, name: string, symbol: string): void {
 createMockedFunction(Address.fromString(contractAddress), 'decimals', 'decimals():(uint8)')
 .returns([
-  ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(decimals as i32))
+  ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(decimals))
 ])
 createMockedFunction(Address.fromString(contractAddress), 'name', 'name():(string)')
 .returns([

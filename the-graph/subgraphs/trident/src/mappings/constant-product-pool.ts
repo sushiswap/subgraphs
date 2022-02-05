@@ -97,6 +97,8 @@ export function onMint(event: MintEvent): void {
   factory.save()
   token0.save()
   token1.save()
+  token0Kpi.save()
+  token1Kpi.save()
   mint.save()
 
   getOrCreateLiquidityPosition(poolAddress.concat(':').concat(recipient))
@@ -169,6 +171,8 @@ export function onBurn(event: BurnEvent): void {
   factory.save()
   token0.save()
   token1.save()
+  token0Kpi.save()
+  token1Kpi.save()
   burn.save()
 
   getOrCreateLiquidityPosition(poolAddress.concat(':').concat(sender))

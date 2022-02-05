@@ -1,6 +1,7 @@
 import { Token, TokenDaySnapshot, TokenKpi, TokenPrice } from '../../generated/schema'
 import { BigInt } from '@graphprotocol/graph-ts'
 import { getTokenPrice } from './token-price'
+import { DAY_IN_SECONDS } from '../constants'
 
 export function updateTokenDaySnapshot(
   timestamp: BigInt,
@@ -9,18 +10,13 @@ export function updateTokenDaySnapshot(
   nativeTokenPrice: TokenPrice
 ): void {
   let tokenPrice = getTokenPrice(token.id)
+  let id = getTokenDaySnapshotId(token.id, timestamp)
 
-  let dayID = timestamp.toI32() / 86400
-
-  let dayStartTimestamp = dayID * 86400
-
-  let tokenDayID = token.id.toString().concat('-').concat(BigInt.fromI32(dayID).toString())
-
-  let snapshot = TokenDaySnapshot.load(tokenDayID)
+  let snapshot = TokenDaySnapshot.load(id)
 
   if (snapshot === null) {
-    snapshot = new TokenDaySnapshot(tokenDayID)
-    snapshot.date = dayStartTimestamp
+    snapshot = new TokenDaySnapshot(id)
+    snapshot.date = getDayStartDate(timestamp)
     snapshot.token = token.id
   }
 
@@ -31,4 +27,15 @@ export function updateTokenDaySnapshot(
   snapshot.priceUSD = tokenPrice.derivedNative.times(nativeTokenPrice.derivedUSD)
   snapshot.transactionCount = snapshot.transactionCount.plus(BigInt.fromI32(1))
   snapshot.save()
+}
+
+
+function getDayStartDate(timestamp: BigInt): i32 {
+  let dayIndex = timestamp.toI32() / DAY_IN_SECONDS // get unique day within unix history
+  return dayIndex * DAY_IN_SECONDS // want the rounded effect
+}
+
+export function getTokenDaySnapshotId(tokenId: string, timestamp: BigInt): string {
+  let startDate = getDayStartDate(timestamp)
+  return tokenId.concat('-').concat(BigInt.fromI32(startDate).toString())
 }
