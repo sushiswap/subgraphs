@@ -148,7 +148,6 @@ export function updateTokenPrice(token: Token): TokenPrice {
       }
     }
   }
-
   tokenPriceToUpdate.save()
 
   return tokenPriceToUpdate

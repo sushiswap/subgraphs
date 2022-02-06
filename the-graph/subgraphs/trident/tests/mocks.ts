@@ -1,7 +1,9 @@
 import { Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts'
 import { createMockedFunction, newMockEvent } from 'matchstick-as'
 import { AddToWhitelist, DeployPool, RemoveFromWhitelist } from '../generated/MasterDeployer/MasterDeployer'
+import { LogDeposit as DepositEvent } from '../generated/BentoBox/BentoBox'
 import { Burn as BurnEvent, Mint as MintEvent, Swap as SwapEvent, Sync as SyncEvent, Transfer as TransferEvent } from '../generated/templates/ConstantProductPool/ConstantProductPool'
+import { ADDRESS_ZERO } from '../src/constants/addresses'
 
 
 export function createAddToWhitelistEvent(factory: Address, ownerAddress: Address): AddToWhitelist {
@@ -202,6 +204,37 @@ export function createSwapEvent(
   return event
 }
 
+
+export function createDepositEvent( 
+  token: Address,
+  amount: BigInt,
+  share: BigInt): DepositEvent {
+
+  let mockEvent = newMockEvent()
+  let event = new DepositEvent(
+    token,
+    mockEvent.logIndex,
+    mockEvent.transactionLogIndex,
+    mockEvent.logType,
+    mockEvent.block,
+    mockEvent.transaction,
+    mockEvent.parameters
+  )
+  event.parameters = new Array()
+  let tokenParam = new ethereum.EventParam("token", ethereum.Value.fromAddress(token))
+  let fromParam = new ethereum.EventParam("from", ethereum.Value.fromAddress(ADDRESS_ZERO)) // Needs to be set but is never used in mapping
+  let toParam = new ethereum.EventParam("to", ethereum.Value.fromAddress(ADDRESS_ZERO)) // Needs to be set but is never used in mapping
+  let amountParam = new ethereum.EventParam("amount", ethereum.Value.fromUnsignedBigInt(amount))
+  let shareParam = new ethereum.EventParam("share", ethereum.Value.fromUnsignedBigInt(share))
+
+  event.parameters.push(tokenParam)
+  event.parameters.push(fromParam)
+  event.parameters.push(toParam)
+  event.parameters.push(amountParam)
+  event.parameters.push(shareParam)
+
+  return event
+}
 
 export function getOrCreateTokenMock(contractAddress: string, decimals: i32, name: string, symbol: string): void {
 createMockedFunction(Address.fromString(contractAddress), 'decimals', 'decimals():(uint8)')

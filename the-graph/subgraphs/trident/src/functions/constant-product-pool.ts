@@ -12,7 +12,6 @@ import { getOrCreateTokenPrice } from './token-price'
 import { DeployPool__Params } from '../../generated/MasterDeployer/MasterDeployer'
 import { WHITELISTED_TOKEN_ADDRESSES } from '../constants/addresses'
 import { createWhitelistedPool } from './whitelisted-pool'
-import { logStore } from 'matchstick-as'
 
 export function getOrCreateConstantProductPoolFactory(
   id: Address = CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS

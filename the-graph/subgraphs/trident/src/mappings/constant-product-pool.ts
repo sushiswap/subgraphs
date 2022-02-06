@@ -210,20 +210,19 @@ export function onSync(event: Sync): void {
   const rebase0 = getRebase(asset0.token)
   const rebase1 = getRebase(asset1.token)
 
-  const reserve0 = toAmount(event.params.reserve0, rebase0)
-  const reserve1 = toAmount(event.params.reserve1, rebase1)
-
-  asset0.reserve = reserve0.div(
+  const reserve0 = toAmount(event.params.reserve0, rebase0).div(
     BigInt.fromI32(10)
       .pow(token0.decimals.toI32() as u8)
       .toBigDecimal()
   )
-
-  asset1.reserve = reserve1.div(
+  const reserve1 = toAmount(event.params.reserve1, rebase1).div(
     BigInt.fromI32(10)
       .pow(token1.decimals.toI32() as u8)
       .toBigDecimal()
   )
+
+  asset0.reserve = reserve0
+  asset1.reserve = reserve1
 
   if (asset1.reserve.notEqual(BigDecimal.fromString('0'))) {
     asset0.price = asset0.reserve.div(asset1.reserve)
@@ -253,12 +252,10 @@ export function onSync(event: Sync): void {
     }
   } else {
     // Avoid making this call unless neccasary
-    log.debug('get native price', [])
     nativePrice = getOrCreateTokenPrice(NATIVE_ADDRESS)
     token0Price = updateTokenPrice(token0)
     token1Price = updateTokenPrice(token1)
   }
-  log.debug("native price {} {} {}", [nativePrice.id, nativePrice.derivedUSD.toString(), nativePrice.derivedNative.toString()])
 
   poolKpi.liquidityNative = asset0.reserve
     .times(token0Price.derivedNative)
