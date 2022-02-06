@@ -1,5 +1,5 @@
 // Pricing module...
-import { BigDecimal, log } from '@graphprotocol/graph-ts'
+import { BigDecimal } from '@graphprotocol/graph-ts'
 import { NATIVE_ADDRESS, STABLE_TOKEN_ADDRESSES, STABLE_POOL_ADDRESSES } from '../constants/addresses'
 import { ConstantProductPoolAsset, Token, TokenPrice } from '../../generated/schema'
 import { getConstantProductPoolAsset, getOrCreateWhitelistedPool, getConstantProductPoolKpi } from '../functions'

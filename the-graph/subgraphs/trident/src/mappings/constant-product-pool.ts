@@ -1,4 +1,4 @@
-import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 import {
   Approval,
   Burn as BurnEvent,
@@ -17,7 +17,6 @@ import {
   getConstantProductPoolAsset,
   getOrCreateTokenPrice,
   getRebase,
-  getTokenPrice,
   getNativeTokenPrice,
   toAmount,
   updateTokenDaySnapshot,

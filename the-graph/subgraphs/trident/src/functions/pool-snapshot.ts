@@ -1,5 +1,4 @@
 import { BigInt } from '@graphprotocol/graph-ts'
-import { log } from 'matchstick-as'
 import { ConstantProductPoolKpi, PoolDaySnapshot, PoolHourSnapshot } from '../../generated/schema'
 import { DAY_IN_SECONDS, HOUR_IN_SECONDS } from '../constants'
 
@@ -51,10 +50,10 @@ function getDayStartDate(timestamp: BigInt): i32 {
 
 export function getPoolHourSnapshotId(poolKpiId: string, timestamp: BigInt): string {
   let startDate = getHourStartDate(timestamp)
-  return poolKpiId.concat('-').concat(BigInt.fromI32(startDate).toString())
+  return poolKpiId.concat('-hour-').concat(BigInt.fromI32(startDate).toString())
 }
 
 export function getPoolDaySnapshotId(poolKpiId: string, timestamp: BigInt): string {
   let startDate = getDayStartDate(timestamp)
-  return poolKpiId.concat('-').concat(BigInt.fromI32(startDate).toString())
+  return poolKpiId.concat('-day-').concat(BigInt.fromI32(startDate).toString())
 }
