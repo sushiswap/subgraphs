@@ -83,3 +83,11 @@ type User @entity {
   block: BigInt!
   timestamp: BigInt!
 }
+
+
+type UserToken @entity {
+  id: ID!
+  token: Token!
+  user: User!
+  share: BigInt!
+}
