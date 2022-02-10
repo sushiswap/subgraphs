@@ -11,6 +11,7 @@ import {
   onLogStrategyLoss,
   onLogStrategyProfit,
   onLogStrategySet,
+  onLogStrategyTargetPercentage,
   onLogTransfer,
   onLogWhiteListMasterContract,
   onLogWithdraw
@@ -25,6 +26,7 @@ import {
   createStrategyInvestEvent,
   createStrategyLossEvent,
   createStrategyProfitEvent,
+  createTargetPercentageEvent,
   createTokenMock,
   createTransferEvent,
   createWhitelistMasterContractEvent,
@@ -418,10 +420,23 @@ test('Flashloans increase the BentoBoxs flashloanCount', () => {
 
   onLogFlashLoan(flashLoanEvent)
   assert.fieldEquals('BentoBox', BENTOBOX.toHex(), 'flashloanCount', '1')
-  
+
   onLogFlashLoan(flashLoanEvent)
 
   assert.fieldEquals('BentoBox', BENTOBOX.toHex(), 'flashloanCount', '2')
+
+  cleanup()
+})
+
+test('TargetPercentage event updates the token', () => {
+  setup()
+
+  let targetPercentage = BigInt.fromString('500')
+  let targetPercentageEvent = createTargetPercentageEvent(Address.fromString(WBTC_ADDRESS), targetPercentage)
+
+  onLogStrategyTargetPercentage(targetPercentageEvent)
+
+  assert.fieldEquals('Token', WBTC_ADDRESS, 'strategyTargetPercentage', targetPercentage.toString())
 
   cleanup()
 })

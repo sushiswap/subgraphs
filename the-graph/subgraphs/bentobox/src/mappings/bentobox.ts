@@ -270,12 +270,13 @@ export function onLogDeploy(event: LogDeploy): void {
 }
 
 export function onLogStrategyTargetPercentage(event: LogStrategyTargetPercentage): void {
-  // TODO:
-  // Where should this be saved?
+  const token = getOrCreateToken(event.params.token.toHex())
+  token.strategyTargetPercentage = event.params.targetPercentage
+  token.save()
 }
 
 export function onLogStrategyQueued(event: LogStrategyQueued): void {
-  // TODO: check repo
+  // TODO: Not used in old subgraph, remove from subgraph yaml?
 }
 
 export function onLogStrategySet(event: LogStrategySet): void {
@@ -287,5 +288,5 @@ export function onLogStrategySet(event: LogStrategySet): void {
 }
 
 export function onOwnershipTransferred(event: OwnershipTransferred): void {
-  // FIXME: Not used, remove from subgraph yaml?
+  // TODO: Not used in old subgraph, remove from subgraph yaml?
 }

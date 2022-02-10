@@ -14,6 +14,7 @@ import {
   LogTransfer as TransferEvent,
   LogStrategySet as SetStrategyEvent,
   LogRegisterProtocol as RegisterProtocolEvent,
+  LogStrategyTargetPercentage as TargetPercentageEvent,
 } from '../generated/BentoBox/BentoBox'
 
 const BENTOBOX_ADDRESS = Address.fromString("0xc381a85ed7C7448Da073b7d6C9d4cBf1Cbf576f0")
@@ -329,8 +330,6 @@ export function createSetStrategyEvent(
   return event
 }
 
-
-
 export function createRegisterProtocolEvent(
   protocol: Address
 ): RegisterProtocolEvent {
@@ -351,6 +350,31 @@ export function createRegisterProtocolEvent(
 
   return event
 }
+
+export function createTargetPercentageEvent(
+  token: Address,
+  targetPercentage: BigInt
+): TargetPercentageEvent {
+  let mockEvent = newMockEvent()
+  let event = new TargetPercentageEvent(
+    mockEvent.address,
+    mockEvent.logIndex,
+    mockEvent.transactionLogIndex,
+    mockEvent.logType,
+    mockEvent.block,
+    mockEvent.transaction,
+    mockEvent.parameters
+  )
+
+  event.parameters = new Array()
+  let tokenParam = new ethereum.EventParam('token', ethereum.Value.fromAddress(token))
+  let targetPercentageParam = new ethereum.EventParam('targetPercentage', ethereum.Value.fromUnsignedBigInt(targetPercentage))
+  event.parameters.push(tokenParam)
+  event.parameters.push(targetPercentageParam)
+
+  return event
+}
+
 
 export function createTokenMock(contractAddress: string, decimals: i32, name: string, symbol: string): void {
   createMockedFunction(Address.fromString(contractAddress), 'decimals', 'decimals():(uint8)').returns([
