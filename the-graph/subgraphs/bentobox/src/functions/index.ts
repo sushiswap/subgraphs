@@ -1,8 +1,10 @@
 export * from './bentobox'
+export * from './master-contract'
+export * from './master-contract-approval'
 export * from './rebase'
+export * from './strategy'
+export * from './strategy-harvest'
 export * from './token'
 export * from './user'
 export * from './user-token'
-export * from './master-contract'
-export * from './master-contract-approval'
 

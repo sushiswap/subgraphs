@@ -12,6 +12,7 @@ import {
   LogWhiteListMasterContract as WhiteListMasterContractEvent,
   LogWithdraw as WithdrawEvent,
   LogTransfer as TransferEvent,
+  LogStrategySet as SetStrategyEvent,
 } from '../generated/BentoBox/BentoBox'
 
 const BENTOBOX_ADDRESS = Address.fromString("0xc381a85ed7C7448Da073b7d6C9d4cBf1Cbf576f0")
@@ -303,6 +304,29 @@ export function createTransferEvent(
   return event
 }
 
+export function createSetStrategyEvent(
+  token: Address,
+  strategy: Address,
+): SetStrategyEvent {
+  let mockEvent = newMockEvent()
+  let event = new SetStrategyEvent(
+    BENTOBOX_ADDRESS,
+    mockEvent.logIndex,
+    mockEvent.transactionLogIndex,
+    mockEvent.logType,
+    mockEvent.block,
+    mockEvent.transaction,
+    mockEvent.parameters
+  )
+
+  event.parameters = new Array()
+  let tokenParam = new ethereum.EventParam('token', ethereum.Value.fromAddress(token))
+  let strategyParam = new ethereum.EventParam('strategy', ethereum.Value.fromAddress(strategy))
+  event.parameters.push(tokenParam)
+  event.parameters.push(strategyParam)
+
+  return event
+}
 
 export function createTokenMock(contractAddress: string, decimals: i32, name: string, symbol: string): void {
   createMockedFunction(Address.fromString(contractAddress), 'decimals', 'decimals():(uint8)').returns([

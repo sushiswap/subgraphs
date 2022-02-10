@@ -15,23 +15,29 @@ import {
   LogTransfer,
   LogWhiteListMasterContract,
   LogWithdraw,
-  OwnershipTransferred,
+  OwnershipTransferred
 } from '../../generated/BentoBox/BentoBox'
 import { Clone, Protocol } from '../../generated/schema'
 import {
+  createLossStrategyHarvest,
+  createProfitStrategyHarvest,
   getOrCreateBentoBox,
   getOrCreateMasterContractApproval,
   getOrCreateRebase,
+  getOrCreateStrategy,
   getOrCreateToken,
   getOrCreateUser,
-  getOrCreateUserToken,
+  getOrCreateUserToken
 } from '../functions'
 import { getOrCreateMasterContract } from '../functions/master-contract'
+
+const WARNING_MSG_STRATEGY_SET =
+  '{}: LogStrategySet should always trigger before any other strategy events - Skipping strategy field updates'
 
 export function onLogDeposit(event: LogDeposit): void {
   const tokenAddress = event.params.token.toHex()
   const token = getOrCreateToken(tokenAddress)
-  
+
   const share = event.params.share.divDecimal(
     BigInt.fromI32(10)
       .pow(token.decimals.toI32() as u8)
@@ -49,9 +55,10 @@ export function onLogDeposit(event: LogDeposit): void {
   rebase.elastic = rebase.elastic.plus(amount)
   rebase.save()
 
+  getOrCreateUser(event.params.from, event.address)
+  const to = getOrCreateUser(event.params.to, event.address)
 
-  const from = getOrCreateUser(event.params.from, event.address)
-  const userToken = getOrCreateUserToken(from.id, token)
+  const userToken = getOrCreateUserToken(to.id, token)
   userToken.share = userToken.share.plus(event.params.share)
   userToken.save()
 }
@@ -77,7 +84,10 @@ export function onLogWithdraw(event: LogWithdraw): void {
   rebase.elastic = rebase.elastic.minus(amount)
   rebase.save()
 
-  const userToken = getOrCreateUserToken(event.params.from.toHex(), token)
+  const from = getOrCreateUser(event.params.from, event.address)
+  getOrCreateUser(event.params.to, event.address)
+
+  const userToken = getOrCreateUserToken(from.id, token)
   userToken.share = userToken.share.minus(event.params.share)
   userToken.save()
 }
@@ -94,6 +104,8 @@ export function onLogTransfer(event: LogTransfer): void {
   const receiver = getOrCreateUserToken(to.id, token)
   receiver.share = receiver.share.plus(event.params.share)
   receiver.save()
+
+  // TODO: BentoBoxAction?
 }
 
 export function onLogFlashLoan(event: LogFlashLoan): void {
@@ -111,18 +123,6 @@ export function onLogFlashLoan(event: LogFlashLoan): void {
   rebase.save()
 }
 
-export function onLogStrategyTargetPercentage(event: LogStrategyTargetPercentage): void {
-  // FIXME: Not used, remove from subgraph yaml?
-}
-
-export function onLogStrategyQueued(event: LogStrategyQueued): void {
-  // FIXME: Not used, remove from subgraph yaml?
-}
-
-export function onLogStrategySet(event: LogStrategySet): void {
-  // FIXME: Not used, remove from subgraph yaml?
-}
-
 export function onLogStrategyInvest(event: LogStrategyInvest): void {
   const tokenAddress = event.params.token.toHex()
   const token = getOrCreateToken(tokenAddress)
@@ -136,6 +136,14 @@ export function onLogStrategyInvest(event: LogStrategyInvest): void {
   const rebase = getOrCreateRebase(tokenAddress)
   rebase.elastic = rebase.elastic.plus(amount)
   rebase.save()
+
+  if (!token.strategy) {
+    log.warning(WARNING_MSG_STRATEGY_SET, ['onLogStrategyInvest'])
+    return
+  }
+  const strategy = getOrCreateStrategy(token.strategy!, token.id, event.block)
+  strategy.balance = strategy.balance.plus(event.params.amount)
+  strategy.save()
 }
 
 export function onLogStrategyDivest(event: LogStrategyDivest): void {
@@ -151,6 +159,15 @@ export function onLogStrategyDivest(event: LogStrategyDivest): void {
   const rebase = getOrCreateRebase(tokenAddress)
   rebase.elastic = rebase.elastic.minus(amount)
   rebase.save()
+
+  if (!token.strategy) {
+    log.warning(WARNING_MSG_STRATEGY_SET, ['onLogStrategyInvest'])
+    return
+  }
+
+  const strategy = getOrCreateStrategy(token.strategy!, token.id, event.block)
+  strategy.balance = strategy.balance.minus(event.params.amount)
+  strategy.save()
 }
 
 export function onLogStrategyProfit(event: LogStrategyProfit): void {
@@ -166,6 +183,18 @@ export function onLogStrategyProfit(event: LogStrategyProfit): void {
   const rebase = getOrCreateRebase(tokenAddress)
   rebase.elastic = rebase.elastic.plus(amount)
   rebase.save()
+
+  if (!token.strategy) {
+    log.warning(WARNING_MSG_STRATEGY_SET, ['onLogStrategyProfit'])
+    return
+  }
+
+  const strategy = getOrCreateStrategy(token.strategy!, token.id, event.block)
+  strategy.totalProfit = strategy.totalProfit.plus(event.params.amount)
+  strategy.balance = strategy.balance.plus(event.params.amount) // TODO: should this be here? wasn't in old graph - explanation?
+  strategy.save()
+
+  createProfitStrategyHarvest(token.strategy!, amount, rebase.elastic, event)
 }
 
 export function onLogStrategyLoss(event: LogStrategyLoss): void {
@@ -181,6 +210,18 @@ export function onLogStrategyLoss(event: LogStrategyLoss): void {
   const rebase = getOrCreateRebase(tokenAddress)
   rebase.elastic = rebase.elastic.minus(amount)
   rebase.save()
+
+  if (!token.strategy) {
+    log.warning(WARNING_MSG_STRATEGY_SET, ['onLogStrategyProfit'])
+    return
+  }
+
+  const strategy = getOrCreateStrategy(token.strategy!, token.id, event.block)
+  strategy.totalProfit = strategy.totalProfit.minus(event.params.amount)
+  strategy.balance = strategy.balance.minus(event.params.amount)
+  strategy.save()
+
+  createLossStrategyHarvest(token.strategy!, amount, rebase.elastic, event)
 }
 
 export function onLogWhiteListMasterContract(event: LogWhiteListMasterContract): void {
@@ -199,8 +240,6 @@ export function onLogSetMasterContractApproval(event: LogSetMasterContractApprov
 }
 
 export function onLogRegisterProtocol(event: LogRegisterProtocol): void {
-  log.info('[BentoBox] Log Register Protocol {}', [event.params.protocol.toHex()])
-
   const bentoBox = getOrCreateBentoBox(event.address)
 
   const registeredProtocol = new Protocol(event.params.protocol.toHex())
@@ -220,6 +259,26 @@ export function onLogDeploy(event: LogDeploy): void {
   clone.block = event.block.number
   clone.timestamp = event.block.timestamp
   clone.save()
+}
+
+export function onLogStrategyTargetPercentage(event: LogStrategyTargetPercentage): void {
+  // TODO:
+  // const tokenAddress = event.params.token.toHex()
+  // const token = getOrCreateToken(tokenAddress)
+  // token.strategyTargetPercentage = event.params.targetPercentage
+  // token.save()
+}
+
+export function onLogStrategyQueued(event: LogStrategyQueued): void {
+  // TODO: check repo
+}
+
+export function onLogStrategySet(event: LogStrategySet): void {
+  const token = getOrCreateToken(event.params.token.toHex())
+  token.strategy = event.params.strategy.toHex()
+  token.save()
+
+  getOrCreateStrategy(event.params.strategy.toHex(), token.id, event.block)
 }
 
 export function onOwnershipTransferred(event: OwnershipTransferred): void {

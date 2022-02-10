@@ -1,4 +1,4 @@
-import { Token, User, UserToken } from '../../generated/schema'
+import { Token, UserToken } from '../../generated/schema'
 
 export function getOrCreateUserToken(userId: string, token: Token): UserToken {
   let userToken = UserToken.load(getUserTokenId(userId, token.id))

@@ -25,8 +25,29 @@ type Token @entity {
   nameSuccess: Boolean!
   decimals: BigInt!
   decimalsSuccess: Boolean!
+  strategy: Strategy
+  strategyTargetPercentage: BigInt!
   block: BigInt!
   timestamp: BigInt!
+}
+
+type Strategy @entity {
+  id: ID!
+  token: Token!
+  balance: BigInt!
+  totalProfit: BigInt!
+  harvests: [StrategyHarvest!] @derivedFrom(field: "strategy")
+  timestamp: BigInt!
+  block: BigInt!
+}
+
+type StrategyHarvest @entity {
+  id: ID!
+  strategy: Strategy!
+  profit: BigDecimal!
+  tokenElastic: BigDecimal!
+  timestamp: BigInt!
+  block: BigInt!
 }
 
 type Rebase @entity {
@@ -83,7 +104,6 @@ type User @entity {
   block: BigInt!
   timestamp: BigInt!
 }
-
 
 type UserToken @entity {
   id: ID!
