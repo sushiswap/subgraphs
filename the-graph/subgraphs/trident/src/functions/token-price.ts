@@ -1,5 +1,5 @@
 // Pricing module...
-import { BigDecimal, log } from '@graphprotocol/graph-ts'
+import { BigDecimal } from '@graphprotocol/graph-ts'
 import { NATIVE_ADDRESS, STABLE_TOKEN_ADDRESSES, STABLE_POOL_ADDRESSES } from '../constants/addresses'
 import { ConstantProductPoolAsset, Token, TokenPrice } from '../../generated/schema'
 import { getConstantProductPoolAsset, getOrCreateWhitelistedPool, getConstantProductPoolKpi } from '../functions'
@@ -93,7 +93,7 @@ export function getNativePriceInUSD(): BigDecimal {
 }
 
 export function updateTokenPrice(token: Token): TokenPrice {
-  log.debug('updateTokenPrice {}', [token.symbol])
+  // log.debug('updateTokenPrice {}', [token.symbol])
 
   const nativeTokenPrice = getTokenPrice(NATIVE_ADDRESS)
 
@@ -110,12 +110,12 @@ export function updateTokenPrice(token: Token): TokenPrice {
   const tokenPriceToUpdate = getTokenPrice(token.id)
 
   for (let i = 0, j = tokenPriceToUpdate.whitelistedPoolCount.toI32(); i < j; i++) {
-    log.debug('Token whitelisted pool #{}', [token.id.concat(':').concat(i.toString())])
+    // log.debug('Token whitelisted pool #{}', [token.id.concat(':').concat(i.toString())])
 
     const whitelistedPool = getOrCreateWhitelistedPool(token.id.concat(':').concat(i.toString()))
     const whitelistedPoolKpi = getConstantProductPoolKpi(whitelistedPool.pool)
 
-    log.debug('Got token whitelisted pool {}', [whitelistedPool.id])
+    // log.debug('Got token whitelisted pool {}', [whitelistedPool.id])
 
     const asset0 = getConstantProductPoolAsset(whitelistedPool.pool.concat(':asset:0'))
     const asset1 = getConstantProductPoolAsset(whitelistedPool.pool.concat(':asset:1'))
@@ -148,7 +148,6 @@ export function updateTokenPrice(token: Token): TokenPrice {
       }
     }
   }
-
   tokenPriceToUpdate.save()
 
   return tokenPriceToUpdate

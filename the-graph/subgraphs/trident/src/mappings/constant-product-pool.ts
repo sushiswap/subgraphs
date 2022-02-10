@@ -1,4 +1,4 @@
-import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 import {
   Approval,
   Burn as BurnEvent,
@@ -17,7 +17,6 @@ import {
   getConstantProductPoolAsset,
   getOrCreateTokenPrice,
   getRebase,
-  getTokenPrice,
   getNativeTokenPrice,
   toAmount,
   updateTokenDaySnapshot,
@@ -29,6 +28,7 @@ import {
 } from '../functions'
 
 import { ADDRESS_ZERO, STABLE_POOL_ADDRESSES, NATIVE_ADDRESS } from '../constants/addresses'
+import { CONSTANT_PRODUCT_PREFIX } from '../constants/id'
 
 export function onMint(event: MintEvent): void {
   // log.debug('[ConstantProduct] onMint...', [])
@@ -77,7 +77,7 @@ export function onMint(event: MintEvent): void {
 
   const transaction = getOrCreateTransaction(event)
 
-  const mint = new Mint('constant-product:' + transaction.id.toString() + ':' + poolKpi.transactionCount.toString())
+  const mint = new Mint(createMintId(transaction.id, poolKpi.transactionCount))
 
   mint.transaction = transaction.id
   mint.pool = poolAddress
@@ -86,7 +86,6 @@ export function onMint(event: MintEvent): void {
   mint.amount0 = amount0
   mint.amount1 = amount1
   mint.recipient = event.params.recipient
-  mint.sender = event.params.sender
   mint.sender = event.params.sender
   mint.origin = event.transaction.from
 
@@ -98,9 +97,11 @@ export function onMint(event: MintEvent): void {
   factory.save()
   token0.save()
   token1.save()
+  token0Kpi.save()
+  token1Kpi.save()
   mint.save()
 
-  const liquidityPosition = getOrCreateLiquidityPosition(poolAddress.concat(':').concat(recipient))
+  getOrCreateLiquidityPosition(poolAddress.concat(':').concat(recipient))
 
   const nativePrice = getNativeTokenPrice()
   updatePoolDaySnapshot(event.block.timestamp, poolKpi)
@@ -148,7 +149,7 @@ export function onBurn(event: BurnEvent): void {
 
   const transaction = getOrCreateTransaction(event)
 
-  const burn = new Burn('constant-product:' + transaction.id.toString() + ':' + poolKpi.transactionCount.toString())
+  const burn = new Burn(createBurnId(transaction.id, poolKpi.transactionCount))
 
   burn.transaction = transaction.id
   burn.pool = poolAddress
@@ -170,9 +171,11 @@ export function onBurn(event: BurnEvent): void {
   factory.save()
   token0.save()
   token1.save()
+  token0Kpi.save()
+  token1Kpi.save()
   burn.save()
 
-  const liquidityPosition = getOrCreateLiquidityPosition(poolAddress.concat(':').concat(sender))
+  getOrCreateLiquidityPosition(poolAddress.concat(':').concat(sender))
 
   const nativePrice = getNativeTokenPrice()
   updatePoolDaySnapshot(event.block.timestamp, poolKpi)
@@ -193,8 +196,6 @@ export function onSync(event: Sync): void {
   const asset0 = getConstantProductPoolAsset(poolAddress.concat(':asset:0'))
   const asset1 = getConstantProductPoolAsset(poolAddress.concat(':asset:1'))
 
-  // log.debug('[ConstantProduct] onSync...... pool.assets[0]: {} pool.assets[1]: {}', [asset0.id, asset1.id])
-
   const token0 = getOrCreateToken(asset0.token)
   const token1 = getOrCreateToken(asset1.token)
 
@@ -203,30 +204,24 @@ export function onSync(event: Sync): void {
 
   // reset liquidity amounts
   token0Kpi.liquidity = token0Kpi.liquidity.minus(asset0.reserve)
-  token1Kpi.liquidity = token0Kpi.liquidity.minus(asset1.reserve)
-
-  // log.debug('[ConstantProduct] onSync [BEFORE] pool.reserve0: {} pool.reserve1: {}', [
-  //   asset0.reserve.toString(),
-  //   asset1.reserve.toString(),
-  // ])
+  token1Kpi.liquidity = token1Kpi.liquidity.minus(asset1.reserve)
 
   const rebase0 = getRebase(asset0.token)
   const rebase1 = getRebase(asset1.token)
 
-  const reserve0 = toAmount(event.params.reserve0, rebase0)
-  const reserve1 = toAmount(event.params.reserve1, rebase1)
-
-  asset0.reserve = reserve0.div(
+  const reserve0 = toAmount(event.params.reserve0, rebase0).div(
     BigInt.fromI32(10)
       .pow(token0.decimals.toI32() as u8)
       .toBigDecimal()
   )
-
-  asset1.reserve = reserve1.div(
+  const reserve1 = toAmount(event.params.reserve1, rebase1).div(
     BigInt.fromI32(10)
       .pow(token1.decimals.toI32() as u8)
       .toBigDecimal()
   )
+
+  asset0.reserve = reserve0
+  asset1.reserve = reserve1
 
   if (asset1.reserve.notEqual(BigDecimal.fromString('0'))) {
     asset0.price = asset0.reserve.div(asset1.reserve)
@@ -235,11 +230,6 @@ export function onSync(event: Sync): void {
   if (asset0.reserve.notEqual(BigDecimal.fromString('0'))) {
     asset1.price = asset1.reserve.div(asset0.reserve)
   }
-
-  // log.debug('[ConstantProduct] onSync [AFTER] asset0.price: {} asset1.price: {}', [
-  //   asset0.price.toString(),
-  //   asset1.price.toString(),
-  // ])
 
   asset0.save()
   asset1.save()
@@ -293,9 +283,6 @@ export function onSwap(event: SwapEvent): void {
   factory.save()
 
   const poolAddress = event.address.toHex()
-  const poolKpi = getConstantProductPoolKpi(poolAddress)
-  poolKpi.transactionCount = poolKpi.transactionCount.plus(BigInt.fromI32(1))
-  poolKpi.save()
 
   const tokenIn = getOrCreateToken(tokenInAddress)
 
@@ -311,7 +298,12 @@ export function onSwap(event: SwapEvent): void {
 
   const transaction = getOrCreateTransaction(event)
 
-  const swap = new Swap('constant-product:' + transaction.id.toString() + ':' + poolKpi.transactionCount.toString())
+  const poolKpi = getConstantProductPoolKpi(poolAddress)
+
+  const swap = new Swap(createSwapId(transaction.id, poolKpi.transactionCount))
+
+  poolKpi.transactionCount = poolKpi.transactionCount.plus(BigInt.fromI32(1))
+  poolKpi.save()
 
   swap.transaction = transaction.id
   swap.pool = poolAddress
@@ -350,19 +342,10 @@ export function onTransfer(event: Transfer): void {
   }
 
   const amount = event.params.amount.divDecimal(BigDecimal.fromString('1e18'))
-
   const sender = event.params.sender.toHex()
-
   const recipient = event.params.recipient.toHex()
 
-  // log.debug('[ConstantProduct] onTransfer... {} {} {}', [
-  //   amount.toString(),
-  //   event.params.recipient.toHex(),
-  //   event.params.sender.toHex(),
-  // ])
-
   getOrCreateUser(sender)
-
   getOrCreateUser(recipient)
 
   const poolAddress = event.address.toHex()
@@ -384,26 +367,28 @@ export function onTransfer(event: Transfer): void {
   const recipientLiquidityPosition = getOrCreateLiquidityPosition(poolAddress.concat(':').concat(recipient))
 
   if (event.params.sender != ADDRESS_ZERO && sender != poolAddress) {
-    log.debug('[TRANSFER] TO {} BALANCE BEFORE {} BALANCE AFTER {} AMOUNT {}', [
-      sender,
-      senderLiquidityPosition.balance.toString(),
-      senderLiquidityPosition.balance.minus(amount).toString(),
-      amount.toString(),
-    ])
-
     senderLiquidityPosition.balance = senderLiquidityPosition.balance.minus(amount)
     senderLiquidityPosition.save()
   }
 
   if (event.params.recipient != ADDRESS_ZERO && recipient != poolAddress) {
-    log.debug('[TRANSFER] TO {} BALANCE BEFORE {} BALANCE AFTER {} AMOUNT {}', [
-      sender,
-      recipientLiquidityPosition.balance.toString(),
-      recipientLiquidityPosition.balance.plus(amount).toString(),
-      amount.toString(),
-    ])
-
     recipientLiquidityPosition.balance = recipientLiquidityPosition.balance.plus(amount)
     recipientLiquidityPosition.save()
   }
+}
+
+export function createMintId(transactionId: string, poolKpiTransactionCount: BigInt): string {
+  return createId(transactionId, poolKpiTransactionCount)
+}
+
+export function createBurnId(transactionId: string, poolKpiTransactionCount: BigInt): string {
+  return createId(transactionId, poolKpiTransactionCount)
+}
+
+export function createSwapId(transactionId: string, poolKpiTransactionCount: BigInt): string {
+  return createId(transactionId, poolKpiTransactionCount)
+}
+
+function createId(transactionId: string, poolKpiTransactionCount: BigInt): string {
+  return CONSTANT_PRODUCT_PREFIX + transactionId + ':' + poolKpiTransactionCount.toString()
 }
