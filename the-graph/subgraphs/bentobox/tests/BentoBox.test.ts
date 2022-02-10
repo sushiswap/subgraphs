@@ -407,3 +407,21 @@ test('On deposit, the token count is increased', () => {
 
   assert.fieldEquals('BentoBox', BENTOBOX.toHex(), 'tokenCount', '2')
 })
+
+
+test('Flashloans increase the BentoBoxs flashloanCount', () => {
+  setup()
+  let flashLoanFee = BigInt.fromString('50000')
+  let amount = BigInt.fromString('200000000')
+  let feeAmount = amount.div(flashLoanFee)
+  let flashLoanEvent = createFlashLoanEvent(ALICE, Address.fromString(WBTC_ADDRESS), amount, feeAmount, ALICE)
+
+  onLogFlashLoan(flashLoanEvent)
+  assert.fieldEquals('BentoBox', BENTOBOX.toHex(), 'flashloanCount', '1')
+  
+  onLogFlashLoan(flashLoanEvent)
+
+  assert.fieldEquals('BentoBox', BENTOBOX.toHex(), 'flashloanCount', '2')
+
+  cleanup()
+})

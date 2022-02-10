@@ -121,6 +121,10 @@ export function onLogFlashLoan(event: LogFlashLoan): void {
   const rebase = getOrCreateRebase(tokenAddress)
   rebase.elastic = rebase.elastic.plus(feeAmount)
   rebase.save()
+
+  const bentoBox = getOrCreateBentoBox(event.address)
+  bentoBox.flashloanCount = bentoBox.flashloanCount.plus(BigInt.fromU32(1 as u8))
+  bentoBox.save()
 }
 
 export function onLogStrategyInvest(event: LogStrategyInvest): void {
