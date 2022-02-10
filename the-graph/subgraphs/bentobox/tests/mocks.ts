@@ -13,6 +13,7 @@ import {
   LogWithdraw as WithdrawEvent,
   LogTransfer as TransferEvent,
   LogStrategySet as SetStrategyEvent,
+  LogRegisterProtocol as RegisterProtocolEvent,
 } from '../generated/BentoBox/BentoBox'
 
 const BENTOBOX_ADDRESS = Address.fromString("0xc381a85ed7C7448Da073b7d6C9d4cBf1Cbf576f0")
@@ -71,7 +72,7 @@ export function createMasterContractApprovalEvent(
 ): SetMasterContractApprovalEvent {
   let mockEvent = newMockEvent()
   let event = new SetMasterContractApprovalEvent(
-    mockEvent.address,
+    BENTOBOX_ADDRESS,
     mockEvent.logIndex,
     mockEvent.transactionLogIndex,
     mockEvent.logType,
@@ -324,6 +325,29 @@ export function createSetStrategyEvent(
   let strategyParam = new ethereum.EventParam('strategy', ethereum.Value.fromAddress(strategy))
   event.parameters.push(tokenParam)
   event.parameters.push(strategyParam)
+
+  return event
+}
+
+
+
+export function createRegisterProtocolEvent(
+  protocol: Address
+): RegisterProtocolEvent {
+  let mockEvent = newMockEvent()
+  let event = new RegisterProtocolEvent(
+    mockEvent.address,
+    mockEvent.logIndex,
+    mockEvent.transactionLogIndex,
+    mockEvent.logType,
+    mockEvent.block,
+    mockEvent.transaction,
+    mockEvent.parameters
+  )
+
+  event.parameters = new Array()
+  let protocolParam = new ethereum.EventParam('protocol', ethereum.Value.fromAddress(protocol))
+  event.parameters.push(protocolParam)
 
   return event
 }

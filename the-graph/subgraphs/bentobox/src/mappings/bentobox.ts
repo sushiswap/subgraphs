@@ -231,12 +231,16 @@ export function onLogWhiteListMasterContract(event: LogWhiteListMasterContract):
 }
 
 export function onLogSetMasterContractApproval(event: LogSetMasterContractApproval): void {
-  getOrCreateUser(event.params.user, event.params.masterContract)
+  getOrCreateUser(event.params.user, event.address)
 
   const masterContractApproval = getOrCreateMasterContractApproval(event)
   masterContractApproval.masterContract = event.params.masterContract.toHex()
   masterContractApproval.approved = event.params.approved
   masterContractApproval.save()
+
+  const bentoBox = getOrCreateBentoBox(event.params.masterContract)
+  bentoBox.masterContractCount = bentoBox.masterContractCount.plus(BigInt.fromU32(1 as u8))
+  bentoBox.save()
 }
 
 export function onLogRegisterProtocol(event: LogRegisterProtocol): void {
@@ -263,10 +267,7 @@ export function onLogDeploy(event: LogDeploy): void {
 
 export function onLogStrategyTargetPercentage(event: LogStrategyTargetPercentage): void {
   // TODO:
-  // const tokenAddress = event.params.token.toHex()
-  // const token = getOrCreateToken(tokenAddress)
-  // token.strategyTargetPercentage = event.params.targetPercentage
-  // token.save()
+  // Where should this be saved?
 }
 
 export function onLogStrategyQueued(event: LogStrategyQueued): void {

@@ -19,6 +19,8 @@ export function getOrCreateToken(id: string): Token {
     const symbol = getTokenSymbol(contract)
 
     const bentoBox = getOrCreateBentoBox()
+    bentoBox.tokenCount = bentoBox.tokenCount.plus(BigInt.fromU32(1 as u8))
+    bentoBox.save()
 
     token.bentoBox = bentoBox.id
     token.name = name.value

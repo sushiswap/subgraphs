@@ -1,20 +1,25 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
-import { getStrategyHarvestId, getUserTokenId } from '../src/functions'
+import { getStrategyHarvestId, getUserTokenId } from '../src/functions/index'
 import {
   onLogDeposit,
   onLogFlashLoan,
+  onLogRegisterProtocol,
+  onLogSetMasterContractApproval,
   onLogStrategyDivest,
   onLogStrategyInvest,
   onLogStrategyLoss,
   onLogStrategyProfit,
   onLogStrategySet,
   onLogTransfer,
+  onLogWhiteListMasterContract,
   onLogWithdraw
 } from '../src/mappings/bentobox'
 import {
   createDepositEvent,
   createFlashLoanEvent,
+  createMasterContractApprovalEvent,
+  createRegisterProtocolEvent,
   createSetStrategyEvent,
   createStrategyDivestEvent,
   createStrategyInvestEvent,
@@ -22,6 +27,7 @@ import {
   createStrategyProfitEvent,
   createTokenMock,
   createTransferEvent,
+  createWhitelistMasterContractEvent,
   createWithdrawEvent
 } from './mocks'
 
@@ -32,7 +38,15 @@ const ALICE = Address.fromString('0x00000000000000000000000000000000000a71ce')
 const BOB = Address.fromString('0x0000000000000000000000000000000000000b0b')
 const POOL_ADDRESS = Address.fromString('0x0000000000000000000000000000000000000101')
 
-function setup(): void {}
+function setup(): void {
+  const approver = Address.fromString('0x00000000000000000000000000000000000b00b5')
+  let approved = true
+  let whitelistMasterContractEvent = createWhitelistMasterContractEvent(BENTOBOX, approved)
+  onLogWhiteListMasterContract(whitelistMasterContractEvent)
+
+  let masterContractApprovalEvent = createMasterContractApprovalEvent(BENTOBOX, approver, approved)
+  onLogSetMasterContractApproval(masterContractApprovalEvent)
+}
 
 function cleanup(): void {
   clearStore()
@@ -357,4 +371,39 @@ test('Invest/Divest events creates Strategy entities', () => {
   assert.fieldEquals('Strategy', poolAddress.toHex(), 'balance', expectedBalance)
 
   cleanup()
+})
+
+test('onRegisterProtocol creates a Protocol and bentoboxs related fields are updated', () => {
+  setup()
+
+  let protocol = Address.fromString('0x0000000000000000000000000000000000001337')
+  let registerProtocolEvent = createRegisterProtocolEvent(protocol)
+
+  onLogRegisterProtocol(registerProtocolEvent)
+
+  assert.fieldEquals('Protocol', protocol.toHex(), 'id', protocol.toHex())
+  assert.fieldEquals('BentoBox', registerProtocolEvent.address.toHex(), 'id', registerProtocolEvent.address.toHex())
+  assert.fieldEquals('BentoBox', registerProtocolEvent.address.toHex(), 'protocolCount', '1')
+
+  cleanup()
+})
+
+test('On deposit, the token count is increased', () => {
+  setup()
+  let share = BigInt.fromString('200000000')
+  let amount = BigInt.fromString('200000000')
+
+  let depositEvent1 = createDepositEvent(Address.fromString(WETH_ADDRESS), BENTOBOX, ALICE, share, amount)
+  let depositEvent2 = createDepositEvent(Address.fromString(WBTC_ADDRESS), BENTOBOX, ALICE, share, amount)
+
+  createTokenMock(WETH_ADDRESS, 18, 'Wrapped Ether', 'WETH')
+  createTokenMock(WBTC_ADDRESS, 8, 'Wrapped Bitcoin', 'WBTC')
+
+  onLogDeposit(depositEvent1)
+
+  assert.fieldEquals('BentoBox', BENTOBOX.toHex(), 'tokenCount', '1')
+
+  onLogDeposit(depositEvent2)
+
+  assert.fieldEquals('BentoBox', BENTOBOX.toHex(), 'tokenCount', '2')
 })
