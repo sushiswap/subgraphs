@@ -1,6 +1,6 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
-import { getStrategyHarvestId, getUserTokenId, toDecimal} from '../src/functions/index'
+import { getStrategyHarvestId, getUserTokenId, toDecimal, getFlashLoanId} from '../src/functions/index'
 import {
   onLogDeposit,
   onLogFlashLoan,
@@ -414,14 +414,31 @@ test('On deposit, the token count is increased', () => {
 })
 
 
-test('Flashloans increase the BentoBoxs flashloanCount', () => {
+test('Flashloan fields are updated, including BentoBoxs flashloanCount', () => {
   setup()
   let flashLoanFee = BigInt.fromString('50000')
   let amount = BigInt.fromString('200000000')
   let feeAmount = amount.div(flashLoanFee)
-  let flashLoanEvent = createFlashLoanEvent(ALICE, Address.fromString(WBTC_ADDRESS), amount, feeAmount, ALICE)
+  let flashLoanEvent = createFlashLoanEvent(ALICE, Address.fromString(WBTC_ADDRESS), amount, feeAmount, BOB)
+  flashLoanEvent.block.number = BigInt.fromString("13337")
+  flashLoanEvent.block.timestamp = BigInt.fromString('1644492070')
+
+  let tokenDecimals = BigInt.fromString("8")
+  let flashLoanId = getFlashLoanId(flashLoanEvent)
+  let expectedFeeAmount = toDecimal(feeAmount, tokenDecimals).toString()
+  let expectedAmount = toDecimal(amount, tokenDecimals).toString()
+
+  createTokenMock(WBTC_ADDRESS, tokenDecimals, 'Wrapped Bitcoin', 'WBTC')
+
 
   onLogFlashLoan(flashLoanEvent)
+  assert.fieldEquals('FlashLoan', flashLoanId, 'id', flashLoanId)
+  assert.fieldEquals('FlashLoan', flashLoanId, 'borrower', ALICE.toHex())
+  assert.fieldEquals('FlashLoan', flashLoanId, 'receiver', BOB.toHex())
+  assert.fieldEquals('FlashLoan', flashLoanId, 'amount', expectedAmount)
+  assert.fieldEquals('FlashLoan', flashLoanId, 'feeAmount', expectedFeeAmount)
+  assert.fieldEquals('FlashLoan', flashLoanId, 'block', flashLoanEvent.block.number.toString())
+  assert.fieldEquals('FlashLoan', flashLoanId, 'timestamp', flashLoanEvent.block.timestamp.toString())
   assert.fieldEquals('BentoBox', BENTOBOX.toHex(), 'flashloanCount', '1')
 
   onLogFlashLoan(flashLoanEvent)

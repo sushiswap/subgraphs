@@ -182,7 +182,7 @@ export function createFlashLoanEvent(
   let tokenParam = new ethereum.EventParam('token', ethereum.Value.fromAddress(token))
   let amountParam = new ethereum.EventParam('amount', ethereum.Value.fromUnsignedBigInt(amount))
   let feeAmountParam = new ethereum.EventParam('feeAmount', ethereum.Value.fromUnsignedBigInt(feeAmount))
-  let recieverParam = new ethereum.EventParam('reciever', ethereum.Value.fromAddress(reciever))
+  let recieverParam = new ethereum.EventParam('receiver', ethereum.Value.fromAddress(reciever))
   event.parameters.push(borrowerParam)
   event.parameters.push(tokenParam)
   event.parameters.push(amountParam)

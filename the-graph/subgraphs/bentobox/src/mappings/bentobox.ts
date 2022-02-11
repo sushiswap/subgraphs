@@ -19,6 +19,7 @@ import {
 } from '../../generated/BentoBox/BentoBox'
 import { Clone, Protocol } from '../../generated/schema'
 import {
+  createFlashLoan,
   createLossStrategyHarvest,
   createProfitStrategyHarvest,
   getOrCreateBentoBox,
@@ -102,6 +103,8 @@ export function onLogFlashLoan(event: LogFlashLoan): void {
   const rebase = getOrCreateRebase(tokenAddress)
   rebase.elastic = rebase.elastic.plus(feeAmount)
   rebase.save()
+
+  createFlashLoan(event, token.decimals)
 
   const bentoBox = getOrCreateBentoBox(event.address)
   bentoBox.flashloanCount = bentoBox.flashloanCount.plus(BigInt.fromU32(1 as u8))
