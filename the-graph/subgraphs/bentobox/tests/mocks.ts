@@ -376,9 +376,9 @@ export function createTargetPercentageEvent(
 }
 
 
-export function createTokenMock(contractAddress: string, decimals: i32, name: string, symbol: string): void {
+export function createTokenMock(contractAddress: string, decimals: BigInt, name: string, symbol: string): void {
   createMockedFunction(Address.fromString(contractAddress), 'decimals', 'decimals():(uint8)').returns([
-    ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(decimals)),
+    ethereum.Value.fromUnsignedBigInt(decimals),
   ])
   createMockedFunction(Address.fromString(contractAddress), 'name', 'name():(string)').returns([
     ethereum.Value.fromString(name),

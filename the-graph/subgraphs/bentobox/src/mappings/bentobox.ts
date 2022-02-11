@@ -27,7 +27,8 @@ import {
   getOrCreateStrategy,
   getOrCreateToken,
   getOrCreateUser,
-  getOrCreateUserToken
+  getOrCreateUserToken,
+  toDecimal
 } from '../functions'
 import { getOrCreateMasterContract } from '../functions/master-contract'
 
@@ -38,17 +39,8 @@ export function onLogDeposit(event: LogDeposit): void {
   const tokenAddress = event.params.token.toHex()
   const token = getOrCreateToken(tokenAddress)
 
-  const share = event.params.share.divDecimal(
-    BigInt.fromI32(10)
-      .pow(token.decimals.toI32() as u8)
-      .toBigDecimal()
-  )
-
-  const amount = event.params.amount.divDecimal(
-    BigInt.fromI32(10)
-      .pow(token.decimals.toI32() as u8)
-      .toBigDecimal()
-  )
+  const share = toDecimal(event.params.share, token.decimals)
+  const amount = toDecimal(event.params.amount, token.decimals)
 
   const rebase = getOrCreateRebase(tokenAddress)
   rebase.base = rebase.base.plus(share)
@@ -59,7 +51,7 @@ export function onLogDeposit(event: LogDeposit): void {
   const to = getOrCreateUser(event.params.to, event.address)
 
   const userToken = getOrCreateUserToken(to.id, token)
-  userToken.share = userToken.share.plus(event.params.share)
+  userToken.share = userToken.share.plus(share)
   userToken.save()
 }
 
@@ -67,17 +59,8 @@ export function onLogWithdraw(event: LogWithdraw): void {
   const tokenAddress = event.params.token.toHex()
   const token = getOrCreateToken(tokenAddress)
 
-  const share = event.params.share.divDecimal(
-    BigInt.fromI32(10)
-      .pow(token.decimals.toI32() as u8)
-      .toBigDecimal()
-  )
-
-  const amount = event.params.amount.divDecimal(
-    BigInt.fromI32(10)
-      .pow(token.decimals.toI32() as u8)
-      .toBigDecimal()
-  )
+  const share = toDecimal(event.params.share, token.decimals)
+  const amount = toDecimal(event.params.amount, token.decimals)
 
   const rebase = getOrCreateRebase(tokenAddress)
   rebase.base = rebase.base.minus(share)
@@ -88,7 +71,7 @@ export function onLogWithdraw(event: LogWithdraw): void {
   getOrCreateUser(event.params.to, event.address)
 
   const userToken = getOrCreateUserToken(from.id, token)
-  userToken.share = userToken.share.minus(event.params.share)
+  userToken.share = userToken.share.minus(share)
   userToken.save()
 }
 
@@ -97,12 +80,14 @@ export function onLogTransfer(event: LogTransfer): void {
   const to = getOrCreateUser(event.params.to, event.address)
   const token = getOrCreateToken(event.params.token.toHex())
 
+  const share = toDecimal(event.params.share, token.decimals)
+
   const sender = getOrCreateUserToken(from.id, token)
-  sender.share = sender.share.minus(event.params.share)
+  sender.share = sender.share.minus(share)
   sender.save()
 
   const receiver = getOrCreateUserToken(to.id, token)
-  receiver.share = receiver.share.plus(event.params.share)
+  receiver.share = receiver.share.plus(share)
   receiver.save()
 
   // TODO: BentoBoxAction?
@@ -112,11 +97,7 @@ export function onLogFlashLoan(event: LogFlashLoan): void {
   const tokenAddress = event.params.token.toHex()
   const token = getOrCreateToken(tokenAddress)
 
-  const feeAmount = event.params.feeAmount.divDecimal(
-    BigInt.fromI32(10)
-      .pow(token.decimals.toI32() as u8)
-      .toBigDecimal()
-  )
+  const feeAmount = toDecimal(event.params.feeAmount, token.decimals)
 
   const rebase = getOrCreateRebase(tokenAddress)
   rebase.elastic = rebase.elastic.plus(feeAmount)
@@ -131,11 +112,7 @@ export function onLogStrategyInvest(event: LogStrategyInvest): void {
   const tokenAddress = event.params.token.toHex()
   const token = getOrCreateToken(tokenAddress)
 
-  const amount = event.params.amount.divDecimal(
-    BigInt.fromI32(10)
-      .pow(token.decimals.toI32() as u8)
-      .toBigDecimal()
-  )
+  const amount = toDecimal(event.params.amount, token.decimals)
 
   const rebase = getOrCreateRebase(tokenAddress)
   rebase.elastic = rebase.elastic.plus(amount)
@@ -154,11 +131,7 @@ export function onLogStrategyDivest(event: LogStrategyDivest): void {
   const tokenAddress = event.params.token.toHex()
   const token = getOrCreateToken(tokenAddress)
 
-  const amount = event.params.amount.divDecimal(
-    BigInt.fromI32(10)
-      .pow(token.decimals.toI32() as u8)
-      .toBigDecimal()
-  )
+  const amount = toDecimal(event.params.amount, token.decimals)
 
   const rebase = getOrCreateRebase(tokenAddress)
   rebase.elastic = rebase.elastic.minus(amount)
@@ -178,11 +151,7 @@ export function onLogStrategyProfit(event: LogStrategyProfit): void {
   const tokenAddress = event.params.token.toHex()
   const token = getOrCreateToken(tokenAddress)
 
-  const amount = event.params.amount.divDecimal(
-    BigInt.fromI32(10)
-      .pow(token.decimals.toI32() as u8)
-      .toBigDecimal()
-  )
+  const amount = toDecimal(event.params.amount, token.decimals)
 
   const rebase = getOrCreateRebase(tokenAddress)
   rebase.elastic = rebase.elastic.plus(amount)
@@ -195,7 +164,7 @@ export function onLogStrategyProfit(event: LogStrategyProfit): void {
 
   const strategy = getOrCreateStrategy(token.strategy!, token.id, event.block)
   strategy.totalProfit = strategy.totalProfit.plus(event.params.amount)
-  strategy.balance = strategy.balance.plus(event.params.amount) // TODO: should this be here? wasn't in old graph - explanation?
+  strategy.balance = strategy.balance.plus(event.params.amount) // TODO: should this be here? miss? wasn't in old graph - explanation?
   strategy.save()
 
   createProfitStrategyHarvest(token.strategy!, amount, rebase.elastic, event)
@@ -205,11 +174,7 @@ export function onLogStrategyLoss(event: LogStrategyLoss): void {
   const tokenAddress = event.params.token.toHex()
   const token = getOrCreateToken(tokenAddress)
 
-  const amount = event.params.amount.divDecimal(
-    BigInt.fromI32(10)
-      .pow(token.decimals.toI32() as u8)
-      .toBigDecimal()
-  )
+  const amount = toDecimal(event.params.amount, token.decimals)
 
   const rebase = getOrCreateRebase(tokenAddress)
   rebase.elastic = rebase.elastic.minus(amount)

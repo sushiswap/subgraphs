@@ -1,6 +1,6 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
-import { getStrategyHarvestId, getUserTokenId } from '../src/functions/index'
+import { getStrategyHarvestId, getUserTokenId, toDecimal} from '../src/functions/index'
 import {
   onLogDeposit,
   onLogFlashLoan,
@@ -63,7 +63,7 @@ test("deposit multiple times increases the rebase's base and elastic values", ()
   let shareDecimal = BigDecimal.fromString('0.000000000000000055')
   let depositEvent = createDepositEvent(Address.fromString(WETH_ADDRESS), BENTOBOX, BOB, share, amount)
 
-  createTokenMock(WETH_ADDRESS, 18, 'Wrapped Ether', 'WETH')
+  createTokenMock(WETH_ADDRESS, BigInt.fromString("18"), 'Wrapped Ether', 'WETH')
   onLogDeposit(depositEvent)
 
   assert.fieldEquals('Token', WETH_ADDRESS, 'id', WETH_ADDRESS)
@@ -87,7 +87,7 @@ test("deposit multiple times increases the rebase's base and elastic values", ()
   let depositEvent3 = createDepositEvent(Address.fromString(WBTC_ADDRESS), BENTOBOX, BOB, share3, amount3)
 
   // When: A third deposit is made
-  createTokenMock(WBTC_ADDRESS, 8, 'Wrapped Bitcoin', 'WBTC')
+  createTokenMock(WBTC_ADDRESS, BigInt.fromString("8"), 'Wrapped Bitcoin', 'WBTC')
   onLogDeposit(depositEvent3)
 
   // Then: the previous (WETH deposit) remains unchanged
@@ -108,7 +108,7 @@ test("Withdraw multiple times decreases the rebase's base and elastic values", (
   let depositAmount = BigInt.fromString('200000000')
   let depositEvent = createDepositEvent(Address.fromString(WBTC_ADDRESS), BENTOBOX, BOB, depositShare, depositAmount)
 
-  createTokenMock(WBTC_ADDRESS, 8, 'Wrapped Bitcoin', 'WBTC')
+  createTokenMock(WBTC_ADDRESS, BigInt.fromString("8"), 'Wrapped Bitcoin', 'WBTC')
   onLogDeposit(depositEvent)
 
   assert.fieldEquals('Rebase', WBTC_ADDRESS, 'id', WBTC_ADDRESS)
@@ -178,7 +178,7 @@ test('Strategies affect the elastic value', () => {
   let lossEvent = createStrategyLossEvent(Address.fromString(WBTC_ADDRESS), amount)
   let investEvent = createStrategyInvestEvent(Address.fromString(WBTC_ADDRESS), amount)
   let divestEvent = createStrategyDivestEvent(Address.fromString(WBTC_ADDRESS), amount)
-  createTokenMock(WBTC_ADDRESS, 8, 'Wrapped Bitcoin', 'WBTC')
+  createTokenMock(WBTC_ADDRESS, BigInt.fromString("8"), 'Wrapped Bitcoin', 'WBTC')
 
   let poolAddress = Address.fromString('0x0000000000000000000000000000000000000101')
   let setStrategyEvent = createSetStrategyEvent(Address.fromString(WBTC_ADDRESS), poolAddress)
@@ -237,10 +237,12 @@ test('Deposit, transfer, transfer, withdraw', () => {
     share.div(BigInt.fromString('2'))
   )
 
-  let aliceWithdrawEvent = createWithdrawEvent(Address.fromString(WETH_ADDRESS), BENTOBOX, ALICE, share, amount)
+  const charlie = Address.fromString('0x000000000000000000000000000000000c9a971e')
+  let aliceWithdrawEvent = createWithdrawEvent(Address.fromString(WETH_ADDRESS), ALICE, charlie, share, amount)
   let aliceUserTokenId = getUserTokenId(ALICE.toHex(), WETH_ADDRESS)
   let bobUserTokenId = getUserTokenId(BOB.toHex(), WETH_ADDRESS)
-  createTokenMock(WETH_ADDRESS, 18, 'Wrapped Ether', 'WETH')
+  let tokenDecimals = BigInt.fromString("18")
+  createTokenMock(WETH_ADDRESS, tokenDecimals, 'Wrapped Ether', 'WETH')
 
   // When: Alice deposits tokens
   onLogDeposit(aliceDepositEvent)
@@ -248,13 +250,14 @@ test('Deposit, transfer, transfer, withdraw', () => {
   // Then: Alice shares are increased
   assert.fieldEquals('User', ALICE.toHex(), 'id', ALICE.toHex())
   assert.fieldEquals('UserToken', aliceUserTokenId, 'id', aliceUserTokenId)
-  assert.fieldEquals('UserToken', aliceUserTokenId, 'share', share.toString())
+  let expectedShares = toDecimal(share, tokenDecimals).toString()
+  assert.fieldEquals('UserToken', aliceUserTokenId, 'share', expectedShares)
 
   // When: Alice transfers half of her shares to bob
   onLogTransfer(aliceToBobEvent)
 
   // Then: Both have the same amount of shares
-  let expectedShares = share.div(BigInt.fromString('2')).toString()
+  expectedShares = toDecimal(share, tokenDecimals).times(BigDecimal.fromString("0.5")).toString()
   assert.fieldEquals('User', BOB.toHex(), 'id', BOB.toHex())
   assert.fieldEquals('UserToken', bobUserTokenId, 'id', bobUserTokenId)
   assert.fieldEquals('UserToken', bobUserTokenId, 'share', expectedShares)
@@ -264,15 +267,15 @@ test('Deposit, transfer, transfer, withdraw', () => {
   onLogTransfer(bobToAliceEvent)
 
   // Then: Alice are back to her original deposit and bob has no shares
-  expectedShares = share.div(BigInt.fromString('2')).toString()
-  assert.fieldEquals('UserToken', aliceUserTokenId, 'share', share.toString())
+  expectedShares = toDecimal(share, tokenDecimals).toString()
+  assert.fieldEquals('UserToken', aliceUserTokenId, 'share', expectedShares)
   assert.fieldEquals('UserToken', bobUserTokenId, 'share', '0')
 
   // When: Alice withdraws her funds
   onLogWithdraw(aliceWithdrawEvent)
 
   // Then: Alice has no shares left
-  assert.fieldEquals('UserToken', aliceUserTokenId, 'share', share.toString())
+  assert.fieldEquals('UserToken', aliceUserTokenId, 'share', '0')
 
   cleanup()
 })
@@ -292,7 +295,7 @@ test('When a token strategy is set, profit/loss events creates StrategyHarvest e
 
   let profitHarvestId = getStrategyHarvestId(POOL_ADDRESS.toHex(), profitEvent.block.number.toString())
 
-  createTokenMock(WBTC_ADDRESS, 8, 'Wrapped Bitcoin', 'WBTC')
+  createTokenMock(WBTC_ADDRESS, BigInt.fromString("8"), 'Wrapped Bitcoin', 'WBTC')
 
   // When: StrategySetEvent triggers
   onLogStrategySet(setStrategyEvent)
@@ -345,7 +348,7 @@ test('Invest/Divest events creates Strategy entities', () => {
   investEvent.block.number = BigInt.fromString('133337')
   investEvent.block.timestamp = BigInt.fromString('1644492069')
   let divestEvent = createStrategyDivestEvent(Address.fromString(WETH_ADDRESS), divestAmount)
-  createTokenMock(WETH_ADDRESS, 18, 'Wrapped Ether', 'WETH')
+  createTokenMock(WETH_ADDRESS, BigInt.fromString("18"), 'Wrapped Ether', 'WETH')
 
   let poolAddress = Address.fromString('0x0000000000000000000000000000000000000101')
   let setStrategyEvent = createSetStrategyEvent(Address.fromString(WETH_ADDRESS), poolAddress)
@@ -398,8 +401,8 @@ test('On deposit, the token count is increased', () => {
   let depositEvent1 = createDepositEvent(Address.fromString(WETH_ADDRESS), BENTOBOX, ALICE, share, amount)
   let depositEvent2 = createDepositEvent(Address.fromString(WBTC_ADDRESS), BENTOBOX, ALICE, share, amount)
 
-  createTokenMock(WETH_ADDRESS, 18, 'Wrapped Ether', 'WETH')
-  createTokenMock(WBTC_ADDRESS, 8, 'Wrapped Bitcoin', 'WBTC')
+  createTokenMock(WETH_ADDRESS, BigInt.fromString("18"), 'Wrapped Ether', 'WETH')
+  createTokenMock(WBTC_ADDRESS, BigInt.fromString("8"), 'Wrapped Bitcoin', 'WBTC')
 
   onLogDeposit(depositEvent1)
 
@@ -440,3 +443,4 @@ test('TargetPercentage event updates the token', () => {
 
   cleanup()
 })
+

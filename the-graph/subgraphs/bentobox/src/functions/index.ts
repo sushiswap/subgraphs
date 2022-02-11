@@ -7,4 +7,4 @@ export * from './strategy-harvest'
 export * from './token'
 export * from './user'
 export * from './user-token'
-
+export * from './number-converter'

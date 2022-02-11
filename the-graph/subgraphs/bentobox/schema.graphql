@@ -63,8 +63,8 @@ type FlashLoan @entity {
   borrower: Bytes!
   receiver: Bytes!
   token: Token!
-  amount: BigInt!
-  feeAmount: BigInt!
+  amount: BigDecimal!
+  feeAmount: BigDecimal!
   block: BigInt!
   timestamp: BigInt!
 }
@@ -109,5 +109,5 @@ type UserToken @entity {
   id: ID!
   token: Token!
   user: User!
-  share: BigInt!
+  share: BigDecimal!
 }
