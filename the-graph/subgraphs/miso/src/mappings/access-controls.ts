@@ -4,17 +4,13 @@ import { BigInt, log } from '@graphprotocol/graph-ts'
 import { ADMIN, MINTER, OPERATOR, SMART_CONTRACT } from '../constants'
 
 export function onRoleAdminChanged(event: RoleAdminChanged): void {
-  log.info('[AccessControls] onRoleAdminChanged... {}', [event.params.role.toHex()])
   const accessControls = getOrCreateAccessControls()
-  log.info('[AccessControls] onRoleAdminChanged... got access controls {}', [accessControls.id])
   const role = getOrCreateRole(event.params.role)
   accessControls.adminCount = accessControls.adminCount.plus(BigInt.fromI32(1))
   role.save()
-  log.info('[AccessControls] onRoleAdminChanged completed... {}', [role.id])
 }
 
 export function onRoleGranted(event: RoleGranted): void {
-  log.info('[AccessControls] onRoleGranted... {}', [event.params.role.toHex()])
   const accessControls = getOrCreateAccessControls()
 
   const role = getOrCreateRole(event.params.role)
@@ -33,13 +29,10 @@ export function onRoleGranted(event: RoleGranted): void {
   user.role = role.id
   user.save()
 
-  log.info('[AccessControls] onRoleGranted completed... {}', [role.id])
 }
 
 export function onRoleRevoked(event: RoleRevoked): void {
-  log.info('[AccessControls] onRoleRevoked... {}', [event.params.role.toHex()])
   const accessControls = getOrCreateAccessControls()
-  log.info('[AccessControls] onRoleRevoked... got access controls {}', [accessControls.id])
   const role = getOrCreateRole(event.params.role)
   if (event.params.role == ADMIN) {
     accessControls.adminCount = accessControls.adminCount.minus(BigInt.fromI32(1))
@@ -51,5 +44,4 @@ export function onRoleRevoked(event: RoleRevoked): void {
     accessControls.smartContractCount = accessControls.smartContractCount.minus(BigInt.fromI32(1))
   }
   accessControls.save()
-  log.info('[AccessControls] onRoleRevoked completed... {}', [role.id])
 }
