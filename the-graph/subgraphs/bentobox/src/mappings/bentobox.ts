@@ -8,14 +8,11 @@ import {
   LogStrategyDivest,
   LogStrategyInvest,
   LogStrategyLoss,
-  LogStrategyProfit,
-  LogStrategyQueued,
-  LogStrategySet,
+  LogStrategyProfit, LogStrategySet,
   LogStrategyTargetPercentage,
   LogTransfer,
   LogWhiteListMasterContract,
-  LogWithdraw,
-  OwnershipTransferred
+  LogWithdraw
 } from '../../generated/BentoBox/BentoBox'
 import { Clone, Protocol } from '../../generated/schema'
 import {
@@ -32,9 +29,10 @@ import {
   toDecimal
 } from '../functions'
 import { getOrCreateMasterContract } from '../functions/master-contract'
+import { createDepositTransaction, createTransferTransaction, createWithdrawTransaction } from '../functions/transaction'
 
 const WARNING_MSG_STRATEGY_SET =
-  '{}: LogStrategySet should always trigger before any other strategy events - Skipping strategy field updates'
+  '{}: LogStrategySet should always trigger before any other strategy events - Strategy save is ignored.'
 
 export function onLogDeposit(event: LogDeposit): void {
   const tokenAddress = event.params.token.toHex()
@@ -54,6 +52,8 @@ export function onLogDeposit(event: LogDeposit): void {
   const userToken = getOrCreateUserToken(to.id, token)
   userToken.share = userToken.share.plus(share)
   userToken.save()
+
+  createDepositTransaction(event)
 }
 
 export function onLogWithdraw(event: LogWithdraw): void {
@@ -74,6 +74,8 @@ export function onLogWithdraw(event: LogWithdraw): void {
   const userToken = getOrCreateUserToken(from.id, token)
   userToken.share = userToken.share.minus(share)
   userToken.save()
+
+  createWithdrawTransaction(event)
 }
 
 export function onLogTransfer(event: LogTransfer): void {
@@ -91,7 +93,7 @@ export function onLogTransfer(event: LogTransfer): void {
   receiver.share = receiver.share.plus(share)
   receiver.save()
 
-  // TODO: BentoBoxAction?
+  createTransferTransaction(event)
 }
 
 export function onLogFlashLoan(event: LogFlashLoan): void {
@@ -167,7 +169,7 @@ export function onLogStrategyProfit(event: LogStrategyProfit): void {
 
   const strategy = getOrCreateStrategy(token.strategy!, token.id, event.block)
   strategy.totalProfit = strategy.totalProfit.plus(event.params.amount)
-  strategy.balance = strategy.balance.plus(event.params.amount) // TODO: should this be here? miss? wasn't in old graph - explanation?
+  strategy.balance = strategy.balance.plus(event.params.amount)
   strategy.save()
 
   createProfitStrategyHarvest(token.strategy!, amount, rebase.elastic, event)
@@ -243,10 +245,6 @@ export function onLogStrategyTargetPercentage(event: LogStrategyTargetPercentage
   token.save()
 }
 
-export function onLogStrategyQueued(event: LogStrategyQueued): void {
-  // TODO: Not used in old subgraph, remove from subgraph yaml?
-}
-
 export function onLogStrategySet(event: LogStrategySet): void {
   const token = getOrCreateToken(event.params.token.toHex())
   token.strategy = event.params.strategy.toHex()
@@ -255,6 +253,4 @@ export function onLogStrategySet(event: LogStrategySet): void {
   getOrCreateStrategy(event.params.strategy.toHex(), token.id, event.block)
 }
 
-export function onOwnershipTransferred(event: OwnershipTransferred): void {
-  // TODO: Not used in old subgraph, remove from subgraph yaml?
-}
+

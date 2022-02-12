@@ -1,6 +1,10 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
-import { getStrategyHarvestId, getUserTokenId, toDecimal, getFlashLoanId} from '../src/functions/index'
+import { DEPOSIT, TRANSFER, WITHDRAW } from '../src/constants/index'
+import {
+  getFlashLoanId, getStrategyHarvestId, getTransactionId, getUserTokenId,
+  toDecimal
+} from '../src/functions/index'
 import {
   onLogDeposit,
   onLogFlashLoan,
@@ -63,7 +67,7 @@ test("deposit multiple times increases the rebase's base and elastic values", ()
   let shareDecimal = BigDecimal.fromString('0.000000000000000055')
   let depositEvent = createDepositEvent(Address.fromString(WETH_ADDRESS), BENTOBOX, BOB, share, amount)
 
-  createTokenMock(WETH_ADDRESS, BigInt.fromString("18"), 'Wrapped Ether', 'WETH')
+  createTokenMock(WETH_ADDRESS, BigInt.fromString('18'), 'Wrapped Ether', 'WETH')
   onLogDeposit(depositEvent)
 
   assert.fieldEquals('Token', WETH_ADDRESS, 'id', WETH_ADDRESS)
@@ -87,7 +91,7 @@ test("deposit multiple times increases the rebase's base and elastic values", ()
   let depositEvent3 = createDepositEvent(Address.fromString(WBTC_ADDRESS), BENTOBOX, BOB, share3, amount3)
 
   // When: A third deposit is made
-  createTokenMock(WBTC_ADDRESS, BigInt.fromString("8"), 'Wrapped Bitcoin', 'WBTC')
+  createTokenMock(WBTC_ADDRESS, BigInt.fromString('8'), 'Wrapped Bitcoin', 'WBTC')
   onLogDeposit(depositEvent3)
 
   // Then: the previous (WETH deposit) remains unchanged
@@ -108,7 +112,7 @@ test("Withdraw multiple times decreases the rebase's base and elastic values", (
   let depositAmount = BigInt.fromString('200000000')
   let depositEvent = createDepositEvent(Address.fromString(WBTC_ADDRESS), BENTOBOX, BOB, depositShare, depositAmount)
 
-  createTokenMock(WBTC_ADDRESS, BigInt.fromString("8"), 'Wrapped Bitcoin', 'WBTC')
+  createTokenMock(WBTC_ADDRESS, BigInt.fromString('8'), 'Wrapped Bitcoin', 'WBTC')
   onLogDeposit(depositEvent)
 
   assert.fieldEquals('Rebase', WBTC_ADDRESS, 'id', WBTC_ADDRESS)
@@ -178,7 +182,7 @@ test('Strategies affect the elastic value', () => {
   let lossEvent = createStrategyLossEvent(Address.fromString(WBTC_ADDRESS), amount)
   let investEvent = createStrategyInvestEvent(Address.fromString(WBTC_ADDRESS), amount)
   let divestEvent = createStrategyDivestEvent(Address.fromString(WBTC_ADDRESS), amount)
-  createTokenMock(WBTC_ADDRESS, BigInt.fromString("8"), 'Wrapped Bitcoin', 'WBTC')
+  createTokenMock(WBTC_ADDRESS, BigInt.fromString('8'), 'Wrapped Bitcoin', 'WBTC')
 
   let poolAddress = Address.fromString('0x0000000000000000000000000000000000000101')
   let setStrategyEvent = createSetStrategyEvent(Address.fromString(WBTC_ADDRESS), poolAddress)
@@ -241,7 +245,7 @@ test('Deposit, transfer, transfer, withdraw', () => {
   let aliceWithdrawEvent = createWithdrawEvent(Address.fromString(WETH_ADDRESS), ALICE, charlie, share, amount)
   let aliceUserTokenId = getUserTokenId(ALICE.toHex(), WETH_ADDRESS)
   let bobUserTokenId = getUserTokenId(BOB.toHex(), WETH_ADDRESS)
-  let tokenDecimals = BigInt.fromString("18")
+  let tokenDecimals = BigInt.fromString('18')
   createTokenMock(WETH_ADDRESS, tokenDecimals, 'Wrapped Ether', 'WETH')
 
   // When: Alice deposits tokens
@@ -257,7 +261,7 @@ test('Deposit, transfer, transfer, withdraw', () => {
   onLogTransfer(aliceToBobEvent)
 
   // Then: Both have the same amount of shares
-  expectedShares = toDecimal(share, tokenDecimals).times(BigDecimal.fromString("0.5")).toString()
+  expectedShares = toDecimal(share, tokenDecimals).times(BigDecimal.fromString('0.5')).toString()
   assert.fieldEquals('User', BOB.toHex(), 'id', BOB.toHex())
   assert.fieldEquals('UserToken', bobUserTokenId, 'id', bobUserTokenId)
   assert.fieldEquals('UserToken', bobUserTokenId, 'share', expectedShares)
@@ -277,6 +281,85 @@ test('Deposit, transfer, transfer, withdraw', () => {
   // Then: Alice has no shares left
   assert.fieldEquals('UserToken', aliceUserTokenId, 'share', '0')
 
+  // And: the bentoboxs transaction count should be 4
+  assert.fieldEquals('BentoBox', BENTOBOX.toHex(), 'transactionCount', '4')
+
+  cleanup()
+})
+
+test('Deposit creates a Transaction entity', () => {
+  setup()
+  let share = BigInt.fromString('200000000')
+  let amount = BigInt.fromString('200000000')
+  let aliceDepositEvent = createDepositEvent(Address.fromString(WETH_ADDRESS), BENTOBOX, ALICE, share, amount)
+  let tokenDecimals = BigInt.fromString('18')
+  let transactionId = getTransactionId(aliceDepositEvent)
+
+  createTokenMock(WETH_ADDRESS, tokenDecimals, 'Wrapped Ether', 'WETH')
+
+  onLogDeposit(aliceDepositEvent)
+
+  assert.fieldEquals('Transaction', transactionId, 'id', transactionId)
+  assert.fieldEquals('Transaction', transactionId, 'type', DEPOSIT)
+  assert.fieldEquals('Transaction', transactionId, 'from', aliceDepositEvent.params.from.toHex())
+  assert.fieldEquals('Transaction', transactionId, 'to', aliceDepositEvent.params.to.toHex())
+  assert.fieldEquals('Transaction', transactionId, 'token', aliceDepositEvent.params.token.toHex())
+  assert.fieldEquals('Transaction', transactionId, 'amount', aliceDepositEvent.params.amount.toString())
+  assert.fieldEquals('Transaction', transactionId, 'share', aliceDepositEvent.params.share.toString())
+  assert.fieldEquals('Transaction', transactionId, 'bentoBox', BENTOBOX.toHex())
+  assert.fieldEquals('Transaction', transactionId, 'block', aliceDepositEvent.block.number.toString())
+  assert.fieldEquals('Transaction', transactionId, 'timestamp', aliceDepositEvent.block.timestamp.toString())
+
+  cleanup()
+})
+
+test('Transfer creates a Transaction entity', () => {
+  setup()
+  let share = BigInt.fromString('200000000')
+  let event = createTransferEvent(Address.fromString(WETH_ADDRESS), ALICE, BOB, share.div(BigInt.fromString('2')))
+  let tokenDecimals = BigInt.fromString('18')
+  let transactionId = getTransactionId(event)
+
+  createTokenMock(WETH_ADDRESS, tokenDecimals, 'Wrapped Ether', 'WETH')
+
+  onLogTransfer(event)
+
+  assert.fieldEquals('Transaction', transactionId, 'id', transactionId)
+  assert.fieldEquals('Transaction', transactionId, 'type', TRANSFER)
+  assert.fieldEquals('Transaction', transactionId, 'from', event.params.from.toHex())
+  assert.fieldEquals('Transaction', transactionId, 'to', event.params.to.toHex())
+  assert.fieldEquals('Transaction', transactionId, 'token', event.params.token.toHex())
+  assert.fieldEquals('Transaction', transactionId, 'share', event.params.share.toString())
+  assert.fieldEquals('Transaction', transactionId, 'bentoBox', BENTOBOX.toHex())
+  assert.fieldEquals('Transaction', transactionId, 'block', event.block.number.toString())
+  assert.fieldEquals('Transaction', transactionId, 'timestamp', event.block.timestamp.toString())
+
+  cleanup()
+})
+
+test('Withdraw creates a Transaction entity', () => {
+  setup()
+  let share = BigInt.fromString('200000000')
+  let amount = BigInt.fromString('200000000')
+  const charlie = Address.fromString('0x000000000000000000000000000000000c9a971e')
+  let event = createWithdrawEvent(Address.fromString(WETH_ADDRESS), ALICE, charlie, share, amount)
+  let transactionId = getTransactionId(event)
+  let tokenDecimals = BigInt.fromString('18')
+
+  createTokenMock(WETH_ADDRESS, tokenDecimals, 'Wrapped Ether', 'WETH')
+
+  onLogWithdraw(event)
+
+  assert.fieldEquals('Transaction', transactionId, 'id', transactionId)
+  assert.fieldEquals('Transaction', transactionId, 'type', WITHDRAW)
+  assert.fieldEquals('Transaction', transactionId, 'from', event.params.from.toHex())
+  assert.fieldEquals('Transaction', transactionId, 'to', event.params.to.toHex())
+  assert.fieldEquals('Transaction', transactionId, 'token', event.params.token.toHex())
+  assert.fieldEquals('Transaction', transactionId, 'share', event.params.share.toString())
+  assert.fieldEquals('Transaction', transactionId, 'bentoBox', BENTOBOX.toHex())
+  assert.fieldEquals('Transaction', transactionId, 'block', event.block.number.toString())
+  assert.fieldEquals('Transaction', transactionId, 'timestamp', event.block.timestamp.toString())
+
   cleanup()
 })
 
@@ -295,7 +378,7 @@ test('When a token strategy is set, profit/loss events creates StrategyHarvest e
 
   let profitHarvestId = getStrategyHarvestId(POOL_ADDRESS.toHex(), profitEvent.block.number.toString())
 
-  createTokenMock(WBTC_ADDRESS, BigInt.fromString("8"), 'Wrapped Bitcoin', 'WBTC')
+  createTokenMock(WBTC_ADDRESS, BigInt.fromString('8'), 'Wrapped Bitcoin', 'WBTC')
 
   // When: StrategySetEvent triggers
   onLogStrategySet(setStrategyEvent)
@@ -348,7 +431,7 @@ test('Invest/Divest events creates Strategy entities', () => {
   investEvent.block.number = BigInt.fromString('133337')
   investEvent.block.timestamp = BigInt.fromString('1644492069')
   let divestEvent = createStrategyDivestEvent(Address.fromString(WETH_ADDRESS), divestAmount)
-  createTokenMock(WETH_ADDRESS, BigInt.fromString("18"), 'Wrapped Ether', 'WETH')
+  createTokenMock(WETH_ADDRESS, BigInt.fromString('18'), 'Wrapped Ether', 'WETH')
 
   let poolAddress = Address.fromString('0x0000000000000000000000000000000000000101')
   let setStrategyEvent = createSetStrategyEvent(Address.fromString(WETH_ADDRESS), poolAddress)
@@ -401,8 +484,8 @@ test('On deposit, the token count is increased', () => {
   let depositEvent1 = createDepositEvent(Address.fromString(WETH_ADDRESS), BENTOBOX, ALICE, share, amount)
   let depositEvent2 = createDepositEvent(Address.fromString(WBTC_ADDRESS), BENTOBOX, ALICE, share, amount)
 
-  createTokenMock(WETH_ADDRESS, BigInt.fromString("18"), 'Wrapped Ether', 'WETH')
-  createTokenMock(WBTC_ADDRESS, BigInt.fromString("8"), 'Wrapped Bitcoin', 'WBTC')
+  createTokenMock(WETH_ADDRESS, BigInt.fromString('18'), 'Wrapped Ether', 'WETH')
+  createTokenMock(WBTC_ADDRESS, BigInt.fromString('8'), 'Wrapped Bitcoin', 'WBTC')
 
   onLogDeposit(depositEvent1)
 
@@ -413,23 +496,21 @@ test('On deposit, the token count is increased', () => {
   assert.fieldEquals('BentoBox', BENTOBOX.toHex(), 'tokenCount', '2')
 })
 
-
 test('Flashloan fields are updated, including BentoBoxs flashloanCount', () => {
   setup()
   let flashLoanFee = BigInt.fromString('50000')
   let amount = BigInt.fromString('200000000')
   let feeAmount = amount.div(flashLoanFee)
   let flashLoanEvent = createFlashLoanEvent(ALICE, Address.fromString(WBTC_ADDRESS), amount, feeAmount, BOB)
-  flashLoanEvent.block.number = BigInt.fromString("13337")
+  flashLoanEvent.block.number = BigInt.fromString('13337')
   flashLoanEvent.block.timestamp = BigInt.fromString('1644492070')
 
-  let tokenDecimals = BigInt.fromString("8")
+  let tokenDecimals = BigInt.fromString('8')
   let flashLoanId = getFlashLoanId(flashLoanEvent)
   let expectedFeeAmount = toDecimal(feeAmount, tokenDecimals).toString()
   let expectedAmount = toDecimal(amount, tokenDecimals).toString()
 
   createTokenMock(WBTC_ADDRESS, tokenDecimals, 'Wrapped Bitcoin', 'WBTC')
-
 
   onLogFlashLoan(flashLoanEvent)
   assert.fieldEquals('FlashLoan', flashLoanId, 'id', flashLoanId)
@@ -460,4 +541,3 @@ test('TargetPercentage event updates the token', () => {
 
   cleanup()
 })
-

@@ -5,7 +5,9 @@ type BentoBox @entity {
   tokens: [Token!] @derivedFrom(field: "bentoBox")
   masterContracts: [MasterContract!]! @derivedFrom(field: "bentoBox")
   clones: [Clone!] @derivedFrom(field: "bentoBox")
-  flashloans: [FlashLoan!] @derivedFrom(field: "bentoBox")  
+  flashloans: [FlashLoan!] @derivedFrom(field: "bentoBox")
+  transactions: [Transaction!] @derivedFrom(field: "bentoBox")
+  transactionCount: BigInt!
   protocolCount: BigInt!
   userCount: BigInt!
   tokenCount: BigInt!
@@ -13,7 +15,6 @@ type BentoBox @entity {
   cloneCount: BigInt!
   flashloanCount: BigInt!
 }
-
 
 type Token @entity {
   id: ID!
@@ -110,4 +111,23 @@ type UserToken @entity {
   token: Token!
   user: User!
   share: BigDecimal!
+}
+
+enum TransactionType {
+  deposit
+  transfer
+  withdraw
+}
+
+type Transaction @entity {
+  id: ID!
+  bentoBox: BentoBox!
+  type: TransactionType!
+  from: User!
+  to: User!
+  token: Token!
+  amount: BigInt
+  share: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
 }

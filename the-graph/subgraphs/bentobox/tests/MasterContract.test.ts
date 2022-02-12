@@ -45,7 +45,7 @@ test('Creating a master contact also creates a bentobox', () => {
   cleanup()
 })
 
-test('MasterContract and bentobox is not created if approved param is set to false', () => {
+test('Master contract and bentobox is not created if approved param is set to false', () => {
   setup()
 
   let whitelistMasterContractEvent = createWhitelistMasterContractEvent(MASTER_DEPLOYER, false)
