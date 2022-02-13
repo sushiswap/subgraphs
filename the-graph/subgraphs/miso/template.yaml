@@ -77,8 +77,8 @@ templates:
           # file: ../../node_modules/@sushiswap/miso/artifacts/contracts/interfaces/IMisoAuction.sol/IMisoAuction.json
       eventHandlers:
         - event: AddedCommitment(address,uint256)
-          handler: handleAddedCommitment
+          handler: onAddedCommitment
         - event: AuctionFinalized()
-          handler: handleAuctionFinalized
+          handler: onAuctionFinalized
         - event: AuctionCancelled()
-          handler: handleAuctionCancelled
+          handler: onAuctionCancelled

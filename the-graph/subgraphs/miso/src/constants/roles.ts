@@ -1,5 +1,9 @@
 import { Bytes } from '@graphprotocol/graph-ts'
 
+/**
+ * computed Keccak-256 hashes of the inputs: MINTER_ROLE, SMART_CONTRACT_ROLE, OPERATOR_ROLE
+ */
+
 export const ADMIN = Bytes.fromHexString('0x0000000000000000000000000000000000000000000000000000000000000000')
 export const MINTER = Bytes.fromHexString('0x97667070c54ef182b0f5858b034beac1b6f3089aa2d3188bb1e8929f4fa9b929')
 export const OPERATOR = Bytes.fromHexString('0x9d49f397ae9ef1a834b569acb967799a367061e305932181a44f5773da873bfd')

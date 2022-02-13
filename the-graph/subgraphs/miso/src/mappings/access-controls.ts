@@ -1,13 +1,15 @@
-import { RoleGranted, RoleRevoked, RoleAdminChanged } from '../../generated/AccessControls/AccessControls'
-import { getOrCreateAccessControls, getOrCreateRole, getOrCreateUser } from '../functions'
-import { BigInt, log } from '@graphprotocol/graph-ts'
+import { BigInt } from '@graphprotocol/graph-ts'
+import { RoleAdminChanged, RoleGranted, RoleRevoked } from '../../generated/AccessControls/AccessControls'
 import { ADMIN, MINTER, OPERATOR, SMART_CONTRACT } from '../constants'
+import { getOrCreateAccessControls, getOrCreateRole, getOrCreateUser } from '../functions'
 
 export function onRoleAdminChanged(event: RoleAdminChanged): void {
   const accessControls = getOrCreateAccessControls()
-  const role = getOrCreateRole(event.params.role)
-  accessControls.adminCount = accessControls.adminCount.plus(BigInt.fromI32(1))
+  const role = getOrCreateRole(event.params.newAdminRole)
   role.save()
+
+  accessControls.adminCount = accessControls.adminCount.plus(BigInt.fromI32(1))
+  accessControls.save()
 }
 
 export function onRoleGranted(event: RoleGranted): void {
@@ -28,7 +30,6 @@ export function onRoleGranted(event: RoleGranted): void {
   const user = getOrCreateUser(event.params.account.toHex())
   user.role = role.id
   user.save()
-
 }
 
 export function onRoleRevoked(event: RoleRevoked): void {
@@ -44,4 +45,8 @@ export function onRoleRevoked(event: RoleRevoked): void {
     accessControls.smartContractCount = accessControls.smartContractCount.minus(BigInt.fromI32(1))
   }
   accessControls.save()
+
+  const user = getOrCreateUser(event.params.account.toHex())
+  user.role = ''
+  user.save()
 }

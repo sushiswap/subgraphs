@@ -1,6 +1,6 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 import { AddedCommitment, AuctionCancelled, AuctionFinalized } from '../../generated/templates/MisoAuction/MisoAuction'
-import { getAuction, createCommitment } from '../functions'
+import { createCommitment, getAuction } from '../functions'
 
 export function onAddedCommitment(event: AddedCommitment): void {
   createCommitment(event)

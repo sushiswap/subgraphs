@@ -1,14 +1,13 @@
 import { Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts'
 import { newMockEvent } from 'matchstick-as'
-import { RoleAdminChanged, RoleGranted, RoleRevoked } from './AccessControls/AccessControls'
-import { onAuctionTemplateAdded } from './mappings/market'
-import { AuctionTemplateAdded, AuctionTemplateRemoved, MarketCreated } from './MISOMarket/MISOMarket'
-import { AddedCommitment, AuctionCancelled, AuctionFinalized } from './templates/MisoAuction/MisoAuction'
+import { RoleAdminChanged, RoleGranted, RoleRevoked } from '../generated/AccessControls/AccessControls'
+import { AuctionTemplateAdded, AuctionTemplateRemoved, MarketCreated } from '../generated/MISOMarket/MISOMarket'
+import { AddedCommitment, AuctionCancelled, AuctionFinalized } from '../generated/templates/MisoAuction/MisoAuction'
 
-export function createAddedCommitEvent(bidder: Address, commitment: BigInt): AddedCommitment {
+export function createAddedCommitmentEvent(auction: Address, bidder: Address, commitment: BigInt): AddedCommitment {
   let mockEvent = newMockEvent()
   let event = new AddedCommitment(
-    mockEvent.address,
+    auction,
     mockEvent.logIndex,
     mockEvent.transactionLogIndex,
     mockEvent.logType,
@@ -26,10 +25,10 @@ export function createAddedCommitEvent(bidder: Address, commitment: BigInt): Add
   return event
 }
 
-export function createAuctionFinalizedEvent(): AuctionFinalized {
+export function createAuctionFinalizedEvent(auction: Address): AuctionFinalized {
   let mockEvent = newMockEvent()
   let event = new AuctionFinalized(
-    mockEvent.address,
+    auction,
     mockEvent.logIndex,
     mockEvent.transactionLogIndex,
     mockEvent.logType,
@@ -40,10 +39,10 @@ export function createAuctionFinalizedEvent(): AuctionFinalized {
   return event
 }
 
-export function createAuctionCancelledEvent(): AuctionCancelled {
+export function createAuctionCancelledEvent(auction: Address): AuctionCancelled {
   let mockEvent = newMockEvent()
   let event = new AuctionCancelled(
-    mockEvent.address,
+    auction,
     mockEvent.logIndex,
     mockEvent.transactionLogIndex,
     mockEvent.logType,
@@ -54,10 +53,14 @@ export function createAuctionCancelledEvent(): AuctionCancelled {
   return event
 }
 
-export function createOnAuctionTemplateAddedEvent(newAuction: Address, templateId: BigInt): AuctionTemplateAdded {
+export function createAuctionTemplateAddedEvent(
+  factory: Address,
+  newAuction: Address,
+  templateId: BigInt
+): AuctionTemplateAdded {
   let mockEvent = newMockEvent()
   let event = new AuctionTemplateAdded(
-    mockEvent.address,
+    factory,
     mockEvent.logIndex,
     mockEvent.transactionLogIndex,
     mockEvent.logType,
@@ -65,6 +68,9 @@ export function createOnAuctionTemplateAddedEvent(newAuction: Address, templateI
     mockEvent.transaction,
     mockEvent.parameters
   )
+  event.block.number = BigInt.fromString('133337')
+  event.block.timestamp = BigInt.fromString('1644241694')
+
   event.parameters = new Array()
   let newAuctionparam = new ethereum.EventParam('newAuction', ethereum.Value.fromAddress(newAuction))
   let templateIdParam = new ethereum.EventParam('templateId', ethereum.Value.fromUnsignedBigInt(templateId))
@@ -75,10 +81,14 @@ export function createOnAuctionTemplateAddedEvent(newAuction: Address, templateI
   return event
 }
 
-export function createAuctionTemplateRemovedEvent(auction: Address, templateId: BigInt): AuctionTemplateRemoved {
+export function createAuctionTemplateRemovedEvent(
+  factory: Address,
+  auction: Address,
+  templateId: BigInt
+): AuctionTemplateRemoved {
   let mockEvent = newMockEvent()
   let event = new AuctionTemplateRemoved(
-    mockEvent.address,
+    factory,
     mockEvent.logIndex,
     mockEvent.transactionLogIndex,
     mockEvent.logType,
@@ -97,13 +107,14 @@ export function createAuctionTemplateRemovedEvent(auction: Address, templateId: 
 }
 
 export function createMarketCreatedEvent(
+  factory: Address,
   owner: Address,
   deployedBentoBox: Address,
   marketTemplate: Address
 ): MarketCreated {
   let mockEvent = newMockEvent()
   let event = new MarketCreated(
-    mockEvent.address,
+    factory,
     mockEvent.logIndex,
     mockEvent.transactionLogIndex,
     mockEvent.logType,
@@ -111,6 +122,8 @@ export function createMarketCreatedEvent(
     mockEvent.transaction,
     mockEvent.parameters
   )
+  event.block.timestamp = BigInt.fromString('1644241694')
+
   event.parameters = new Array()
   let ownerParam = new ethereum.EventParam('owner', ethereum.Value.fromAddress(owner))
   let addrParam = new ethereum.EventParam('addr', ethereum.Value.fromAddress(deployedBentoBox))
