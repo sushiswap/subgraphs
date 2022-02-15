@@ -16,6 +16,7 @@ export function createCommitment(event: AddedCommitment): Commitment {
   commitment.participant = event.address.toHex() + '-' + event.params.addr.toHex()
   commitment.user = event.params.addr.toHex()
   commitment.amount = event.params.commitment
+  commitment.transactionHash = event.transaction.hash
   commitment.block = event.block.number
   commitment.timestamp = event.block.timestamp
 
