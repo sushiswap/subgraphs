@@ -80,7 +80,7 @@ type Participant @entity {
 
 type User @entity {
   id: ID!
-  role: Role!
+  role: Role
   participated: [Participant!] @derivedFrom(field: "user")
   commitments: [Commitment!] @derivedFrom(field: "user")
 }
