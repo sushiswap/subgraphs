@@ -91,6 +91,7 @@ type Commitment @entity {
   user: User!
   participant: Participant!
   amount: BigInt!
+  transactionHash: Bytes!
   block: BigInt!
   timestamp: BigInt!
 }
