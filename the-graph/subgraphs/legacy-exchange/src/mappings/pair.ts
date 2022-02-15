@@ -21,7 +21,9 @@ import {
   getOrCreateTransaction,
   getOrCreateFactory,
   createUsersIfNotExist,
+  createWhitelistedToken,
   getTokenPrice,
+  deleteWhitelistedToken,
 } from '../functions'
 import { concat } from '@graphprotocol/graph-ts/helper-functions'
 export function onTransfer(event: TransferEvent): void {
@@ -152,6 +154,18 @@ export function onSync(event: SyncEvent): void {
   token1Kpi.liquidityNative = token1Kpi.liquidityNative.plus(reserve1.times(token1Price.derivedNative))
   token1Kpi.liquidityUSD = token1Kpi.liquidityUSD.plus(token1Kpi.liquidityNative.times(nativePrice.derivedUSD))
   token1Kpi.save()
+
+  // if (!token0.whitelisted && token0Kpi.liquidityUSD.gt(BigDecimal.fromString('10000'))) {
+  //   createWhitelistedToken(token0.id)
+  // } else if (token0.whitelisted && token0Kpi.liquidityUSD.lt(BigDecimal.fromString('10000'))) {
+  //   deleteWhitelistedToken(token0.id)
+  // }
+
+  // if (!token1.whitelisted && token1Kpi.liquidityUSD.gt(BigDecimal.fromString('10000'))) {
+  //   createWhitelistedToken(token1.id)
+  // } else if (token1.whitelisted && token1Kpi.liquidityUSD.lt(BigDecimal.fromString('10000'))) {
+  //   deleteWhitelistedToken(token1.id)
+  // }
 }
 
 export function onMint(event: MintEvent): void {

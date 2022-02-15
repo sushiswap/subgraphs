@@ -92,6 +92,7 @@ type Token @entity {
   nameSuccess: Boolean!
   decimals: BigInt!
   decimalsSuccess: Boolean!
+  whitelisted: Boolean!
   block: BigInt!
   timestamp: BigInt!
 }
