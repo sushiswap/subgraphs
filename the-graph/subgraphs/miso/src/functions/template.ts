@@ -7,6 +7,7 @@ export function createTemplate(event: AuctionTemplateAdded): Template {
   template.factory = event.address.toHex()
   template.block = event.block.number
   template.timestamp = event.block.timestamp
+  template.removed = false
 
   template.save()
 

@@ -1,4 +1,4 @@
-import { Address, log } from '@graphprotocol/graph-ts'
+import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { AccessControl as AccessControls } from '../../generated/schema'
 import { AccessControls as AccessControlsContract } from '../../generated/AccessControls/AccessControls'
 import { ACCESS_CONTROLS_ADDRESS } from '../constants/addresses'
@@ -16,6 +16,10 @@ export function createAccessControls(id: Address = ACCESS_CONTROLS_ADDRESS): Acc
   // createRole(contract.SMART_CONTRACT_ROLE())
 
   const accessControls = new AccessControls(id.toHex())
+  accessControls.adminCount = BigInt.fromI32(0)
+  accessControls.minterCount = BigInt.fromI32(0)
+  accessControls.operatorCount = BigInt.fromI32(0)
+  accessControls.smartContractCount = BigInt.fromI32(0)
   accessControls.save()
 
   log.info('[AccessControls] createAccessControls completed... {}', [accessControls.id])
