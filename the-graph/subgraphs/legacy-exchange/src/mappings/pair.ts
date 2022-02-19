@@ -1,6 +1,6 @@
 import { BigDecimal, BigInt, ByteArray, Bytes, log } from '@graphprotocol/graph-ts'
 import { ADDRESS_ZERO, NATIVE_ADDRESS, STABLE_POOL_ADDRESSES } from '../constants'
-import { TokenPrice, Mint, Burn, Swap, Candle } from '../../generated/schema'
+import { TokenPrice, Mint, Burn, Swap, Candle, PairAsset } from '../../generated/schema'
 import {
   Burn as BurnEvent,
   Mint as MintEvent,
@@ -21,9 +21,8 @@ import {
   getOrCreateTransaction,
   getOrCreateFactory,
   createUsersIfNotExist,
-  getTokenPrice,
+  updateCandles
 } from '../functions'
-import { concat } from '@graphprotocol/graph-ts/helper-functions'
 export function onTransfer(event: TransferEvent): void {
   if (event.params.to == ADDRESS_ZERO && event.params.value.equals(BigInt.fromI32(1000))) {
     return
@@ -67,19 +66,12 @@ export function onSync(event: SyncEvent): void {
 
   const pairKpi = getPairKpi(pairAddress)
 
-  log.debug('debug 0', [])
   const asset0 = getPairAsset(pairAddress.concat(':asset:0'))
-  log.debug('debug 1', [])
   const asset1 = getPairAsset(pairAddress.concat(':asset:1'))
-  log.debug('debug 2', [])
   const token0 = getOrCreateToken(asset0.token)
-  log.debug('debug 3', [])
   const token1 = getOrCreateToken(asset1.token)
-  log.debug('debug 4', [])
   const token0Kpi = getTokenKpi(asset0.token)
-  log.debug('debug 5', [])
   const token1Kpi = getTokenKpi(asset1.token)
-  log.debug('debug 6', [])
   token0Kpi.liquidity = token0Kpi.liquidity.minus(asset0.reserve)
   token1Kpi.liquidity = token1Kpi.liquidity.minus(asset1.reserve)
 
@@ -113,7 +105,6 @@ export function onSync(event: SyncEvent): void {
   let token0Price: TokenPrice
   let token1Price: TokenPrice
 
-  log.debug('debug 7', [])
 
   // If the pool is one in which we want to update the native price
   if (STABLE_POOL_ADDRESSES.includes(pairAddress)) {
@@ -133,7 +124,6 @@ export function onSync(event: SyncEvent): void {
     token1Price = updateTokenPrice(token1)
   }
 
-  log.debug('debug 8', [])
 
   pairKpi.liquidityNative = asset0.reserve
     .times(token0Price.derivedNative)
@@ -141,7 +131,6 @@ export function onSync(event: SyncEvent): void {
   pairKpi.liquidityUSD = pairKpi.liquidityNative.times(nativePrice.derivedUSD)
   pairKpi.save()
 
-  log.debug('debug 9', [])
 
   token0Kpi.liquidity = token0Kpi.liquidity.plus(reserve0)
   token0Kpi.liquidityNative = token0Kpi.liquidityNative.plus(reserve0.times(token0Price.derivedNative))
@@ -369,53 +358,5 @@ export function onSwap(event: SwapEvent): void {
     return
   }
 
-  const token0Price = getTokenPrice(asset0.token)
-  const token1Price = getTokenPrice(asset1.token)
-
-  const price = token0Amount.div(token1Amount)
-  const tokens = concat(ByteArray.fromHexString(asset0.token), ByteArray.fromHexString(asset1.token))
-  const timestamp = event.block.timestamp.toI32()
-  const periods: i32[] = [5 * 60, 15 * 60, 60 * 60, 4 * 60 * 60, 24 * 60 * 60, 7 * 24 * 60 * 60]
-  for (let i = 0; i < periods.length; i++) {
-    const timeId = timestamp / periods[i]
-    const candleId = concat(concat(Bytes.fromI32(timeId), Bytes.fromI32(periods[i])), tokens).toHex()
-    let candle = Candle.load(candleId)
-    if (candle === null) {
-      candle = new Candle(candleId)
-      candle.pair = pairAddress
-      candle.time = timestamp
-      candle.period = periods[i]
-      candle.token0 = asset0.token
-      candle.token1 = asset1.token
-      candle.open = price
-      candle.openUSD = price.times(token0Price.derivedUSD)
-      candle.openNative = price.times(token0Price.derivedNative)
-      candle.low = price
-      candle.high = price
-    } else {
-      if (price < candle.low) {
-        candle.low = price
-      }
-      if (price > candle.high) {
-        candle.high = price
-      }
-    }
-
-    candle.lowUSD = candle.low.times(token0Price.derivedUSD)
-    candle.lowNative = candle.low.times(token0Price.derivedNative)
-    candle.highUSD = candle.high.times(token0Price.derivedUSD)
-    candle.highNative = candle.high.times(token0Price.derivedNative)
-
-    candle.close = price
-    candle.closeUSD = price.times(token0Price.derivedUSD)
-    candle.closeNative = price.times(token0Price.derivedNative)
-    candle.lastBlock = event.block.number.toI32()
-    candle.token0Amount = candle.token0Amount.plus(token0Amount)
-    candle.token0AmountUSD = candle.token0Amount.times(token0Price.derivedUSD)
-    candle.token0AmountNative = candle.token0Amount.times(token0Price.derivedNative)
-    candle.token1Amount = candle.token1Amount.plus(token1Amount)
-    candle.token1AmountUSD = candle.token1Amount.times(token1Price.derivedUSD)
-    candle.token1AmountNative = candle.token1Amount.times(token1Price.derivedNative)
-    candle.save()
-  }
+  updateCandles(asset0, asset1, token0Amount, token1Amount, event, pairAddress)
 }

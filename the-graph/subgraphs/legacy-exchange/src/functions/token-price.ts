@@ -5,6 +5,7 @@ import { NATIVE_ADDRESS, STABLE_POOL_ADDRESSES, STABLE_TOKEN_ADDRESSES } from '.
 import { getOrCreateWhitelistedPair } from './whitelisted-pair'
 import { getPairAsset } from './pair'
 import { getWhitelistedPair } from '.'
+import { logStore } from 'matchstick-as'
 
 export function createTokenPrice(token: string): TokenPrice {
   const tokenPrice = new TokenPrice(token)
@@ -14,7 +15,7 @@ export function createTokenPrice(token: string): TokenPrice {
 }
 
 export function getTokenPrice(token: string): TokenPrice {
-  log.debug('getTokenPrice {}', [token])
+  // log.debug('getTokenPrice {}', [token])
   return TokenPrice.load(token) as TokenPrice
 }
 
@@ -98,11 +99,11 @@ export function getNativePriceInUSD(): BigDecimal {
 }
 
 export function updateTokenPrice(token: Token): TokenPrice {
-  log.debug('updateTokenPrice {}', [token.symbol])
+  // log.debug('updateTokenPrice {}', [token.symbol])
 
   const nativeTokenPrice = getTokenPrice(NATIVE_ADDRESS)
 
-  log.debug('updateTokenPrice 2', [])
+  // log.debug('updateTokenPrice 2', [])
 
   if (token.id == NATIVE_ADDRESS) {
     // Unless this subgraph understands BentoBox shares/amounts, derivedNative will be 1e18 shares of the NATIVE token
@@ -117,7 +118,7 @@ export function updateTokenPrice(token: Token): TokenPrice {
   const tokenPriceToUpdate = getTokenPrice(token.id)
 
   for (let i = 0, j = tokenPriceToUpdate.whitelistedPairCount.toI32(); i < j; i++) {
-    log.debug('Token whitelisted pool #{}', [token.id.concat(':').concat(i.toString())])
+    // log.debug('Token whitelisted pool #{}', [token.id.concat(':').concat(i.toString())])
     //0xaba8cac6866b83ae4eec97dd07ed254282f6ad8a
     const whitelistedPair = getWhitelistedPair(token.id.concat(':').concat(i.toString()))
 
