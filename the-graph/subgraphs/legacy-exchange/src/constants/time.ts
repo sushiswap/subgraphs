@@ -8,4 +8,4 @@
   const _1D = 24 * _1H
   const _1W = 7 * _1D
   
-  export const TIME_FRAMES = [_1M, _5M, _15M, _1H, _4H, _1D, _1W]
+  export const TIME_FRAMES = [_5M, _15M, _1H, _4H, _1D, _1W]

@@ -36,8 +36,8 @@ test('Candle creation', () => {
   let amount1Out = BigInt.fromString('1000000000000000000')
   let reserve0 = BigInt.fromString('5000000000')
   let reserve1 = BigInt.fromString('4000000000000000000')
-  let time = BigInt.fromString('1645214443') // 	Fri Feb 18 2022 20:00:43 GMT+0000
-  let time2 = BigInt.fromString('1645214683') // 	Fri Feb 18 2022 20:01:43 GMT+0000 (4 minutes later)
+  let time = BigInt.fromString('1645354980') // 		Sun Feb 20 2022 11:03:00 GMT+0000
+  let time2 = BigInt.fromString('1645355340') // 	Sun Feb 20 2022 11:09:00 GMT+0000, 6 minutes later
   let block = BigInt.fromString('1337')
   let block2 = BigInt.fromString('1338')
 
@@ -60,7 +60,7 @@ test('Candle creation', () => {
     assertOHLC(candleId, token0Amount, token1Amount)
   }
 
-  // When: Another swap occurs (4 minutes later)
+  // When: Another swap occurs (6 minutes later)
   amount0In = BigInt.fromString('1500000000')
   amount0Out = BigInt.fromString('10000000')
   amount1In = BigInt.fromString('15000000')
@@ -72,17 +72,17 @@ test('Candle creation', () => {
   onSync(syncEvent2)
   onSwap(swapEvent2)
 
-  // Then: The 1M-candle remains unchanged
+  // Then: The 5M-candle remains unchanged
   let candleId = generateCandleId(time.toI32(), TIME_FRAMES[0], TUSD.toHex(), WETH.toHex())
   assertCandle(candleId, time, block, TIME_FRAMES[0])
 
   assertOHLC(candleId, token0Amount, token1Amount)
 
-  // And: a new 1M candle is created
+  // And: a new 5M candle is created
   let token0Amount2 = amount0In.minus(amount0Out).abs().divDecimal(BigInt.fromI32(10).pow(6).toBigDecimal())
   let token1Amount2 = amount1Out.minus(amount1In).abs().divDecimal(BigInt.fromI32(10).pow(18).toBigDecimal())
 
-  candleId = generateCandleId(swapEvent2.block.timestamp.toI32(), TIME_FRAMES[0], TUSD.toHex(), WETH.toHex())
+  candleId = generateCandleId(time2.toI32(), TIME_FRAMES[0], TUSD.toHex(), WETH.toHex())
   assertCandle(candleId, time2, block2, TIME_FRAMES[0])
   assertOHLC(candleId, token0Amount2, token1Amount2)
 
@@ -101,7 +101,9 @@ test('Candle creation', () => {
   cleanup()
 })
 
-test('Candle creates upper and lower shadows', () => {})
+test('Candle creates upper and lower shadows', () => {
+  //TODO: Create a candle that have different OHLC values
+})
 
 function assertCandle(
   candleId: string,

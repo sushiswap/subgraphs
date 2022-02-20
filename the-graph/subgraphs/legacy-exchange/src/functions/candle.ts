@@ -60,12 +60,15 @@ export function updateCandles(
     candle.token1AmountNative = candle.token1Amount.times(token1Price.derivedNative)
     candle.save()
    
-    debugCandle(candle)
+    // debugCandle(candle)
   }
  
 }
 
-
+/**
+ * ONLY used for debugging - useful for debugging {@link updateCandles}.
+ * @param candle 
+ */
 export function debugCandle(candle: Candle): void {
   log.debug('-------- TIME FRAME: {} --------', [candle.period.toString()])
   log.debug('O: {}', [candle.open.toString()])
