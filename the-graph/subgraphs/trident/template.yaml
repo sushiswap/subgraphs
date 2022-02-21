@@ -71,7 +71,7 @@ dataSources:
       abi: BentoBox
     mapping:
       kind: ethereun/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/mappings/bentobox.ts
       entities:
@@ -102,7 +102,7 @@ templates:
       abi: ConstantProductPool
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/mappings/constant-product-pool.ts
       entities:
@@ -123,9 +123,9 @@ templates:
         - name: SymbolBytes32
           file: ./abis/SymbolBytes32.json
       eventHandlers:
-        - event: Mint(indexed address,uint256,uint256,indexed address,uint256)
+        - event: Mint(indexed address,uint256,uint256,indexed address)
           handler: onMint
-        - event: Burn(indexed address,uint256,uint256,indexed address,uint256)
+        - event: Burn(indexed address,uint256,uint256,indexed address)
           handler: onBurn
         - event: Sync(uint256,uint256)
           handler: onSync
@@ -142,7 +142,7 @@ templates:
       abi: ConcentratedLiquidityPool
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/mappings/concentrated-liquidity-pool.ts
       entities:
@@ -176,7 +176,7 @@ templates:
       abi: HybridPool
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/mappings/hybrid-pool.ts
       entities:
@@ -206,7 +206,7 @@ templates:
       abi: IndexPool
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/mappings/index-pool.ts
       entities:

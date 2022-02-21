@@ -71,9 +71,9 @@ export function onMint(event: MintEvent): void {
   token1Kpi.liquidity = token1Kpi.liquidity.plus(amount1)
   token1Kpi.transactionCount = token1Kpi.transactionCount.plus(BigInt.fromI32(1))
 
-  const liquidity = event.params.liquidity.divDecimal(BigDecimal.fromString('1e18'))
+  // const liquidity = event.params.liquidity.divDecimal(BigDecimal.fromString('1e18'))
 
-  poolKpi.liquidity = poolKpi.liquidity.plus(liquidity)
+  // poolKpi.liquidity = poolKpi.liquidity.plus(liquidity)
 
   const transaction = getOrCreateTransaction(event)
 
@@ -162,9 +162,9 @@ export function onBurn(event: BurnEvent): void {
   burn.origin = event.transaction.from
   burn.logIndex = event.logIndex
 
-  const liquidity = event.params.liquidity.divDecimal(BigDecimal.fromString('1e18'))
+  // const liquidity = event.params.liquidity.divDecimal(BigDecimal.fromString('1e18'))
 
-  poolKpi.liquidity = poolKpi.liquidity.minus(liquidity)
+  // poolKpi.liquidity = poolKpi.liquidity.minus(liquidity)
   poolKpi.transactionCount = poolKpi.transactionCount.plus(BigInt.fromI32(1))
   poolKpi.save()
 
@@ -351,14 +351,16 @@ export function onTransfer(event: Transfer): void {
   const poolAddress = event.address.toHex()
   const poolKpi = getConstantProductPoolKpi(poolAddress)
 
+  const liquidity = event.params.amount.divDecimal(BigDecimal.fromString('1e18'))
+
   // If sender is black hole, we're mintin'
   if (event.params.sender == ADDRESS_ZERO) {
-    poolKpi.totalSupply = poolKpi.totalSupply.plus(event.params.amount)
+    poolKpi.liquidity = poolKpi.liquidity.plus(liquidity)
   }
 
   // If recipient is black hole we're burnin'
   if (event.params.recipient == ADDRESS_ZERO) {
-    poolKpi.totalSupply = poolKpi.totalSupply.minus(event.params.amount)
+    poolKpi.liquidity = poolKpi.liquidity.minus(liquidity)
   }
 
   poolKpi.save()

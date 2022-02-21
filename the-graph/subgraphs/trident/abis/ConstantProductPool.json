@@ -66,12 +66,6 @@
         "internalType": "address",
         "name": "recipient",
         "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "liquidity",
-        "type": "uint256"
       }
     ],
     "name": "Burn",
@@ -103,12 +97,6 @@
         "internalType": "address",
         "name": "recipient",
         "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "liquidity",
-        "type": "uint256"
       }
     ],
     "name": "Mint",

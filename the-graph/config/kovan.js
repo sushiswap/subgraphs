@@ -5,9 +5,9 @@ module.exports = {
   weth: { address: '0xd0a1e359811322d97991e03f863a0c30c2cf029c' },
   wbtc: { address: '0xd3a691c852cdb01e281545a27064741f0b7f6825' },
   bentobox: { address: '0xc381a85ed7C7448Da073b7d6C9d4cBf1Cbf576f0', startBlock: 27205233 },
-  masterDeployer: { address: '0xdCFaae69E67E4bA73d5A890Fcae097eB3C615e96', startBlock: 28497203 },
+  masterDeployer: { address: '0xE716603A1BEE1b94E2e882b0e3C114aA1500D408', startBlock: 29962009 },
   concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
-  constantProductPoolFactory: { address: '0xde87A91358FE9C2506290cA21E81438Cd9543d58' },
+  constantProductPoolFactory: { address: '0x77842BC587185BdfdFb5e1Df2EB7B76da6F92Ca2' },
   hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
   indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
   whitelistedTokenAddresses: [
@@ -31,10 +31,10 @@ module.exports = {
   // List of STABLE/NATIVE pools to use to price NATIVE in USD
   stablePoolAddresses: [
     // DAI/WETH
-    '0xc8a7e855f8623faed410a5d4122202fe18783255',
+    '0x94a4f33fffde26f4138215f714c775a647461804',
 
     // USDC/WETH
-    '0xc1f60ef13dd52904465746e87a9becacfe76621a',
+    '0x8d9d54f6569b0a4f5f30f0611da9320a7d3e0519',
   ],
 
   miso: {
