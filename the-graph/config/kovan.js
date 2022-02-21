@@ -38,8 +38,8 @@ module.exports = {
   ],
 
   miso: {
-    accessControls: { address: '0xE3226BbdC738013912419cA75FF1C36515F85F6c', startBlock: 29157241 },
-    market: { address: '0x7Fca4F27CA87F6df3b925987067Beff53f28F94C', startBlock: 29157292 },
+    accessControls: { address: '0x1B0449d235b02C1773f391f500dCC3f8EbEaEff9', startBlock: 29430407 },
+    market: { address: '0x2a4E1AA493a1a31ACB5EAc419c809D69A2c62058', startBlock: 29836253 },
   },
   legacy: {
     factory: {

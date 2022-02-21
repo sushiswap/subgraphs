@@ -5,7 +5,9 @@ type BentoBox @entity {
   tokens: [Token!] @derivedFrom(field: "bentoBox")
   masterContracts: [MasterContract!]! @derivedFrom(field: "bentoBox")
   clones: [Clone!] @derivedFrom(field: "bentoBox")
-  flashloans: [FlashLoan!] @derivedFrom(field: "bentoBox")  
+  flashloans: [FlashLoan!] @derivedFrom(field: "bentoBox")
+  transactions: [Transaction!] @derivedFrom(field: "bentoBox")
+  transactionCount: BigInt!
   protocolCount: BigInt!
   userCount: BigInt!
   tokenCount: BigInt!
@@ -13,7 +15,6 @@ type BentoBox @entity {
   cloneCount: BigInt!
   flashloanCount: BigInt!
 }
-
 
 type Token @entity {
   id: ID!
@@ -25,8 +26,29 @@ type Token @entity {
   nameSuccess: Boolean!
   decimals: BigInt!
   decimalsSuccess: Boolean!
+  strategy: Strategy
+  strategyTargetPercentage: BigInt!
   block: BigInt!
   timestamp: BigInt!
+}
+
+type Strategy @entity {
+  id: ID!
+  token: Token!
+  balance: BigInt!
+  totalProfit: BigInt!
+  harvests: [StrategyHarvest!] @derivedFrom(field: "strategy")
+  timestamp: BigInt!
+  block: BigInt!
+}
+
+type StrategyHarvest @entity {
+  id: ID!
+  strategy: Strategy!
+  profit: BigDecimal!
+  tokenElastic: BigDecimal!
+  timestamp: BigInt!
+  block: BigInt!
 }
 
 type Rebase @entity {
@@ -42,8 +64,8 @@ type FlashLoan @entity {
   borrower: Bytes!
   receiver: Bytes!
   token: Token!
-  amount: BigInt!
-  feeAmount: BigInt!
+  amount: BigDecimal!
+  feeAmount: BigDecimal!
   block: BigInt!
   timestamp: BigInt!
 }
@@ -80,6 +102,32 @@ type User @entity {
   id: ID!
   bentoBox: BentoBox!
   masterContractApprovals: [MasterContractApproval!] @derivedFrom(field: "user")
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type UserToken @entity {
+  id: ID!
+  token: Token!
+  user: User!
+  share: BigDecimal!
+}
+
+enum TransactionType {
+  deposit
+  transfer
+  withdraw
+}
+
+type Transaction @entity {
+  id: ID!
+  bentoBox: BentoBox!
+  type: TransactionType!
+  from: User!
+  to: User!
+  token: Token!
+  amount: BigInt
+  share: BigInt!
   block: BigInt!
   timestamp: BigInt!
 }

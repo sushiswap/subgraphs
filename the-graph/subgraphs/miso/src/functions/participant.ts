@@ -3,20 +3,20 @@ import { Participant } from '../../generated/schema'
 import { getAuction } from './auction'
 import { getOrCreateUser } from './user'
 
-export function getOrCreateParticipant(user: string, _auction: string): Participant {
-  let participant = Participant.load(getParticipantId(user, _auction))
+export function getOrCreateParticipant(userAddress: string, auctionAddress: string): Participant {
+  let participant = Participant.load(getParticipantId(userAddress, auctionAddress))
 
-  getOrCreateUser(user)
+  getOrCreateUser(userAddress)
 
   if (participant === null) {
-    participant = new Participant(getParticipantId(user, _auction))
+    participant = new Participant(getParticipantId(userAddress, auctionAddress))
 
-    participant.auction = _auction
-    participant.user = user
+    participant.auction = auctionAddress
+    participant.user = userAddress
 
     participant.save()
 
-    const auction = getAuction(_auction)
+    const auction = getAuction(auctionAddress)
     auction.participantCount = auction.participantCount.plus(BigInt.fromI32(1))
     auction.save()
   }

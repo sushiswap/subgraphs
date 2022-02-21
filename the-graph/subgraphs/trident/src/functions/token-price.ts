@@ -49,9 +49,11 @@ export function getNativePriceInUSD(): BigDecimal {
 
   let nativeReserve = BigDecimal.fromString('0')
 
-  let stablePrices: BigDecimal[] = []
+  let nativeReserves: BigDecimal[] = []
 
-  let stableReserves: BigDecimal[] = []
+  // let stableReserves: BigDecimal[] = []
+
+  let stablePrices: BigDecimal[] = []
 
   for (let i = 0; i < STABLE_POOL_ADDRESSES.length; i++) {
     const address = STABLE_POOL_ADDRESSES[i]
@@ -70,9 +72,11 @@ export function getNativePriceInUSD(): BigDecimal {
 
     const stableFirst = STABLE_TOKEN_ADDRESSES.includes(asset0.token)
 
-    nativeReserve = nativeReserve.plus(stableFirst ? asset1.reserve : asset0.reserve)
+    nativeReserve = nativeReserve.plus(!stableFirst ? asset0.reserve : asset1.reserve)
 
-    stableReserves.push(stableFirst ? asset0.reserve : asset1.reserve)
+    nativeReserves.push(!stableFirst ? asset0.reserve : asset1.reserve)
+
+    // stableReserves.push(stableFirst ? asset0.reserve : asset1.reserve)
 
     stablePrices.push(stableFirst ? asset0.price : asset1.price)
 
@@ -82,9 +86,7 @@ export function getNativePriceInUSD(): BigDecimal {
   if (count > 0) {
     for (let j = 0; j < count; j++) {
       const price = stablePrices[j]
-      const reserve = stableReserves[j]
-      const weight = reserve.div(nativeReserve)
-
+      const weight = nativeReserves[j].div(nativeReserve)
       weightdPrice = weightdPrice.plus(price.times(weight))
     }
   }

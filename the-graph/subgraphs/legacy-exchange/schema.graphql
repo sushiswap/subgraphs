@@ -45,12 +45,24 @@ type Pair @entity {
   token0: Token!
   # Token 1
   token1: Token!
+  # Assets
+  assets: [PairAsset!]! @derivedFrom(field: "pair")
+  # Candles
+  candles: [Candle!]! @derivedFrom(field: "pair")
   # Kpi
   kpi: PairKpi!
   # Block
   block: BigInt!
   # Timestamp
   timestamp: BigInt!
+}
+
+type PairAsset @entity {
+  id: ID!
+  pair: Pair!
+  token: Token!
+  reserve: BigDecimal!
+  price: BigDecimal!
 }
 
 type PairKpi @entity {
@@ -110,6 +122,12 @@ type TokenPrice @entity {
   whitelistedPairs: [WhitelistedPair!]! @derivedFrom(field: "price")
 }
 
+type WhitelistedToken @entity {
+  id: ID!
+  price: TokenPrice!
+  token: Token!
+}
+
 type WhitelistedPair @entity {
   id: ID!
   price: TokenPrice!
@@ -119,4 +137,94 @@ type WhitelistedPair @entity {
 type User @entity {
   # User address
   id: ID!
+}
+
+type Transaction @entity {
+  id: ID!
+  gasUsed: BigInt!
+  gasLimit: BigInt!
+  gasPrice: BigInt!
+  mints: [Mint!]! @derivedFrom(field: "transaction")
+  burns: [Burn!]! @derivedFrom(field: "transaction")
+  swaps: [Swap!]! @derivedFrom(field: "transaction")
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type Mint @entity {
+  id: ID!
+  pair: Pair!
+  transaction: Transaction!
+  token0: Token!
+  token1: Token!
+  amount: BigInt!
+  amount0: BigDecimal!
+  amount1: BigDecimal!
+  from: Bytes!
+  to: Bytes
+  sender: Bytes!
+  logIndex: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type Burn @entity {
+  id: ID!
+  pair: Pair!
+  transaction: Transaction!
+  token0: Token!
+  token1: Token!
+  amount: BigInt!
+  amount0: BigDecimal!
+  amount1: BigDecimal!
+  from: Bytes!
+  to: Bytes!
+  sender: Bytes!
+  logIndex: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type Swap @entity {
+  id: ID!
+  pair: Pair!
+  transaction: Transaction!
+  tokenIn: Token!
+  tokenOut: Token!
+  amountIn: BigDecimal!
+  amountOut: BigDecimal!
+  from: Bytes!
+  to: Bytes!
+  sender: Bytes!
+  logIndex: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type Candle @entity {
+  id: ID! # time + period + srcToken + dstToken
+  time: Int!
+  period: Int!
+  lastBlock: Int!
+  pair: Pair!
+  token0: Token!
+  token1: Token!
+  token0Amount: BigDecimal!
+  token0AmountUSD: BigDecimal!
+  token0AmountNative: BigDecimal!
+  token1Amount: BigDecimal!
+  token1AmountUSD: BigDecimal!
+  token1AmountNative: BigDecimal!
+  open: BigDecimal!
+  openUSD: BigDecimal!
+  openNative: BigDecimal!
+  close: BigDecimal!
+  closeUSD: BigDecimal!
+  closeNative: BigDecimal!
+  low: BigDecimal!
+  lowUSD: BigDecimal!
+  lowNative: BigDecimal!
+  high: BigDecimal!
+  highUSD: BigDecimal!
+  highNative: BigDecimal!
 }
