@@ -31,7 +31,7 @@ export function getNativeTokenPrice(): TokenPrice {
 }
 
 // Minimum liqudiity threshold in native currency
-const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('0.0000000001')
+const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('0.1')
 
 export function getNativePriceInUSD(): BigDecimal {
   // 1. Generate list of stable pairs
@@ -49,11 +49,9 @@ export function getNativePriceInUSD(): BigDecimal {
 
   let nativeReserve = BigDecimal.fromString('0')
 
-  let nativeReserves: BigDecimal[] = []
-
-  // let stableReserves: BigDecimal[] = []
-
   let stablePrices: BigDecimal[] = []
+
+  let nativeReserves: BigDecimal[] = []
 
   for (let i = 0; i < STABLE_POOL_ADDRESSES.length; i++) {
     const address = STABLE_POOL_ADDRESSES[i]
@@ -75,8 +73,6 @@ export function getNativePriceInUSD(): BigDecimal {
     nativeReserve = nativeReserve.plus(!stableFirst ? asset0.reserve : asset1.reserve)
 
     nativeReserves.push(!stableFirst ? asset0.reserve : asset1.reserve)
-
-    // stableReserves.push(stableFirst ? asset0.reserve : asset1.reserve)
 
     stablePrices.push(stableFirst ? asset0.price : asset1.price)
 
@@ -124,7 +120,6 @@ export function updateTokenPrice(token: Token): TokenPrice {
 
     if (token.id == asset0.token) {
       const tokenPrice1 = getTokenPrice(asset1.token)
-
       const nativeLiquidity = asset1.reserve.times(tokenPrice1.derivedNative)
 
       if (nativeLiquidity.gt(mostLiquidity) && nativeLiquidity.gt(MINIMUM_NATIVE_LIQUIDITY)) {
@@ -138,9 +133,7 @@ export function updateTokenPrice(token: Token): TokenPrice {
 
     if (token.id == asset1.token) {
       const tokenPrice0 = getTokenPrice(asset0.token)
-
       const nativeLiquidity = asset0.reserve.times(tokenPrice0.derivedNative)
-
       if (nativeLiquidity.gt(mostLiquidity) && nativeLiquidity.gt(MINIMUM_NATIVE_LIQUIDITY)) {
         mostLiquidity = nativeLiquidity
         const derivedNative = asset0.price.times(tokenPrice0.derivedNative)
@@ -150,6 +143,7 @@ export function updateTokenPrice(token: Token): TokenPrice {
       }
     }
   }
+
   tokenPriceToUpdate.save()
 
   return tokenPriceToUpdate
