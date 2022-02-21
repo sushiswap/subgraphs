@@ -13,7 +13,7 @@ import {
   getPoolHourSnapshotId,
   getTokenDaySnapshotId,
   getTokenKpi
-} from '../src/functions'
+} from '../src/functions/index'
 import { onLogDeposit } from '../src/mappings/bentobox'
 import {
   createBurnId,
