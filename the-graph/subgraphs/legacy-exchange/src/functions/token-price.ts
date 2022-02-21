@@ -54,8 +54,6 @@ export function getNativePriceInUSD(): BigDecimal {
 
   let stablePrices: BigDecimal[] = []
 
-  let stableReserves: BigDecimal[] = []
-
   let nativeReserves: BigDecimal[] = []
 
   for (let i = 0; i < STABLE_POOL_ADDRESSES.length; i++) {
@@ -78,8 +76,6 @@ export function getNativePriceInUSD(): BigDecimal {
     nativeReserve = nativeReserve.plus(!stableFirst ? asset0.reserve : asset1.reserve)
 
     nativeReserves.push(!stableFirst ? asset0.reserve : asset1.reserve)
-
-    stableReserves.push(stableFirst ? asset0.reserve : asset1.reserve)
 
     stablePrices.push(stableFirst ? asset0.price : asset1.price)
 
@@ -120,9 +116,9 @@ export function updateTokenPrice(token: Token): TokenPrice {
     log.debug('Token whitelisted pool #{}', [token.id.concat(':').concat(i.toString())])
     //0xaba8cac6866b83ae4eec97dd07ed254282f6ad8a
     const whitelistedPair = getWhitelistedPair(token.id.concat(':').concat(i.toString()))
-
     const asset0 = getPairAsset(whitelistedPair.pair.concat(':asset:0'))
     const asset1 = getPairAsset(whitelistedPair.pair.concat(':asset:1'))
+
     if (token.id == asset0.token) {
       const tokenPrice1 = getTokenPrice(asset1.token)
       const nativeLiquidity = asset1.reserve.times(tokenPrice1.derivedNative)
