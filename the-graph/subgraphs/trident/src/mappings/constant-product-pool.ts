@@ -1,4 +1,4 @@
-import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
+import { ADDRESS_ZERO, NATIVE_ADDRESS, STABLE_POOL_ADDRESSES } from '../constants/addresses'
 import {
   Approval,
   Burn as BurnEvent,
@@ -7,27 +7,28 @@ import {
   Sync,
   Transfer,
 } from '../../generated/templates/ConstantProductPool/ConstantProductPool'
+import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 import { Burn, Mint, Swap, TokenPrice } from '../../generated/schema'
 import {
-  getConstantProductPoolKpi,
-  getOrCreateConstantProductPoolFactory,
-  getOrCreateToken,
-  getTokenKpi,
-  getOrCreateTransaction,
   getConstantProductPoolAsset,
-  getOrCreateTokenPrice,
-  getRebase,
+  getConstantProductPoolKpi,
   getNativeTokenPrice,
+  getOrCreateConstantProductPoolFactory,
+  getOrCreateLiquidityPosition,
+  getOrCreateToken,
+  getOrCreateTokenPrice,
+  getOrCreateTransaction,
+  getOrCreateUser,
+  getRebase,
+  getTokenKpi,
+  getTokenPrice,
   toAmount,
-  updateTokenDaySnapshot,
   updatePoolDaySnapshot,
   updatePoolHourSnapshot,
-  getOrCreateLiquidityPosition,
-  getOrCreateUser,
+  updateTokenDaySnapshot,
   updateTokenPrice,
 } from '../functions'
 
-import { ADDRESS_ZERO, STABLE_POOL_ADDRESSES, NATIVE_ADDRESS } from '../constants/addresses'
 import { CONSTANT_PRODUCT_PREFIX } from '../constants/id'
 
 export function onMint(event: MintEvent): void {
@@ -285,12 +286,14 @@ export function onSwap(event: SwapEvent): void {
   const poolAddress = event.address.toHex()
 
   const tokenIn = getOrCreateToken(tokenInAddress)
+  const tokenInPrice = getTokenPrice(tokenInAddress)
 
   const tokenInKpi = getTokenKpi(tokenInAddress)
   tokenInKpi.transactionCount = tokenInKpi.transactionCount.plus(BigInt.fromI32(1))
   tokenInKpi.save()
 
   const tokenOut = getOrCreateToken(tokenOutAddress)
+  const tokenOutPrice = getTokenPrice(tokenOutAddress)
 
   const tokenOutKpi = getTokenKpi(tokenOutAddress)
   tokenOutKpi.transactionCount = tokenOutKpi.transactionCount.plus(BigInt.fromI32(1))
@@ -300,32 +303,38 @@ export function onSwap(event: SwapEvent): void {
 
   const poolKpi = getConstantProductPoolKpi(poolAddress)
 
-  const swap = new Swap(createSwapId(transaction.id, poolKpi.transactionCount))
-
-  poolKpi.transactionCount = poolKpi.transactionCount.plus(BigInt.fromI32(1))
-  poolKpi.save()
-
-  swap.transaction = transaction.id
-  swap.pool = poolAddress
-  swap.tokenIn = tokenIn.id
-  swap.tokenOut = tokenOut.id
-  swap.amountIn = event.params.amountIn.divDecimal(
+  const amountIn = event.params.amountIn.divDecimal(
     BigInt.fromI32(10)
       .pow(tokenIn.decimals.toI32() as u8)
       .toBigDecimal()
   )
-  swap.amountOut = event.params.amountOut.divDecimal(
+
+  const amountOut = event.params.amountOut.divDecimal(
     BigInt.fromI32(10)
       .pow(tokenOut.decimals.toI32() as u8)
       .toBigDecimal()
   )
+
+  const swap = new Swap(createSwapId(transaction.id, poolKpi.transactionCount))
+  swap.transaction = transaction.id
+  swap.pool = poolAddress
+  swap.tokenIn = tokenIn.id
+  swap.tokenOut = tokenOut.id
+  swap.amountIn = amountIn
+  swap.amountOut = amountOut
   swap.recipient = event.params.recipient
   swap.origin = event.transaction.from
   swap.logIndex = event.logIndex
   swap.save()
 
-  const nativePrice = getNativeTokenPrice()
+  const volumeNative = amountIn.times(tokenInPrice.derivedNative).plus(amountOut.times(tokenOutPrice.derivedNative))
+  const volumeUSD = amountIn.times(tokenInPrice.derivedUSD).plus(amountOut.times(tokenOutPrice.derivedUSD))
+  poolKpi.volumeNative = poolKpi.volumeNative.plus(volumeNative)
+  poolKpi.volumeUSD = poolKpi.volumeUSD.plus(volumeUSD)
+  poolKpi.transactionCount = poolKpi.transactionCount.plus(BigInt.fromI32(1))
+  poolKpi.save()
 
+  const nativePrice = getNativeTokenPrice()
   updateTokenDaySnapshot(event.block.timestamp, tokenIn, tokenInKpi, nativePrice)
   updateTokenDaySnapshot(event.block.timestamp, tokenOut, tokenOutKpi, nativePrice)
 }
