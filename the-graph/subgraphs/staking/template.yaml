@@ -1,0 +1,39 @@
+specVersion: 0.0.4
+description: Staking
+repository: https://github.com/sushiswap/subgraphs
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Staking
+    network: {{ network }}
+    source:
+      address: '{{ staking.address }}'
+      startBlock: {{ staking.startBlock }}
+      abi: Staking
+    mapping:
+      kind: ethereun/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/staking.ts
+      entities:
+        - User
+        - Stake
+        - Incentive
+        - Token
+      abis:
+        - name: Staking
+          file: ./abis/Staking.json
+      eventHandlers:
+        - event: IncentiveCreated(indexed address,indexed address,indexed address,uint256,uint256,uint256,uint256)
+          handler: onIncentiveCreated
+        - event: IncentiveUpdated(indexed uint256,int256,uint256,uint256)
+          handler: onIncentiveUpdated
+        - event: Stake(indexed address,indexed address,uint256)
+          handler: onStake
+        - event: Subscribe(indexed uint256,indexed address)
+          handler: onSubscribe
+        - event: Unstake(indexed address,indexed address,uint256)
+          handler: onUnstake
+        - event: Unsubscribe(indexed uint256,indexed address)
+          handler: onUnSubscribe

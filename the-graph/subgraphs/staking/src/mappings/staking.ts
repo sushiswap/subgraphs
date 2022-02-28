@@ -6,10 +6,9 @@ import {
   Subscribe,
   Unstake,
   Unsubscribe,
-} from '../generated/Staking/Staking'
+} from '../../generated/Staking/Staking'
 
 import { BigInt } from '@graphprotocol/graph-ts'
-import { ExampleEntity } from '../generated/schema'
 
 export function onIncentiveCreated(event: IncentiveCreated): void {
   // // Entities can be loaded from the store using a string ID; this ID
