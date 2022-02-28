@@ -1,6 +1,29 @@
-type ExampleEntity @entity {
+type User @entity {
   id: ID!
-  count: BigInt!
-  token: Bytes! # address
-  rewardToken: Bytes! # address
+  block: BigInt!
+  timestamp: BigInt!
+  stakes: [Stake!] @derivedFrom(field: "user")
+}
+
+type Token @entity {
+  id: ID!
+  timestamp: BigInt!
+}
+
+type Stake @entity {
+  id: ID!
+  user: User!
+  liquidity: BigInt!
+}
+
+type Incentive @entity {
+  id: ID!
+  creator: User!
+  pool: Token!
+  rewardToken: Token!
+  startTime: BigInt!
+  endTime: BigInt!
+  rewardPerLiquidity: BigInt!
+  lastRewardTime: BigInt!
+  liquidityStaked: BigInt!
 }
