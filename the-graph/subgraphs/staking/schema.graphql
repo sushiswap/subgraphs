@@ -5,6 +5,8 @@ type User @entity {
   stakes: [Stake!] @derivedFrom(field: "user")
 }
 
+#TODO: Should this be Token or Pool?
+# if Token, should it contain symbol name decimals?
 type Token @entity {
   id: ID!
   timestamp: BigInt!
