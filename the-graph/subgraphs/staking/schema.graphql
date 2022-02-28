@@ -21,8 +21,9 @@ type Stake @entity {
 type Incentive @entity {
   id: ID!
   creator: User!
-  pool: Token!
+  pool: Token! #TODO: rename? Token?
   rewardToken: Token!
+  rewardRemaining: BigInt!
   startTime: BigInt!
   endTime: BigInt!
   rewardPerLiquidity: BigInt!

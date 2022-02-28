@@ -15,7 +15,21 @@ import { getOrCreateIncentive } from '../../src/functions/incentive'
 
 export function onIncentiveCreated(event: IncentiveCreated): void {
   let incentive = getOrCreateIncentive(event.params.id.toString())
+  incentive.creator = event.params.creator.toHex()
+  incentive.pool = event.params.token.toHex()
+  incentive.rewardToken = event.params.rewardToken.toHex()
+  incentive.lastRewardTime = event.params.startTime
+  incentive.endTime = event.params.endTime
+  incentive.rewardPerLiquidity = BigInt.fromU32(1)
+  incentive.rewardRemaining = event.params.amount
 
+  getOrCreateToken(event.params.rewardToken.toHex())
+  incentive.save()
+
+
+}
+
+export function onIncentiveUpdated(event: IncentiveUpdated): void {
   //   if (
   //     incentive.liquidityStaked > 0 &&
   //     incentive.lastRewardTime < maxTime
@@ -26,10 +40,8 @@ export function onIncentiveCreated(event: IncentiveCreated): void {
   //   else if (incentive.liquidityStaked == 0) {
   //     incentive.lastRewardTime = uint32(maxTime);
   // }
-  // claimReward
+  // claimReward}
 }
-
-export function onIncentiveUpdated(event: IncentiveUpdated): void {}
 
 export function onStake(event: Stake): void {
   getOrCreateToken(event.params.token.toHex())
@@ -52,6 +64,4 @@ export function onUnstake(event: Unstake): void {
 
 export function onUnsubscribe(event: Unsubscribe): void {}
 
-export function onSubscribe(event: Subscribe): void {
-  
-}
+export function onSubscribe(event: Subscribe): void {}
