@@ -43,6 +43,8 @@ test('Subscribe', () => {
   cleanup()
 })
 
+
+
 test('Subscribe and Unsubscribe', () => {
   setup()
   let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
