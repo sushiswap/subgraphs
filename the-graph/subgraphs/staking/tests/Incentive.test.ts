@@ -44,13 +44,14 @@ test('Create incentive', () => {
 })
 
 test('Incentive is updated when staking', () => {
-  const amount = BigInt.fromString('10000000')
+  onIncentiveCreated(incentiveCreatedEvent)
   let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
 
   // When: Alice stakes an amount
   onStake(stakeEvent)
 
-  // Then: An Incentive entity is created
+  // Then: the incentive values belonging to the token is updated
+  
 
   cleanup()
 })

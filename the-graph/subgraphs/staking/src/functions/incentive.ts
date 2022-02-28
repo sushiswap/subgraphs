@@ -8,5 +8,6 @@ export function getOrCreateIncentive(id: string): Incentive {
     incentive.save()
   }
 
+  
   return incentive as Incentive
 }

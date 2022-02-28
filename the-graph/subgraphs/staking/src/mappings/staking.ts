@@ -8,10 +8,11 @@ import {
   Unsubscribe,
 } from '../../generated/Staking/Staking'
 
-import { BigInt } from '@graphprotocol/graph-ts'
+import { BigInt, store } from '@graphprotocol/graph-ts'
 import { getOrCreateToken } from '../../src/functions/token'
 import { getOrCreateStake } from '../../src/functions/staking'
 import { getOrCreateIncentive } from '../../src/functions/incentive'
+import { getOrCreateSubscription, getSubscriptionId } from '../../src/functions/subscription'
 
 export function onIncentiveCreated(event: IncentiveCreated): void {
   let incentive = getOrCreateIncentive(event.params.id.toString())
@@ -25,8 +26,6 @@ export function onIncentiveCreated(event: IncentiveCreated): void {
 
   getOrCreateToken(event.params.rewardToken.toHex())
   incentive.save()
-
-
 }
 
 export function onIncentiveUpdated(event: IncentiveUpdated): void {
@@ -50,8 +49,9 @@ export function onStake(event: Stake): void {
   stake.liquidity = stake.liquidity.plus(event.params.amount)
   stake.user = event.params.user.toHex()
   stake.save()
-}
 
+  //TODO: accrue rewards
+}
 
 export function onUnstake(event: Unstake): void {
   getOrCreateToken(event.params.token.toHex())
@@ -62,6 +62,14 @@ export function onUnstake(event: Unstake): void {
   stake.save()
 }
 
-export function onUnsubscribe(event: Unsubscribe): void {}
+export function onUnsubscribe(event: Unsubscribe): void {
+  store.remove('Subscription', getSubscriptionId(event.params.user.toHex(), event.params.id.toString()))
+}
 
-export function onSubscribe(event: Subscribe): void {}
+export function onSubscribe(event: Subscribe): void {
+  let subscription = getOrCreateSubscription(event.params.user.toHex(), event.params.id.toString())
+
+  subscription.user = event.params.user.toHex()
+  subscription.incentive = event.params.id.toString()
+  subscription.save()
+}
