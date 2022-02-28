@@ -41,6 +41,9 @@ module.exports = {
     accessControls: { address: '0x1B0449d235b02C1773f391f500dCC3f8EbEaEff9', startBlock: 29430407 },
     market: { address: '0x2a4E1AA493a1a31ACB5EAc419c809D69A2c62058', startBlock: 29836253 },
   },
+
+  staking: { address: '0xe4d9FE1F01f87AcF6102CD5E07629c22E13D40b9', startBlock: 30096773 },
+
   legacy: {
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
