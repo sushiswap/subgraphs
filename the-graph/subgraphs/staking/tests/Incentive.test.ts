@@ -1,7 +1,7 @@
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
-import { onIncentiveCreated, onStake, onSubscribe, onUnsubscribe } from '../src/mappings/staking'
-import { createIncentiveCreatedEvent, createStakeEvent, createSubscribeEvent, createUnsubscribeEvent } from './mocks'
+import { onIncentiveCreated, onStake, onSubscribe, onUnstake, onUnsubscribe } from '../src/mappings/staking'
+import { createIncentiveCreatedEvent, createStakeEvent, createSubscribeEvent, createUnstakeEvent, createUnsubscribeEvent } from './mocks'
 
 const ALICE = Address.fromString('0x00000000000000000000000000000000000a71ce')
 const BOB = Address.fromString('0x0000000000000000000000000000000000000b0b')
@@ -136,29 +136,19 @@ test('User stakes to the same incentive twice, liquidity is updated', () => {
 })
 
 
-// test('Unstake decreases the incentives liquidity', () => {
-//   let amount = BigInt.fromU32(1000000)
-//   let incentiveId = BigInt.fromU32(2)
-//   const token2 = Address.fromString('0x0000000000000000000000000000000000000002')
+test('Unstake decreases the incentives liquidity', () => {
+  let amount = BigInt.fromU32(1000000)
+  let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
+  let unstakeEvent = createUnstakeEvent(TOKEN, ALICE, amount)
+  let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
 
-//   let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
+  onIncentiveCreated(incentiveCreatedEvent)
+  onStake(stakeEvent)
+  onSubscribe(subscribeEvent)
 
-//   onIncentiveCreated(incentiveCreatedEvent)
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', INITIAL_AMOUNT.toString())
 
-//   // When: User stakes
-//   onStake(stakeEvent)
+  onUnstake(unstakeEvent)
 
-//   // Then: incentives liquidity is updated
-//   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
-//   assert.fieldEquals('Incentive', incentiveId.toString(), 'liquidityStaked', '0')
-
-//   // When: user subscribes
-//   let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
-//   onSubscribe(subscribeEvent)
-
-//   // Then: the subscribed incentive liquidity is updated
-//   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', INITIAL_AMOUNT.toString())
-
-//   // And: the non-subscribed incentive liquidity remains unchanged
-//   assert.fieldEquals('Incentive', incentiveId.toString(), 'liquidityStaked', '0')
-// })
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
+})
