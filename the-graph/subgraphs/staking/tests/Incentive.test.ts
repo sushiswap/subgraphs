@@ -1,10 +1,15 @@
-import { Address, BigInt, log } from '@graphprotocol/graph-ts'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
 import { onIncentiveCreated, onStake, onSubscribe, onUnstake, onUnsubscribe } from '../src/mappings/staking'
-import { createIncentiveCreatedEvent, createStakeEvent, createSubscribeEvent, createUnstakeEvent, createUnsubscribeEvent } from './mocks'
+import {
+  createIncentiveCreatedEvent,
+  createStakeEvent,
+  createSubscribeEvent,
+  createUnstakeEvent,
+  createUnsubscribeEvent,
+} from './mocks'
 
 const ALICE = Address.fromString('0x00000000000000000000000000000000000a71ce')
-const BOB = Address.fromString('0x0000000000000000000000000000000000000b0b')
 const TOKEN = Address.fromString('0x0000000000000000000000000000000000000001')
 const REWARD_TOKEN = Address.fromString('0x0000000000000000000000000000000000000002')
 const INCENTIVE_ID = BigInt.fromString('1')
@@ -106,8 +111,6 @@ test('User stakes twice in two different incentives, but only subscribed to one 
   cleanup()
 })
 
-
-
 test('User stakes to the same incentive twice, liquidity is updated', () => {
   let amount = BigInt.fromU32(1000000)
 
@@ -130,11 +133,15 @@ test('User stakes to the same incentive twice, liquidity is updated', () => {
 
   // And: staking another time increases the liquidity
   onStake(stakeEvent)
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', INITIAL_AMOUNT.times(BigInt.fromU32(2)).toString())
+  assert.fieldEquals(
+    'Incentive',
+    INCENTIVE_ID.toString(),
+    'liquidityStaked',
+    INITIAL_AMOUNT.times(BigInt.fromU32(2)).toString()
+  )
 
   cleanup()
 })
-
 
 test('Unstake decreases the incentives liquidity', () => {
   let amount = BigInt.fromU32(1000000)

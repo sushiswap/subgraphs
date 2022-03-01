@@ -1,5 +1,4 @@
-import { BigInt, log, store } from '@graphprotocol/graph-ts'
-import { logStore } from 'matchstick-as'
+import { BigInt, store } from '@graphprotocol/graph-ts'
 import {
   IncentiveCreated,
   IncentiveUpdated,
@@ -15,8 +14,6 @@ import {
   getOrCreateToken,
   getOrCreateUser,
   getSubscription,
-  getSubscriptionId,
-  isSubscribed,
 } from '../../src/functions'
 
 export function onIncentiveCreated(event: IncentiveCreated): void {

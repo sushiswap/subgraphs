@@ -1,6 +1,6 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
-import { getSubscriptionId } from '../src/functions/subscription'
+import { getSubscriptionId } from '../src/functions/index'
 import { onIncentiveCreated, onSubscribe, onUnsubscribe } from '../src/mappings/staking'
 import { createIncentiveCreatedEvent, createSubscribeEvent, createUnsubscribeEvent } from './mocks'
 

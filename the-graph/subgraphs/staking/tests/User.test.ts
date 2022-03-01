@@ -1,8 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
-import { getSubscriptionId } from '../src/functions/subscription'
-import { onIncentiveCreated, onSubscribe, onUnsubscribe } from '../src/mappings/staking'
-import { createIncentiveCreatedEvent, createSubscribeEvent, createUnsubscribeEvent } from './mocks'
+import { onIncentiveCreated, onSubscribe } from '../src/mappings/staking'
+import { createIncentiveCreatedEvent, createSubscribeEvent } from './mocks'
 
 const ALICE = Address.fromString('0x00000000000000000000000000000000000a71ce')
 const INCENTIVE_ID = BigInt.fromString('1')
@@ -39,4 +38,3 @@ test('Subscribe increases the subscriptionCount', () => {
 
   cleanup()
 })
-

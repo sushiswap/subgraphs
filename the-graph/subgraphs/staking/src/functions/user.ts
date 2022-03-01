@@ -1,4 +1,4 @@
-import { Subscription, User } from '../../generated/schema'
+import { User } from '../../generated/schema'
 
 export function getOrCreateUser(id: string): User {
   let user = User.load(id)
