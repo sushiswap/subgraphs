@@ -1,7 +1,7 @@
 import { Subscription } from '../../generated/schema'
 
-export function getOrCreateSubscription(userId: string, incentiveId: string): Subscription {
-  let id = getSubscriptionId(userId, incentiveId)
+export function getOrCreateSubscription(userId: string, count: string): Subscription {
+  let id = getSubscriptionId(userId, count)
   let subscription = Subscription.load(id)
 
   if (subscription === null) {
@@ -12,12 +12,17 @@ export function getOrCreateSubscription(userId: string, incentiveId: string): Su
   return subscription as Subscription
 }
 
-export function getSubscriptionId(userId: string, incentiveId: string): string {
-  return userId.concat(':').concat(incentiveId)
+export function getSubscription(userId: string, count: string): Subscription | null {
+  let id = getSubscriptionId(userId, count)
+  return Subscription.load(id)
 }
 
-export function isSubscribed(userId: string, incentiveId: string): boolean {
-  let id = getSubscriptionId(userId, incentiveId)
+export function getSubscriptionId(userId: string, count: string): string {
+  return userId.concat(':').concat(count)
+}
+
+export function isSubscribed(userId: string, count: string): boolean {
+  let id = getSubscriptionId(userId, count)
   let subscription = Subscription.load(id)
 
   return subscription !== null

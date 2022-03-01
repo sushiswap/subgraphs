@@ -30,7 +30,7 @@ test('Create incentive', () => {
 
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'id', INCENTIVE_ID.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'creator', ALICE.toHex())
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'pool', TOKEN.toHex())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'token', TOKEN.toHex())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardToken', REWARD_TOKEN.toHex())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', INITIAL_AMOUNT.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'endTime', endTime.toString())
@@ -65,7 +65,7 @@ test('subscribe/unsubscribe updates the incentives staked liquidity', () => {
   cleanup()
 })
 
-test('User stakes twice, but only subscribed to one incentive results in one incentive liquidity update', () => {
+test('User stakes twice in two different incentives, but only subscribed to one incentive results in one incentive liquidity update', () => {
   let amount = BigInt.fromU32(1000000)
   let amount2 = BigInt.fromU32(2000000)
   let incentiveId = BigInt.fromU32(2)
@@ -89,7 +89,7 @@ test('User stakes twice, but only subscribed to one incentive results in one inc
   onStake(stakeEvent)
   onStake(stakeEvent2)
 
-  // Then: incentives liquidity is updated
+  // Then: incentives liquidity is 0
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
   assert.fieldEquals('Incentive', incentiveId.toString(), 'liquidityStaked', '0')
 
@@ -102,4 +102,63 @@ test('User stakes twice, but only subscribed to one incentive results in one inc
 
   // And: the non-subscribed incentive liquidity remains unchanged
   assert.fieldEquals('Incentive', incentiveId.toString(), 'liquidityStaked', '0')
+
+  cleanup()
 })
+
+
+
+test('User stakes to the same incentive twice, liquidity is updated', () => {
+  let amount = BigInt.fromU32(1000000)
+
+  let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
+
+  onIncentiveCreated(incentiveCreatedEvent)
+
+  // When: User stakes
+  onStake(stakeEvent)
+
+  // Then: incentive liquidity is 0
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
+
+  // When: user subscribes
+  let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
+  onSubscribe(subscribeEvent)
+
+  // Then: the subscribed incentive liquidity is updated
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', INITIAL_AMOUNT.toString())
+
+  // And: staking another time increases the liquidity
+  onStake(stakeEvent)
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', INITIAL_AMOUNT.times(BigInt.fromU32(2)).toString())
+
+  cleanup()
+})
+
+
+// test('Unstake decreases the incentives liquidity', () => {
+//   let amount = BigInt.fromU32(1000000)
+//   let incentiveId = BigInt.fromU32(2)
+//   const token2 = Address.fromString('0x0000000000000000000000000000000000000002')
+
+//   let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
+
+//   onIncentiveCreated(incentiveCreatedEvent)
+
+//   // When: User stakes
+//   onStake(stakeEvent)
+
+//   // Then: incentives liquidity is updated
+//   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
+//   assert.fieldEquals('Incentive', incentiveId.toString(), 'liquidityStaked', '0')
+
+//   // When: user subscribes
+//   let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
+//   onSubscribe(subscribeEvent)
+
+//   // Then: the subscribed incentive liquidity is updated
+//   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', INITIAL_AMOUNT.toString())
+
+//   // And: the non-subscribed incentive liquidity remains unchanged
+//   assert.fieldEquals('Incentive', incentiveId.toString(), 'liquidityStaked', '0')
+// })

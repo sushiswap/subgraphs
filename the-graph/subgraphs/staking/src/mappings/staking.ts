@@ -1,4 +1,5 @@
-import { BigInt, store } from '@graphprotocol/graph-ts'
+import { BigInt, log, store } from '@graphprotocol/graph-ts'
+import { logStore } from 'matchstick-as'
 import {
   IncentiveCreated,
   IncentiveUpdated,
@@ -13,6 +14,7 @@ import {
   getOrCreateSubscription,
   getOrCreateToken,
   getOrCreateUser,
+  getSubscription,
   getSubscriptionId,
   isSubscribed,
 } from '../../src/functions'
@@ -24,7 +26,7 @@ export function onIncentiveCreated(event: IncentiveCreated): void {
 
   let incentive = getOrCreateIncentive(event.params.id.toString())
   incentive.creator = creator.id
-  incentive.pool = token.id
+  incentive.token = token.id
   incentive.rewardToken = rewardToken.id
   incentive.lastRewardTime = event.params.startTime
   incentive.endTime = event.params.endTime
@@ -59,21 +61,17 @@ export function onStake(event: Stake): void {
   stake.user = user.id
   stake.save()
 
-  //TODO: accrue rewards, claim
+  for (let i = 1; i <= user.subscriptionCount.toI32(); i++) {
+    let subscription = getSubscription(user.id, i.toString())
 
-  let incentives = user.incentives
-  if (incentives === null) {
-    return
-  }
-
-  for (let i = 0; i < incentives.length; i++) {
-    let incentiveId = incentives[i]
-    if (isSubscribed(user.id, incentiveId)) {
-      let incentive = getOrCreateIncentive(incentiveId)
+    if (subscription !== null) {
+      let incentive = getOrCreateIncentive(subscription.incentive)
       incentive.liquidityStaked = incentive.liquidityStaked.plus(event.params.amount)
       incentive.save()
     }
   }
+
+  //TODO: accrue rewards, claim
 }
 
 export function onUnstake(event: Unstake): void {
@@ -84,19 +82,33 @@ export function onUnstake(event: Unstake): void {
   stake.liquidity = stake.liquidity.minus(event.params.amount)
   stake.user = user.id
   stake.save()
+
+  for (let i = 1; i <= user.subscriptionCount.toI32(); i++) {
+    let subscription = getSubscription(user.id, i.toString())
+
+    if (subscription !== null) {
+      let incentive = getOrCreateIncentive(subscription.incentive)
+      incentive.liquidityStaked = incentive.liquidityStaked.minus(event.params.amount)
+      incentive.save()
+    }
+  }
 }
 
 export function onSubscribe(event: Subscribe): void {
   let incentive = getOrCreateIncentive(event.params.id.toString())
+  let user = getOrCreateUser(event.params.user.toHex())
 
-  let stake = getOrCreateStake(event.params.user.toHex(), incentive.pool)
+  let stake = getOrCreateStake(user.id, incentive.token)
 
   incentive.liquidityStaked = incentive.liquidityStaked.plus(stake.liquidity)
   incentive.save()
 
-  let subscription = getOrCreateSubscription(event.params.user.toHex(), event.params.id.toString())
+  user.subscriptionCount = user.subscriptionCount.plus(BigInt.fromU32(1 as u8))
+  user.save()
 
-  subscription.user = event.params.user.toHex()
+  let subscription = getOrCreateSubscription(user.id, user.subscriptionCount.toString())
+
+  subscription.user = user.id
   subscription.incentive = event.params.id.toString()
   subscription.save()
 
@@ -105,15 +117,23 @@ export function onSubscribe(event: Subscribe): void {
 
 export function onUnsubscribe(event: Unsubscribe): void {
   let incentive = getOrCreateIncentive(event.params.id.toString())
-
-  let stake = getOrCreateStake(event.params.user.toHex(), incentive.pool)
+  let user = getOrCreateUser(event.params.user.toHex())
+  let stake = getOrCreateStake(user.id, incentive.token)
 
   incentive.liquidityStaked = incentive.liquidityStaked.minus(stake.liquidity)
   incentive.save()
+  for (let i = 1; i <= user.subscriptionCount.toI32(); i++) {
+    let subscription = getSubscription(user.id, i.toString())
+    if (subscription !== null && subscription.incentive == event.params.id.toString()) {
+      store.remove('Subscription', subscription.id)
+      break
+    }
+  }
 
   //TODO: accrueRewards
   //TODO: CLAIM REWARDS - ignore flag?
 
   //TODO: Soft delete instead? Use case?
-  store.remove('Subscription', getSubscriptionId(event.params.user.toHex(), event.params.id.toString()))
+
+  // store.remove('Subscription', getSubscriptionId(user.id, ))
 }

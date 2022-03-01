@@ -30,35 +30,13 @@ function cleanup(): void {
   clearStore()
 }
 
-test('Subscribe', () => {
+test('Subscribe increases the subscriptionCount', () => {
   setup()
   let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
   onSubscribe(subscribeEvent)
 
-  let subscribeId = getSubscriptionId(ALICE.toHex(), '1')
-  assert.fieldEquals('Subscription', subscribeId, 'id', subscribeId)
-  assert.fieldEquals('Subscription', subscribeId, 'user', ALICE.toHex())
-  assert.fieldEquals('Subscription', subscribeId, 'incentive', INCENTIVE_ID.toString())
+  assert.fieldEquals('User', ALICE.toHex(), 'subscriptionCount', '1')
 
   cleanup()
 })
 
-
-
-test('Subscribe and Unsubscribe', () => {
-  setup()
-  let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
-  let unsubscribeEvent = createUnsubscribeEvent(INCENTIVE_ID, ALICE)
-  onSubscribe(subscribeEvent)
-
-  let subscribeId = getSubscriptionId(ALICE.toHex(), '1')
-  assert.fieldEquals('Subscription', subscribeId, 'id', subscribeId)
-  assert.fieldEquals('Subscription', subscribeId, 'user', ALICE.toHex())
-  assert.fieldEquals('Subscription', subscribeId, 'incentive', INCENTIVE_ID.toString())
-
-  onUnsubscribe(unsubscribeEvent)
-
-  assert.notInStore('Subscription', subscribeId)
-
-  cleanup()
-})

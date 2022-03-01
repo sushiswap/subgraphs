@@ -4,6 +4,7 @@ type User @entity {
   timestamp: BigInt!
   stakes: [Stake!] @derivedFrom(field: "user")
   incentives: [Subscription!] @derivedFrom(field: "user")
+  subscriptionCount: BigInt!
 }
 
 #TODO: Should this be Token or Pool?
@@ -23,7 +24,7 @@ type Stake @entity {
 type Incentive @entity {
   id: ID!
   creator: User!
-  pool: Token! #TODO: rename? Token?
+  token: Token!
   rewardToken: Token!
   rewardRemaining: BigInt!
   startTime: BigInt!
