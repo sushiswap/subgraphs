@@ -15,3 +15,10 @@ export function getOrCreateSubscription(userId: string, incentiveId: string): Su
 export function getSubscriptionId(userId: string, incentiveId: string): string {
   return userId.concat(':').concat(incentiveId)
 }
+
+export function isSubscribed(userId: string, incentiveId: string): boolean {
+  let id = getSubscriptionId(userId, incentiveId)
+  let subscription = Subscription.load(id)
+
+  return subscription !== null
+}

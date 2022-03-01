@@ -39,3 +39,5 @@ type Subscription @entity {
   user: User!
   incentive: Incentive!
 }
+
+#TODO: Historical data needed? If so, add Transaction entity?

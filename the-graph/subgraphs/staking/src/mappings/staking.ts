@@ -1,33 +1,39 @@
+import { BigInt, store } from '@graphprotocol/graph-ts'
 import {
   IncentiveCreated,
   IncentiveUpdated,
   Stake,
-  Staking,
   Subscribe,
   Unstake,
   Unsubscribe,
 } from '../../generated/Staking/Staking'
-
-import { BigInt, log, store } from '@graphprotocol/graph-ts'
-import { getOrCreateToken } from '../../src/functions/token'
-import { getOrCreateStake } from '../../src/functions/staking'
-import { getOrCreateIncentive } from '../../src/functions/incentive'
-import { getOrCreateSubscription, getSubscriptionId } from '../../src/functions/subscription'
+import {
+  getOrCreateIncentive,
+  getOrCreateStake,
+  getOrCreateSubscription,
+  getOrCreateToken,
+  getOrCreateUser,
+  getSubscriptionId,
+  isSubscribed,
+} from '../../src/functions'
 
 export function onIncentiveCreated(event: IncentiveCreated): void {
+  let creator = getOrCreateUser(event.params.creator.toHex())
+  let rewardToken = getOrCreateToken(event.params.rewardToken.toHex())
+  let token = getOrCreateToken(event.params.token.toHex())
+
   let incentive = getOrCreateIncentive(event.params.id.toString())
-  incentive.creator = event.params.creator.toHex()
-  incentive.pool = event.params.token.toHex()
-  incentive.rewardToken = event.params.rewardToken.toHex()
+  incentive.creator = creator.id
+  incentive.pool = token.id
+  incentive.rewardToken = rewardToken.id
   incentive.lastRewardTime = event.params.startTime
   incentive.endTime = event.params.endTime
   incentive.rewardPerLiquidity = BigInt.fromU32(1)
   incentive.rewardRemaining = event.params.amount
 
-  getOrCreateToken(event.params.rewardToken.toHex())
   incentive.save()
 
-  // TODO: owner should get a stake entity? liquidity?
+  // TODO: owner should get a stake entity? liquidity? check contract
 }
 
 export function onIncentiveUpdated(event: IncentiveUpdated): void {
@@ -45,31 +51,44 @@ export function onIncentiveUpdated(event: IncentiveUpdated): void {
 }
 
 export function onStake(event: Stake): void {
-  getOrCreateToken(event.params.token.toHex())
-  let stake = getOrCreateStake(event.params.user.toHex(), event.params.token.toHex())
+  let token = getOrCreateToken(event.params.token.toHex())
+  let user = getOrCreateUser(event.params.user.toHex())
+
+  let stake = getOrCreateStake(user.id, token.id)
   stake.liquidity = stake.liquidity.plus(event.params.amount)
-  stake.user = event.params.user.toHex()
+  stake.user = user.id
   stake.save()
 
-  //TODO: accrue rewards
+  //TODO: accrue rewards, claim
 
+  let incentives = user.incentives
+  if (incentives === null) {
+    return
+  }
 
+  for (let i = 0; i < incentives.length; i++) {
+    let incentiveId = incentives[i]
+    if (isSubscribed(user.id, incentiveId)) {
+      let incentive = getOrCreateIncentive(incentiveId)
+      incentive.liquidityStaked = incentive.liquidityStaked.plus(event.params.amount)
+      incentive.save()
+    }
+  }
 }
 
-
 export function onUnstake(event: Unstake): void {
-  getOrCreateToken(event.params.token.toHex())
+  let token = getOrCreateToken(event.params.token.toHex())
+  let user = getOrCreateUser(event.params.user.toHex())
 
-  let stake = getOrCreateStake(event.params.user.toHex(), event.params.token.toHex())
+  let stake = getOrCreateStake(user.id, token.id)
   stake.liquidity = stake.liquidity.minus(event.params.amount)
-  stake.user = event.params.user.toHex()
+  stake.user = user.id
   stake.save()
 }
 
 export function onSubscribe(event: Subscribe): void {
-
   let incentive = getOrCreateIncentive(event.params.id.toString())
-  
+
   let stake = getOrCreateStake(event.params.user.toHex(), incentive.pool)
 
   incentive.liquidityStaked = incentive.liquidityStaked.plus(stake.liquidity)
@@ -85,14 +104,12 @@ export function onSubscribe(event: Subscribe): void {
 }
 
 export function onUnsubscribe(event: Unsubscribe): void {
-
   let incentive = getOrCreateIncentive(event.params.id.toString())
-  
+
   let stake = getOrCreateStake(event.params.user.toHex(), incentive.pool)
 
   incentive.liquidityStaked = incentive.liquidityStaked.minus(stake.liquidity)
   incentive.save()
-
 
   //TODO: accrueRewards
   //TODO: CLAIM REWARDS - ignore flag?
