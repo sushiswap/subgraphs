@@ -1,6 +1,13 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
-import { onIncentiveCreated, onIncentiveUpdated, onStake, onSubscribe, onUnstake, onUnsubscribe } from '../src/mappings/staking'
+import {
+  onIncentiveCreated,
+  onIncentiveUpdated,
+  onStake,
+  onSubscribe,
+  onUnstake,
+  onUnsubscribe,
+} from '../src/mappings/staking'
 import {
   createIncentiveCreatedEvent,
   createIncentiveUpdatedEvent,
@@ -48,7 +55,7 @@ test('Create incentive', () => {
 })
 
 test('Updating incentive with positive amount increases rewardRemaining', () => {
-  let amount = BigInt.fromString("1337")
+  let amount = BigInt.fromString('1337')
   let newStartTime = BigInt.fromU32(1646143533)
   let newEndTime = BigInt.fromU32(1646170000)
   onIncentiveCreated(incentiveCreatedEvent)
@@ -71,11 +78,11 @@ test('Updating incentive with positive amount increases rewardRemaining', () => 
 })
 
 test('Updating incentive with negative amount decreases rewardRemaining', () => {
-  let amount = BigInt.fromString("-600000")
+  let amount = BigInt.fromString('-600000')
   let newStartTime = BigInt.fromU32(1646143533)
   let newEndTime = BigInt.fromU32(1646170000)
   onIncentiveCreated(incentiveCreatedEvent)
-  
+
   // When: Incentive is updated
   let incentiveUpdatedEvent = createIncentiveUpdatedEvent(INCENTIVE_ID, amount, newStartTime, newEndTime)
   onIncentiveUpdated(incentiveUpdatedEvent)
@@ -93,14 +100,13 @@ test('Updating incentive with negative amount decreases rewardRemaining', () => 
   cleanup()
 })
 
-
 test('Updating incentive with timestamps before the block timestamp results in usage of block timestamp', () => {
-  let amount = BigInt.fromString("-600000")
+  let amount = BigInt.fromString('-600000')
   let newStartTime = BigInt.fromU32(1646143287) // Tue Mar 01 2022 14:01:27 GMT+0000
   let newEndTime = BigInt.fromU32(1646316087) // Thu Mar 03 2022 14:01:27 GMT+0000
   let timestamp = BigInt.fromU32(1646352000) // Fri Mar 04 2022 00:00:00 GMT+0000, Next
   onIncentiveCreated(incentiveCreatedEvent)
-  
+
   // When: Incentive is updated
   let incentiveUpdatedEvent = createIncentiveUpdatedEvent(INCENTIVE_ID, amount, newStartTime, newEndTime)
   incentiveUpdatedEvent.block.timestamp = timestamp
@@ -112,8 +118,6 @@ test('Updating incentive with timestamps before the block timestamp results in u
 
   cleanup()
 })
-
-
 
 test('subscribe/unsubscribe updates the incentives staked liquidity', () => {
   onIncentiveCreated(incentiveCreatedEvent)
@@ -202,12 +206,8 @@ test('User stakes to the same incentive twice, liquidity is updated', () => {
 
   // And: staking another time increases the liquidity
   onStake(stakeEvent)
-  assert.fieldEquals(
-    'Incentive',
-    INCENTIVE_ID.toString(),
-    'liquidityStaked',
-    INITIAL_AMOUNT.times(BigInt.fromU32(2)).toString()
-  )
+  let expectedLiquidity = INITIAL_AMOUNT.times(BigInt.fromU32(2)).toString()
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', expectedLiquidity)
 
   cleanup()
 })
@@ -227,4 +227,36 @@ test('Unstake decreases the incentives liquidity', () => {
   onUnstake(unstakeEvent)
 
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
+})
+
+test('Stake affects incentives accrue rewards', () => {
+  let startTime = BigInt.fromU32(1646143287) // Tue Mar 01 2022 14:01:27 GMT+0000
+  let endTime = BigInt.fromU32(1646316087) // Thu Mar 03 2022 14:01:27 GMT+0000
+  let timestamp = BigInt.fromU32(1646352000) // Fri Mar 04 2022 00:00:00 GMT+0000
+  let timestamp2 = BigInt.fromU32(1646438400) // Sat Mar 05 2022 00:00:00 GMT+0000
+  let incentiveCreatedEvent = createIncentiveCreatedEvent(
+    TOKEN,
+    REWARD_TOKEN,
+    ALICE,
+    INCENTIVE_ID,
+    INITIAL_AMOUNT,
+    startTime,
+    endTime
+  )
+  onIncentiveCreated(incentiveCreatedEvent)
+  const amount = BigInt.fromString('10000000')
+  let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
+  stakeEvent.block.timestamp = timestamp
+
+  onStake(stakeEvent)
+  let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
+  onSubscribe(subscribeEvent)
+  stakeEvent.block.timestamp = timestamp2
+  onStake(stakeEvent)
+
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '0')
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardPerLiquidity', '259614842926741381426524816461005')
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', endTime.toString())
+
+  cleanup()
 })

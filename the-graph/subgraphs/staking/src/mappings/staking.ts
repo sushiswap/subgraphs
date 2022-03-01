@@ -9,6 +9,7 @@ import {
   Unsubscribe,
 } from '../../generated/Staking/Staking'
 import {
+  accrueRewards,
   getOrCreateIncentive,
   getOrCreateStake,
   getOrCreateSubscription,
@@ -32,8 +33,6 @@ export function onIncentiveCreated(event: IncentiveCreated): void {
   incentive.rewardRemaining = event.params.amount
 
   incentive.save()
-
-  // TODO: owner should get a stake entity? liquidity? check contract
 }
 
 export function onIncentiveUpdated(event: IncentiveUpdated): void {
@@ -71,6 +70,7 @@ export function onIncentiveUpdated(event: IncentiveUpdated): void {
   }
   incentive.save()
   // TODO: accrueRewards()?
+  // TODO: Transfer token?
 }
 
 export function onStake(event: Stake): void {
@@ -89,10 +89,11 @@ export function onStake(event: Stake): void {
       let incentive = getOrCreateIncentive(subscription.incentive)
       incentive.liquidityStaked = incentive.liquidityStaked.plus(event.params.amount)
       incentive.save()
+
+      accrueRewards(incentive, event.block.timestamp)
+      //TODO: claimrewards
     }
   }
-
-  //TODO: accrue rewards, claim
 }
 
 export function onUnstake(event: Unstake): void {
@@ -111,6 +112,8 @@ export function onUnstake(event: Unstake): void {
       let incentive = getOrCreateIncentive(subscription.incentive)
       incentive.liquidityStaked = incentive.liquidityStaked.minus(event.params.amount)
       incentive.save()
+      //TODO: accrue rewards
+      //TODO: claimrewards
     }
   }
 }
@@ -146,15 +149,13 @@ export function onUnsubscribe(event: Unsubscribe): void {
   for (let i = 1; i <= user.subscriptionCount.toI32(); i++) {
     let subscription = getSubscription(user.id, i.toString())
     if (subscription !== null && subscription.incentive == event.params.id.toString()) {
+      // TODO: Consider soft delete instead. Historical data could be useful? But equally, could be saved under in a 'Transaction' entity.
+      // user.subscriptionCount can never be decremented, an alternative would be to add user.activeSubscriptionCount
       store.remove('Subscription', subscription.id)
       break
     }
   }
 
   //TODO: accrueRewards
-  //TODO: CLAIM REWARDS - ignore flag?
-
-  //TODO: Soft delete instead? Use case?
-
-  // store.remove('Subscription', getSubscriptionId(user.id, ))
+  //TODO: CLAIM REWARDS - ignore flag? 
 }
