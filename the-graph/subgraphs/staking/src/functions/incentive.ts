@@ -38,3 +38,8 @@ export function accrueRewards(incentive: Incentive, timestamp: BigInt): Incentiv
   }
   return incentive
 }
+
+export function claimRewards(incentive: Incentive, timestamp: BigInt): Incentive {
+  // TODO:
+  throw new Error("Not implemented.")
+}

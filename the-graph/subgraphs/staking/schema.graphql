@@ -39,6 +39,7 @@ type Subscription @entity {
   id: ID!
   user: User!
   incentive: Incentive!
+  rewardPerLiquidity: BigInt!
 }
 
 #TODO: Historical data needed? If so, add Transaction entity?

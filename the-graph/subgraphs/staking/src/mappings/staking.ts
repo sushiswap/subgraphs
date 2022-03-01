@@ -61,7 +61,6 @@ export function onIncentiveUpdated(event: IncentiveUpdated): void {
   if (changeAmount > BigInt.fromU32(0)) {
     incentive.rewardRemaining = incentive.rewardRemaining.plus(event.params.changeAmount)
   } else if (changeAmount < BigInt.fromU32(0)) {
-    // TODO: double check with Matt, if changeAmount is less than remaning rewards, set it 0?
     let amount = changeAmount.abs()
     if (amount > incentive.rewardRemaining) {
       incentive.rewardRemaining = BigInt.fromU32(0 as u8)
@@ -137,6 +136,7 @@ export function onSubscribe(event: Subscribe): void {
 
   subscription.user = user.id
   subscription.incentive = event.params.id.toString()
+  subscription.rewardPerLiquidity = incentive.rewardPerLiquidity
   subscription.save()
 
 }
@@ -154,11 +154,14 @@ export function onUnsubscribe(event: Unsubscribe): void {
     if (subscription !== null && subscription.incentive == event.params.id.toString()) {
       // TODO: Consider soft delete instead. Historical data could be useful? But equally, could be saved under in a 'Transaction' entity.
       // user.subscriptionCount can never be decremented, an alternative would be to add user.activeSubscriptionCount
+      // Soft delete would also require subscription.rewardPerLiquidity to be 0
+
       store.remove('Subscription', subscription.id)
       break
     }
   }
 
-  //TODO: accrueRewards
   //TODO: CLAIM REWARDS - ignore flag? 
 }
+
+

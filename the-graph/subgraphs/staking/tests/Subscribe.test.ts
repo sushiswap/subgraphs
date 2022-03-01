@@ -39,6 +39,7 @@ test('Subscribe', () => {
   assert.fieldEquals('Subscription', subscribeId, 'id', subscribeId)
   assert.fieldEquals('Subscription', subscribeId, 'user', ALICE.toHex())
   assert.fieldEquals('Subscription', subscribeId, 'incentive', INCENTIVE_ID.toString())
+  assert.fieldEquals('Subscription', subscribeId, 'rewardPerLiquidity', '1')
 
   cleanup()
 })
@@ -55,6 +56,7 @@ test('Subscribe and Unsubscribe', () => {
   assert.fieldEquals('Subscription', subscribeId, 'id', subscribeId)
   assert.fieldEquals('Subscription', subscribeId, 'user', ALICE.toHex())
   assert.fieldEquals('Subscription', subscribeId, 'incentive', INCENTIVE_ID.toString())
+  assert.fieldEquals('Subscription', subscribeId, 'rewardPerLiquidity', '1')
 
   onUnsubscribe(unsubscribeEvent)
 
