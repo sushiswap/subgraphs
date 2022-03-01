@@ -112,7 +112,7 @@ export function onUnstake(event: Unstake): void {
       let incentive = getOrCreateIncentive(subscription.incentive)
       incentive.liquidityStaked = incentive.liquidityStaked.minus(event.params.amount)
       incentive.save()
-      //TODO: accrue rewards
+      accrueRewards(incentive, event.block.timestamp)
       //TODO: claimrewards
     }
   }

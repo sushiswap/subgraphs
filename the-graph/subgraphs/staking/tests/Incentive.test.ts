@@ -247,15 +247,53 @@ test('Stake affects incentives accrue rewards', () => {
   const amount = BigInt.fromString('10000000')
   let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
   stakeEvent.block.timestamp = timestamp
-
   onStake(stakeEvent)
+
   let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
   onSubscribe(subscribeEvent)
+
   stakeEvent.block.timestamp = timestamp2
   onStake(stakeEvent)
 
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '0')
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardPerLiquidity', '259614842926741381426524816461005')
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', endTime.toString())
+
+  cleanup()
+})
+
+
+
+test('Unstake affects incentives accrue rewards', () => {
+  let startTime = BigInt.fromU32(1646143287) // Tue Mar 01 2022 14:01:27 GMT+0000
+  let endTime = BigInt.fromU32(1646316087) // Thu Mar 03 2022 14:01:27 GMT+0000
+  let timestamp = BigInt.fromU32(1646352000) // Fri Mar 04 2022 00:00:00 GMT+0000
+  let timestamp2 = BigInt.fromU32(1646438400) // Sat Mar 05 2022 00:00:00 GMT+0000
+  let incentiveCreatedEvent = createIncentiveCreatedEvent(
+    TOKEN,
+    REWARD_TOKEN,
+    ALICE,
+    INCENTIVE_ID,
+    INITIAL_AMOUNT,
+    startTime,
+    endTime
+  )
+  onIncentiveCreated(incentiveCreatedEvent)
+
+  const amount = BigInt.fromString('10000000')
+  let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
+  stakeEvent.block.timestamp = timestamp
+  onStake(stakeEvent)
+
+  let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
+  onSubscribe(subscribeEvent)
+  
+  let unstakeEvent = createUnstakeEvent(TOKEN, ALICE, amount)
+  unstakeEvent.block.timestamp = timestamp2
+  onUnstake(unstakeEvent)
+  //TODO: compare this to gaspers tests, are these values reasonable?
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '1000000')
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardPerLiquidity', '1')
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', endTime.toString())
 
   cleanup()
