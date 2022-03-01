@@ -1,4 +1,5 @@
 import { BigInt, store } from '@graphprotocol/graph-ts'
+import { log } from 'matchstick-as'
 import {
   IncentiveCreated,
   IncentiveUpdated,
@@ -36,17 +37,40 @@ export function onIncentiveCreated(event: IncentiveCreated): void {
 }
 
 export function onIncentiveUpdated(event: IncentiveUpdated): void {
-  //   if (
-  //     incentive.liquidityStaked > 0 &&
-  //     incentive.lastRewardTime < maxTime
-  // ) {
-  // incentive.rewardPerLiquidity += reward * type(uint112).max / incentive.liquidityStaked;
-  // incentive.rewardRemaining -= uint112(reward);
-  // incentive.lastRewardTime = uint32(maxTime);
-  //   else if (incentive.liquidityStaked == 0) {
-  //     incentive.lastRewardTime = uint32(maxTime);
-  // }
-  // claimReward}
+  let incentive = getOrCreateIncentive(event.params.id.toString())
+
+  let newStartTime = event.params.newStartTime.toI32()
+  let newEndTime = event.params.newEndTime.toI32()
+  let timestamp = event.block.timestamp.toI32()
+  let changeAmount = event.params.changeAmount
+
+  if (newStartTime != 0) {
+    if (newStartTime < timestamp) {
+      newStartTime = timestamp
+    }
+    incentive.lastRewardTime = BigInt.fromI32(newStartTime)
+  }
+
+  if (newEndTime != 0) {
+    if (newEndTime < timestamp) {
+      newEndTime = timestamp
+    }
+    incentive.endTime = BigInt.fromI32(newEndTime)
+  }
+
+  if (changeAmount > BigInt.fromU32(0)) {
+    incentive.rewardRemaining = incentive.rewardRemaining.plus(event.params.changeAmount)
+  } else if (changeAmount < BigInt.fromU32(0)) {
+    // TODO: double check with Matt, if changeAmount is less than remaning rewards, set it 0?
+    let amount = changeAmount.abs()
+    if (amount > incentive.rewardRemaining) {
+      incentive.rewardRemaining = BigInt.fromU32(0 as u8)
+    } else {
+      incentive.rewardRemaining = incentive.rewardRemaining.minus(amount)
+    }
+  }
+  incentive.save()
+  // TODO: accrueRewards()?
 }
 
 export function onStake(event: Stake): void {
