@@ -15,7 +15,7 @@ export function getOrCreateIncentive(id: string): Incentive {
   return incentive as Incentive
 }
 
-export function accrueRewards(incentive: Incentive, timestamp: BigInt): void {
+export function accrueRewards(incentive: Incentive, timestamp: BigInt): Incentive {
   let maxTime = timestamp < incentive.endTime ? timestamp : incentive.endTime
 
   if (incentive.liquidityStaked > BigInt.fromI32(0) && incentive.lastRewardTime < maxTime) {
@@ -36,5 +36,5 @@ export function accrueRewards(incentive: Incentive, timestamp: BigInt): void {
   } else if (incentive.liquidityStaked == BigInt.fromI32(0 as i8)) {
     incentive.lastRewardTime = maxTime
   }
-  incentive.save()
+  return incentive
 }

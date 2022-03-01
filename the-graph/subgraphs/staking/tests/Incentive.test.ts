@@ -255,8 +255,8 @@ test('Stake affects incentives accrue rewards', () => {
   stakeEvent.block.timestamp = timestamp2
   onStake(stakeEvent)
 
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '0')
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardPerLiquidity', '259614842926741381426524816461005')
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '1000000')
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardPerLiquidity', '1')
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', endTime.toString())
 
   cleanup()
@@ -298,3 +298,6 @@ test('Unstake affects incentives accrue rewards', () => {
 
   cleanup()
 })
+
+// TODO: test subscribe accrue reward
+// TODO: test unsubscribe accrue reward

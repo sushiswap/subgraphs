@@ -38,6 +38,7 @@ export function onIncentiveCreated(event: IncentiveCreated): void {
 export function onIncentiveUpdated(event: IncentiveUpdated): void {
   let incentive = getOrCreateIncentive(event.params.id.toString())
 
+  // TODO: accrueRewards()
   let newStartTime = event.params.newStartTime.toI32()
   let newEndTime = event.params.newEndTime.toI32()
   let timestamp = event.block.timestamp.toI32()
@@ -69,7 +70,6 @@ export function onIncentiveUpdated(event: IncentiveUpdated): void {
     }
   }
   incentive.save()
-  // TODO: accrueRewards()?
   // TODO: Transfer token?
 }
 
@@ -87,10 +87,11 @@ export function onStake(event: Stake): void {
 
     if (subscription !== null) {
       let incentive = getOrCreateIncentive(subscription.incentive)
+      incentive = accrueRewards(incentive, event.block.timestamp)
+
       incentive.liquidityStaked = incentive.liquidityStaked.plus(event.params.amount)
       incentive.save()
 
-      accrueRewards(incentive, event.block.timestamp)
       //TODO: claimrewards
     }
   }
@@ -110,9 +111,10 @@ export function onUnstake(event: Unstake): void {
 
     if (subscription !== null) {
       let incentive = getOrCreateIncentive(subscription.incentive)
+
+      incentive = accrueRewards(incentive, event.block.timestamp)
       incentive.liquidityStaked = incentive.liquidityStaked.minus(event.params.amount)
       incentive.save()
-      accrueRewards(incentive, event.block.timestamp)
       //TODO: claimrewards
     }
   }
@@ -120,6 +122,7 @@ export function onUnstake(event: Unstake): void {
 
 export function onSubscribe(event: Subscribe): void {
   let incentive = getOrCreateIncentive(event.params.id.toString())
+  incentive = accrueRewards(incentive, event.block.timestamp)
   let user = getOrCreateUser(event.params.user.toHex())
 
   let stake = getOrCreateStake(user.id, incentive.token)
@@ -136,11 +139,11 @@ export function onSubscribe(event: Subscribe): void {
   subscription.incentive = event.params.id.toString()
   subscription.save()
 
-  //TODO: accrueRewards
 }
 
 export function onUnsubscribe(event: Unsubscribe): void {
   let incentive = getOrCreateIncentive(event.params.id.toString())
+  incentive = accrueRewards(incentive, event.block.timestamp)
   let user = getOrCreateUser(event.params.user.toHex())
   let stake = getOrCreateStake(user.id, incentive.token)
 
