@@ -2,7 +2,7 @@ import { BigInt } from '@graphprotocol/graph-ts'
 import { log } from 'matchstick-as'
 import { Incentive } from '../../generated/schema'
 
-const MAX_UINT112_VALUE = BigInt.fromString('2596148429267413814265248164610047') // 2^112÷2-1
+const MAX_UINT112_VALUE = BigInt.fromString('2596148429267413814265248164610048') // 2^112÷2
 
 export function getOrCreateIncentive(id: string): Incentive {
   let incentive = Incentive.load(id)

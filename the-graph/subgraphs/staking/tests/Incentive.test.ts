@@ -8,6 +8,7 @@ import {
   onUnstake,
   onUnsubscribe,
 } from '../src/mappings/staking'
+import { DEFAULT_REWARD_PER_LIQUIDITY } from '../src/constants/index'
 import {
   createIncentiveCreatedEvent,
   createIncentiveUpdatedEvent,
@@ -47,7 +48,7 @@ test('Create incentive', () => {
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardToken', REWARD_TOKEN.toHex())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', INITIAL_AMOUNT.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'endTime', END_TIME.toString())
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardPerLiquidity', '1')
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardPerLiquidity', DEFAULT_REWARD_PER_LIQUIDITY.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', START_TIME.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
 
@@ -70,7 +71,7 @@ test('Updating incentive with positive amount increases rewardRemaining', () => 
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardToken', REWARD_TOKEN.toHex())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', expectedRewardRemaining)
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'endTime', newEndTime.toString())
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardPerLiquidity', '1')
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardPerLiquidity', DEFAULT_REWARD_PER_LIQUIDITY.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', newStartTime.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
 
@@ -256,7 +257,7 @@ test('Stake affects incentives accrue rewards', () => {
   onStake(stakeEvent)
 
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '1000000')
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardPerLiquidity', '1')
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardPerLiquidity', DEFAULT_REWARD_PER_LIQUIDITY.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', endTime.toString())
 
   cleanup()
@@ -294,7 +295,7 @@ test('Unstake affects incentives accrue rewards', () => {
 
   //TODO: compare this to gaspers tests, are these values reasonable?
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '1000000')
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardPerLiquidity', '1')
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardPerLiquidity', DEFAULT_REWARD_PER_LIQUIDITY.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', endTime.toString())
 
   cleanup()
@@ -326,14 +327,14 @@ test('Subscribe affects incentives accrue rewards', () => {
   onSubscribe(subscribeEvent)
   
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '1000000')
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardPerLiquidity', '1')
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardPerLiquidity', DEFAULT_REWARD_PER_LIQUIDITY.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', endTime.toString())
 
   let unsubscribeEvent = createUnsubscribeEvent(INCENTIVE_ID, ALICE)
   onUnsubscribe(unsubscribeEvent)
 
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '1000000')
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardPerLiquidity', '1')
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardPerLiquidity', DEFAULT_REWARD_PER_LIQUIDITY.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', endTime.toString())
 
   //TODO: compare these assertions to gaspers tests, is this the expected behaviour?

@@ -2,6 +2,7 @@ import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
 import { getSubscriptionId } from '../src/functions/index'
 import { onIncentiveCreated, onSubscribe, onUnsubscribe } from '../src/mappings/staking'
+import { DEFAULT_REWARD_PER_LIQUIDITY } from '../src/constants/index'
 import { createIncentiveCreatedEvent, createSubscribeEvent, createUnsubscribeEvent } from './mocks'
 
 const ALICE = Address.fromString('0x00000000000000000000000000000000000a71ce')
@@ -42,7 +43,7 @@ test('Subscribe', () => {
   assert.fieldEquals('Subscription', subscribeId, 'id', subscribeId)
   assert.fieldEquals('Subscription', subscribeId, 'user', ALICE.toHex())
   assert.fieldEquals('Subscription', subscribeId, 'incentive', INCENTIVE_ID.toString())
-  assert.fieldEquals('Subscription', subscribeId, 'rewardPerLiquidity', '1')
+  assert.fieldEquals('Subscription', subscribeId, 'rewardPerLiquidity', DEFAULT_REWARD_PER_LIQUIDITY.toString())
   assert.fieldEquals('Subscription', subscribeId, 'token', TOKEN.toHex())
   assert.fieldEquals('Subscription', subscribeId, 'block', subscribeEvent.block.number.toString())
   assert.fieldEquals('Subscription', subscribeId, 'timestamp', subscribeEvent.block.timestamp.toString())
@@ -60,11 +61,6 @@ test('Subscribe and Unsubscribe', () => {
   onSubscribe(subscribeEvent)
 
   let subscribeId = getSubscriptionId(ALICE.toHex(), '1')
-  assert.fieldEquals('Subscription', subscribeId, 'id', subscribeId)
-  assert.fieldEquals('Subscription', subscribeId, 'user', ALICE.toHex())
-  assert.fieldEquals('Subscription', subscribeId, 'incentive', INCENTIVE_ID.toString())
-  assert.fieldEquals('Subscription', subscribeId, 'rewardPerLiquidity', '1')
-
   onUnsubscribe(unsubscribeEvent)
 
   assert.notInStore('Subscription', subscribeId)

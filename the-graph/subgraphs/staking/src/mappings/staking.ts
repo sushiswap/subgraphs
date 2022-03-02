@@ -1,4 +1,5 @@
 import { BigInt, store } from '@graphprotocol/graph-ts'
+import { DEFAULT_REWARD_PER_LIQUIDITY } from '../../src/constants'
 import {
   IncentiveCreated,
   IncentiveUpdated,
@@ -17,6 +18,7 @@ import {
   getSubscription
 } from '../../src/functions'
 
+
 export function onIncentiveCreated(event: IncentiveCreated): void {
   let creator = getOrCreateUser(event.params.creator.toHex())
   let rewardToken = getOrCreateToken(event.params.rewardToken.toHex())
@@ -28,7 +30,7 @@ export function onIncentiveCreated(event: IncentiveCreated): void {
   incentive.rewardToken = rewardToken.id
   incentive.lastRewardTime = event.params.startTime
   incentive.endTime = event.params.endTime
-  incentive.rewardPerLiquidity = BigInt.fromU32(1)
+  incentive.rewardPerLiquidity = DEFAULT_REWARD_PER_LIQUIDITY
   incentive.rewardRemaining = event.params.amount
 
   incentive.save()
