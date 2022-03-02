@@ -1,5 +1,5 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { newMockEvent } from 'matchstick-as'
+import { createMockedFunction, newMockEvent } from 'matchstick-as'
 import {
   IncentiveCreated as IncentiveCreatedEvent,
   IncentiveUpdated as IncentiveUpdatedEvent,
@@ -164,4 +164,16 @@ export function createUnsubscribeEvent(id: BigInt, user: Address): UnSubscribeEv
   event.parameters.push(userParam)
 
   return event
+}
+
+export function createTokenMock(contractAddress: string, decimals: BigInt, name: string, symbol: string): void {
+  createMockedFunction(Address.fromString(contractAddress), 'decimals', 'decimals():(uint8)').returns([
+    ethereum.Value.fromUnsignedBigInt(decimals),
+  ])
+  createMockedFunction(Address.fromString(contractAddress), 'name', 'name():(string)').returns([
+    ethereum.Value.fromString(name),
+  ])
+  createMockedFunction(Address.fromString(contractAddress), 'symbol', 'symbol():(string)').returns([
+    ethereum.Value.fromString(symbol),
+  ])
 }

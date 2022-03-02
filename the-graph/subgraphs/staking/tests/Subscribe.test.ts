@@ -3,7 +3,7 @@ import { assert, clearStore, test } from 'matchstick-as/assembly/index'
 import { getSubscriptionId } from '../src/functions/index'
 import { onIncentiveCreated, onSubscribe, onUnsubscribe } from '../src/mappings/staking'
 import { DEFAULT_REWARD_PER_LIQUIDITY } from '../src/constants/index'
-import { createIncentiveCreatedEvent, createSubscribeEvent, createUnsubscribeEvent } from './mocks'
+import { createIncentiveCreatedEvent, createSubscribeEvent, createTokenMock, createUnsubscribeEvent } from './mocks'
 
 const ALICE = Address.fromString('0x00000000000000000000000000000000000a71ce')
 const INCENTIVE_ID = BigInt.fromString('1')
@@ -24,6 +24,8 @@ function setup(): void {
     startTime,
     endTime
   )
+  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString("18"), "SushiToken", "SUSHI")
+  createTokenMock(TOKEN.toHex(), BigInt.fromString("18"), "SushiSwap LP Token", "SLP")
   onIncentiveCreated(incentiveCreatedEvent)
 }
 

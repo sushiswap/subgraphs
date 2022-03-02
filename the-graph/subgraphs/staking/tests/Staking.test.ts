@@ -2,7 +2,7 @@ import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
 import { getStakeId } from '../src/functions/index'
 import { onStake, onUnstake } from '../src/mappings/staking'
-import { createStakeEvent, createUnstakeEvent } from './mocks'
+import { createStakeEvent, createTokenMock, createUnstakeEvent } from './mocks'
 
 const ALICE = Address.fromString('0x00000000000000000000000000000000000a71ce')
 const TOKEN = Address.fromString('0x0000000000000000000000000000000000000001')
@@ -16,6 +16,7 @@ test('Stake', () => {
   let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
   stakeEvent.block.number = BigInt.fromString("1337")
   stakeEvent.block.timestamp = BigInt.fromString("1333337")
+  createTokenMock(TOKEN.toHex(), BigInt.fromString("18"), "SushiSwap LP Token", "SLP")
 
   // When: Alice stakes an amount
   onStake(stakeEvent)
@@ -42,6 +43,7 @@ test('Stake and unstake', () => {
   const amount = BigInt.fromString('10000000')
   let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
   let unstakeEvent = createUnstakeEvent(TOKEN, ALICE, amount)
+  createTokenMock(TOKEN.toHex(), BigInt.fromString("18"), "SushiSwap LP Token", "SLP")
 
   // When: Alice stakes an amount
   onStake(stakeEvent)

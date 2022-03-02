@@ -5,10 +5,15 @@ type User @entity {
   subscriptionCount: BigInt!
 }
 
-#TODO: Should this be Token or Pool?
-# if Token, should it contain symbol name decimals?
+
 type Token @entity {
   id: ID!
+  symbol: String!
+  symbolSuccess: Boolean!
+  name: String!
+  nameSuccess: Boolean!
+  decimals: BigInt!
+  decimalsSuccess: Boolean!
 }
 
 type Stake @entity {

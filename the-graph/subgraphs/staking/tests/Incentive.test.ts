@@ -1,4 +1,4 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
 import {
   onIncentiveCreated,
@@ -14,6 +14,7 @@ import {
   createIncentiveUpdatedEvent,
   createStakeEvent,
   createSubscribeEvent,
+  createTokenMock,
   createUnstakeEvent,
   createUnsubscribeEvent,
 } from './mocks'
@@ -40,6 +41,9 @@ function cleanup(): void {
 }
 
 test('Create incentive', () => {
+  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString("18"), "SushiToken", "SUSHI")
+  createTokenMock(TOKEN.toHex(), BigInt.fromString("18"), "SushiSwap LP Token", "SLP")
+  
   onIncentiveCreated(incentiveCreatedEvent)
 
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'id', INCENTIVE_ID.toString())
@@ -59,6 +63,8 @@ test('Updating incentive with positive amount increases rewardRemaining', () => 
   let amount = BigInt.fromString('1337')
   let newStartTime = BigInt.fromU32(1646143533)
   let newEndTime = BigInt.fromU32(1646170000)
+  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString("18"), "SushiToken", "SUSHI")
+  createTokenMock(TOKEN.toHex(), BigInt.fromString("18"), "SushiSwap LP Token", "SLP")
   onIncentiveCreated(incentiveCreatedEvent)
 
   let incentiveUpdatedEvent = createIncentiveUpdatedEvent(INCENTIVE_ID, amount, newStartTime, newEndTime)
@@ -82,6 +88,8 @@ test('Updating incentive with negative amount decreases rewardRemaining', () => 
   let amount = BigInt.fromString('-600000')
   let newStartTime = BigInt.fromU32(1646143533)
   let newEndTime = BigInt.fromU32(1646170000)
+  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString("18"), "SushiToken", "SUSHI")
+  createTokenMock(TOKEN.toHex(), BigInt.fromString("18"), "SushiSwap LP Token", "SLP")
   onIncentiveCreated(incentiveCreatedEvent)
 
   // When: Incentive is updated
@@ -106,6 +114,8 @@ test('Updating incentive with timestamps before the block timestamp results in u
   let newStartTime = BigInt.fromU32(1646143287) // Tue Mar 01 2022 14:01:27 GMT+0000
   let newEndTime = BigInt.fromU32(1646316087) // Thu Mar 03 2022 14:01:27 GMT+0000
   let timestamp = BigInt.fromU32(1646352000) // Fri Mar 04 2022 00:00:00 GMT+0000, Next
+  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString("18"), "SushiToken", "SUSHI")
+  createTokenMock(TOKEN.toHex(), BigInt.fromString("18"), "SushiSwap LP Token", "SLP")
   onIncentiveCreated(incentiveCreatedEvent)
 
   // When: Incentive is updated
@@ -121,7 +131,10 @@ test('Updating incentive with timestamps before the block timestamp results in u
 })
 
 test('subscribe/unsubscribe updates the incentives staked liquidity', () => {
+  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString("18"), "SushiToken", "SUSHI")
+  createTokenMock(TOKEN.toHex(), BigInt.fromString("18"), "SushiSwap LP Token", "SLP")
   onIncentiveCreated(incentiveCreatedEvent)
+
   const amount = BigInt.fromString('10000000')
   let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
   let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
@@ -161,6 +174,8 @@ test('User stakes twice in two different incentives, but only subscribed to one 
   let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
   let stakeEvent2 = createStakeEvent(token2, ALICE, amount)
 
+  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString("18"), "SushiToken", "SUSHI")
+  createTokenMock(TOKEN.toHex(), BigInt.fromString("18"), "SushiSwap LP Token", "SLP")
   onIncentiveCreated(incentiveCreatedEvent)
   onIncentiveCreated(incentiveCreatedEvent2)
 
@@ -190,6 +205,8 @@ test('User stakes to the same incentive twice, liquidity is updated', () => {
 
   let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
 
+  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString("18"), "SushiToken", "SUSHI")
+  createTokenMock(TOKEN.toHex(), BigInt.fromString("18"), "SushiSwap LP Token", "SLP")
   onIncentiveCreated(incentiveCreatedEvent)
 
   // When: User stakes
@@ -219,6 +236,8 @@ test('Unstake decreases the incentives liquidity', () => {
   let unstakeEvent = createUnstakeEvent(TOKEN, ALICE, amount)
   let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
 
+  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString("18"), "SushiToken", "SUSHI")
+  createTokenMock(TOKEN.toHex(), BigInt.fromString("18"), "SushiSwap LP Token", "SLP")
   onIncentiveCreated(incentiveCreatedEvent)
   onStake(stakeEvent)
   onSubscribe(subscribeEvent)
@@ -244,7 +263,10 @@ test('Stake affects incentives accrue rewards', () => {
     startTime,
     endTime
   )
+  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString("18"), "SushiToken", "SUSHI")
+  createTokenMock(TOKEN.toHex(), BigInt.fromString("18"), "SushiSwap LP Token", "SLP")
   onIncentiveCreated(incentiveCreatedEvent)
+
   const amount = BigInt.fromString('10000000')
   let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
   stakeEvent.block.timestamp = timestamp
@@ -279,6 +301,8 @@ test('Unstake affects incentives accrue rewards', () => {
     startTime,
     endTime
   )
+  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString("18"), "SushiToken", "SUSHI")
+  createTokenMock(TOKEN.toHex(), BigInt.fromString("18"), "SushiSwap LP Token", "SLP")
   onIncentiveCreated(incentiveCreatedEvent)
 
   const amount = BigInt.fromString('10000000')
@@ -315,6 +339,8 @@ test('Subscribe affects incentives accrue rewards', () => {
     startTime,
     endTime
   )
+  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString("18"), "SushiToken", "SUSHI")
+  createTokenMock(TOKEN.toHex(), BigInt.fromString("18"), "SushiSwap LP Token", "SLP")
   onIncentiveCreated(incentiveCreatedEvent)
 
 

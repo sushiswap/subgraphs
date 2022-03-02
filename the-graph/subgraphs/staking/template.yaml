@@ -21,9 +21,16 @@ dataSources:
         - Stake
         - Incentive
         - Token
+        - Subscription
       abis:
         - name: Staking
           file: ./abis/Staking.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: SymbolBytes32
+          file: ./abis/SymbolBytes32.json
+        - name: NameBytes32
+          file: ./abis/NameBytes32.json
       eventHandlers:
         - event: IncentiveCreated(indexed address,indexed address,indexed address,uint256,uint256,uint256,uint256)
           handler: onIncentiveCreated
