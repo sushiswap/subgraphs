@@ -1,5 +1,7 @@
 # Staking Subgraph
 
+![Staking Subgraph](../../images/staking_subgraph.png)
+
 
 # Unit testing
 
