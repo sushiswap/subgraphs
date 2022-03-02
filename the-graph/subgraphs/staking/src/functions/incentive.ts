@@ -23,11 +23,6 @@ export function accrueRewards(incentive: Incentive, timestamp: BigInt): Incentiv
     const passedTime = maxTime.minus(incentive.lastRewardTime)
     const rate = passedTime.div(totalTime)
     const reward = incentive.rewardRemaining.times(rate)
-    log.debug('totalTime: {}', [totalTime.toString()])
-    log.debug('passedTime: {}', [passedTime.toString()])
-    log.debug('rate: {}', [rate.toString()])
-    log.debug('reward: {}', [reward.toString()])
-    log.debug('liquidityStaked: {}', [incentive.liquidityStaked.toString()])
 
     const liqudity = reward.times(MAX_UINT112_VALUE).div(incentive.liquidityStaked)
     incentive.rewardPerLiquidity = incentive.rewardPerLiquidity.plus(liqudity)

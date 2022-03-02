@@ -3,7 +3,6 @@ import { ERC20 } from "../../generated/Staking/ERC20"
 import { NameBytes32 } from "../../generated/Staking/NameBytes32"
 import { SymbolBytes32 } from "../../generated/Staking/SymbolBytes32"
 import { Token } from "../../generated/schema"
-import { log } from "matchstick-as"
 
 export function getOrCreateToken(id: string): Token {
     let token = Token.load(id)
