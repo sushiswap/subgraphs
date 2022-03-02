@@ -34,6 +34,7 @@ test('Stake', () => {
   onStake(stakeEvent)
 
   // Then: The liquidity is doubled
+  assert.entityCount('Stake', 1)
   assert.fieldEquals('Stake', stakeId, 'liquidity', amount.times(BigInt.fromString('2')).toString())
 
   cleanup()

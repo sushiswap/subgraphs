@@ -64,6 +64,7 @@ test('Subscribe and Unsubscribe', () => {
   onUnsubscribe(unsubscribeEvent)
 
   assert.notInStore('Subscription', subscribeId)
+  assert.entityCount('Subscription', 0)
 
   cleanup()
 })
