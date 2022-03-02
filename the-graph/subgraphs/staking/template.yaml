@@ -43,4 +43,4 @@ dataSources:
         - event: Unstake(indexed address,indexed address,uint256)
           handler: onUnstake
         - event: Unsubscribe(indexed uint256,indexed address)
-          handler: onUnSubscribe
+          handler: onUnsubscribe
