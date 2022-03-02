@@ -19,9 +19,9 @@
     "deploy-kovan": "graph deploy --product hosted-service sushiswap/kovan-staking"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.26.0",
+    "@graphprotocol/graph-cli": "^0.27.0",
     "@graphprotocol/graph-ts": "^0.24.1",
     "@sushiswap/miso": "1.0.0-canary.40",
-    "matchstick-as": "^0.3.0"
+    "matchstick-as": "^0.4.0"
   }
 }

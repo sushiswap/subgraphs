@@ -27,8 +27,8 @@
     "deploy-gnosis": "graph deploy --product hosted-service sushiswap/bentobox-gnosis"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.26.0",
+    "@graphprotocol/graph-cli": "^0.27.0",
     "@graphprotocol/graph-ts": "^0.24.1",
-    "matchstick-as": "^0.3.0"
+    "matchstick-as": "^0.4.0"
   }
 }
