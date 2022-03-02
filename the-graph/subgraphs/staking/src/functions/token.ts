@@ -22,7 +22,6 @@ export function getOrCreateToken(id: string): Token {
       token.decimals = decimals.value
       token.decimalsSuccess = decimals.success
       token.save()
-      log.debug("{} {} {}",[decimals.value.toString(), name.value.toString(), symbol.value.toString()])
     }
   
     return token as Token
