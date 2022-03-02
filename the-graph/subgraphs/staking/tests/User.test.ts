@@ -1,7 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
-import { onIncentiveCreated, onSubscribe } from '../src/mappings/staking'
-import { createIncentiveCreatedEvent, createSubscribeEvent } from './mocks'
+import { onIncentiveCreated, onStake, onSubscribe } from '../src/mappings/staking'
+import { createIncentiveCreatedEvent, createStakeEvent, createSubscribeEvent } from './mocks'
 
 const ALICE = Address.fromString('0x00000000000000000000000000000000000a71ce')
 const INCENTIVE_ID = BigInt.fromString('1')

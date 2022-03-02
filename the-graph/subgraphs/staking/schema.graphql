@@ -1,7 +1,5 @@
 type User @entity {
   id: ID!
-  block: BigInt!
-  timestamp: BigInt!
   stakes: [Stake!] @derivedFrom(field: "user")
   incentives: [Subscription!] @derivedFrom(field: "user")
   subscriptionCount: BigInt!
@@ -11,13 +9,14 @@ type User @entity {
 # if Token, should it contain symbol name decimals?
 type Token @entity {
   id: ID!
-  timestamp: BigInt!
 }
 
 type Stake @entity {
   id: ID!
   user: User!
   liquidity: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
 }
 
 
@@ -40,6 +39,8 @@ type Subscription @entity {
   user: User!
   incentive: Incentive!
   rewardPerLiquidity: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
 }
 
 #TODO: Historical data needed? If so, add Transaction entity?

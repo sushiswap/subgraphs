@@ -33,6 +33,9 @@ function cleanup(): void {
 test('Subscribe', () => {
   setup()
   let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
+  subscribeEvent.block.number = BigInt.fromString("1337")
+  subscribeEvent.block.timestamp = BigInt.fromString("1333337")
+  
   onSubscribe(subscribeEvent)
 
   let subscribeId = getSubscriptionId(ALICE.toHex(), '1')
@@ -40,6 +43,9 @@ test('Subscribe', () => {
   assert.fieldEquals('Subscription', subscribeId, 'user', ALICE.toHex())
   assert.fieldEquals('Subscription', subscribeId, 'incentive', INCENTIVE_ID.toString())
   assert.fieldEquals('Subscription', subscribeId, 'rewardPerLiquidity', '1')
+  assert.fieldEquals('Subscription', subscribeId, 'block', subscribeEvent.block.number.toString())
+  assert.fieldEquals('Subscription', subscribeId, 'timestamp', subscribeEvent.block.timestamp.toString())
+
 
   cleanup()
 })

@@ -14,6 +14,8 @@ function cleanup(): void {
 test('Stake', () => {
   const amount = BigInt.fromString('10000000')
   let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
+  stakeEvent.block.number = BigInt.fromString("1337")
+  stakeEvent.block.timestamp = BigInt.fromString("1333337")
 
   // When: Alice stakes an amount
   onStake(stakeEvent)
@@ -23,6 +25,8 @@ test('Stake', () => {
   assert.fieldEquals('Stake', stakeId, 'id', stakeId)
   assert.fieldEquals('Stake', stakeId, 'user', ALICE.toHex())
   assert.fieldEquals('Stake', stakeId, 'liquidity', amount.toString())
+  assert.fieldEquals('Stake', stakeId, 'block', stakeEvent.block.number.toString())
+  assert.fieldEquals('Stake', stakeId, 'timestamp', stakeEvent.block.timestamp.toString())
 
   // When: Alice stakes another time
   onStake(stakeEvent)
