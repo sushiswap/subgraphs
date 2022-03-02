@@ -50,10 +50,8 @@ test('Subscribe', () => {
   assert.fieldEquals('Subscription', subscribeId, 'block', subscribeEvent.block.number.toString())
   assert.fieldEquals('Subscription', subscribeId, 'timestamp', subscribeEvent.block.timestamp.toString())
 
-
   cleanup()
 })
-
 
 
 test('Subscribe and Unsubscribe', () => {
