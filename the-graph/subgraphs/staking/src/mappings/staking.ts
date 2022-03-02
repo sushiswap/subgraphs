@@ -1,12 +1,11 @@
 import { BigInt, store } from '@graphprotocol/graph-ts'
-import { log } from 'matchstick-as'
 import {
   IncentiveCreated,
   IncentiveUpdated,
   Stake,
   Subscribe,
   Unstake,
-  Unsubscribe,
+  Unsubscribe
 } from '../../generated/Staking/Staking'
 import {
   accrueRewards,
@@ -15,7 +14,7 @@ import {
   getOrCreateSubscription,
   getOrCreateToken,
   getOrCreateUser,
-  getSubscription,
+  getSubscription
 } from '../../src/functions'
 
 export function onIncentiveCreated(event: IncentiveCreated): void {
@@ -37,8 +36,8 @@ export function onIncentiveCreated(event: IncentiveCreated): void {
 
 export function onIncentiveUpdated(event: IncentiveUpdated): void {
   let incentive = getOrCreateIncentive(event.params.id.toString())
+  incentive = accrueRewards(incentive, event.block.timestamp)
 
-  // TODO: accrueRewards()
   let newStartTime = event.params.newStartTime.toI32()
   let newEndTime = event.params.newEndTime.toI32()
   let timestamp = event.block.timestamp.toI32()
@@ -58,18 +57,18 @@ export function onIncentiveUpdated(event: IncentiveUpdated): void {
     incentive.endTime = BigInt.fromI32(newEndTime)
   }
 
-  if (changeAmount > BigInt.fromU32(0)) {
+  let zero = BigInt.fromU32(0 as u8)
+  if (changeAmount > zero) {
     incentive.rewardRemaining = incentive.rewardRemaining.plus(event.params.changeAmount)
-  } else if (changeAmount < BigInt.fromU32(0)) {
+  } else if (changeAmount < zero) {
     let amount = changeAmount.abs()
     if (amount > incentive.rewardRemaining) {
-      incentive.rewardRemaining = BigInt.fromU32(0 as u8)
+      incentive.rewardRemaining = zero
     } else {
       incentive.rewardRemaining = incentive.rewardRemaining.minus(amount)
     }
   }
   incentive.save()
-  // TODO: Transfer token?
 }
 
 export function onStake(event: Stake): void {
@@ -79,6 +78,7 @@ export function onStake(event: Stake): void {
   let stake = getOrCreateStake(user.id, token.id)
   stake.liquidity = stake.liquidity.plus(event.params.amount)
   stake.user = user.id
+  stake.token = token.id
   stake.block = event.block.number
   stake.timestamp = event.block.timestamp
   stake.save()
@@ -143,6 +143,7 @@ export function onSubscribe(event: Subscribe): void {
   subscription.rewardPerLiquidity = incentive.rewardPerLiquidity
   subscription.block = event.block.number
   subscription.timestamp = event.block.timestamp
+  subscription.token = incentive.token
   subscription.save()
 
 }

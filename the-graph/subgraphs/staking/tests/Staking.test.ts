@@ -24,6 +24,7 @@ test('Stake', () => {
   const stakeId = getStakeId(ALICE.toHex(), TOKEN.toHex())
   assert.fieldEquals('Stake', stakeId, 'id', stakeId)
   assert.fieldEquals('Stake', stakeId, 'user', ALICE.toHex())
+  assert.fieldEquals('Stake', stakeId, 'token', TOKEN.toHex())
   assert.fieldEquals('Stake', stakeId, 'liquidity', amount.toString())
   assert.fieldEquals('Stake', stakeId, 'block', stakeEvent.block.number.toString())
   assert.fieldEquals('Stake', stakeId, 'timestamp', stakeEvent.block.timestamp.toString())

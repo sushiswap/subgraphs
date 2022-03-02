@@ -43,6 +43,7 @@ test('Subscribe', () => {
   assert.fieldEquals('Subscription', subscribeId, 'user', ALICE.toHex())
   assert.fieldEquals('Subscription', subscribeId, 'incentive', INCENTIVE_ID.toString())
   assert.fieldEquals('Subscription', subscribeId, 'rewardPerLiquidity', '1')
+  assert.fieldEquals('Subscription', subscribeId, 'token', TOKEN.toHex())
   assert.fieldEquals('Subscription', subscribeId, 'block', subscribeEvent.block.number.toString())
   assert.fieldEquals('Subscription', subscribeId, 'timestamp', subscribeEvent.block.timestamp.toString())
 

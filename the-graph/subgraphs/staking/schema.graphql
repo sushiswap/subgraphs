@@ -14,6 +14,7 @@ type Token @entity {
 type Stake @entity {
   id: ID!
   user: User!
+  token: Token!
   liquidity: BigInt!
   block: BigInt!
   timestamp: BigInt!
@@ -38,9 +39,14 @@ type Subscription @entity {
   id: ID!
   user: User!
   incentive: Incentive!
+  token: Token!
   rewardPerLiquidity: BigInt!
   block: BigInt!
   timestamp: BigInt!
 }
 
-#TODO: Historical data needed? If so, add Transaction entity?
+#TODO: Historical data needed? If so, add Transaction entity for when stake/unstake is taking place?
+
+
+#TODO: Consider renaming block and timestamp fields, inconsistent usage currently, some are creation, some are on update.
+# Could be creationTime, creationBlock, update etc.
