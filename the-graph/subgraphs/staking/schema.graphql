@@ -1,7 +1,7 @@
 type User @entity {
   id: ID!
   stakes: [Stake!] @derivedFrom(field: "user")
-  incentives: [Subscription!] @derivedFrom(field: "user")
+  incentives: [_Subscription!] @derivedFrom(field: "user")
   subscriptionCount: BigInt!
 }
 
@@ -37,21 +37,15 @@ type Incentive @entity {
   rewardPerLiquidity: BigInt!
   lastRewardTime: BigInt!
   liquidityStaked: BigInt!
-  subscribers: [Subscription!] @derivedFrom(field: "incentive")
+  subscribers: [_Subscription!] @derivedFrom(field: "incentive")
 }
 
-type Subscription @entity {
+type _Subscription @entity {
   id: ID!
   user: User!
   incentive: Incentive!
   token: Token!
-  rewardPerLiquidity: BigInt!
+  rewardPerLiquidity: BigInt! 
   block: BigInt!
   timestamp: BigInt!
 }
-
-#TODO: Historical data needed? If so, add Transaction entity for when stake/unstake is taking place?
-
-
-#TODO: Consider renaming block and timestamp fields, inconsistent usage currently, some are creation, some are on update.
-# Could be creationTime, creationBlock, update etc.
