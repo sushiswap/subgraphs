@@ -15,7 +15,8 @@
     "create-local": "graph create --node http://localhost:8020/ sushiswap/blocks",
     "remove-local": "graph remove --node http://localhost:8020/ sushiswap/blocks",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/blocks",
-    "deploy-kovan": "graph deploy --product hosted-service sushiswap/kovan-blocks"
+    "deploy-moonriver": "graph deploy --product hosted-service sushiswap/blocks-moonriver",
+    "deploy-fuse": "graph deploy --product hosted-service sushiswap/blocks-fuse"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.27.0",
