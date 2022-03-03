@@ -10,7 +10,7 @@ This repository contains multiple subgraphs:
 ## CLI
 
 ### Prepare
-Replace `<APP_NAME>` and `<NETWORK>` with i.e. `miso` and `kovan`
+Replace `<APP_NAME>` and `<NETWORK>`, e.g. `miso` and `kovan`
 ```sh
 node . prepare <APP_NAME> <NETWORK>
 ```
