@@ -1,15 +1,15 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 import { Participant } from '../../generated/schema'
-import { getOrCreateUser } from './user'
 import { getAuction } from './auction'
+import { getOrCreateUser } from './user'
 
 export function getOrCreateParticipant(userAddress: string, auctionAddress: string): Participant {
-  let participant = Participant.load(userAddress + '-' + auctionAddress)
+  let participant = Participant.load(getParticipantId(userAddress, auctionAddress))
 
   getOrCreateUser(userAddress)
 
   if (participant === null) {
-    participant = new Participant(userAddress + '-' + auctionAddress)
+    participant = new Participant(getParticipantId(userAddress, auctionAddress))
 
     participant.auction = auctionAddress
     participant.user = userAddress
@@ -22,4 +22,8 @@ export function getOrCreateParticipant(userAddress: string, auctionAddress: stri
   }
 
   return participant as Participant
+}
+
+export function getParticipantId(user: string, auction: string): string {
+  return user.concat(':').concat(auction)
 }
