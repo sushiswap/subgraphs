@@ -22,4 +22,4 @@ dataSources:
         - name: UniswapV2Factory
           file: ./abis/UniswapV2Factory.json
       blockHandlers:
-        - handler: handleBlock
+        - handler: onBlock
