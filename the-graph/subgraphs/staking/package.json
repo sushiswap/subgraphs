@@ -4,7 +4,7 @@
   "license": "MIT",
   "repository": {
     "url": "sushiswap/subgraphs",
-    "directory": "subgraphs/miso"
+    "directory": "subgraphs/staking"
   },
   "files": [
     "generated"
@@ -21,7 +21,6 @@
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.27.0",
     "@graphprotocol/graph-ts": "^0.24.1",
-    "@sushiswap/miso": "1.0.0-canary.40",
     "matchstick-as": "^0.4.0"
   }
 }
