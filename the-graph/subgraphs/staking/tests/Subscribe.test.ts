@@ -42,13 +42,13 @@ test('Subscribe', () => {
   onSubscribe(subscribeEvent)
 
   let subscribeId = getSubscriptionId(ALICE.toHex(), '1')
-  assert.fieldEquals('Subscription', subscribeId, 'id', subscribeId)
-  assert.fieldEquals('Subscription', subscribeId, 'user', ALICE.toHex())
-  assert.fieldEquals('Subscription', subscribeId, 'incentive', INCENTIVE_ID.toString())
-  assert.fieldEquals('Subscription', subscribeId, 'rewardPerLiquidity', DEFAULT_REWARD_PER_LIQUIDITY.toString())
-  assert.fieldEquals('Subscription', subscribeId, 'token', TOKEN.toHex())
-  assert.fieldEquals('Subscription', subscribeId, 'block', subscribeEvent.block.number.toString())
-  assert.fieldEquals('Subscription', subscribeId, 'timestamp', subscribeEvent.block.timestamp.toString())
+  assert.fieldEquals('_Subscription', subscribeId, 'id', subscribeId)
+  assert.fieldEquals('_Subscription', subscribeId, 'user', ALICE.toHex())
+  assert.fieldEquals('_Subscription', subscribeId, 'incentive', INCENTIVE_ID.toString())
+  assert.fieldEquals('_Subscription', subscribeId, 'rewardPerLiquidity', DEFAULT_REWARD_PER_LIQUIDITY.toString())
+  assert.fieldEquals('_Subscription', subscribeId, 'token', TOKEN.toHex())
+  assert.fieldEquals('_Subscription', subscribeId, 'block', subscribeEvent.block.number.toString())
+  assert.fieldEquals('_Subscription', subscribeId, 'timestamp', subscribeEvent.block.timestamp.toString())
 
   cleanup()
 })
@@ -59,12 +59,13 @@ test('Subscribe and Unsubscribe', () => {
   let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
   let unsubscribeEvent = createUnsubscribeEvent(INCENTIVE_ID, ALICE)
   onSubscribe(subscribeEvent)
-
   let subscribeId = getSubscriptionId(ALICE.toHex(), '1')
+  assert.fieldEquals('_Subscription', subscribeId, 'id', subscribeId)
+
   onUnsubscribe(unsubscribeEvent)
 
   assert.notInStore('Subscription', subscribeId)
-  assert.entityCount('Subscription', 0)
+  assert.entityCount('_Subscription', 0)
 
   cleanup()
 })
