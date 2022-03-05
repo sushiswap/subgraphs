@@ -44,3 +44,5 @@ dataSources:
           handler: onUnstake
         - event: Unsubscribe(indexed uint256,indexed address)
           handler: onUnsubscribe
+        - event: Claim(indexed uint256,indexed address,uint256)
+          handler: onClaim

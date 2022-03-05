@@ -1,6 +1,7 @@
 import { BigInt, store } from '@graphprotocol/graph-ts'
 import { DEFAULT_REWARD_PER_LIQUIDITY } from '../../src/constants'
 import {
+  Claim,
   IncentiveCreated,
   IncentiveUpdated,
   Stake,
@@ -174,3 +175,6 @@ export function onUnsubscribe(event: Unsubscribe): void {
 }
 
 
+export function onClaim(event: Claim): void {
+  
+}
