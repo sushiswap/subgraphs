@@ -14,9 +14,9 @@ function cleanup(): void {
 test('Stake', () => {
   const amount = BigInt.fromString('10000000')
   let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
-  stakeEvent.block.number = BigInt.fromString("1337")
-  stakeEvent.block.timestamp = BigInt.fromString("1333337")
-  createTokenMock(TOKEN.toHex(), BigInt.fromString("18"), "SushiSwap LP Token", "SLP")
+  stakeEvent.block.number = BigInt.fromString('1337')
+  stakeEvent.block.timestamp = BigInt.fromString('1333337')
+  createTokenMock(TOKEN.toHex(), BigInt.fromString('18'), 'SushiSwap LP Token', 'SLP')
 
   // When: Alice stakes an amount
   onStake(stakeEvent)
@@ -44,7 +44,7 @@ test('Stake and unstake', () => {
   const amount = BigInt.fromString('10000000')
   let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
   let unstakeEvent = createUnstakeEvent(TOKEN, ALICE, amount)
-  createTokenMock(TOKEN.toHex(), BigInt.fromString("18"), "SushiSwap LP Token", "SLP")
+  createTokenMock(TOKEN.toHex(), BigInt.fromString('18'), 'SushiSwap LP Token', 'SLP')
 
   // When: Alice stakes an amount
   onStake(stakeEvent)

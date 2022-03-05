@@ -1,5 +1,4 @@
 import { BigInt } from '@graphprotocol/graph-ts'
-import { log } from 'matchstick-as'
 import { Incentive } from '../../generated/schema'
 
 const MAX_UINT112_VALUE = BigInt.fromString('2596148429267413814265248164610048') // 2^112÷2
@@ -32,9 +31,4 @@ export function accrueRewards(incentive: Incentive, timestamp: BigInt): Incentiv
     incentive.lastRewardTime = maxTime
   }
   return incentive
-}
-
-export function claimRewards(incentive: Incentive, timestamp: BigInt): Incentive {
-  // TODO:
-  throw new Error("Not implemented.")
 }

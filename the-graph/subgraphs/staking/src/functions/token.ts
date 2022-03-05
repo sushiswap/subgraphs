@@ -1,31 +1,31 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts"
-import { ERC20 } from "../../generated/Staking/ERC20"
-import { NameBytes32 } from "../../generated/Staking/NameBytes32"
-import { SymbolBytes32 } from "../../generated/Staking/SymbolBytes32"
-import { Token } from "../../generated/schema"
+import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Token } from '../../generated/schema'
+import { ERC20 } from '../../generated/Staking/ERC20'
+import { NameBytes32 } from '../../generated/Staking/NameBytes32'
+import { SymbolBytes32 } from '../../generated/Staking/SymbolBytes32'
 
 export function getOrCreateToken(id: string): Token {
-    let token = Token.load(id)
-  
-    if (token === null) {
-      token = new Token(id)
-      const contract = ERC20.bind(Address.fromString(id))
-  
-      const decimals = getTokenDecimals(contract)
-      const name = getTokenName(contract)
-      const symbol = getTokenSymbol(contract)
-      token.name = name.value
-      token.nameSuccess = name.success
-      token.symbol = symbol.value
-      token.symbolSuccess = symbol.success
-      token.decimals = decimals.value
-      token.decimalsSuccess = decimals.success
-      token.save()
-    }
-  
-    return token as Token
+  let token = Token.load(id)
+
+  if (token === null) {
+    token = new Token(id)
+    const contract = ERC20.bind(Address.fromString(id))
+
+    const decimals = getTokenDecimals(contract)
+    const name = getTokenName(contract)
+    const symbol = getTokenSymbol(contract)
+    token.name = name.value
+    token.nameSuccess = name.success
+    token.symbol = symbol.value
+    token.symbolSuccess = symbol.success
+    token.decimals = decimals.value
+    token.decimalsSuccess = decimals.success
+    token.save()
   }
-  
+
+  return token as Token
+}
+
 class Symbol {
   success: boolean
   value: string

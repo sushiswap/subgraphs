@@ -1,8 +1,14 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
-import { onClaim, onIncentiveCreated, onStake, onSubscribe } from '../src/mappings/staking'
 import { getRewardClaimId } from '../src/functions/index'
-import { createClaimEvent, createIncentiveCreatedEvent, createStakeEvent, createSubscribeEvent, createTokenMock } from './mocks'
+import { onClaim, onIncentiveCreated, onStake, onSubscribe } from '../src/mappings/staking'
+import {
+  createClaimEvent,
+  createIncentiveCreatedEvent,
+  createStakeEvent,
+  createSubscribeEvent,
+  createTokenMock,
+} from './mocks'
 
 const ALICE = Address.fromString('0x00000000000000000000000000000000000a71ce')
 const INCENTIVE_ID = BigInt.fromString('1')
@@ -23,8 +29,8 @@ function setup(): void {
     startTime,
     endTime
   )
-  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString("18"), "SushiToken", "SUSHI")
-  createTokenMock(TOKEN.toHex(), BigInt.fromString("18"), "SushiSwap LP Token", "SLP")
+  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString('18'), 'SushiToken', 'SUSHI')
+  createTokenMock(TOKEN.toHex(), BigInt.fromString('18'), 'SushiSwap LP Token', 'SLP')
   onIncentiveCreated(incentiveCreatedEvent)
 }
 
@@ -34,8 +40,8 @@ function cleanup(): void {
 
 test('RewardClaim entity is created on claim event', () => {
   setup()
-  let amount = BigInt.fromString("100000000")
-  let amount2 = BigInt.fromString("10000")
+  let amount = BigInt.fromString('100000000')
+  let amount2 = BigInt.fromString('10000')
   let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
   let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
   let claimEvent = createClaimEvent(INCENTIVE_ID, ALICE, amount2)
@@ -44,7 +50,7 @@ test('RewardClaim entity is created on claim event', () => {
   onSubscribe(subscribeEvent)
 
   onClaim(claimEvent)
-  let claimId = getRewardClaimId(ALICE.toHex(), '1') 
+  let claimId = getRewardClaimId(ALICE.toHex(), '1')
   assert.fieldEquals('RewardClaim', claimId, 'id', claimId)
   assert.fieldEquals('RewardClaim', claimId, 'user', ALICE.toHex())
   assert.fieldEquals('RewardClaim', claimId, 'token', REWARD_TOKEN.toHex())
@@ -53,4 +59,3 @@ test('RewardClaim entity is created on claim event', () => {
 
   cleanup()
 })
-

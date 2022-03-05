@@ -1,5 +1,5 @@
 import { BigInt, store } from '@graphprotocol/graph-ts'
-import { DEFAULT_REWARD_PER_LIQUIDITY } from '../../src/constants'
+import { log } from 'matchstick-as'
 import {
   Claim,
   IncentiveCreated,
@@ -7,8 +7,9 @@ import {
   Stake,
   Subscribe,
   Unstake,
-  Unsubscribe
+  Unsubscribe,
 } from '../../generated/Staking/Staking'
+import { DEFAULT_REWARD_PER_LIQUIDITY } from '../../src/constants'
 import {
   accrueRewards,
   getOrCreateIncentive,
@@ -18,10 +19,8 @@ import {
   getOrCreateToken,
   getOrCreateUser,
   getSubscription,
-  getSubscriptionByIncentiveId
+  getSubscriptionByIncentiveId,
 } from '../../src/functions'
-import { log, logStore } from 'matchstick-as'
-
 
 export function onIncentiveCreated(event: IncentiveCreated): void {
   let creator = getOrCreateUser(event.params.creator.toHex())
@@ -148,7 +147,6 @@ export function onSubscribe(event: Subscribe): void {
   subscription.timestamp = event.block.timestamp
   subscription.token = incentive.token
   subscription.save()
-
 }
 
 export function onUnsubscribe(event: Unsubscribe): void {
@@ -166,7 +164,6 @@ export function onUnsubscribe(event: Unsubscribe): void {
     log.error('onUnsubscribe: Missing subscription, inconsistent subgraph state.', [])
   }
 }
-
 
 export function onClaim(event: Claim): void {
   let user = getOrCreateUser(event.params.user.toHex())

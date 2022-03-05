@@ -1,7 +1,13 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
-import { onClaim, onIncentiveCreated, onStake, onSubscribe, onUnsubscribe } from '../src/mappings/staking'
-import { createClaimEvent, createIncentiveCreatedEvent, createStakeEvent, createSubscribeEvent, createTokenMock, createUnsubscribeEvent } from './mocks'
+import { onClaim, onIncentiveCreated, onStake, onSubscribe } from '../src/mappings/staking'
+import {
+  createClaimEvent,
+  createIncentiveCreatedEvent,
+  createStakeEvent,
+  createSubscribeEvent,
+  createTokenMock,
+} from './mocks'
 
 const ALICE = Address.fromString('0x00000000000000000000000000000000000a71ce')
 const INCENTIVE_ID = BigInt.fromString('1')
@@ -22,8 +28,8 @@ function setup(): void {
     startTime,
     endTime
   )
-  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString("18"), "SushiToken", "SUSHI")
-  createTokenMock(TOKEN.toHex(), BigInt.fromString("18"), "SushiSwap LP Token", "SLP")
+  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString('18'), 'SushiToken', 'SUSHI')
+  createTokenMock(TOKEN.toHex(), BigInt.fromString('18'), 'SushiSwap LP Token', 'SLP')
   onIncentiveCreated(incentiveCreatedEvent)
 }
 
@@ -41,12 +47,10 @@ test('Subscribe increases the subscriptionCount', () => {
   cleanup()
 })
 
-
-
 test('Claiming reward increases the rewardClaimCount', () => {
   setup()
-  let amount = BigInt.fromString("100000000")
-  let amount2 = BigInt.fromString("10000")
+  let amount = BigInt.fromString('100000000')
+  let amount2 = BigInt.fromString('10000')
   let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
   let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
   let claimEvent = createClaimEvent(INCENTIVE_ID, ALICE, amount2)
@@ -56,7 +60,6 @@ test('Claiming reward increases the rewardClaimCount', () => {
 
   onClaim(claimEvent)
   assert.fieldEquals('User', ALICE.toHex(), 'rewardClaimCount', '1')
-
 
   cleanup()
 })

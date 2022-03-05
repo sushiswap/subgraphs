@@ -1,8 +1,8 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
+import { DEFAULT_REWARD_PER_LIQUIDITY } from '../src/constants/index'
 import { getSubscriptionId } from '../src/functions/index'
 import { onIncentiveCreated, onSubscribe, onUnsubscribe } from '../src/mappings/staking'
-import { DEFAULT_REWARD_PER_LIQUIDITY } from '../src/constants/index'
 import { createIncentiveCreatedEvent, createSubscribeEvent, createTokenMock, createUnsubscribeEvent } from './mocks'
 
 const ALICE = Address.fromString('0x00000000000000000000000000000000000a71ce')
@@ -24,8 +24,8 @@ function setup(): void {
     startTime,
     endTime
   )
-  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString("18"), "SushiToken", "SUSHI")
-  createTokenMock(TOKEN.toHex(), BigInt.fromString("18"), "SushiSwap LP Token", "SLP")
+  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString('18'), 'SushiToken', 'SUSHI')
+  createTokenMock(TOKEN.toHex(), BigInt.fromString('18'), 'SushiSwap LP Token', 'SLP')
   onIncentiveCreated(incentiveCreatedEvent)
 }
 
@@ -36,9 +36,9 @@ function cleanup(): void {
 test('Subscribe', () => {
   setup()
   let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
-  subscribeEvent.block.number = BigInt.fromString("1337")
-  subscribeEvent.block.timestamp = BigInt.fromString("1333337")
-  
+  subscribeEvent.block.number = BigInt.fromString('1337')
+  subscribeEvent.block.timestamp = BigInt.fromString('1333337')
+
   onSubscribe(subscribeEvent)
 
   let subscribeId = getSubscriptionId(ALICE.toHex(), '1')
@@ -52,7 +52,6 @@ test('Subscribe', () => {
 
   cleanup()
 })
-
 
 test('Subscribe and Unsubscribe', () => {
   setup()
