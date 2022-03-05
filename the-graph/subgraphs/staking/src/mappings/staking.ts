@@ -12,12 +12,15 @@ import {
 import {
   accrueRewards,
   getOrCreateIncentive,
+  getOrCreateRewardClaim,
   getOrCreateStake,
   getOrCreateSubscription,
   getOrCreateToken,
   getOrCreateUser,
-  getSubscription
+  getSubscription,
+  getSubscriptionByIncentiveId
 } from '../../src/functions'
+import { log } from 'matchstick-as'
 
 
 export function onIncentiveCreated(event: IncentiveCreated): void {
@@ -95,8 +98,6 @@ export function onStake(event: Stake): void {
 
       incentive.liquidityStaked = incentive.liquidityStaked.plus(event.params.amount)
       incentive.save()
-
-      //TODO: claimrewards
     }
   }
 }
@@ -121,7 +122,6 @@ export function onUnstake(event: Unstake): void {
       incentive = accrueRewards(incentive, event.block.timestamp)
       incentive.liquidityStaked = incentive.liquidityStaked.minus(event.params.amount)
       incentive.save()
-      //TODO: claimrewards
     }
   }
 }
@@ -159,22 +159,34 @@ export function onUnsubscribe(event: Unsubscribe): void {
 
   incentive.liquidityStaked = incentive.liquidityStaked.minus(stake.liquidity)
   incentive.save()
-  for (let i = 1; i <= user.subscriptionCount.toI32(); i++) {
-    let subscription = getSubscription(user.id, i.toString())
-    if (subscription !== null && subscription.incentive == event.params.id.toString()) {
-      // TODO: Consider soft delete instead. Historical data could be useful? But equally, could be saved under in a 'Transaction' entity.
-      // user.subscriptionCount can never be decremented, an alternative would be to add user.activeSubscriptionCount
-      // Soft delete would also require subscription.rewardPerLiquidity to be 0
-
-      store.remove('Subscription', subscription.id)
-      break
-    }
+  let subscription = getSubscriptionByIncentiveId(user, event.params.id.toString())
+  if (subscription !== null) {
+    store.remove('_Subscription', subscription.id)
+  } else {
+    log.warning('onUnsubscribe: Missing subscription, inconsistent subgraph state.', [])
   }
-
-  //TODO: CLAIM REWARDS - ignore flag? 
 }
 
 
 export function onClaim(event: Claim): void {
-  
+  let user = getOrCreateUser(event.params.user.toHex())
+  let incentive = getOrCreateIncentive(event.params.id.toHex())
+  let subscription = getSubscriptionByIncentiveId(user, incentive.id)
+
+  if (subscription !== null) {
+    subscription.rewardPerLiquidity = incentive.rewardPerLiquidity
+    subscription.save()
+  } else {
+    log.warning('onClaim: Missing subscription, inconsistent subgraph state.', [])
+  }
+
+  user.rewardClaimCount = user.rewardClaimCount.plus(BigInt.fromI32(1 as u8))
+  user.save()
+
+  let rewardClaim = getOrCreateRewardClaim(user.id, user.rewardClaimCount.toString())
+  rewardClaim.token = incentive.rewardToken
+  rewardClaim.user = user.id
+  rewardClaim.incentive = incentive.id
+  rewardClaim.amount = event.params.amount
+  rewardClaim.save()
 }

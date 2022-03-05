@@ -3,6 +3,7 @@ type User @entity {
   stakes: [Stake!] @derivedFrom(field: "user")
   incentives: [_Subscription!] @derivedFrom(field: "user")
   subscriptionCount: BigInt!
+  rewardClaimCount: BigInt!
 }
 
 
@@ -48,4 +49,12 @@ type _Subscription @entity {
   rewardPerLiquidity: BigInt! 
   block: BigInt!
   timestamp: BigInt!
+}
+
+type RewardClaim @entity {
+  id: ID!
+  user: User!
+  token: Token!
+  incentive: Incentive!
+  amount: BigInt!
 }
