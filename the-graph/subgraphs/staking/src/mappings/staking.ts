@@ -20,7 +20,7 @@ import {
   getSubscription,
   getSubscriptionByIncentiveId
 } from '../../src/functions'
-import { log } from 'matchstick-as'
+import { log, logStore } from 'matchstick-as'
 
 
 export function onIncentiveCreated(event: IncentiveCreated): void {
@@ -163,21 +163,22 @@ export function onUnsubscribe(event: Unsubscribe): void {
   if (subscription !== null) {
     store.remove('_Subscription', subscription.id)
   } else {
-    log.warning('onUnsubscribe: Missing subscription, inconsistent subgraph state.', [])
+    log.error('onUnsubscribe: Missing subscription, inconsistent subgraph state.', [])
   }
 }
 
 
 export function onClaim(event: Claim): void {
   let user = getOrCreateUser(event.params.user.toHex())
-  let incentive = getOrCreateIncentive(event.params.id.toHex())
+  let incentive = getOrCreateIncentive(event.params.id.toString())
   let subscription = getSubscriptionByIncentiveId(user, incentive.id)
 
   if (subscription !== null) {
     subscription.rewardPerLiquidity = incentive.rewardPerLiquidity
     subscription.save()
   } else {
-    log.warning('onClaim: Missing subscription, inconsistent subgraph state.', [])
+    log.error('onClaim: Missing subscription, inconsistent subgraph state. Skipping event', [])
+    return
   }
 
   user.rewardClaimCount = user.rewardClaimCount.plus(BigInt.fromI32(1 as u8))

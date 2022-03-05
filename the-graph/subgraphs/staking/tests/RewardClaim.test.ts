@@ -1,7 +1,8 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
-import { onClaim, onIncentiveCreated, onStake, onSubscribe, onUnsubscribe } from '../src/mappings/staking'
-import { createClaimEvent, createIncentiveCreatedEvent, createStakeEvent, createSubscribeEvent, createTokenMock, createUnsubscribeEvent } from './mocks'
+import { onClaim, onIncentiveCreated, onStake, onSubscribe } from '../src/mappings/staking'
+import { getRewardClaimId } from '../src/functions/index'
+import { createClaimEvent, createIncentiveCreatedEvent, createStakeEvent, createSubscribeEvent, createTokenMock } from './mocks'
 
 const ALICE = Address.fromString('0x00000000000000000000000000000000000a71ce')
 const INCENTIVE_ID = BigInt.fromString('1')
@@ -31,19 +32,7 @@ function cleanup(): void {
   clearStore()
 }
 
-test('Subscribe increases the subscriptionCount', () => {
-  setup()
-  let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
-  onSubscribe(subscribeEvent)
-
-  assert.fieldEquals('User', ALICE.toHex(), 'subscriptionCount', '1')
-
-  cleanup()
-})
-
-
-
-test('Claiming reward increases the rewardClaimCount', () => {
+test('RewardClaim entity is created on claim event', () => {
   setup()
   let amount = BigInt.fromString("100000000")
   let amount2 = BigInt.fromString("10000")
@@ -55,8 +44,13 @@ test('Claiming reward increases the rewardClaimCount', () => {
   onSubscribe(subscribeEvent)
 
   onClaim(claimEvent)
-  assert.fieldEquals('User', ALICE.toHex(), 'rewardClaimCount', '1')
-
+  let claimId = getRewardClaimId(ALICE.toHex(), '1') 
+  assert.fieldEquals('RewardClaim', claimId, 'id', claimId)
+  assert.fieldEquals('RewardClaim', claimId, 'user', ALICE.toHex())
+  assert.fieldEquals('RewardClaim', claimId, 'token', REWARD_TOKEN.toHex())
+  assert.fieldEquals('RewardClaim', claimId, 'incentive', INCENTIVE_ID.toString())
+  assert.fieldEquals('RewardClaim', claimId, 'amount', amount2.toString())
 
   cleanup()
 })
+

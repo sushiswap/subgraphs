@@ -317,7 +317,6 @@ test('Unstake affects incentives accrue rewards', () => {
   unstakeEvent.block.timestamp = timestamp2
   onUnstake(unstakeEvent)
 
-  //TODO: compare this to gaspers tests, are these values reasonable?
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '1000000')
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardPerLiquidity', DEFAULT_REWARD_PER_LIQUIDITY.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', endTime.toString())
@@ -363,6 +362,5 @@ test('Subscribe affects incentives accrue rewards', () => {
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardPerLiquidity', DEFAULT_REWARD_PER_LIQUIDITY.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', endTime.toString())
 
-  //TODO: compare these assertions to gaspers tests, is this the expected behaviour?
   cleanup()
 })
