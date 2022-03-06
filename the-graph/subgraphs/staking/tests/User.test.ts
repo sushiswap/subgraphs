@@ -1,18 +1,21 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
-import { onClaim, onIncentiveCreated, onStake, onSubscribe } from '../src/mappings/staking'
+import { onClaim, onIncentiveCreated, onStake, onSubscribe, onUnsubscribe } from '../src/mappings/staking'
 import {
   createClaimEvent,
   createIncentiveCreatedEvent,
   createStakeEvent,
   createSubscribeEvent,
   createTokenMock,
+  createUnsubscribeEvent,
 } from './mocks'
 
 const ALICE = Address.fromString('0x00000000000000000000000000000000000a71ce')
 const INCENTIVE_ID = BigInt.fromString('1')
+const INCENTIVE_ID2 = BigInt.fromString('1')
 const TOKEN = Address.fromString('0x0000000000000000000000000000000000000001')
-const REWARD_TOKEN = Address.fromString('0x0000000000000000000000000000000000000002')
+const TOKEN2 = Address.fromString('0x0000000000000000000000000000000000000002')
+const REWARD_TOKEN = Address.fromString('0x0000000000000000000000000000000000000003')
 
 function setup(): void {
   let amount = BigInt.fromString('1000000')
@@ -28,21 +31,55 @@ function setup(): void {
     startTime,
     endTime
   )
+
+  let incentiveCreatedEvent2 = createIncentiveCreatedEvent(
+    TOKEN,
+    REWARD_TOKEN,
+    ALICE,
+    INCENTIVE_ID2,
+    amount,
+    startTime,
+    endTime
+  )
   createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString('18'), 'SushiToken', 'SUSHI')
   createTokenMock(TOKEN.toHex(), BigInt.fromString('18'), 'SushiSwap LP Token', 'SLP')
+  createTokenMock(TOKEN2.toHex(), BigInt.fromString('18'), 'Alice LP Token', 'ALP')
   onIncentiveCreated(incentiveCreatedEvent)
+  onIncentiveCreated(incentiveCreatedEvent2)
 }
 
 function cleanup(): void {
   clearStore()
 }
 
-test('Subscribe increases the totalSubscriptionCount', () => {
+test('Users subscription counts increment/decrement as expected', () => {
   setup()
   let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
+  let subscribeEvent2 = createSubscribeEvent(INCENTIVE_ID2, ALICE)
+  let unsubscribeEvent = createUnsubscribeEvent(INCENTIVE_ID2, ALICE)
+  
+  // When: alice subscribes to an incentive
   onSubscribe(subscribeEvent)
 
+  // Then: total and active sub count is increased
   assert.fieldEquals('User', ALICE.toHex(), 'totalSubscriptionCount', '1')
+  assert.fieldEquals('User', ALICE.toHex(), 'activeSubscriptionCount', '1')
+
+  // When: alice subscribes to another incentive
+  onSubscribe(subscribeEvent2)
+
+  // Then: both counts are increased again
+  assert.fieldEquals('User', ALICE.toHex(), 'totalSubscriptionCount', '2')
+  assert.fieldEquals('User', ALICE.toHex(), 'activeSubscriptionCount', '2')
+
+  // When: alice unsubscribes
+  onUnsubscribe(unsubscribeEvent)
+
+  // Then: active sub count is decreased
+  assert.fieldEquals('User', ALICE.toHex(), 'activeSubscriptionCount', '1')
+
+  // And: total sub count remains
+  assert.fieldEquals('User', ALICE.toHex(), 'totalSubscriptionCount', '2')
 
   cleanup()
 })

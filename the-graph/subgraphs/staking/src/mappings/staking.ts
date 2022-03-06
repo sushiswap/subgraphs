@@ -138,6 +138,7 @@ export function onSubscribe(event: Subscribe): void {
   incentive.save()
 
   user.totalSubscriptionCount = user.totalSubscriptionCount.plus(BigInt.fromU32(1 as u8))
+  user.activeSubscriptionCount = user.activeSubscriptionCount.plus(BigInt.fromU32(1 as u8))
   user.save()
 
   let subscription = getOrCreateSubscription(user.id, user.totalSubscriptionCount.toString())
@@ -155,6 +156,8 @@ export function onUnsubscribe(event: Unsubscribe): void {
   let incentive = getOrCreateIncentive(event.params.id.toString())
   incentive = accrueRewards(incentive, event.block.timestamp)
   let user = getOrCreateUser(event.params.user.toHex())
+  user.activeSubscriptionCount = user.activeSubscriptionCount.minus(BigInt.fromU32(1 as u8))
+  user.save()
   let stake = getOrCreateStake(user.id, incentive.token)
 
   incentive.liquidityStaked = incentive.liquidityStaked.minus(stake.liquidity)

@@ -3,6 +3,7 @@ type User @entity {
   stakes: [Stake!] @derivedFrom(field: "user")
   incentives: [_Subscription!] @derivedFrom(field: "user")
   totalSubscriptionCount: BigInt!
+  activeSubscriptionCount: BigInt!
   rewardClaimCount: BigInt!
   rewardClaims: [RewardClaim!] @derivedFrom(field: "user")
 }
