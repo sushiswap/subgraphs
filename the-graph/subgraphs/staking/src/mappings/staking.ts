@@ -145,7 +145,6 @@ export function onSubscribe(event: Subscribe): void {
 
   subscription.user = user.id
   subscription.incentive = event.params.id.toString()
-  subscription.rewardPerLiquidity = incentive.rewardPerLiquidity
   subscription.block = event.block.number
   subscription.timestamp = event.block.timestamp
   subscription.token = incentive.token
@@ -175,15 +174,6 @@ export function onClaim(event: Claim): void {
   let incentive = getOrCreateIncentive(event.params.id.toString())
   incentive = accrueRewards(incentive, event.block.timestamp)
   incentive.save()
-  let subscription = getSubscriptionByIncentiveId(user, incentive.id)
-
-  if (subscription !== null) {
-    subscription.rewardPerLiquidity = incentive.rewardPerLiquidity
-    subscription.save()
-  } else {
-    log.error('onClaim: Missing subscription, inconsistent subgraph state. Skipping event', [])
-    return
-  }
 
   user.rewardClaimCount = user.rewardClaimCount.plus(BigInt.fromI32(1 as u8))
   user.save()

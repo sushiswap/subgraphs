@@ -49,7 +49,6 @@ type _Subscription @entity {
   user: User!
   incentive: Incentive!
   token: Token!
-  rewardPerLiquidity: BigInt! 
   block: BigInt!
   timestamp: BigInt!
 }

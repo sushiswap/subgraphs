@@ -1,6 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
-import { DEFAULT_REWARD_PER_LIQUIDITY } from '../src/constants/index'
 import { getSubscriptionId } from '../src/functions/index'
 import { onIncentiveCreated, onSubscribe, onUnsubscribe } from '../src/mappings/staking'
 import { createIncentiveCreatedEvent, createSubscribeEvent, createTokenMock, createUnsubscribeEvent } from './mocks'
@@ -45,7 +44,6 @@ test('Subscribe', () => {
   assert.fieldEquals('_Subscription', subscribeId, 'id', subscribeId)
   assert.fieldEquals('_Subscription', subscribeId, 'user', ALICE.toHex())
   assert.fieldEquals('_Subscription', subscribeId, 'incentive', INCENTIVE_ID.toString())
-  assert.fieldEquals('_Subscription', subscribeId, 'rewardPerLiquidity', DEFAULT_REWARD_PER_LIQUIDITY.toString())
   assert.fieldEquals('_Subscription', subscribeId, 'token', TOKEN.toHex())
   assert.fieldEquals('_Subscription', subscribeId, 'block', subscribeEvent.block.number.toString())
   assert.fieldEquals('_Subscription', subscribeId, 'timestamp', subscribeEvent.block.timestamp.toString())
