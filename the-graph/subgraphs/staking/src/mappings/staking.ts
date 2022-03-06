@@ -168,6 +168,8 @@ export function onUnsubscribe(event: Unsubscribe): void {
 export function onClaim(event: Claim): void {
   let user = getOrCreateUser(event.params.user.toHex())
   let incentive = getOrCreateIncentive(event.params.id.toString())
+  incentive = accrueRewards(incentive, event.block.timestamp)
+  incentive.save()
   let subscription = getSubscriptionByIncentiveId(user, incentive.id)
 
   if (subscription !== null) {

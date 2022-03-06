@@ -1,7 +1,6 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 import { Incentive } from '../../generated/schema'
-
-const MAX_UINT112_VALUE = BigInt.fromString('2596148429267413814265248164610048') // 2^112÷2
+import { REWARD_PER_LIQUIDITY_MULTIPLIER } from '../../src/constants'
 
 export function getOrCreateIncentive(id: string): Incentive {
   let incentive = Incentive.load(id)
@@ -18,16 +17,15 @@ export function accrueRewards(incentive: Incentive, timestamp: BigInt): Incentiv
   let maxTime = timestamp < incentive.endTime ? timestamp : incentive.endTime
 
   if (incentive.liquidityStaked > BigInt.fromI32(0) && incentive.lastRewardTime < maxTime) {
-    const totalTime = incentive.endTime.minus(incentive.lastRewardTime)
-    const passedTime = maxTime.minus(incentive.lastRewardTime)
-    const rate = passedTime.div(totalTime)
-    const reward = incentive.rewardRemaining.times(rate)
+    let totalTime = incentive.endTime.minus(incentive.lastRewardTime)
+    let passedTime = maxTime.minus(incentive.lastRewardTime)
+    let reward = incentive.rewardRemaining.times(passedTime).div(totalTime)
+    let rewardPerLiquidity = reward.times(REWARD_PER_LIQUIDITY_MULTIPLIER).div(incentive.liquidityStaked)
 
-    const liqudity = reward.times(MAX_UINT112_VALUE).div(incentive.liquidityStaked)
-    incentive.rewardPerLiquidity = incentive.rewardPerLiquidity.plus(liqudity)
+    incentive.rewardPerLiquidity = incentive.rewardPerLiquidity.plus(rewardPerLiquidity)
     incentive.rewardRemaining = incentive.rewardRemaining.minus(reward)
     incentive.lastRewardTime = maxTime
-  } else if (incentive.liquidityStaked == BigInt.fromI32(0 as i8)) {
+  } else if (incentive.liquidityStaked == BigInt.fromI32(0)) {
     incentive.lastRewardTime = maxTime
   }
   return incentive
