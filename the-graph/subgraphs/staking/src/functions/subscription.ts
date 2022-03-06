@@ -22,7 +22,7 @@ export function getSubscriptionId(userId: string, count: string): string {
 }
 
 export function getSubscriptionByIncentiveId(user: User, incentiveId: string): _Subscription | null {
-  for (let i = 1; i <= user.subscriptionCount.toI32(); i++) {
+  for (let i = 1; i <= user.totalSubscriptionCount.toI32(); i++) {
     let subscription = getSubscription(user.id, i.toString())
     if (subscription !== null && subscription.incentive == incentiveId) {
       return subscription

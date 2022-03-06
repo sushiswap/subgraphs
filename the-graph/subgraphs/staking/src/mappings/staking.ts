@@ -90,7 +90,7 @@ export function onStake(event: Stake): void {
   stake.timestamp = event.block.timestamp
   stake.save()
 
-  for (let i = 1; i <= user.subscriptionCount.toI32(); i++) {
+  for (let i = 1; i <= user.totalSubscriptionCount.toI32(); i++) {
     let subscription = getSubscription(user.id, i.toString())
 
     if (subscription !== null) {
@@ -114,7 +114,7 @@ export function onUnstake(event: Unstake): void {
   stake.timestamp = event.block.timestamp
   stake.save()
 
-  for (let i = 1; i <= user.subscriptionCount.toI32(); i++) {
+  for (let i = 1; i <= user.totalSubscriptionCount.toI32(); i++) {
     let subscription = getSubscription(user.id, i.toString())
 
     if (subscription !== null) {
@@ -137,10 +137,10 @@ export function onSubscribe(event: Subscribe): void {
   incentive.liquidityStaked = incentive.liquidityStaked.plus(stake.liquidity)
   incentive.save()
 
-  user.subscriptionCount = user.subscriptionCount.plus(BigInt.fromU32(1 as u8))
+  user.totalSubscriptionCount = user.totalSubscriptionCount.plus(BigInt.fromU32(1 as u8))
   user.save()
 
-  let subscription = getOrCreateSubscription(user.id, user.subscriptionCount.toString())
+  let subscription = getOrCreateSubscription(user.id, user.totalSubscriptionCount.toString())
 
   subscription.user = user.id
   subscription.incentive = event.params.id.toString()

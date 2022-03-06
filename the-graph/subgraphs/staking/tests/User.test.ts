@@ -37,12 +37,12 @@ function cleanup(): void {
   clearStore()
 }
 
-test('Subscribe increases the subscriptionCount', () => {
+test('Subscribe increases the totalSubscriptionCount', () => {
   setup()
   let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
   onSubscribe(subscribeEvent)
 
-  assert.fieldEquals('User', ALICE.toHex(), 'subscriptionCount', '1')
+  assert.fieldEquals('User', ALICE.toHex(), 'totalSubscriptionCount', '1')
 
   cleanup()
 })
