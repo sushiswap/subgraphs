@@ -19,17 +19,9 @@ export function createIncentiveCreatedEvent(
   startTime: BigInt,
   endTime: BigInt
 ): IncentiveCreatedEvent {
-  let mockEvent = newMockEvent()
-  let event = new IncentiveCreatedEvent(
-    mockEvent.address,
-    mockEvent.logIndex,
-    mockEvent.transactionLogIndex,
-    mockEvent.logType,
-    mockEvent.block,
-    mockEvent.transaction,
-    mockEvent.parameters
-  )
-
+  let event = changetype<IncentiveCreatedEvent>(newMockEvent())
+  event.parameters = new Array()
+  
   event.parameters = new Array()
   let tokenParam = new ethereum.EventParam('token', ethereum.Value.fromAddress(token))
   let rewardTokenParam = new ethereum.EventParam('rewardToken', ethereum.Value.fromAddress(rewardToken))
@@ -55,18 +47,9 @@ export function createIncentiveUpdatedEvent(
   startTime: BigInt,
   endTime: BigInt
 ): IncentiveUpdatedEvent {
-  let mockEvent = newMockEvent()
-  let event = new IncentiveUpdatedEvent(
-    mockEvent.address,
-    mockEvent.logIndex,
-    mockEvent.transactionLogIndex,
-    mockEvent.logType,
-    mockEvent.block,
-    mockEvent.transaction,
-    mockEvent.parameters
-  )
-
+  let event = changetype<IncentiveUpdatedEvent>(newMockEvent())
   event.parameters = new Array()
+  
   let idParam = new ethereum.EventParam('id', ethereum.Value.fromUnsignedBigInt(id))
   let amountParam = new ethereum.EventParam('amount', ethereum.Value.fromUnsignedBigInt(amount))
   let startTimeParam = new ethereum.EventParam('startTime', ethereum.Value.fromUnsignedBigInt(startTime))
@@ -80,18 +63,9 @@ export function createIncentiveUpdatedEvent(
 }
 
 export function createStakeEvent(token: Address, user: Address, amount: BigInt): StakeEvent {
-  let mockEvent = newMockEvent()
-  let event = new StakeEvent(
-    mockEvent.address,
-    mockEvent.logIndex,
-    mockEvent.transactionLogIndex,
-    mockEvent.logType,
-    mockEvent.block,
-    mockEvent.transaction,
-    mockEvent.parameters
-  )
-
+  let event = changetype<StakeEvent>(newMockEvent())
   event.parameters = new Array()
+
   let tokenParam = new ethereum.EventParam('token', ethereum.Value.fromAddress(token))
   let userParam = new ethereum.EventParam('user', ethereum.Value.fromAddress(user))
   let amountParam = new ethereum.EventParam('amount', ethereum.Value.fromUnsignedBigInt(amount))
@@ -103,18 +77,9 @@ export function createStakeEvent(token: Address, user: Address, amount: BigInt):
 }
 
 export function createUnstakeEvent(token: Address, user: Address, amount: BigInt): UnstakeEvent {
-  let mockEvent = newMockEvent()
-  let event = new UnstakeEvent(
-    mockEvent.address,
-    mockEvent.logIndex,
-    mockEvent.transactionLogIndex,
-    mockEvent.logType,
-    mockEvent.block,
-    mockEvent.transaction,
-    mockEvent.parameters
-  )
-
+  let event = changetype<UnstakeEvent>(newMockEvent())
   event.parameters = new Array()
+
   let tokenParam = new ethereum.EventParam('token', ethereum.Value.fromAddress(token))
   let userParam = new ethereum.EventParam('user', ethereum.Value.fromAddress(user))
   let amountParam = new ethereum.EventParam('amount', ethereum.Value.fromUnsignedBigInt(amount))
@@ -126,18 +91,9 @@ export function createUnstakeEvent(token: Address, user: Address, amount: BigInt
 }
 
 export function createSubscribeEvent(id: BigInt, user: Address): SubscribeEvent {
-  let mockEvent = newMockEvent()
-  let event = new SubscribeEvent(
-    mockEvent.address,
-    mockEvent.logIndex,
-    mockEvent.transactionLogIndex,
-    mockEvent.logType,
-    mockEvent.block,
-    mockEvent.transaction,
-    mockEvent.parameters
-  )
-
+  let event = changetype<SubscribeEvent>(newMockEvent())
   event.parameters = new Array()
+
   let idParam = new ethereum.EventParam('id', ethereum.Value.fromUnsignedBigInt(id))
   let userParam = new ethereum.EventParam('user', ethereum.Value.fromAddress(user))
   event.parameters.push(idParam)
@@ -147,18 +103,9 @@ export function createSubscribeEvent(id: BigInt, user: Address): SubscribeEvent 
 }
 
 export function createUnsubscribeEvent(id: BigInt, user: Address): UnSubscribeEvent {
-  let mockEvent = newMockEvent()
-  let event = new UnSubscribeEvent(
-    mockEvent.address,
-    mockEvent.logIndex,
-    mockEvent.transactionLogIndex,
-    mockEvent.logType,
-    mockEvent.block,
-    mockEvent.transaction,
-    mockEvent.parameters
-  )
-
+  let event = changetype<UnSubscribeEvent>(newMockEvent())
   event.parameters = new Array()
+
   let idParam = new ethereum.EventParam('id', ethereum.Value.fromUnsignedBigInt(id))
   let userParam = new ethereum.EventParam('user', ethereum.Value.fromAddress(user))
   event.parameters.push(idParam)
@@ -168,18 +115,9 @@ export function createUnsubscribeEvent(id: BigInt, user: Address): UnSubscribeEv
 }
 
 export function createClaimEvent(id: BigInt, user: Address, amount: BigInt): ClaimEvent {
-  let mockEvent = newMockEvent()
-  let event = new ClaimEvent(
-    mockEvent.address,
-    mockEvent.logIndex,
-    mockEvent.transactionLogIndex,
-    mockEvent.logType,
-    mockEvent.block,
-    mockEvent.transaction,
-    mockEvent.parameters
-  )
-
+  let event = changetype<ClaimEvent>(newMockEvent())
   event.parameters = new Array()
+
   let idParam = new ethereum.EventParam('id', ethereum.Value.fromUnsignedBigInt(id))
   let userParam = new ethereum.EventParam('user', ethereum.Value.fromAddress(user))
   let amountParam = new ethereum.EventParam('amount', ethereum.Value.fromUnsignedBigInt(amount))
