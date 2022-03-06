@@ -34,12 +34,13 @@ type Incentive @entity {
   token: Token!
   rewardToken: Token!
   rewardRemaining: BigInt!
-  startTime: BigInt!
   endTime: BigInt!
   rewardPerLiquidity: BigInt!
   lastRewardTime: BigInt!
   liquidityStaked: BigInt!
   subscribers: [_Subscription!] @derivedFrom(field: "incentive")
+  block: BigInt!
+  timestamp: BigInt!
 }
 
 type _Subscription @entity {

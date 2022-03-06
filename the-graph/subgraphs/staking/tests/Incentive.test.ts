@@ -60,6 +60,8 @@ test('Create incentive', () => {
   )
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', START_TIME.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'block', incentiveCreatedEvent.block.number.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'timestamp', incentiveCreatedEvent.block.timestamp.toString())
 
   cleanup()
 })
