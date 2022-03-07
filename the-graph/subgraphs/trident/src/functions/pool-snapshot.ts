@@ -17,9 +17,15 @@ export function updatePoolHourSnapshot(timestamp: BigInt, poolKpi: ConstantProdu
   snapshot.liquidity = poolKpi.liquidity
   snapshot.liquidityNative = poolKpi.liquidityNative
   snapshot.liquidityUSD = poolKpi.liquidityUSD
-  snapshot.liquidity = poolKpi.volume
+
+  snapshot.volume = poolKpi.volume
   snapshot.volumeNative = poolKpi.volumeNative
   snapshot.volumeUSD = poolKpi.volumeUSD
+
+  snapshot.fees = poolKpi.fees
+  snapshot.feesNative = poolKpi.feesNative
+  snapshot.feesUSD = poolKpi.feesUSD
+
   snapshot.transactionCount = snapshot.transactionCount.plus(BigInt.fromI32(1))
   snapshot.save()
 }
@@ -37,9 +43,15 @@ export function updatePoolDaySnapshot(timestamp: BigInt, poolKpi: ConstantProduc
   snapshot.liquidity = poolKpi.liquidity
   snapshot.liquidityNative = poolKpi.liquidityNative
   snapshot.liquidityUSD = poolKpi.liquidityUSD
-  snapshot.liquidity = poolKpi.volume
+
+  snapshot.volume = poolKpi.volume
   snapshot.volumeNative = poolKpi.volumeNative
   snapshot.volumeUSD = poolKpi.volumeUSD
+
+  snapshot.fees = poolKpi.fees
+  snapshot.feesNative = poolKpi.feesNative
+  snapshot.feesUSD = poolKpi.feesUSD
+
   snapshot.transactionCount = snapshot.transactionCount.plus(BigInt.fromI32(1))
   snapshot.save()
 }
