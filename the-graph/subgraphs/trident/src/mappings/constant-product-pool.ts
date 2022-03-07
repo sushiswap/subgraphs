@@ -332,8 +332,8 @@ export function onSwap(event: SwapEvent): void {
   const volumeNative = amountIn.times(tokenInPrice.derivedNative).plus(amountOut.times(tokenOutPrice.derivedNative))
   const volumeUSD = amountIn.times(tokenInPrice.derivedUSD).plus(amountOut.times(tokenOutPrice.derivedUSD))
 
-  const feesNative = volumeNative.times(pool.swapFee.toBigDecimal()).div(BigDecimal.fromString('10000'))
-  const feesUSD = volumeUSD.times(pool.swapFee.toBigDecimal()).div(BigDecimal.fromString('10000'))
+  const feesNative = volumeNative.times(pool.swapFee.divDecimal(BigDecimal.fromString('10000')))
+  const feesUSD = volumeUSD.times(pool.swapFee.divDecimal(BigDecimal.fromString('10000')))
 
   poolKpi.volumeNative = poolKpi.volumeNative.plus(volumeNative)
   poolKpi.volumeUSD = poolKpi.volumeUSD.plus(volumeUSD)
