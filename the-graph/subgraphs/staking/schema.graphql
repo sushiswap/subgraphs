@@ -39,7 +39,7 @@ type Incentive @entity {
   rewardPerLiquidity: BigInt!
   lastRewardTime: BigInt!
   liquidityStaked: BigInt!
-  subscribers: [_Subscription!] @derivedFrom(field: "incentive")
+  subscriptions: [_Subscription!] @derivedFrom(field: "incentive")
   block: BigInt!
   timestamp: BigInt!
 }
