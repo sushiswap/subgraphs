@@ -1,6 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
-import { DEFAULT_REWARD_PER_LIQUIDITY } from '../src/constants/index'
 import {
   onIncentiveCreated,
   onIncentiveUpdated,
@@ -52,12 +51,6 @@ test('Create incentive', () => {
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardToken', REWARD_TOKEN.toHex())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', INITIAL_AMOUNT.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'endTime', END_TIME.toString())
-  assert.fieldEquals(
-    'Incentive',
-    INCENTIVE_ID.toString(),
-    'rewardPerLiquidity',
-    DEFAULT_REWARD_PER_LIQUIDITY.toString()
-  )
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', START_TIME.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'block', incentiveCreatedEvent.block.number.toString())
@@ -84,12 +77,6 @@ test('Updating incentive with positive amount increases rewardRemaining', () => 
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardToken', REWARD_TOKEN.toHex())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', expectedRewardRemaining)
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'endTime', newEndTime.toString())
-  assert.fieldEquals(
-    'Incentive',
-    INCENTIVE_ID.toString(),
-    'rewardPerLiquidity',
-    DEFAULT_REWARD_PER_LIQUIDITY.toString()
-  )
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', newStartTime.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
 
@@ -291,12 +278,6 @@ test('Stake affects incentives accrue rewards', () => {
   onStake(stakeEvent)
 
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '1000000')
-  assert.fieldEquals(
-    'Incentive',
-    INCENTIVE_ID.toString(),
-    'rewardPerLiquidity',
-    DEFAULT_REWARD_PER_LIQUIDITY.toString()
-  )
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', endTime.toString())
 
   cleanup()
@@ -333,12 +314,6 @@ test('Unstake affects incentives accrue rewards', () => {
   onUnstake(unstakeEvent)
 
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '1000000')
-  assert.fieldEquals(
-    'Incentive',
-    INCENTIVE_ID.toString(),
-    'rewardPerLiquidity',
-    DEFAULT_REWARD_PER_LIQUIDITY.toString()
-  )
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', endTime.toString())
 
   cleanup()
@@ -370,24 +345,12 @@ test('Subscribe affects incentives accrue rewards', () => {
   onSubscribe(subscribeEvent)
 
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '1000000')
-  assert.fieldEquals(
-    'Incentive',
-    INCENTIVE_ID.toString(),
-    'rewardPerLiquidity',
-    DEFAULT_REWARD_PER_LIQUIDITY.toString()
-  )
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', endTime.toString())
 
   let unsubscribeEvent = createUnsubscribeEvent(INCENTIVE_ID, ALICE)
   onUnsubscribe(unsubscribeEvent)
 
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '1000000')
-  assert.fieldEquals(
-    'Incentive',
-    INCENTIVE_ID.toString(),
-    'rewardPerLiquidity',
-    DEFAULT_REWARD_PER_LIQUIDITY.toString()
-  )
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', endTime.toString())
 
   cleanup()

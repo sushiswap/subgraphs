@@ -20,9 +20,7 @@ export function accrueRewards(incentive: Incentive, timestamp: BigInt): Incentiv
     let totalTime = incentive.endTime.minus(incentive.lastRewardTime)
     let passedTime = maxTime.minus(incentive.lastRewardTime)
     let reward = incentive.rewardRemaining.times(passedTime).div(totalTime)
-    let rewardPerLiquidity = reward.times(REWARD_PER_LIQUIDITY_MULTIPLIER).div(incentive.liquidityStaked)
 
-    incentive.rewardPerLiquidity = incentive.rewardPerLiquidity.plus(rewardPerLiquidity)
     incentive.rewardRemaining = incentive.rewardRemaining.minus(reward)
     incentive.lastRewardTime = maxTime
   } else if (incentive.liquidityStaked == BigInt.fromI32(0)) {

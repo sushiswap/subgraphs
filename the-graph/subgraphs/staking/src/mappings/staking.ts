@@ -9,7 +9,6 @@ import {
   Unstake,
   Unsubscribe,
 } from '../../generated/Staking/Staking'
-import { DEFAULT_REWARD_PER_LIQUIDITY } from '../../src/constants'
 import {
   accrueRewards,
   getOrCreateIncentive,
@@ -33,7 +32,6 @@ export function onIncentiveCreated(event: IncentiveCreated): void {
   incentive.rewardToken = rewardToken.id
   incentive.lastRewardTime = event.params.startTime
   incentive.endTime = event.params.endTime
-  incentive.rewardPerLiquidity = DEFAULT_REWARD_PER_LIQUIDITY
   incentive.rewardRemaining = event.params.amount
   incentive.block = event.block.number
   incentive.timestamp = event.block.timestamp
