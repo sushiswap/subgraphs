@@ -1,8 +1,9 @@
+import { ConstantProductPoolAsset, Token, TokenPrice } from '../../generated/schema'
+import { NATIVE_ADDRESS, STABLE_POOL_ADDRESSES, STABLE_TOKEN_ADDRESSES } from '../constants/addresses'
+import { getConstantProductPoolAsset, getConstantProductPoolKpi, getOrCreateWhitelistedPool } from '../functions'
+
 // Pricing module...
 import { BigDecimal } from '@graphprotocol/graph-ts'
-import { NATIVE_ADDRESS, STABLE_TOKEN_ADDRESSES, STABLE_POOL_ADDRESSES } from '../constants/addresses'
-import { ConstantProductPoolAsset, Token, TokenPrice } from '../../generated/schema'
-import { getConstantProductPoolAsset, getOrCreateWhitelistedPool, getConstantProductPoolKpi } from '../functions'
 
 export function createTokenPrice(token: string): TokenPrice {
   const tokenPrice = new TokenPrice(token)
@@ -31,7 +32,7 @@ export function getNativeTokenPrice(): TokenPrice {
 }
 
 // Minimum liqudiity threshold in native currency
-const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('0.1')
+const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('0.000001')
 
 export function getNativePriceInUSD(): BigDecimal {
   // 1. Generate list of stable pairs
