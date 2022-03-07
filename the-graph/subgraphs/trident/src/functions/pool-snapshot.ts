@@ -1,9 +1,9 @@
-import { BigInt } from '@graphprotocol/graph-ts'
 import { ConstantProductPoolKpi, PoolDaySnapshot, PoolHourSnapshot } from '../../generated/schema'
 import { DAY_IN_SECONDS, HOUR_IN_SECONDS } from '../constants'
 
-export function updatePoolHourSnapshot(timestamp: BigInt, poolKpi: ConstantProductPoolKpi): void {
+import { BigInt } from '@graphprotocol/graph-ts'
 
+export function updatePoolHourSnapshot(timestamp: BigInt, poolKpi: ConstantProductPoolKpi): void {
   let id = getPoolHourSnapshotId(poolKpi.id, timestamp)
 
   let snapshot = PoolHourSnapshot.load(id)
@@ -17,6 +17,9 @@ export function updatePoolHourSnapshot(timestamp: BigInt, poolKpi: ConstantProdu
   snapshot.liquidity = poolKpi.liquidity
   snapshot.liquidityNative = poolKpi.liquidityNative
   snapshot.liquidityUSD = poolKpi.liquidityUSD
+  snapshot.liquidity = poolKpi.volume
+  snapshot.volumeNative = poolKpi.volumeNative
+  snapshot.volumeUSD = poolKpi.volumeUSD
   snapshot.transactionCount = snapshot.transactionCount.plus(BigInt.fromI32(1))
   snapshot.save()
 }
@@ -34,6 +37,9 @@ export function updatePoolDaySnapshot(timestamp: BigInt, poolKpi: ConstantProduc
   snapshot.liquidity = poolKpi.liquidity
   snapshot.liquidityNative = poolKpi.liquidityNative
   snapshot.liquidityUSD = poolKpi.liquidityUSD
+  snapshot.liquidity = poolKpi.volume
+  snapshot.volumeNative = poolKpi.volumeNative
+  snapshot.volumeUSD = poolKpi.volumeUSD
   snapshot.transactionCount = snapshot.transactionCount.plus(BigInt.fromI32(1))
   snapshot.save()
 }
