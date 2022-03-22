@@ -1,7 +1,7 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 import { Transaction } from '../../../generated/schema'
 import { Transfer as TransferEvent } from '../../../generated/Sushi/Sushi'
-import { ADDRESS_ZERO, BURN, MINT, TRANSER } from '../constants'
+import { ADDRESS_ZERO, BURN, MINT, TRANSFER } from '../constants'
 import { getOrCreateSushi } from './sushi'
 
 export function createTransaction(event: TransferEvent): Transaction {
@@ -23,7 +23,7 @@ export function createTransaction(event: TransferEvent): Transaction {
     transaction.type = MINT
     sushi.totalSupply = sushi.totalSupply.plus(event.params.value)
   } else {
-    transaction.type = TRANSER
+    transaction.type = TRANSFER
   }
 
   sushi.save()
