@@ -1,6 +1,8 @@
-import { Transfer as TransferEvent } from "../../../generated/Sushi/Sushi"
-import { User } from "../../../generated/schema"
-import { UserType } from "./user-type"
+import { Transfer as TransferEvent } from '../../../generated/Sushi/Sushi'
+import { User } from '../../../generated/schema'
+import { UserType } from '../enums'
+import { getOrCreateSushi } from './sushi'
+import { BigInt } from '@graphprotocol/graph-ts'
 
 export function createUser(id: string, event: TransferEvent): User {
   const user = new User(id)
@@ -9,6 +11,10 @@ export function createUser(id: string, event: TransferEvent): User {
   user.modifiedAtBlock = event.block.number
   user.modifiedAtTimestamp = event.block.timestamp
   user.save()
+
+  const sushi = getOrCreateSushi()
+  sushi.userCount = sushi.userCount.plus(BigInt.fromU32(1))
+  sushi.save()
   return user
 }
 
