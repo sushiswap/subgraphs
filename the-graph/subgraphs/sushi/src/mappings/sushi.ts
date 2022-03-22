@@ -1,14 +1,12 @@
 import { Transfer as TransferEvent } from '../../generated/Sushi/Sushi'
-import { createTransaction } from './functions/transaction'
-import { getOrCreateUser } from './functions/user'
 import { UserType } from './enums'
-import { getOrCreateSushi } from './functions/sushi'
-import { ADDRESS_ZERO } from './constants'
+import { getOrCreateTransaction } from './functions/transaction'
+import { getOrCreateUser } from './functions/user'
 
 export function onTransfer(event: TransferEvent): void {
   let sender = getOrCreateUser(UserType.SENDER, event)
   let reciever = getOrCreateUser(UserType.RECIEVER, event)
-  createTransaction(event)
+  getOrCreateTransaction(event)
 
   sender.balance = sender.balance.minus(event.params.value)
   sender.modifiedAtBlock = event.block.number
