@@ -4,10 +4,10 @@ import { onTransfer } from '../src/mappings/sushi'
 import { createTransferEvent } from './mocks'
 
 test('Transfer', () => {
-  const alice = Address.fromString('0x00000000000000000000000000000000000a71ce')
-  const bob = Address.fromString('0x0000000000000000000000000000000000000b0b')
+  const sender = Address.fromString('0x00000000000000000000000000000000000a71ce')
+  const reciever = Address.fromString('0x0000000000000000000000000000000000000b0b')
   const amount = BigInt.fromString('1337')
-  let transferEvent = createTransferEvent(alice, bob, amount)
+  let transferEvent = createTransferEvent(sender, reciever, amount)
 
   onTransfer(transferEvent)
   const transactionId = transferEvent.transaction.hash.toHex()
