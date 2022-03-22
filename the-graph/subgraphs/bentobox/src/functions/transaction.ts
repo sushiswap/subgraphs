@@ -1,8 +1,9 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { getOrCreateBentoBox } from '.'
-import { LogDeposit, LogTransfer, LogWithdraw } from '../../generated/BentoBox/BentoBox'
-import { Transaction } from '../../generated/schema'
 import { DEPOSIT, TRANSFER, WITHDRAW } from '../../src/constants'
+import { LogDeposit, LogTransfer, LogWithdraw } from '../../generated/BentoBox/BentoBox'
+
+import { Transaction } from '../../generated/schema'
+import { getOrCreateBentoBox } from '.'
 
 export function createDepositTransaction(event: LogDeposit): Transaction {
   const transaction = new Transaction(getTransactionId(event))
@@ -19,8 +20,8 @@ export function createDepositTransaction(event: LogDeposit): Transaction {
   transaction.timestamp = event.block.timestamp
   transaction.save()
 
-  increaseBentoBoxTransactionCount(event.address)
-  
+  increaseBentoBoxTransactionCount()
+
   return transaction
 }
 
@@ -39,7 +40,7 @@ export function createWithdrawTransaction(event: LogWithdraw): Transaction {
   transaction.timestamp = event.block.timestamp
   transaction.save()
 
-  increaseBentoBoxTransactionCount(event.address)
+  increaseBentoBoxTransactionCount()
 
   return transaction
 }
@@ -58,13 +59,13 @@ export function createTransferTransaction(event: LogTransfer): Transaction {
   transaction.timestamp = event.block.timestamp
   transaction.save()
 
-  increaseBentoBoxTransactionCount(event.address)
+  increaseBentoBoxTransactionCount()
 
   return transaction
 }
 
-function increaseBentoBoxTransactionCount(address: Address): void {
-  const bentoBox = getOrCreateBentoBox(address)
+function increaseBentoBoxTransactionCount(): void {
+  const bentoBox = getOrCreateBentoBox()
   bentoBox.transactionCount = bentoBox.transactionCount.plus(BigInt.fromU32(1 as u8))
   bentoBox.save()
 }

@@ -1,11 +1,11 @@
 import { Address } from '@graphprotocol/graph-ts'
-import { BentoBox } from '../../generated/schema'
 import { BENTOBOX_ADDRESS } from '../constants'
+import { BentoBox } from '../../generated/schema'
 
 export function createBentoBox(id: Address = BENTOBOX_ADDRESS): BentoBox {
   const bentoBox = new BentoBox(id.toHex())
   bentoBox.save()
-  return bentoBox as BentoBox
+  return bentoBox
 }
 
 export function getBentoBox(id: Address = BENTOBOX_ADDRESS): BentoBox {
@@ -19,5 +19,5 @@ export function getOrCreateBentoBox(id: Address = BENTOBOX_ADDRESS): BentoBox {
     bentoBox = createBentoBox(id)
   }
 
-  return bentoBox as BentoBox
+  return bentoBox
 }

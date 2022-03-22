@@ -1,4 +1,5 @@
 import { BigInt, log } from '@graphprotocol/graph-ts'
+import { Clone, Protocol } from '../../generated/schema'
 import {
   LogDeploy,
   LogDeposit,
@@ -8,13 +9,18 @@ import {
   LogStrategyDivest,
   LogStrategyInvest,
   LogStrategyLoss,
-  LogStrategyProfit, LogStrategySet,
+  LogStrategyProfit,
+  LogStrategySet,
   LogStrategyTargetPercentage,
   LogTransfer,
   LogWhiteListMasterContract,
-  LogWithdraw
+  LogWithdraw,
 } from '../../generated/BentoBox/BentoBox'
-import { Clone, Protocol } from '../../generated/schema'
+import {
+  createDepositTransaction,
+  createTransferTransaction,
+  createWithdrawTransaction,
+} from '../functions/transaction'
 import {
   createFlashLoan,
   createLossStrategyHarvest,
@@ -26,10 +32,10 @@ import {
   getOrCreateToken,
   getOrCreateUser,
   getOrCreateUserToken,
-  toDecimal
+  toDecimal,
 } from '../functions'
+
 import { getOrCreateMasterContract } from '../functions/master-contract'
-import { createDepositTransaction, createTransferTransaction, createWithdrawTransaction } from '../functions/transaction'
 
 const WARNING_MSG_STRATEGY_SET =
   '{}: LogStrategySet should always trigger before any other strategy events - Strategy save is ignored.'
@@ -46,8 +52,8 @@ export function onLogDeposit(event: LogDeposit): void {
   rebase.elastic = rebase.elastic.plus(amount)
   rebase.save()
 
-  getOrCreateUser(event.params.from, event.address)
-  const to = getOrCreateUser(event.params.to, event.address)
+  getOrCreateUser(event.params.from)
+  const to = getOrCreateUser(event.params.to)
 
   const userToken = getOrCreateUserToken(to.id, token)
   userToken.share = userToken.share.plus(share)
@@ -68,8 +74,8 @@ export function onLogWithdraw(event: LogWithdraw): void {
   rebase.elastic = rebase.elastic.minus(amount)
   rebase.save()
 
-  const from = getOrCreateUser(event.params.from, event.address)
-  getOrCreateUser(event.params.to, event.address)
+  const from = getOrCreateUser(event.params.from)
+  getOrCreateUser(event.params.to)
 
   const userToken = getOrCreateUserToken(from.id, token)
   userToken.share = userToken.share.minus(share)
@@ -79,8 +85,8 @@ export function onLogWithdraw(event: LogWithdraw): void {
 }
 
 export function onLogTransfer(event: LogTransfer): void {
-  const from = getOrCreateUser(event.params.from, event.address)
-  const to = getOrCreateUser(event.params.to, event.address)
+  const from = getOrCreateUser(event.params.from)
+  const to = getOrCreateUser(event.params.to)
   const token = getOrCreateToken(event.params.token.toHex())
 
   const share = toDecimal(event.params.share, token.decimals)
@@ -108,7 +114,7 @@ export function onLogFlashLoan(event: LogFlashLoan): void {
 
   createFlashLoan(event, token.decimals)
 
-  const bentoBox = getOrCreateBentoBox(event.address)
+  const bentoBox = getOrCreateBentoBox()
   bentoBox.flashloanCount = bentoBox.flashloanCount.plus(BigInt.fromU32(1 as u8))
   bentoBox.save()
 }
@@ -205,20 +211,20 @@ export function onLogWhiteListMasterContract(event: LogWhiteListMasterContract):
 }
 
 export function onLogSetMasterContractApproval(event: LogSetMasterContractApproval): void {
-  getOrCreateUser(event.params.user, event.address)
+  getOrCreateUser(event.params.user)
 
   const masterContractApproval = getOrCreateMasterContractApproval(event)
   masterContractApproval.masterContract = event.params.masterContract.toHex()
   masterContractApproval.approved = event.params.approved
   masterContractApproval.save()
 
-  const bentoBox = getOrCreateBentoBox(event.params.masterContract)
+  const bentoBox = getOrCreateBentoBox()
   bentoBox.masterContractCount = bentoBox.masterContractCount.plus(BigInt.fromU32(1 as u8))
   bentoBox.save()
 }
 
 export function onLogRegisterProtocol(event: LogRegisterProtocol): void {
-  const bentoBox = getOrCreateBentoBox(event.address)
+  const bentoBox = getOrCreateBentoBox()
 
   const registeredProtocol = new Protocol(event.params.protocol.toHex())
   registeredProtocol.bentoBox = bentoBox.id
@@ -252,5 +258,3 @@ export function onLogStrategySet(event: LogStrategySet): void {
 
   getOrCreateStrategy(event.params.strategy.toHex(), token.id, event.block)
 }
-
-
