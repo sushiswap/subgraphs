@@ -47,4 +47,8 @@ module.exports = {
       startBlock: '23647588',
     },
   },
+  sushi: {
+      address: '0x0769fd68dFb93167989C6f7254cd0D766Fb2841F',
+      startBlock: 23647594,
+    },
 }
