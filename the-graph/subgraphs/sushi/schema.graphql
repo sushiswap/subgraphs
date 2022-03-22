@@ -1,4 +1,11 @@
 
+type Sushi @entity {
+  id: ID!
+  userCount: BigInt!
+  transactionCount: BigInt!
+  totalSupply: BigInt!
+}
+
 type Transaction @entity {
   id: ID!
   from: [UserTransaction!]! @derivedFrom(field: "transaction")
