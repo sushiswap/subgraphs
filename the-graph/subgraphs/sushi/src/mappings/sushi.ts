@@ -1,20 +1,20 @@
-import { ethereum } from '@graphprotocol/graph-ts'
+import { Transfer as TransferEvent } from '../../generated/ERC20/ERC20'
+import { getOrCreateTransaction } from './functions/transaction'
+import { getOrCreateUser } from './functions/user'
+import { UserType } from './functions/user-type'
 
-export function onTransfer(block: ethereum.Block): void {
-  // let id = block.hash.toHex()
-  // let blockEntity = new Block(id)
-  // blockEntity.number = block.number
-  // blockEntity.timestamp = block.timestamp
-  // blockEntity.parentHash = block.parentHash.toHex()
-  // blockEntity.author = block.author.toHex()
-  // blockEntity.difficulty = block.difficulty
-  // blockEntity.totalDifficulty = block.totalDifficulty
-  // blockEntity.gasUsed = block.gasUsed
-  // blockEntity.gasLimit = block.gasLimit
-  // blockEntity.receiptsRoot = block.receiptsRoot.toHex()
-  // blockEntity.transactionsRoot = block.transactionsRoot.toHex()
-  // blockEntity.stateRoot = block.stateRoot.toHex()
-  // blockEntity.size = block.size
-  // blockEntity.unclesHash = block.unclesHash.toHex()
-  // blockEntity.save()
+export function onTransfer(event: TransferEvent): void {
+  let sender = getOrCreateUser(UserType.SENDER, event)
+  let reciever = getOrCreateUser(UserType.RECIEVER, event)
+  getOrCreateTransaction(event)
+
+  sender.balance = sender.balance.minus(event.params.value)
+  sender.modifiedBlock = event.block.number
+  sender.modifiedTimestamp = event.block.timestamp
+  sender.save()
+
+  reciever.balance = reciever.balance.plus(event.params.value)
+  reciever.modifiedBlock = event.block.number
+  reciever.modifiedTimestamp = event.block.timestamp
+  reciever.save()
 }
