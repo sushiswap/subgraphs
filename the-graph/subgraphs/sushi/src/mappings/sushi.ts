@@ -1,5 +1,4 @@
 import { ethereum } from '@graphprotocol/graph-ts'
-import { Block } from '../../generated/schema'
 
 export function onTransfer(block: ethereum.Block): void {
   // let id = block.hash.toHex()
