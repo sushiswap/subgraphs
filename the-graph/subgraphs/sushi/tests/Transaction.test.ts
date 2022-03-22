@@ -12,6 +12,7 @@ test('Transfer', () => {
   onTransfer(transferEvent)
   const transactionId = transferEvent.transaction.hash.toHex()
   assert.fieldEquals('Transaction', transactionId, 'id', transactionId)
+  assert.fieldEquals('Transaction', transactionId, 'amount', transferEvent.params.value.toString())
   assert.fieldEquals('Transaction', transactionId, 'gasUsed', transferEvent.block.gasUsed.toString())
   assert.fieldEquals('Transaction', transactionId, 'gasLimit', transferEvent.transaction.gasLimit.toString())
   assert.fieldEquals('Transaction', transactionId, 'gasPrice', transferEvent.transaction.gasPrice.toString())

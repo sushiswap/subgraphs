@@ -1,4 +1,4 @@
-import { Transfer as TransferEvent } from "../../../generated/ERC20/ERC20"
+import { Transfer as TransferEvent } from "../../../generated/Sushi/Sushi"
 import { User } from "../../../generated/schema"
 import { UserType } from "./user-type"
 

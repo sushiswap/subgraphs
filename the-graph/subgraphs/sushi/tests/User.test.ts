@@ -1,7 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { test, assert} from 'matchstick-as/assembly/index'
-import { User } from '../generated/schema'
-import { createUser } from '../src/mappings/functions/user'
+import { assert, test } from 'matchstick-as/assembly/index'
 import { onTransfer } from '../src/mappings/sushi'
 import { createTransferEvent } from './mocks'
 

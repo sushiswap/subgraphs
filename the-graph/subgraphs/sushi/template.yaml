@@ -5,14 +5,14 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: ERC20
+    name: Sushi
     network: {{ network }}
     source:
       address: '{{ sushi.address }}'
       startBlock: {{ sushi.startBlock }}
-      abi: ERC20
+      abi: Sushi
     mapping:
-      kind: ethereun/events
+      kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/mappings/sushi.ts
@@ -20,7 +20,8 @@ dataSources:
         - Transaction
         - User
       abis:
-        - name: ERC20
-          file: ./abis/ERC20.json
-      blockHandlers:
-        - handler: onTransfer
+        - name: Sushi
+          file: ./abis/sushi.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: onTransfer

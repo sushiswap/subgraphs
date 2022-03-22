@@ -1,4 +1,4 @@
-import { Transfer as TransferEvent } from '../../generated/ERC20/ERC20'
+import { Transfer as TransferEvent } from '../../generated/Sushi/Sushi'
 import { getOrCreateTransaction } from './functions/transaction'
 import { getOrCreateUser } from './functions/user'
 import { UserType } from './functions/user-type'

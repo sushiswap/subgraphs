@@ -3,6 +3,7 @@ type Transaction @entity {
   id: ID!
   from: [UserTransaction!]! @derivedFrom(field: "transaction")
   to: [UserTransaction!]! @derivedFrom(field: "transaction")
+  amount: BigInt!
   gasUsed: BigInt!
   gasLimit: BigInt!
   gasPrice: BigInt!
