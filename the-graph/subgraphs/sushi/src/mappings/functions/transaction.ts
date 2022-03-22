@@ -9,6 +9,7 @@ export function getOrCreateTransaction(event: ethereum.Event): Transaction {
     transaction = new Transaction(event.transaction.hash.toHex())
   }
 
+  transaction.gasUsed = event.block.gasUsed
   transaction.gasLimit = event.transaction.gasLimit
   transaction.gasPrice = event.transaction.gasPrice
   transaction.block = event.block.number
