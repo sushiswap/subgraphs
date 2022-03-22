@@ -4,10 +4,10 @@ import { UserType } from "./user-type"
 
 export function createUser(id: string, event: TransferEvent): User {
   const user = new User(id)
-  user.creationBlock = event.block.number
-  user.creationTimestamp = event.block.timestamp
-  user.modifiedBlock = event.block.number
-  user.modifiedTimestamp = event.block.timestamp
+  user.createdAtBlock = event.block.number
+  user.createdAtTimestamp = event.block.timestamp
+  user.modifiedAtBlock = event.block.number
+  user.modifiedAtTimestamp = event.block.timestamp
   user.save()
   return user
 }

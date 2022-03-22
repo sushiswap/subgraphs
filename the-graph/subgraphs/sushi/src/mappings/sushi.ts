@@ -9,12 +9,12 @@ export function onTransfer(event: TransferEvent): void {
   getOrCreateTransaction(event)
 
   sender.balance = sender.balance.minus(event.params.value)
-  sender.modifiedBlock = event.block.number
-  sender.modifiedTimestamp = event.block.timestamp
+  sender.modifiedAtBlock = event.block.number
+  sender.modifiedAtTimestamp = event.block.timestamp
   sender.save()
 
   reciever.balance = reciever.balance.plus(event.params.value)
-  reciever.modifiedBlock = event.block.number
-  reciever.modifiedTimestamp = event.block.timestamp
+  reciever.modifiedAtBlock = event.block.number
+  reciever.modifiedAtTimestamp = event.block.timestamp
   reciever.save()
 }

@@ -13,10 +13,10 @@ type Transaction @entity {
 
 type User @entity {
   id: ID!
-  creationBlock: BigInt!
-  creationTimestamp: BigInt!
-  modifiedBlock: BigInt!
-  modifiedTimestamp: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+  modifiedAtBlock: BigInt!
+  modifiedAtTimestamp: BigInt!
   balance: BigInt!
   transactions: [UserTransaction!]! @derivedFrom(field: "user")
 }
