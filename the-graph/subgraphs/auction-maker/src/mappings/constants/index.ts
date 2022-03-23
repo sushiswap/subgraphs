@@ -1,7 +1,7 @@
-// import { Address } from "@graphprotocol/graph-ts"
+import { BigInt } from "@graphprotocol/graph-ts"
 
-// export const SUSHI = "Sushi"
-// export const TRANSFER = "TRANSFER"
-// export const MINT = "MINT"
-// export const BURN = "BURN"
-// export const ADDRESS_ZERO = Address.fromString('0x0000000000000000000000000000000000000000')
+const HOUR_IN_SECONDS = 3600
+const DAY_IN_SECONDS = HOUR_IN_SECONDS * 24
+
+export const MIN_TTL = BigInt.fromU64(12 * HOUR_IN_SECONDS) 
+export const MAX_TTL = BigInt.fromU64(3 * DAY_IN_SECONDS) 

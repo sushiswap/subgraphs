@@ -1,26 +1,28 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { newMockEvent } from 'matchstick-as'
-// import { Transfer as TransferEvent } from '../generated/Sushi/Sushi'
+import { Started as StartEvent } from '../generated/AuctionMaker/AuctionMaker'
 
-// export function createTransferEvent(from: Address, to: Address, value: BigInt): TransferEvent {
-//   let mockEvent = newMockEvent()
-//   let event = new TransferEvent(
-//     from,
-//     mockEvent.logIndex,
-//     mockEvent.transactionLogIndex,
-//     mockEvent.logType,
-//     mockEvent.block,
-//     mockEvent.transaction,
-//     mockEvent.parameters
-//   )
-//   event.parameters = new Array()
+export function createStartEvent(token: Address, bidder: Address, bidAmount: BigInt, rewardAmount: BigInt): StartEvent {
+  let mockEvent = newMockEvent()
+  let event = new StartEvent(
+    mockEvent.address,
+    mockEvent.logIndex,
+    mockEvent.transactionLogIndex,
+    mockEvent.logType,
+    mockEvent.block,
+    mockEvent.transaction,
+    mockEvent.parameters
+  )
+  event.parameters = new Array()
 
-//   let tokenParam = new ethereum.EventParam('from', ethereum.Value.fromAddress(from))
-//   let userParam = new ethereum.EventParam('to', ethereum.Value.fromAddress(to))
-//   let valueParam = new ethereum.EventParam('value', ethereum.Value.fromUnsignedBigInt(value))
-//   event.parameters.push(tokenParam)
-//   event.parameters.push(userParam)
-//   event.parameters.push(valueParam)
+  let tokenParam = new ethereum.EventParam('token', ethereum.Value.fromAddress(token))
+  let bidderParam = new ethereum.EventParam('sender', ethereum.Value.fromAddress(bidder))
+  let bidAmountParam = new ethereum.EventParam('bidAmount', ethereum.Value.fromUnsignedBigInt(bidAmount))
+  let rewardAmountParam = new ethereum.EventParam('rewardAmount', ethereum.Value.fromUnsignedBigInt(rewardAmount))
+  event.parameters.push(tokenParam)
+  event.parameters.push(bidderParam)
+  event.parameters.push(bidAmountParam)
+  event.parameters.push(rewardAmountParam)
 
-//   return event
-// }
+  return event
+}

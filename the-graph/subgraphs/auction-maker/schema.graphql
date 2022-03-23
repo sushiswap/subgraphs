@@ -3,6 +3,29 @@ type User @entity {
   id: ID!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
+}
+
+type Auction @entity {
+  id: ID!
+  highestBidder: User!
+  bidAmount: BigInt!
+  rewardAmount: BigInt!
+  minTTL: BigInt!
+  maxTTL: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
   modifiedAtBlock: BigInt!
   modifiedAtTimestamp: BigInt!
+}
+
+type Bid @entity {
+  id: ID!
+  user: User!
+  amount: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+type Token @entity {
+  id: ID!
 }
