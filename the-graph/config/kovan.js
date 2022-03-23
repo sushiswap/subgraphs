@@ -47,4 +47,5 @@ module.exports = {
       startBlock: '23647588',
     },
   },
+  auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
 }
