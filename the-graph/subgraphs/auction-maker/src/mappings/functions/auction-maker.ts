@@ -1,18 +1,8 @@
-import { Started as StartEvent } from '../../../generated/AuctionMaker/AuctionMaker'
+import { Started as CreateAuctionEvent, PlacedBid as PlaceBidEvent } from '../../../generated/AuctionMaker/AuctionMaker'
 import { Auction } from '../../../generated/schema'
 import { MAX_TTL, MIN_TTL } from '../constants'
 
-export function getOrCreateAuction(event: StartEvent): Auction {
-  let auction = Auction.load(event.params.token.toHex())
-
-  if (auction === null) {
-    return createAuction(event)
-  }
-
-  return auction as Auction
-}
-
-function createAuction(event: StartEvent): Auction {
+export function createAuction(event: CreateAuctionEvent): Auction {
   const auction = new Auction(event.params.token.toHex())
 
   auction.highestBidder = event.params.bidder.toHex()
@@ -22,6 +12,23 @@ function createAuction(event: StartEvent): Auction {
   auction.minTTL = event.block.timestamp.plus(MIN_TTL)
   auction.createdAtBlock = event.block.number
   auction.createdAtTimestamp = event.block.timestamp
+  auction.modifiedAtBlock = event.block.number
+  auction.modifiedAtTimestamp = event.block.timestamp
+  auction.save()
+
+  return auction
+}
+
+export function updateAuction(event: PlaceBidEvent): Auction {
+  let auction = Auction.load(event.params.token.toHex())
+
+  if (auction == null) {
+    auction = new Auction(event.params.token.toHex())
+  }
+  
+  auction.highestBidder = event.params.bidder.toHex()
+  auction.bidAmount = event.params.bidAmount
+  auction.minTTL = event.block.timestamp.plus(MIN_TTL)
   auction.modifiedAtBlock = event.block.number
   auction.modifiedAtTimestamp = event.block.timestamp
   auction.save()
