@@ -23,10 +23,10 @@ dataSources:
           file: ./abis/auction-maker.json
       eventHandlers:
         - event: Started(indexed address,indexed address,indexed uint128,uint128)
-          handler: onCreateAuction
+          handler: onAuctionCreated
         - event: PlacedBid(indexed address,indexed address,indexed uint128)
-          handler: onBidPlaced
+          handler: onBid
         - event: Ended(indexed address,indexed address,indexed uint128)
-          handler: onEnd
+          handler: onAuctionEnded
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: onOwnershipTransfer

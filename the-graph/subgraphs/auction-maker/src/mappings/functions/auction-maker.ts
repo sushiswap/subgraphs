@@ -1,4 +1,4 @@
-import { Started as CreateAuctionEvent, PlacedBid as PlaceBidEvent } from '../../../generated/AuctionMaker/AuctionMaker'
+import { Started as CreateAuctionEvent, BidEvent as PlaceBidEvent } from '../../../generated/AuctionMaker/AuctionMaker'
 import { Auction } from '../../../generated/schema'
 import { MAX_TTL, MIN_TTL } from '../constants'
 
@@ -25,7 +25,7 @@ export function updateAuction(event: PlaceBidEvent): Auction {
   if (auction == null) {
     auction = new Auction(event.params.token.toHex())
   }
-  
+
   auction.highestBidder = event.params.bidder.toHex()
   auction.bidAmount = event.params.bidAmount
   auction.minTTL = event.block.timestamp.plus(MIN_TTL)
