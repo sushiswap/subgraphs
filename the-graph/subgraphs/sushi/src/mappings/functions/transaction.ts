@@ -3,7 +3,6 @@ import { Transaction } from '../../../generated/schema'
 import { Transfer as TransferEvent } from '../../../generated/Sushi/Sushi'
 import { ADDRESS_ZERO, BURN, MINT, TRANSFER } from '../constants'
 import { getOrCreateSushi } from './sushi'
-import { getOrCreateUserTransaction } from './user-transaction'
 
 export function getOrCreateTransaction(event: TransferEvent): Transaction {
   const transaction = Transaction.load(event.transaction.hash.toHex())
@@ -18,6 +17,8 @@ export function getOrCreateTransaction(event: TransferEvent): Transaction {
 function createTransaction(event: TransferEvent): Transaction {
   const id = event.transaction.hash.toHex() 
   const transaction = new Transaction(id)
+  transaction.from = event.params.from.toHex()
+  transaction.to = event.params.to.toHex()
   transaction.amount = event.params.value
   transaction.gasUsed = event.block.gasUsed
   transaction.gasLimit = event.transaction.gasLimit
@@ -41,8 +42,6 @@ function createTransaction(event: TransferEvent): Transaction {
   sushi.save()
   transaction.save()
   
-  getOrCreateUserTransaction(event.params.from.toHex(), id)
-  getOrCreateUserTransaction(event.params.to.toHex(), id)
 
   return transaction as Transaction
 }
