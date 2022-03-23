@@ -1,10 +1,10 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { newMockEvent } from 'matchstick-as'
-import { PlacedBid as PlaceBidEvent, Started as CreateAuctionEvent } from '../generated/AuctionMaker/AuctionMaker'
+import { BidEvent as PlaceBidEvent, Started as AuctionCreatedEvent, Ended as AuctionEndedEvent } from '../generated/AuctionMaker/AuctionMaker'
 
-export function createAuctionEvent(token: Address, bidder: Address, bidAmount: BigInt, rewardAmount: BigInt): CreateAuctionEvent {
+export function createAuctionCreatedEvent(token: Address, bidder: Address, bidAmount: BigInt, rewardAmount: BigInt): AuctionCreatedEvent {
   let mockEvent = newMockEvent()
-  let event = new CreateAuctionEvent(
+  let event = new AuctionCreatedEvent(
     mockEvent.address,
     mockEvent.logIndex,
     mockEvent.transactionLogIndex,
@@ -28,9 +28,33 @@ export function createAuctionEvent(token: Address, bidder: Address, bidAmount: B
 }
 
 
-export function createPlaceBidEvent(token: Address, bidder: Address, bidAmount: BigInt): PlaceBidEvent {
+export function createBidEvent(token: Address, bidder: Address, bidAmount: BigInt): PlaceBidEvent {
   let mockEvent = newMockEvent()
   let event = new PlaceBidEvent(
+    mockEvent.address,
+    mockEvent.logIndex,
+    mockEvent.transactionLogIndex,
+    mockEvent.logType,
+    mockEvent.block,
+    mockEvent.transaction,
+    mockEvent.parameters
+  )
+  event.parameters = new Array()
+
+  let tokenParam = new ethereum.EventParam('token', ethereum.Value.fromAddress(token))
+  let bidderParam = new ethereum.EventParam('sender', ethereum.Value.fromAddress(bidder))
+  let bidAmountParam = new ethereum.EventParam('bidAmount', ethereum.Value.fromUnsignedBigInt(bidAmount))
+  event.parameters.push(tokenParam)
+  event.parameters.push(bidderParam)
+  event.parameters.push(bidAmountParam)
+
+  return event
+}
+
+
+export function createAuctionEndedEvent(token: Address, bidder: Address, bidAmount: BigInt): AuctionEndedEvent {
+  let mockEvent = newMockEvent()
+  let event = new AuctionEndedEvent(
     mockEvent.address,
     mockEvent.logIndex,
     mockEvent.transactionLogIndex,

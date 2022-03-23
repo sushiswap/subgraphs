@@ -1,8 +1,8 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, test, clearStore } from 'matchstick-as/assembly/index'
-import { onPlaceBid, onCreateAuction } from '../src/mappings/auction-maker'
+import { onBid, onAuctionCreated, onAuctionEnded } from '../src/mappings/auction-maker'
 import { MAX_TTL, MIN_TTL } from '../src/mappings/constants'
-import { createPlaceBidEvent, createAuctionEvent } from './mocks'
+import { createBidEvent, createAuctionCreatedEvent, createAuctionEndedEvent } from './mocks'
 
 const ALICE = Address.fromString('0x00000000000000000000000000000000000a71ce')
 const BOB = Address.fromString('0x0000000000000000000000000000000000000b0b')
@@ -14,9 +14,9 @@ function cleanup(): void {
 }
 
 test('Auction is created', () => {
-  let event = createAuctionEvent(TOKEN, ALICE, AMOUNT, REWARD_AMOUNT)
+  let event = createAuctionCreatedEvent(TOKEN, ALICE, AMOUNT, REWARD_AMOUNT)
 
-  onCreateAuction(event)
+  onAuctionCreated(event)
 
   const id = TOKEN.toHex()
   assert.fieldEquals('Auction', id, 'id', id)
@@ -34,12 +34,12 @@ test('Auction is created', () => {
 })
 
 test('Bid updates the auction', () => {
-  let auctionEvent = createAuctionEvent(TOKEN, ALICE, AMOUNT, REWARD_AMOUNT)
-  let bidEvent = createPlaceBidEvent(TOKEN, BOB, AMOUNT)
+  let auctionEvent = createAuctionCreatedEvent(TOKEN, ALICE, AMOUNT, REWARD_AMOUNT)
+  let bidEvent = createBidEvent(TOKEN, BOB, AMOUNT)
   const id = TOKEN.toHex()
 
   // When: an auction event occurs
-  onCreateAuction(auctionEvent)
+  onAuctionCreated(auctionEvent)
 
   // Then: the auction entity contains the expected field values
   let maxTTL = auctionEvent.block.timestamp.plus(MAX_TTL).toString()
@@ -53,9 +53,10 @@ test('Bid updates the auction', () => {
   // When: A bid occurs
   bidEvent.block.timestamp = BigInt.fromString('1648063447')
   bidEvent.block.number = BigInt.fromString('14444408')
-  onPlaceBid(bidEvent)
+  onBid(bidEvent)
 
   // Then: the auctions highest bidder and amount is updated
+  assert.entityCount('Auction', 1)
   assert.fieldEquals('Auction', id, 'highestBidder', BOB.toHex())
   assert.fieldEquals('Auction', id, 'bidAmount', AMOUNT.toString())
 
@@ -69,3 +70,18 @@ test('Bid updates the auction', () => {
 
   cleanup()
 })
+
+test('Auction ends and is removed from store', () => {
+    let auctionCreatedEvent = createAuctionCreatedEvent(TOKEN, ALICE, AMOUNT, REWARD_AMOUNT)
+    let auctionEndedEvent = createAuctionEndedEvent(TOKEN, BOB, AMOUNT)
+  
+    onAuctionCreated(auctionCreatedEvent)
+    assert.entityCount('Auction', 1)
+
+    onAuctionEnded(auctionEndedEvent)
+    assert.notInStore('Auction', TOKEN.toHex())
+    assert.entityCount('Auction', 0)
+
+
+    cleanup()
+  })
