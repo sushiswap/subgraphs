@@ -125,9 +125,9 @@ export function onLogStrategyInvest(event: LogStrategyInvest): void {
 
   const amount = toDecimal(event.params.amount, token.decimals)
 
-  const rebase = getOrCreateRebase(tokenAddress)
-  rebase.elastic = rebase.elastic.plus(amount)
-  rebase.save()
+  // const rebase = getOrCreateRebase(tokenAddress)
+  // rebase.elastic = rebase.elastic.plus(amount)
+  // rebase.save()
 
   if (!token.strategy) {
     log.warning(WARNING_MSG_STRATEGY_SET, ['onLogStrategyInvest'])
@@ -144,9 +144,9 @@ export function onLogStrategyDivest(event: LogStrategyDivest): void {
 
   const amount = toDecimal(event.params.amount, token.decimals)
 
-  const rebase = getOrCreateRebase(tokenAddress)
-  rebase.elastic = rebase.elastic.minus(amount)
-  rebase.save()
+  // const rebase = getOrCreateRebase(tokenAddress)
+  // rebase.elastic = rebase.elastic.minus(amount)
+  // rebase.save()
 
   if (!token.strategy) {
     log.warning(WARNING_MSG_STRATEGY_SET, ['onLogStrategyInvest'])
