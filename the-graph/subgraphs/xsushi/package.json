@@ -1,0 +1,24 @@
+{
+  "name": "@sushiswap/xsushi-subgraph",
+  "license": "MIT",
+  "repository": {
+    "url": "sushiswap/subgraphs",
+    "directory": "subgraphs/xsushi"
+  },
+  "files": [
+    "generated"
+  ],
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ sushiswap/xsushi",
+    "create-local": "graph create --node http://localhost:8020/ sushiswap/xsushi",
+    "remove-local": "graph remove --node http://localhost:8020/ sushiswap/xsushi",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/xsushi"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.27.0",
+    "@graphprotocol/graph-ts": "^0.24.1",
+    "matchstick-as": "^0.4.0"
+  }
+}
