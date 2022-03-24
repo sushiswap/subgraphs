@@ -1,6 +1,6 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { newMockEvent } from 'matchstick-as'
-import { BidEvent as PlaceBidEvent, Started as AuctionCreatedEvent, Ended as AuctionEndedEvent } from '../generated/AuctionMaker/AuctionMaker'
+import { PlacedBid as BidEvent, Started as AuctionCreatedEvent, Ended as AuctionEndedEvent } from '../generated/AuctionMaker/AuctionMaker'
 
 export function createAuctionCreatedEvent(token: Address, bidder: Address, bidAmount: BigInt, rewardAmount: BigInt): AuctionCreatedEvent {
   let mockEvent = newMockEvent()
@@ -28,9 +28,9 @@ export function createAuctionCreatedEvent(token: Address, bidder: Address, bidAm
 }
 
 
-export function createBidEvent(token: Address, bidder: Address, bidAmount: BigInt): PlaceBidEvent {
+export function createBidEvent(token: Address, bidder: Address, bidAmount: BigInt): BidEvent {
   let mockEvent = newMockEvent()
-  let event = new PlaceBidEvent(
+  let event = new BidEvent(
     mockEvent.address,
     mockEvent.logIndex,
     mockEvent.transactionLogIndex,
