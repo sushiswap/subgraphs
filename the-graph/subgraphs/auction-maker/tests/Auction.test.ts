@@ -43,6 +43,8 @@ test('Bid updates the auction', () => {
   setup()
   let auctionEvent = createAuctionCreatedEvent(TOKEN, ALICE, AMOUNT, REWARD_AMOUNT)
   let bidEvent = createBidEvent(TOKEN, BOB, AMOUNT)
+  bidEvent.block.timestamp = BigInt.fromString('1648063447')
+  bidEvent.block.number = BigInt.fromString('14444408')
   const id = TOKEN.toHex()
 
   // When: an auction event occurs
@@ -58,8 +60,6 @@ test('Bid updates the auction', () => {
   assert.fieldEquals('Auction', id, 'modifiedAtBlock', auctionEvent.block.timestamp.toString())
 
   // When: A bid occurs
-  bidEvent.block.timestamp = BigInt.fromString('1648063447')
-  bidEvent.block.number = BigInt.fromString('14444408')
   onBid(bidEvent)
 
   // Then: the auctions highest bidder and amount is updated
