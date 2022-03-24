@@ -36,6 +36,11 @@ type Bid @entity {
   createdAtTimestamp: BigInt!
 }
 
-type Token @entity {
+type FinishedAuction @entity {
   id: ID!
+  winner: User!
+  bidAmount: BigInt!
+  rewardAmount: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
 }

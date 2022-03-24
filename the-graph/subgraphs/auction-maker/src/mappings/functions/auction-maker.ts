@@ -26,6 +26,11 @@ export function increaseFinishedAuctionCount(): void {
   auctionMaker.save()
 }
 
+export function getFinishedAuctionCount(): BigInt {
+  const auctionMaker = getOrCreateAuctionMaker()
+  return auctionMaker.finishedAuctionCount
+}
+
 function getOrCreateAuctionMaker(): AuctionMaker {
   const auctionMaker = AuctionMaker.load(AUCTION_MAKER)
 

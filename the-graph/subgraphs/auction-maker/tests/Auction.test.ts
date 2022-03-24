@@ -1,4 +1,4 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { assert, test, clearStore } from 'matchstick-as/assembly/index'
 import { onBid, onAuctionCreated, onAuctionEnded } from '../src/mappings/auction-maker'
 import { MAX_TTL, MIN_TTL } from '../src/mappings/constants'

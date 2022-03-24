@@ -1,4 +1,4 @@
-import { store } from '@graphprotocol/graph-ts'
+import { log, store } from '@graphprotocol/graph-ts'
 import {
   Started as CreateAuctionEvent,
   PlacedBid as BidEvent,
@@ -28,12 +28,7 @@ export function createAuction(event: CreateAuctionEvent): Auction {
 }
 
 export function updateAuction(event: BidEvent): Auction {
-  let auction = Auction.load(event.params.token.toHex())
-
-  if (auction == null) {
-    auction = new Auction(event.params.token.toHex())
-  }
-
+  const auction = getOrCreateAuction(event.params.token.toHex())
   auction.highestBidder = event.params.bidder.toHex()
   auction.bidAmount = event.params.bidAmount
   auction.minTTL = event.block.timestamp.plus(MIN_TTL)
@@ -44,7 +39,18 @@ export function updateAuction(event: BidEvent): Auction {
   return auction
 }
 
-export function deleteAuction(event: AuctionEndedEvent): void {
-  store.remove('Auction', event.params.token.toHex())
-  increaseFinishedAuctionCount()
+export function deleteAuction(event: AuctionEndedEvent): Auction {
+  const auction = getOrCreateAuction(event.params.token.toHex())
+  store.remove('Auction', auction.id)
+  return auction
+}
+
+function getOrCreateAuction(id: string): Auction {
+  let auction = Auction.load(id)
+
+  if (auction == null) {
+    auction = new Auction(id)
+  }
+
+  return auction
 }
