@@ -1,4 +1,12 @@
 
+type AuctionMaker @entity {
+  id: ID! # Hardcoded to Auction-maker
+  auctionCount: BigInt!
+  userCount: BigInt!
+  bidCount: BigInt!
+  finishedAuctionCount: BigInt!
+}
+
 type User @entity {
   id: ID!
   createdAtBlock: BigInt!

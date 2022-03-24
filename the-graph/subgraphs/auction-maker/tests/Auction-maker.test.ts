@@ -33,6 +33,7 @@ test('Auction count is increased when new auctions are created', () => {
 })
 
 test('Bid count increases for each bid', () => {
+  setup()
   let bidEvent = createBidEvent(TOKEN, BOB, AMOUNT)
 
   // Expect: a bid to be created on auction creation and bid count should be 1
@@ -48,6 +49,7 @@ test('Bid count increases for each bid', () => {
 })
 
 test('When an auction ends, finished auction count is increased', () => {
+  setup()
   let auctionEndedEvent = createAuctionEndedEvent(TOKEN, BOB, AMOUNT)
   assert.fieldEquals('AuctionMaker', AUCTION_MAKER, 'finishedAuctionCount', '0')
 
@@ -58,6 +60,22 @@ test('When an auction ends, finished auction count is increased', () => {
 })
 
 test('User count increases when new users are participating in an auction', () => {
+  setup()
+  let bidEvent = createBidEvent(TOKEN, BOB, AMOUNT)
+  let bidEvent2 = createBidEvent(TOKEN, ALICE, AMOUNT)
+
+  // Expect: a bid to be created on auction creation and user count should be 1
+  assert.fieldEquals('AuctionMaker', AUCTION_MAKER, 'userCount', '1')
+
+  // When: another bid is placed
+  onBid(bidEvent)
+
+  // Then: user count is increased
+  assert.fieldEquals('AuctionMaker', AUCTION_MAKER, 'userCount', '2')
+
+  // And: When the first bidder bids again, the userCount remains
+  onBid(bidEvent2)
+  assert.fieldEquals('AuctionMaker', AUCTION_MAKER, 'userCount', '2')
 
   cleanup()
 })
