@@ -20,7 +20,6 @@ export function increaseAuctionCount(): void {
   auctionMaker.save()
 }
 
-
 export function increaseFinishedAuctionCount(): void {
   const auctionMaker = getOrCreateAuctionMaker()
   auctionMaker.finishedAuctionCount = auctionMaker.finishedAuctionCount.plus(BigInt.fromU32(1))
