@@ -9,6 +9,7 @@ const BOB = Address.fromString('0x0000000000000000000000000000000000000b0b')
 const TOKEN = Address.fromString('0x0000000000000000000000000000000000000001')
 const AMOUNT = BigInt.fromString('1337')
 const REWARD_AMOUNT = BigInt.fromString('420')
+
 function cleanup(): void {
   clearStore()
 }

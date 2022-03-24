@@ -1,8 +1,8 @@
 import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts'
-import { assert, test, clearStore, logStore } from 'matchstick-as/assembly/index'
+import { assert, clearStore, test } from 'matchstick-as/assembly/index'
 import { Started as AuctionCreatedEvent } from '../generated/AuctionMaker/AuctionMaker'
-import { onBid, onAuctionCreated, onAuctionEnded } from '../src/mappings/auction-maker'
-import { createBidEvent, createAuctionCreatedEvent, createAuctionEndedEvent } from './mocks'
+import { onAuctionCreated, onBid } from '../src/mappings/auction-maker'
+import { createAuctionCreatedEvent, createBidEvent } from './mocks'
 
 const ALICE = Address.fromString('0x00000000000000000000000000000000000a71ce')
 const BOB = Address.fromString('0x0000000000000000000000000000000000000b0b')
@@ -10,6 +10,7 @@ const TOKEN = Address.fromString('0x0000000000000000000000000000000000000001')
 const AMOUNT = BigInt.fromString('1337')
 const REWARD_AMOUNT = BigInt.fromString('420')
 let auctionCreationEvent: AuctionCreatedEvent
+
 function setup(): void {
   auctionCreationEvent = createAuctionCreatedEvent(TOKEN, ALICE, AMOUNT, REWARD_AMOUNT)
   onAuctionCreated(auctionCreationEvent)

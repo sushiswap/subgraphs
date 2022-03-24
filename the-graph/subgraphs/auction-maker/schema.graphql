@@ -11,6 +11,8 @@ type User @entity {
   id: ID!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
+  modifiedAtBlock: BigInt!
+  modifiedAtTimestamp: BigInt!
 }
 
 type Auction @entity {
