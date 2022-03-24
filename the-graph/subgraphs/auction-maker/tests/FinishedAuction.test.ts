@@ -1,8 +1,8 @@
-import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
 import { Started as AuctionCreatedEvent } from '../generated/AuctionMaker/AuctionMaker'
-import { onAuctionCreated, onAuctionEnded, onBid } from '../src/mappings/auction-maker'
-import { createAuctionCreatedEvent, createAuctionEndedEvent, createBidEvent, createTokenMock } from './mocks'
+import { onAuctionCreated, onAuctionEnded } from '../src/mappings/auction-maker'
+import { createAuctionCreatedEvent, createAuctionEndedEvent, createTokenMock } from './mocks'
 
 const ALICE = Address.fromString('0x00000000000000000000000000000000000a71ce')
 const BOB = Address.fromString('0x0000000000000000000000000000000000000b0b')
@@ -24,8 +24,8 @@ function cleanup(): void {
 
 test('Auction runs twice with the same token results in two FinishedAuction entities', () => {
   setup()
-  let auctionId1 = TOKEN.toHex().concat(":0")
-  let auctionId2 = TOKEN.toHex().concat(":1")
+  let auctionId1 = TOKEN.toHex().concat(':0')
+  let auctionId2 = TOKEN.toHex().concat(':1')
   let auctionCreationEvent2 = createAuctionCreatedEvent(TOKEN, CHARLIE, AMOUNT, REWARD_AMOUNT)
   let auctionEndedEvent = createAuctionEndedEvent(TOKEN, BOB, AMOUNT)
   let auctionEndedEvent2 = createAuctionEndedEvent(TOKEN, CHARLIE, AMOUNT)
@@ -37,8 +37,12 @@ test('Auction runs twice with the same token results in two FinishedAuction enti
   assert.fieldEquals('FinishedAuction', auctionId1, 'bidAmount', AMOUNT.toString())
   assert.fieldEquals('FinishedAuction', auctionId1, 'rewardAmount', REWARD_AMOUNT.toString())
   assert.fieldEquals('FinishedAuction', auctionId1, 'createdAtBlock', auctionCreationEvent.block.number.toString())
-  assert.fieldEquals('FinishedAuction', auctionId1, 'createdAtTimestamp', auctionCreationEvent.block.timestamp.toString())
-
+  assert.fieldEquals(
+    'FinishedAuction',
+    auctionId1,
+    'createdAtTimestamp',
+    auctionCreationEvent.block.timestamp.toString()
+  )
 
   onAuctionCreated(auctionCreationEvent2)
   onAuctionEnded(auctionEndedEvent2)
@@ -48,7 +52,12 @@ test('Auction runs twice with the same token results in two FinishedAuction enti
   assert.fieldEquals('FinishedAuction', auctionId2, 'winner', CHARLIE.toHex())
   assert.fieldEquals('FinishedAuction', auctionId2, 'bidAmount', AMOUNT.toString())
   assert.fieldEquals('FinishedAuction', auctionId2, 'rewardAmount', REWARD_AMOUNT.toString())
-  assert.fieldEquals('FinishedAuction', auctionId2, 'createdAtBlock', auctionCreationEvent.block.number.toString())
-  assert.fieldEquals('FinishedAuction', auctionId2, 'createdAtTimestamp', auctionCreationEvent.block.timestamp.toString())
+  assert.fieldEquals('FinishedAuction', auctionId2, 'createdAtBlock', auctionCreationEvent2.block.number.toString())
+  assert.fieldEquals(
+    'FinishedAuction',
+    auctionId2,
+    'createdAtTimestamp',
+    auctionCreationEvent2.block.timestamp.toString()
+  )
   cleanup()
 })

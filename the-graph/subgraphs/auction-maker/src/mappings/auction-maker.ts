@@ -1,8 +1,7 @@
-import { log } from '@graphprotocol/graph-ts'
 import {
   Ended as AuctionEndedEvent,
   PlacedBid as BidEvent,
-  Started as AuctionCreatedEvent,
+  Started as AuctionCreatedEvent
 } from '../../generated/AuctionMaker/AuctionMaker'
 import { createAuction, deleteAuction, updateAuction } from './functions/auction'
 import { createBid, createInitialBid } from './functions/bid'
@@ -16,9 +15,7 @@ export function onAuctionCreated(event: AuctionCreatedEvent): void {
 }
 
 export function onBid(event: BidEvent): void {
-  log.debug("HEY ", [])
   getOrCreateUser(event.params.bidder.toHex(), event)
-  log.debug("HEY ", [])
   updateAuction(event)
   createBid(event)
 }

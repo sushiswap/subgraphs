@@ -37,8 +37,8 @@ test('Bid is created on auction creation event', () => {
 test('Bid is created on bid event', () => {
   setup()
   let bidEvent = createBidEvent(TOKEN, BOB, AMOUNT)
-  let bidId = "0x0000000000000000000000000000000000000002"
-  bidEvent.transaction.hash = Address.fromString(bidId) as Bytes;
+  let bidId = '0x0000000000000000000000000000000000000002'
+  bidEvent.transaction.hash = Address.fromString(bidId) as Bytes
   assert.entityCount('Bid', 1)
 
   onBid(bidEvent)

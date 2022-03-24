@@ -90,7 +90,7 @@ export function getTokenDecimals(contract: ERC20): Decimal {
   const decimals = contract.try_decimals()
 
   if (!decimals.reverted) {
-    return { success: true, value: BigInt.fromI32(decimals.value as i32) }
+    return { success: true, value: BigInt.fromI32(decimals.value) }
   }
 
   return { success: false, value: BigInt.fromI32(18) }
