@@ -1,16 +1,18 @@
-import { log, store } from '@graphprotocol/graph-ts'
+import { store } from '@graphprotocol/graph-ts'
+import { log } from 'matchstick-as'
 import {
-  Started as CreateAuctionEvent,
-  PlacedBid as BidEvent,
-  Ended as AuctionEndedEvent,
+  Ended as AuctionEndedEvent, PlacedBid as BidEvent, Started as CreateAuctionEvent
 } from '../../../generated/AuctionMaker/AuctionMaker'
-import { Auction } from '../../../generated/schema'
+import { Auction, Token } from '../../../generated/schema'
 import { MAX_TTL, MIN_TTL } from '../constants'
-import { increaseAuctionCount, increaseFinishedAuctionCount } from './auction-maker'
+import { increaseAuctionCount } from './auction-maker'
+import { getOrCreateToken } from './token'
 
 export function createAuction(event: CreateAuctionEvent): Auction {
+  const token = getOrCreateToken(event.params.token.toHex())
   const auction = new Auction(event.params.token.toHex())
-
+  
+  auction.token = token.id
   auction.highestBidder = event.params.bidder.toHex()
   auction.bidAmount = event.params.bidAmount
   auction.rewardAmount = event.params.rewardAmount

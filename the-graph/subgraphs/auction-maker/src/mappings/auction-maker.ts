@@ -1,23 +1,26 @@
+import { log } from '@graphprotocol/graph-ts'
 import {
   Ended as AuctionEndedEvent,
   PlacedBid as BidEvent,
   Started as AuctionCreatedEvent,
 } from '../../generated/AuctionMaker/AuctionMaker'
 import { createAuction, deleteAuction, updateAuction } from './functions/auction'
-import { createBid } from './functions/bid'
+import { createBid, createInitialBid } from './functions/bid'
 import { createFinishedAuction } from './functions/finished-auction'
 import { getOrCreateUser } from './functions/user'
 
 export function onAuctionCreated(event: AuctionCreatedEvent): void {
-  const user = getOrCreateUser(event.params.bidder.toHex(), event)
+  getOrCreateUser(event.params.bidder.toHex(), event)
   createAuction(event)
-  createBid(user.id, event.params.bidAmount, event)
+  createInitialBid(event)
 }
 
 export function onBid(event: BidEvent): void {
-  const user = getOrCreateUser(event.params.bidder.toHex(), event)
+  log.debug("HEY ", [])
+  getOrCreateUser(event.params.bidder.toHex(), event)
+  log.debug("HEY ", [])
   updateAuction(event)
-  createBid(user.id, event.params.bidAmount, event)
+  createBid(event)
 }
 
 export function onAuctionEnded(event: AuctionEndedEvent): void {

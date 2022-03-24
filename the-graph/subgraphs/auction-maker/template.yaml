@@ -18,9 +18,20 @@ dataSources:
       file: ./src/mappings/auction-maker.ts
       entities:
         - User 
+        - AuctionMaker
+        - Token
+        - FinishedAuction
+        - Bid
+        - Auction
       abis:
         - name: AuctionMaker
           file: ./abis/auction-maker.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: SymbolBytes32
+          file: ./abis/SymbolBytes32.json
+        - name: NameBytes32
+          file: ./abis/NameBytes32.json
       eventHandlers:
         - event: Started(indexed address,indexed address,indexed uint128,uint128)
           handler: onAuctionCreated

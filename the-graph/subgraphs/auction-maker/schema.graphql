@@ -18,6 +18,7 @@ type User @entity {
 type Auction @entity {
   id: ID!
   highestBidder: User!
+  token: Token!
   bidAmount: BigInt!
   rewardAmount: BigInt!
   minTTL: BigInt!
@@ -31,6 +32,7 @@ type Auction @entity {
 type Bid @entity {
   id: ID!
   user: User!
+  token: Token!
   amount: BigInt!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
@@ -39,8 +41,21 @@ type Bid @entity {
 type FinishedAuction @entity {
   id: ID!
   winner: User!
+  token: Token!
   bidAmount: BigInt!
   rewardAmount: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+type Token @entity {
+  id: ID!
+  symbol: String!
+  symbolSuccess: Boolean!
+  name: String!
+  nameSuccess: Boolean!
+  decimals: BigInt!
+  decimalsSuccess: Boolean!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
 }

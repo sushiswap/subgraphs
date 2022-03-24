@@ -1,12 +1,29 @@
-import { BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { PlacedBid as BidEvent, Started as AuctionCreatedEvent } from '../../../generated/AuctionMaker/AuctionMaker'
 import { Bid } from '../../../generated/schema'
 import { increaseBidCount } from './auction-maker'
+import { getOrCreateToken } from './token'
 
-export function createBid(userId: string, amount: BigInt, event: ethereum.Event): Bid {
+export function createInitialBid(event: AuctionCreatedEvent): Bid {
+  const token = getOrCreateToken(event.params.token.toHex())
   const bid = new Bid(event.transaction.hash.toHex())
+  bid.token = token.id
+  bid.user = event.params.bidder.toHex()
+  bid.amount = event.params.bidAmount
+  bid.createdAtBlock = event.block.number
+  bid.createdAtTimestamp = event.block.timestamp
+  bid.save()
 
-  bid.user = userId
-  bid.amount = amount
+  increaseBidCount()
+
+  return bid
+}
+
+export function createBid(event: BidEvent): Bid {
+  const token = getOrCreateToken(event.params.token.toHex())
+  const bid = new Bid(event.transaction.hash.toHex())
+  bid.token = token.id
+  bid.user = event.params.bidder.toHex()
+  bid.amount = event.params.bidAmount
   bid.createdAtBlock = event.block.number
   bid.createdAtTimestamp = event.block.timestamp
   bid.save()

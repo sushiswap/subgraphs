@@ -2,7 +2,7 @@ import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { assert, test, clearStore } from 'matchstick-as/assembly/index'
 import { onBid, onAuctionCreated, onAuctionEnded } from '../src/mappings/auction-maker'
 import { MAX_TTL, MIN_TTL } from '../src/mappings/constants'
-import { createBidEvent, createAuctionCreatedEvent, createAuctionEndedEvent } from './mocks'
+import { createBidEvent, createAuctionCreatedEvent, createAuctionEndedEvent, createTokenMock  } from './mocks'
 
 const ALICE = Address.fromString('0x00000000000000000000000000000000000a71ce')
 const BOB = Address.fromString('0x0000000000000000000000000000000000000b0b')
@@ -10,11 +10,16 @@ const TOKEN = Address.fromString('0x0000000000000000000000000000000000000001')
 const AMOUNT = BigInt.fromString('1337')
 const REWARD_AMOUNT = BigInt.fromString('420')
 
+function setup() : void {
+  createTokenMock(TOKEN.toHex(), BigInt.fromString('18'), 'Wrapped Ether', 'WETH')
+}
+
 function cleanup(): void {
   clearStore()
 }
 
 test('Auction is created', () => {
+  setup()
   let event = createAuctionCreatedEvent(TOKEN, ALICE, AMOUNT, REWARD_AMOUNT)
 
   onAuctionCreated(event)
@@ -35,6 +40,7 @@ test('Auction is created', () => {
 })
 
 test('Bid updates the auction', () => {
+  setup()
   let auctionEvent = createAuctionCreatedEvent(TOKEN, ALICE, AMOUNT, REWARD_AMOUNT)
   let bidEvent = createBidEvent(TOKEN, BOB, AMOUNT)
   const id = TOKEN.toHex()
@@ -73,6 +79,7 @@ test('Bid updates the auction', () => {
 })
 
 test('Auction ends and is removed from store', () => {
+  setup()
     let auctionCreatedEvent = createAuctionCreatedEvent(TOKEN, ALICE, AMOUNT, REWARD_AMOUNT)
     let auctionEndedEvent = createAuctionEndedEvent(TOKEN, BOB, AMOUNT)
   

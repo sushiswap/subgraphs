@@ -1,8 +1,17 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { newMockEvent } from 'matchstick-as'
-import { PlacedBid as BidEvent, Started as AuctionCreatedEvent, Ended as AuctionEndedEvent } from '../generated/AuctionMaker/AuctionMaker'
+import { createMockedFunction, newMockEvent } from 'matchstick-as'
+import {
+  PlacedBid as BidEvent,
+  Started as AuctionCreatedEvent,
+  Ended as AuctionEndedEvent,
+} from '../generated/AuctionMaker/AuctionMaker'
 
-export function createAuctionCreatedEvent(token: Address, bidder: Address, bidAmount: BigInt, rewardAmount: BigInt): AuctionCreatedEvent {
+export function createAuctionCreatedEvent(
+  token: Address,
+  bidder: Address,
+  bidAmount: BigInt,
+  rewardAmount: BigInt
+): AuctionCreatedEvent {
   let mockEvent = newMockEvent()
   let event = new AuctionCreatedEvent(
     mockEvent.address,
@@ -27,7 +36,6 @@ export function createAuctionCreatedEvent(token: Address, bidder: Address, bidAm
   return event
 }
 
-
 export function createBidEvent(token: Address, bidder: Address, bidAmount: BigInt): BidEvent {
   let mockEvent = newMockEvent()
   let event = new BidEvent(
@@ -51,7 +59,6 @@ export function createBidEvent(token: Address, bidder: Address, bidAmount: BigIn
   return event
 }
 
-
 export function createAuctionEndedEvent(token: Address, bidder: Address, bidAmount: BigInt): AuctionEndedEvent {
   let mockEvent = newMockEvent()
   let event = new AuctionEndedEvent(
@@ -73,4 +80,16 @@ export function createAuctionEndedEvent(token: Address, bidder: Address, bidAmou
   event.parameters.push(bidAmountParam)
 
   return event
+}
+
+export function createTokenMock(contractAddress: string, decimals: BigInt, name: string, symbol: string): void {
+  createMockedFunction(Address.fromString(contractAddress), 'decimals', 'decimals():(uint8)').returns([
+    ethereum.Value.fromUnsignedBigInt(decimals),
+  ])
+  createMockedFunction(Address.fromString(contractAddress), 'name', 'name():(string)').returns([
+    ethereum.Value.fromString(name),
+  ])
+  createMockedFunction(Address.fromString(contractAddress), 'symbol', 'symbol():(string)').returns([
+    ethereum.Value.fromString(symbol),
+  ])
 }
