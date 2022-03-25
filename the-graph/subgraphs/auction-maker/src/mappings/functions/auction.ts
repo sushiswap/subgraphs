@@ -1,18 +1,20 @@
-import { store } from '@graphprotocol/graph-ts'
+import { BigInt } from '@graphprotocol/graph-ts'
 import {
   Ended as AuctionEndedEvent,
   PlacedBid as BidEvent,
   Started as CreateAuctionEvent,
 } from '../../../generated/AuctionMaker/AuctionMaker'
 import { Auction } from '../../../generated/schema'
-import { MAX_TTL, MIN_TTL } from '../constants'
-import { increaseAuctionCount } from './auction-maker'
+import { FINISHED, MAX_TTL, MIN_TTL, ONGOING } from '../constants'
+import { increaseAuctionCount, increaseFinishedAuctionCount } from './auction-maker'
 import { getOrCreateToken } from './token'
 
 export function createAuction(event: CreateAuctionEvent): Auction {
   const token = getOrCreateToken(event.params.token.toHex())
-  const auction = new Auction(event.params.token.toHex())
+  const auctionId = token.id.concat(':').concat(token.auctionCount.toString())
+  const auction = new Auction(auctionId)
 
+  auction.status = ONGOING
   auction.token = token.id
   auction.highestBidder = event.params.bidder.toHex()
   auction.bidAmount = event.params.bidAmount
@@ -31,7 +33,9 @@ export function createAuction(event: CreateAuctionEvent): Auction {
 }
 
 export function updateAuction(event: BidEvent): Auction {
-  const auction = getOrCreateAuction(event.params.token.toHex())
+  const token = getOrCreateToken(event.params.token.toHex())
+  const auctionId = token.id.concat(':').concat(token.auctionCount.toString())
+  const auction = getOrCreateAuction(auctionId)
   auction.highestBidder = event.params.bidder.toHex()
   auction.bidAmount = event.params.bidAmount
   auction.minTTL = event.block.timestamp.plus(MIN_TTL)
@@ -42,9 +46,20 @@ export function updateAuction(event: BidEvent): Auction {
   return auction
 }
 
-export function deleteAuction(event: AuctionEndedEvent): Auction {
-  const auction = getOrCreateAuction(event.params.token.toHex())
-  store.remove('Auction', auction.id)
+export function endAuction(event: AuctionEndedEvent): Auction {
+  const token = getOrCreateToken(event.params.token.toHex())
+  const auctionId = token.id.concat(':').concat(token.auctionCount.toString())
+  const auction = getOrCreateAuction(auctionId)
+  auction.status = FINISHED
+  auction.modifiedAtBlock = event.block.number
+  auction.modifiedAtTimestamp = event.block.timestamp
+  auction.save()
+
+  token.auctionCount = token.auctionCount.plus(BigInt.fromU32(1))
+  token.save()
+
+  increaseFinishedAuctionCount()
+
   return auction
 }
 

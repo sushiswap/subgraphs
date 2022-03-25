@@ -1,3 +1,7 @@
+enum AuctionStatus {
+  ONGOING
+  FINISHED
+}
 
 type AuctionMaker @entity {
   id: ID! # Hardcoded to Auction-maker
@@ -16,13 +20,14 @@ type User @entity {
 }
 
 type Auction @entity {
-  id: ID!
+  id: ID! # {token.id}:{token.auctionCount}
   highestBidder: User!
   token: Token!
   bidAmount: BigInt!
   rewardAmount: BigInt!
   minTTL: BigInt!
   maxTTL: BigInt!
+  status: AuctionStatus!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
   modifiedAtBlock: BigInt!
@@ -38,20 +43,11 @@ type Bid @entity {
   createdAtTimestamp: BigInt!
 }
 
-type FinishedAuction @entity {
-  id: ID!
-  winner: User!
-  token: Token!
-  bidAmount: BigInt!
-  rewardAmount: BigInt!
-  createdAtBlock: BigInt!
-  createdAtTimestamp: BigInt!
-}
-
 type Token @entity {
   id: ID!
   symbol: String!
   symbolSuccess: Boolean!
+  auctionCount: BigInt!
   name: String!
   nameSuccess: Boolean!
   decimals: BigInt!
