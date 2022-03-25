@@ -10,7 +10,7 @@ const TOKEN = Address.fromString('0x0000000000000000000000000000000000000001')
 const AMOUNT = BigInt.fromString('1337')
 const REWARD_AMOUNT = BigInt.fromString('420')
 let auctionCreationEvent: AuctionCreatedEvent
-const AUCTION_ID = TOKEN.toHex().concat(":0")
+const AUCTION_ID = TOKEN.toHex().concat(':0')
 
 function setup(): void {
   createTokenMock(TOKEN.toHex(), BigInt.fromString('18'), 'Wrapped Ether', 'WETH')

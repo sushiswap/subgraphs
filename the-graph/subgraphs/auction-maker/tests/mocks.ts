@@ -1,9 +1,9 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { createMockedFunction, newMockEvent } from 'matchstick-as'
 import {
+  Ended as AuctionEndedEvent,
   PlacedBid as BidEvent,
   Started as AuctionCreatedEvent,
-  Ended as AuctionEndedEvent,
 } from '../generated/AuctionMaker/AuctionMaker'
 
 export function createAuctionCreatedEvent(
