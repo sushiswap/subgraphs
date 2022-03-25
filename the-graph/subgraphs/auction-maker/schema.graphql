@@ -13,6 +13,7 @@ type AuctionMaker @entity {
 
 type User @entity {
   id: ID!
+  bids: [Bid!]! @derivedFrom(field: "user")
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
   modifiedAtBlock: BigInt!
@@ -28,6 +29,7 @@ type Auction @entity {
   minTTL: BigInt!
   maxTTL: BigInt!
   status: AuctionStatus!
+  bids: [Bid!]! @derivedFrom(field: "auction")
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
   modifiedAtBlock: BigInt!

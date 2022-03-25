@@ -24,7 +24,7 @@ test('Auction is created', () => {
 
   onAuctionCreated(event)
 
-  const id = TOKEN.toHex().concat(":0")
+  const id = TOKEN.toHex().concat(':0')
   assert.fieldEquals('Auction', id, 'id', id)
   assert.fieldEquals('Auction', id, 'token', TOKEN.toHex())
   assert.fieldEquals('Auction', id, 'status', ONGOING)
@@ -48,7 +48,7 @@ test('Bid updates the auction', () => {
   let bidEvent = createBidEvent(TOKEN, BOB, AMOUNT)
   bidEvent.block.timestamp = BigInt.fromString('1648063447')
   bidEvent.block.number = BigInt.fromString('14444408')
-  const id = TOKEN.toHex().concat(":0")
+  const id = TOKEN.toHex().concat(':0')
 
   // When: an auction event occurs
   onAuctionCreated(auctionEvent)
@@ -87,8 +87,8 @@ test('start two auctions with the same token sets the id and counters correctly'
   let auctionEndedEvent = createAuctionEndedEvent(TOKEN, BOB, AMOUNT)
   auctionEndedEvent.block.timestamp = BigInt.fromString('1648063447')
   auctionEndedEvent.block.number = BigInt.fromString('14444408')
-  const auction1 = TOKEN.toHex().concat(":0")
-  const auction2 = TOKEN.toHex().concat(":1")
+  const auction1 = TOKEN.toHex().concat(':0')
+  const auction2 = TOKEN.toHex().concat(':1')
   onAuctionCreated(auctionCreatedEvent)
 
   assert.fieldEquals('Token', TOKEN.toHex(), 'auctionCount', '0')
@@ -100,24 +100,23 @@ test('start two auctions with the same token sets the id and counters correctly'
   assert.fieldEquals('Auction', auction1, 'status', FINISHED)
   assert.fieldEquals('Auction', auction1, 'modifiedAtTimestamp', auctionEndedEvent.block.timestamp.toString())
   assert.fieldEquals('Auction', auction1, 'modifiedAtBlock', auctionEndedEvent.block.number.toString())
-  
+
   // And: the tokens auction count is increased
   assert.fieldEquals('Token', TOKEN.toHex(), 'auctionCount', '1')
 
   // When: creating a new auction with the same token
   onAuctionCreated(auctionCreatedEvent)
-  
+
   // Then: the auction status is ongoing
   assert.fieldEquals('Auction', auction2, 'status', ONGOING)
   assert.fieldEquals('Auction', auction2, 'token', TOKEN.toHex())
 
   // When: the second auction ends
   onAuctionEnded(auctionEndedEvent)
-  
+
   // Then: the status is changed and tokens auction count is increased
   assert.fieldEquals('Auction', auction2, 'status', FINISHED)
   assert.fieldEquals('Token', TOKEN.toHex(), 'auctionCount', '2')
-
 
   cleanup()
 })
