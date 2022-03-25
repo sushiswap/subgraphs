@@ -1,3 +1,31 @@
+enum StreamStatus {
+  ACTIVE
+  CANCELLED
+  EXIRED
+}
+
+type Stream @entity {
+  id: ID!# starts at 1001
+  recipient: User!
+  amount: BigInt!
+  withdrawnAmount: BigInt!
+  token: Token!
+  status: StreamStatus!
+  createdBy: User!
+  fromBentox: Boolean!
+  startedAt: BigInt!
+  exiresAt: BigInt!
+  modifiedAtBlock: BigInt!
+  modifiedAtTimestamp: BigInt!
+}
+
+type StreamTopUp @entity {
+  # TODO: rename, keep history of any changes made to the event
+}
+
+type Transaction @entity {
+  
+}
 
 type Token @entity {
   id: ID!
@@ -14,6 +42,7 @@ type Token @entity {
 
 type User @entity {
   id: ID!
+  streams: [Stream!]! @derivedFrom(field: "recipient")
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
 }
