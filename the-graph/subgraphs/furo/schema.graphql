@@ -1,0 +1,19 @@
+
+type Token @entity {
+  id: ID!
+  symbol: String!
+  symbolSuccess: Boolean!
+  name: String!
+  nameSuccess: Boolean!
+  decimals: BigInt!
+  decimalsSuccess: Boolean!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+
+type User @entity {
+  id: ID!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
