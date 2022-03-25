@@ -9,14 +9,14 @@ import { getOrCreateUser } from './functions/user'
 
 export function onAuctionCreated(event: AuctionCreatedEvent): void {
   getOrCreateUser(event.params.bidder.toHex(), event)
-  createAuction(event)
-  createInitialBid(event)
+  const auction = createAuction(event)
+  createInitialBid(auction, event)
 }
 
 export function onBid(event: BidEvent): void {
   getOrCreateUser(event.params.bidder.toHex(), event)
-  updateAuction(event)
-  createBid(event)
+  const auction = updateAuction(event)
+  createBid(auction, event)
 }
 
 export function onAuctionEnded(event: AuctionEndedEvent): void {

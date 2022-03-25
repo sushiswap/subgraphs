@@ -35,9 +35,10 @@ type Auction @entity {
 }
 
 type Bid @entity {
-  id: ID!
+  id: ID! # tx hash
   user: User!
   token: Token!
+  auction: Auction!
   amount: BigInt!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!

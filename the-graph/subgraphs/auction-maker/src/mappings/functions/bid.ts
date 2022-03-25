@@ -1,12 +1,11 @@
 import { PlacedBid as BidEvent, Started as AuctionCreatedEvent } from '../../../generated/AuctionMaker/AuctionMaker'
-import { Bid } from '../../../generated/schema'
+import { Auction, Bid } from '../../../generated/schema'
 import { increaseBidCount } from './auction-maker'
-import { getOrCreateToken } from './token'
 
-export function createInitialBid(event: AuctionCreatedEvent): Bid {
-  const token = getOrCreateToken(event.params.token.toHex())
+export function createInitialBid(auction: Auction, event: AuctionCreatedEvent): Bid {
   const bid = new Bid(event.transaction.hash.toHex())
-  bid.token = token.id
+  bid.auction = auction.id
+  bid.token = auction.token
   bid.user = event.params.bidder.toHex()
   bid.amount = event.params.bidAmount
   bid.createdAtBlock = event.block.number
@@ -18,10 +17,10 @@ export function createInitialBid(event: AuctionCreatedEvent): Bid {
   return bid
 }
 
-export function createBid(event: BidEvent): Bid {
-  const token = getOrCreateToken(event.params.token.toHex())
+export function createBid(auction: Auction, event: BidEvent): Bid {
   const bid = new Bid(event.transaction.hash.toHex())
-  bid.token = token.id
+  bid.auction = auction.id
+  bid.token = auction.token
   bid.user = event.params.bidder.toHex()
   bid.amount = event.params.bidAmount
   bid.createdAtBlock = event.block.number

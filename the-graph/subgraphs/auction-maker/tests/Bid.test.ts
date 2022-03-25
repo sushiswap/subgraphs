@@ -10,6 +10,7 @@ const TOKEN = Address.fromString('0x0000000000000000000000000000000000000001')
 const AMOUNT = BigInt.fromString('1337')
 const REWARD_AMOUNT = BigInt.fromString('420')
 let auctionCreationEvent: AuctionCreatedEvent
+const AUCTION_ID = TOKEN.toHex().concat(":0")
 
 function setup(): void {
   createTokenMock(TOKEN.toHex(), BigInt.fromString('18'), 'Wrapped Ether', 'WETH')
@@ -28,6 +29,7 @@ test('Bid is created on auction creation event', () => {
   assert.entityCount('Bid', 1)
   assert.fieldEquals('Bid', bidId, 'id', bidId)
   assert.fieldEquals('Bid', bidId, 'user', ALICE.toHex())
+  assert.fieldEquals('Bid', bidId, 'auction', AUCTION_ID)
   assert.fieldEquals('Bid', bidId, 'amount', AMOUNT.toString())
   assert.fieldEquals('Bid', bidId, 'createdAtBlock', auctionCreationEvent.block.number.toString())
   assert.fieldEquals('Bid', bidId, 'createdAtTimestamp', auctionCreationEvent.block.timestamp.toString())
@@ -39,6 +41,7 @@ test('Bid is created on bid event', () => {
   let bidEvent = createBidEvent(TOKEN, BOB, AMOUNT)
   let bidId = '0x0000000000000000000000000000000000000002'
   bidEvent.transaction.hash = Address.fromString(bidId) as Bytes
+
   assert.entityCount('Bid', 1)
 
   onBid(bidEvent)
@@ -46,6 +49,7 @@ test('Bid is created on bid event', () => {
   assert.fieldEquals('Bid', bidId, 'id', bidId)
   assert.fieldEquals('Bid', bidId, 'user', BOB.toHex())
   assert.fieldEquals('Bid', bidId, 'amount', AMOUNT.toString())
+  assert.fieldEquals('Bid', bidId, 'auction', AUCTION_ID)
   assert.fieldEquals('Bid', bidId, 'createdAtBlock', bidEvent.block.number.toString())
   assert.fieldEquals('Bid', bidId, 'createdAtTimestamp', bidEvent.block.timestamp.toString())
 
