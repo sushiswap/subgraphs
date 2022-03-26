@@ -1,12 +1,12 @@
 import { BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { Stream } from '../../generated/schema';
 import {
-  LogCreateStream as CreateStreamEvent
+  LogCreateStream as CreateStreamEvent,
+  LogCancelStream as CancelStreamEvent
 } from '../../generated/FuroStream/FuroStream';
 import { getOrCreateUser } from './user';
 import { getOrCreateToken } from './token';
-import { ONGOING } from '../constants';
-import { log } from 'matchstick-as';
+import { CANCELLED, ONGOING } from '../constants';
 
 
 function getOrCreateStream(id: BigInt): Stream {
@@ -35,6 +35,16 @@ export function createStream(event: CreateStreamEvent): Stream {
   stream.fromBentoBox = event.params.fromBentoBox
   stream.startedAt = event.params.startTime
   stream.exiresAt = event.params.endTime
+  stream.modifiedAtBlock = event.block.number
+  stream.modifiedAtTimestamp = event.block.timestamp
+  stream.save()
+  return stream
+}
+
+export function cancelStream(event: CancelStreamEvent): Stream {
+  let stream = getOrCreateStream(event.params.streamId)
+  stream.amount = BigInt.fromU32(0)
+  stream.status = CANCELLED
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
   stream.save()
