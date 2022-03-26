@@ -1,9 +1,9 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
 import { LogCreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
-import { ONGOING } from '../src/constants'
-import { onCreateStream } from '../src/mappings/furo-stream'
-import { createStreamEvent, createTokenMock } from './mocks'
+import { CANCELLED, ONGOING } from '../src/constants'
+import { onCancelStream, onCreateStream } from '../src/mappings/furo-stream'
+import { createCancelStreamEvent, createStreamEvent, createTokenMock } from './mocks'
 
 const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
 const WBTC_ADDRESS = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
@@ -42,6 +42,24 @@ test('Stream entity contains expected fields', () => {
   assert.fieldEquals('Stream', id, 'exiresAt', END_TIME.toString())
   assert.fieldEquals('Stream', id, 'modifiedAtBlock', streamEvent.block.number.toString())
   assert.fieldEquals('Stream', id, 'modifiedAtTimestamp', streamEvent.block.timestamp.toString())
+
+  cleanup()
+})
+
+
+test('Cancel stream', () => {
+  setup()
+  const id = STREAM_ID.toString()
+  let cancelStreamEvent = createCancelStreamEvent(STREAM_ID, AMOUNT, AMOUNT, WETH_ADDRESS, true)
+
+  assert.fieldEquals('Stream', id, 'modifiedAtBlock', streamEvent.block.number.toString())
+  assert.fieldEquals('Stream', id, 'modifiedAtTimestamp', streamEvent.block.timestamp.toString())
+
+  onCancelStream(cancelStreamEvent)
+  
+  assert.fieldEquals('Stream', id, 'status', CANCELLED)
+  assert.fieldEquals('Stream', id, 'modifiedAtBlock', cancelStreamEvent.block.number.toString())
+  assert.fieldEquals('Stream', id, 'modifiedAtTimestamp', cancelStreamEvent.block.timestamp.toString())
 
   cleanup()
 })
