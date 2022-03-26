@@ -65,7 +65,7 @@ type Token @entity {
 
 type User @entity {
   id: ID!
-  streams: [Stream!]! @derivedFrom(field: "recipient")
+  revenueStreams: [Stream!]! @derivedFrom(field: "recipient")
   createdStreams: [Stream!]! @derivedFrom(field: "createdBy")
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
