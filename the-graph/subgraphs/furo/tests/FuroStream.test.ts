@@ -44,6 +44,7 @@ test('Stream entity contains expected fields', () => {
   assert.fieldEquals('Stream', id, 'createdAtTimestamp', streamEvent.block.timestamp.toString())
   assert.fieldEquals('Stream', id, 'modifiedAtBlock', streamEvent.block.number.toString())
   assert.fieldEquals('Stream', id, 'modifiedAtTimestamp', streamEvent.block.timestamp.toString())
+  assert.fieldEquals('Stream', id, 'transactionCount', '1')
 
   cleanup()
 })

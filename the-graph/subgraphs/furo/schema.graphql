@@ -22,6 +22,7 @@ type Stream @entity {
   fromBentoBox: Boolean!
   startedAt: BigInt!
   expiresAt: BigInt!
+  transactionCount: BigInt!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
   modifiedAtBlock: BigInt!
@@ -45,6 +46,8 @@ type Transaction @entity {
   to: User!
   token: Token!
   toBentoBox: Boolean!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
 }
 
 type Token @entity {

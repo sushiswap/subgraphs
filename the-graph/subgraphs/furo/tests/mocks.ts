@@ -118,9 +118,9 @@ export function createCancelStreamEvent(
   let toBentoBoxParam = new ethereum.EventParam('toBentoBox', ethereum.Value.fromBoolean(toBentoBox))
 
   event.parameters.push(streamIdParam)
+  event.parameters.push(senderBalanceParam)
   event.parameters.push(recipientBalanceParam)
   event.parameters.push(tokenParam)
-  event.parameters.push(senderBalanceParam)
   event.parameters.push(toBentoBoxParam)
 
   return event
