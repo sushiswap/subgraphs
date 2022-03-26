@@ -1,8 +1,14 @@
 enum StreamStatus {
   ACTIVE
   CANCELLED
-  EXIRED
+  EXPIRED
 }
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAW
+}
+
 
 type Stream @entity {
   id: ID!# starts at 1001
@@ -14,7 +20,7 @@ type Stream @entity {
   createdBy: User!
   fromBentoBox: Boolean!
   startedAt: BigInt!
-  exiresAt: BigInt!
+  expiresAt: BigInt!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
   modifiedAtBlock: BigInt!
@@ -30,8 +36,9 @@ type StreamUpdate @entity {
   fromBentoBox: Boolean!
 }
 
-type Withdraw @entity {
+type Transaction @entity {
   id: ID!
+  type: TransactionType
   stream: Stream!
   amount: BigInt!
   to: User!

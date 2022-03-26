@@ -34,7 +34,7 @@ export function createStream(event: CreateStreamEvent): Stream {
   stream.createdBy = sender.id
   stream.fromBentoBox = event.params.fromBentoBox
   stream.startedAt = event.params.startTime
-  stream.exiresAt = event.params.endTime
+  stream.expiresAt = event.params.endTime
 
   stream.createdAtBlock = event.block.number
   stream.createdAtTimestamp = event.block.timestamp
