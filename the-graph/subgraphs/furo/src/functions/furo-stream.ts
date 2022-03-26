@@ -35,8 +35,12 @@ export function createStream(event: CreateStreamEvent): Stream {
   stream.fromBentoBox = event.params.fromBentoBox
   stream.startedAt = event.params.startTime
   stream.exiresAt = event.params.endTime
+
+  stream.createdAtBlock = event.block.number
+  stream.createdAtTimestamp = event.block.timestamp
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
+
   stream.save()
   return stream
 }

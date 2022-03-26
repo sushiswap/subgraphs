@@ -40,6 +40,8 @@ test('Stream entity contains expected fields', () => {
   assert.fieldEquals('Stream', id, 'fromBentoBox', 'true')
   assert.fieldEquals('Stream', id, 'startedAt', START_TIME.toString())
   assert.fieldEquals('Stream', id, 'exiresAt', END_TIME.toString())
+  assert.fieldEquals('Stream', id, 'createdAtBlock', streamEvent.block.number.toString())
+  assert.fieldEquals('Stream', id, 'createdAtTimestamp', streamEvent.block.timestamp.toString())
   assert.fieldEquals('Stream', id, 'modifiedAtBlock', streamEvent.block.number.toString())
   assert.fieldEquals('Stream', id, 'modifiedAtTimestamp', streamEvent.block.timestamp.toString())
 
@@ -51,6 +53,8 @@ test('Cancel stream', () => {
   setup()
   const id = STREAM_ID.toString()
   let cancelStreamEvent = createCancelStreamEvent(STREAM_ID, AMOUNT, AMOUNT, WETH_ADDRESS, true)
+  cancelStreamEvent.block.number = BigInt.fromString("123")
+  cancelStreamEvent.block.timestamp = BigInt.fromString("11111111")
 
   assert.fieldEquals('Stream', id, 'modifiedAtBlock', streamEvent.block.number.toString())
   assert.fieldEquals('Stream', id, 'modifiedAtTimestamp', streamEvent.block.timestamp.toString())
