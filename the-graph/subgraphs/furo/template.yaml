@@ -21,8 +21,6 @@ dataSources:
       abis:
         - name: FuroStream
           file: ./abis/FuroStream.json
-        - name: FuroVesting
-          file: ./abis/FuroVesting.json
         - name: ERC20
           file: ./abis/ERC20.json
         - name: SymbolBytes32
@@ -38,35 +36,35 @@ dataSources:
           handler: onWithdraw
         # - event: OwnershipTransferred(indexed address,indexed address)
         #   handler: onOwnershipTransferred
-  - kind: ethereum/contract
-    name: FuroVesting
-    network: {{ network }}
-    source:
-      address: '{{ furo.vesting.address }}'
-      startBlock: {{ furo.vesting.startBlock }}
-      abi: FuroVesting
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/mappings/furo-vesting.ts
-      entities:
-        - Token
-      abis:
-        - name: FuroVesting
-          file: ./abis/FuroVesting.json
-        - name: ERC20
-          file: ./abis/ERC20.json
-        - name: SymbolBytes32
-          file: ./abis/SymbolBytes32.json
-        - name: NameBytes32
-          file: ./abis/NameBytes32.json
-      eventHandlers:
-        - event: LogStopVesting(indexed uint256,indexed uint256,indexed uint256,address,bool)
-          handler: onStopVesting
-        - event: LogUpdateOwner(indexed uint256,indexed address)
-          handler: onUpdateOwner
-        - event: LogWithdraw(indexed uint256,indexed address,indexed bool)
-          handler: onWithdraw
+  # - kind: ethereum/contract
+  #   name: FuroVesting
+  #   network: {{ network }}
+  #   source:
+  #     address: '{{ furo.vesting.address }}'
+  #     startBlock: {{ furo.vesting.startBlock }}
+  #     abi: FuroVesting
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.6
+  #     language: wasm/assemblyscript
+  #     file: ./src/mappings/furo-vesting.ts
+  #     entities:
+  #       - Token
+  #     abis:
+  #       - name: FuroVesting
+  #         file: ./abis/FuroVesting.json
+  #       - name: ERC20
+  #         file: ./abis/ERC20.json
+  #       - name: SymbolBytes32
+  #         file: ./abis/SymbolBytes32.json
+  #       - name: NameBytes32
+  #         file: ./abis/NameBytes32.json
+  #     eventHandlers:
+  #       - event: LogStopVesting(indexed uint256,indexed uint256,indexed uint256,address,bool)
+  #         handler: onStopVesting
+  #       - event: LogUpdateOwner(indexed uint256,indexed address)
+  #         handler: onUpdateOwner
+  #       - event: LogWithdraw(indexed uint256,indexed address,indexed bool)
+  #         handler: onWithdraw
         # - event: OwnershipTransferred(indexed address,indexed address)
         #   handler: onOwnershipTransferred

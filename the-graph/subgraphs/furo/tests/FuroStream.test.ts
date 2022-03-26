@@ -13,7 +13,7 @@ function cleanup(): void {
   clearStore()
 }
 
-test("test", () => {
+test("Create stream", () => {
   setup()
 
 

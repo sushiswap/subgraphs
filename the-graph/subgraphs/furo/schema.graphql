@@ -12,19 +12,29 @@ type Stream @entity {
   token: Token!
   status: StreamStatus!
   createdBy: User!
-  fromBentox: Boolean!
+  fromBentoBox: Boolean!
   startedAt: BigInt!
   exiresAt: BigInt!
   modifiedAtBlock: BigInt!
   modifiedAtTimestamp: BigInt!
 }
 
-type StreamTopUp @entity {
-  # TODO: rename, keep history of any changes made to the event
+
+type StreamUpdate @entity {
+  id: ID!
+  stream: Stream!
+  topUpAmount: BigInt!
+  extendTime: BigInt!
+  fromBentoBox: Boolean!
 }
 
-type Transaction @entity {
-  
+type Withdraw @entity {
+  id: ID!
+  stream: Stream!
+  amount: BigInt!
+  to: User!
+  token: Token!
+  toBentoBox: Boolean!
 }
 
 type Token @entity {
@@ -43,6 +53,7 @@ type Token @entity {
 type User @entity {
   id: ID!
   streams: [Stream!]! @derivedFrom(field: "recipient")
+  createdStreams: [Stream!]! @derivedFrom(field: "createdBy")
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
 }
