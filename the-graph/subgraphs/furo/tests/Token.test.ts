@@ -35,6 +35,8 @@ test('Token is created on stream creation event', () => {
   assert.fieldEquals('Token', WETH_ADDRESS.toHex(), 'decimals', TOKEN_DECIMALS.toString())
   assert.fieldEquals('Token', WETH_ADDRESS.toHex(), 'name', TOKEN_NAME)
   assert.fieldEquals('Token', WETH_ADDRESS.toHex(), 'symbol', TOKEN_SYMBOL)
+  assert.fieldEquals('Token', WETH_ADDRESS.toHex(), 'createdAtBlock', streamEvent.block.number.toString())
+  assert.fieldEquals('Token', WETH_ADDRESS.toHex(), 'createdAtTimestamp', streamEvent.block.timestamp.toString())
   
   cleanup()
 })

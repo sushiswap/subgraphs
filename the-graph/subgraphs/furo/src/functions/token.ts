@@ -1,11 +1,11 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { ERC20 } from '../../generated/FuroStream/ERC20'
 import { NameBytes32 } from '../../generated/FuroStream/NameBytes32'
 import { SymbolBytes32 } from '../../generated/FuroStream/SymbolBytes32'
 import { Token } from '../../generated/schema'
 
 
-export function getOrCreateToken(id: string): Token {
+export function getOrCreateToken(id: string, event: ethereum.Event): Token {
   let token = Token.load(id)
 
   if (token === null) {
@@ -23,7 +23,9 @@ export function getOrCreateToken(id: string): Token {
     token.symbolSuccess = symbol.success
     token.decimals = decimals.value
     token.decimalsSuccess = decimals.success
-
+    token.createdAtBlock = event.block.number
+    token.createdAtTimestamp = event.block.timestamp
+    
     token.save()
   }
 

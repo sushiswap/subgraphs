@@ -30,7 +30,11 @@ test('users are created on stream creation event', () => {
 
   assert.entityCount('User', 2)
   assert.fieldEquals('User', SENDER.toHex(), 'id', SENDER.toHex())
+  assert.fieldEquals('User', SENDER.toHex(), 'createdAtBlock', streamEvent.block.number.toString())
+  assert.fieldEquals('User', SENDER.toHex(), 'createdAtTimestamp', streamEvent.block.timestamp.toString())
   assert.fieldEquals('User', RECIEVER.toHex(), 'id', RECIEVER.toHex())
-  
+  assert.fieldEquals('User', SENDER.toHex(), 'createdAtBlock', streamEvent.block.number.toString())
+  assert.fieldEquals('User', SENDER.toHex(), 'createdAtTimestamp', streamEvent.block.timestamp.toString())
+
   cleanup()
 })

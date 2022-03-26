@@ -1,4 +1,4 @@
-import { BigInt } from '@graphprotocol/graph-ts';
+import { BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { Stream } from '../../generated/schema';
 import {
   LogCreateStream as CreateStreamEvent
@@ -22,10 +22,10 @@ function getOrCreateStream(id: BigInt): Stream {
 
 export function createStream(event: CreateStreamEvent): Stream {
   let stream = getOrCreateStream(event.params.streamId)
-  let recipient = getOrCreateUser(event.params.recipient)
-  let sender = getOrCreateUser(event.params.sender)
-  let token = getOrCreateToken(event.params.token.toHex())
-  
+  let recipient = getOrCreateUser(event.params.recipient, event)
+  let sender = getOrCreateUser(event.params.sender, event)
+  let token = getOrCreateToken(event.params.token.toHex(), event)
+
   stream.recipient = recipient.id
   stream.amount = event.params.amount
   stream.withdrawnAmount = BigInt.fromU32(0)
