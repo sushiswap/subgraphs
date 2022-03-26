@@ -6,7 +6,8 @@ enum StreamStatus {
 
 enum TransactionType {
   DEPOSIT
-  WITHDRAW
+  WITHDRAWAL
+  DISBURSEMENT # Payment to a user when stream is cancelled
 }
 
 
