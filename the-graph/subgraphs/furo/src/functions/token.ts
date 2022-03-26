@@ -1,11 +1,9 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-
-import { ERC20 } from '../../generated/BentoBox/ERC20'
-import { NameBytes32 } from '../../generated/BentoBox/NameBytes32'
-import { SymbolBytes32 } from '../../generated/BentoBox/SymbolBytes32'
+import { ERC20 } from '../../generated/FuroStream/ERC20'
+import { NameBytes32 } from '../../generated/FuroStream/NameBytes32'
+import { SymbolBytes32 } from '../../generated/FuroStream/SymbolBytes32'
 import { Token } from '../../generated/schema'
-import { createRebase } from './rebase'
-import { getOrCreateBentoBox } from '.'
+
 
 export function getOrCreateToken(id: string): Token {
   let token = Token.load(id)
@@ -19,20 +17,12 @@ export function getOrCreateToken(id: string): Token {
     const name = getTokenName(contract)
     const symbol = getTokenSymbol(contract)
 
-    const bentoBox = getOrCreateBentoBox()
-    bentoBox.tokenCount = bentoBox.tokenCount.plus(BigInt.fromU32(1 as u8))
-    bentoBox.save()
-
-    token.bentoBox = bentoBox.id
     token.name = name.value
     token.nameSuccess = name.success
     token.symbol = symbol.value
     token.symbolSuccess = symbol.success
     token.decimals = decimals.value
     token.decimalsSuccess = decimals.success
-
-    const rebase = createRebase(id)
-    token.rebase = rebase.id
 
     token.save()
   }
