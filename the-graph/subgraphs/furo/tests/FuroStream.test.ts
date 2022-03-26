@@ -1,9 +1,9 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { clearStore, test, assert, logStore } from 'matchstick-as/assembly/index'
-import { ONGOING } from '../src/constants'
+import { assert, clearStore, test } from 'matchstick-as/assembly/index'
 import { LogCreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
-import { createStreamEvent, createTokenMock } from './mocks'
+import { ONGOING } from '../src/constants'
 import { onCreateStream } from '../src/mappings/furo-stream'
+import { createStreamEvent, createTokenMock } from './mocks'
 
 const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
 const WBTC_ADDRESS = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
@@ -17,8 +17,8 @@ let streamEvent: CreateStreamEvent
 
 function setup(): void {
 
-  createTokenMock(WETH_ADDRESS.toHex(), BigInt.fromString('18'), 'Wrapped Ether', 'WETH')
   streamEvent = createStreamEvent(STREAM_ID, SENDER, RECIEVER, WETH_ADDRESS, AMOUNT, START_TIME, END_TIME, true)
+  createTokenMock(WETH_ADDRESS.toHex(), BigInt.fromString('18'), 'Wrapped Ether', 'WETH')
   onCreateStream(streamEvent)
 }
 

@@ -17,9 +17,8 @@ const END_TIME = BigInt.fromString('1650972295') // 	Tue Apr 26 2022 11:24:55 GM
 let streamEvent: CreateStreamEvent
 
 function setup(): void {
-
-  createTokenMock(WETH_ADDRESS.toHex(), TOKEN_DECIMALS, TOKEN_NAME, TOKEN_SYMBOL)
   streamEvent = createStreamEvent(STREAM_ID, SENDER, RECIEVER, WETH_ADDRESS, AMOUNT, START_TIME, END_TIME, true)
+  createTokenMock(WETH_ADDRESS.toHex(), TOKEN_DECIMALS, TOKEN_NAME, TOKEN_SYMBOL)
   onCreateStream(streamEvent)
 }
 
@@ -37,6 +36,6 @@ test('Token is created on stream creation event', () => {
   assert.fieldEquals('Token', WETH_ADDRESS.toHex(), 'symbol', TOKEN_SYMBOL)
   assert.fieldEquals('Token', WETH_ADDRESS.toHex(), 'createdAtBlock', streamEvent.block.number.toString())
   assert.fieldEquals('Token', WETH_ADDRESS.toHex(), 'createdAtTimestamp', streamEvent.block.timestamp.toString())
-  
+
   cleanup()
 })
