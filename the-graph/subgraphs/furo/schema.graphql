@@ -7,9 +7,15 @@ enum StreamStatus {
 enum TransactionType {
   DEPOSIT
   WITHDRAWAL
-  DISBURSEMENT # Payment to a user when stream is cancelled
+  DISBURSEMENT # Payment to a sender and reciever when stream is cancelled
 }
 
+type Furo @entity {
+  id: ID!# Hardcoded to 'Furo'
+  streamCount: BigInt!
+  userCount: BigInt!
+  transactionCount: BigInt!
+}
 
 type Stream @entity {
   id: ID!# starts at 1001
@@ -29,14 +35,14 @@ type Stream @entity {
   modifiedAtTimestamp: BigInt!
 }
 
-
-type StreamUpdate @entity {
-  id: ID!
-  stream: Stream!
-  topUpAmount: BigInt!
-  extendTime: BigInt!
-  fromBentoBox: Boolean!
-}
+# TODO: Add update entity when contract is updated
+# type StreamUpdate @entity {
+#   id: ID!
+#   stream: Stream!
+#   topUpAmount: BigInt!
+#   extendTime: BigInt!
+#   fromBentoBox: Boolean!
+# }
 
 type Transaction @entity {
   id: ID!
