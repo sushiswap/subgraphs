@@ -1,9 +1,9 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
 import { LogCreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
-import { CANCELLED, DEPOSIT, DISBURSEMENT, ONGOING, WITHDRAWAL } from '../src/constants'
-import { onCancelStream, onCreateStream } from '../src/mappings/furo-stream'
-import { createCancelStreamEvent, createStreamEvent, createTokenMock } from './mocks'
+import { DEPOSIT, DISBURSEMENT, WITHDRAWAL } from '../src/constants'
+import { onCancelStream, onCreateStream, onWithdraw } from '../src/mappings/furo-stream'
+import { createCancelStreamEvent, createStreamEvent, createTokenMock, createWithdrawEvent } from './mocks'
 
 const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
 const WBTC_ADDRESS = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
@@ -74,5 +74,28 @@ test('Cancel stream', () => {
   assert.fieldEquals('Transaction', id2, 'toBentoBox', 'true')
   assert.fieldEquals('Transaction', id2, 'createdAtBlock', cancelStreamEvent.block.number.toString())
   assert.fieldEquals('Transaction', id2, 'createdAtTimestamp', cancelStreamEvent.block.timestamp.toString())
+  cleanup()
+})
+
+test('Withdraw from stream creates a Transaction', () => {
+  setup()
+  const id = STREAM_ID.toString().concat(":tx:1")
+  const amount2 = BigInt.fromString('2000')
+  let withdrawalEvent = createWithdrawEvent(STREAM_ID, amount2, RECIEVER, WETH_ADDRESS, true)
+  withdrawalEvent.block.number = BigInt.fromString("123")
+  withdrawalEvent.block.timestamp = BigInt.fromString("11111111")
+
+  onWithdraw(withdrawalEvent)
+  assert.entityCount('Transaction', 2)
+  assert.fieldEquals('Transaction', id, 'id', id)
+  assert.fieldEquals('Transaction', id, 'type', WITHDRAWAL)
+  assert.fieldEquals('Transaction', id, 'stream', STREAM_ID.toString())
+  assert.fieldEquals('Transaction', id, 'amount', amount2.toString())
+  assert.fieldEquals('Transaction', id, 'to', RECIEVER.toHex())
+  assert.fieldEquals('Transaction', id, 'token', WETH_ADDRESS.toHex())
+  assert.fieldEquals('Transaction', id, 'toBentoBox', 'true')
+  assert.fieldEquals('Transaction', id, 'createdAtBlock', withdrawalEvent.block.number.toString())
+  assert.fieldEquals('Transaction', id, 'createdAtTimestamp', withdrawalEvent.block.timestamp.toString())
+
   cleanup()
 })

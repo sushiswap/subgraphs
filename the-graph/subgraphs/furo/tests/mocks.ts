@@ -80,9 +80,9 @@ export function createWithdrawEvent(
   let toBentoBoxParam = new ethereum.EventParam('toBentoBox', ethereum.Value.fromBoolean(toBentoBox))
 
   event.parameters.push(streamIdParam)
+  event.parameters.push(sharesToWithdrawParam)
   event.parameters.push(withdrawToParam)
   event.parameters.push(tokenParam)
-  event.parameters.push(sharesToWithdrawParam)
   event.parameters.push(toBentoBoxParam)
 
   return event

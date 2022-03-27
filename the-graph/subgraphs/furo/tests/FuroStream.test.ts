@@ -2,8 +2,8 @@ import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
 import { LogCreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
 import { CANCELLED, ONGOING } from '../src/constants'
-import { onCancelStream, onCreateStream } from '../src/mappings/furo-stream'
-import { createCancelStreamEvent, createStreamEvent, createTokenMock } from './mocks'
+import { onCancelStream, onCreateStream, onWithdraw } from '../src/mappings/furo-stream'
+import { createCancelStreamEvent, createStreamEvent, createTokenMock, createWithdrawEvent } from './mocks'
 
 const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
 const WBTC_ADDRESS = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
@@ -65,6 +65,27 @@ test('Cancel stream', () => {
   assert.fieldEquals('Stream', id, 'status', CANCELLED)
   assert.fieldEquals('Stream', id, 'modifiedAtBlock', cancelStreamEvent.block.number.toString())
   assert.fieldEquals('Stream', id, 'modifiedAtTimestamp', cancelStreamEvent.block.timestamp.toString())
+
+  cleanup()
+})
+
+
+test('Withdraw from stream', () => {
+  setup()
+  const id = STREAM_ID.toString()
+  const amount2 = BigInt.fromString('2000')
+  let withdrawalEvent = createWithdrawEvent(STREAM_ID, amount2, RECIEVER, WETH_ADDRESS, true)
+  withdrawalEvent.block.number = BigInt.fromString("123")
+  withdrawalEvent.block.timestamp = BigInt.fromString("11111111")
+
+  assert.fieldEquals('Stream', id, 'withdrawnAmount', '0')
+  assert.fieldEquals('Stream', id, 'modifiedAtBlock', streamEvent.block.number.toString())
+  assert.fieldEquals('Stream', id, 'modifiedAtTimestamp', streamEvent.block.timestamp.toString())
+
+  onWithdraw(withdrawalEvent)
+  assert.fieldEquals('Stream', id, 'withdrawnAmount', amount2.toString())
+  assert.fieldEquals('Stream', id, 'modifiedAtBlock', withdrawalEvent.block.number.toString())
+  assert.fieldEquals('Stream', id, 'modifiedAtTimestamp', withdrawalEvent.block.timestamp.toString())
 
   cleanup()
 })
