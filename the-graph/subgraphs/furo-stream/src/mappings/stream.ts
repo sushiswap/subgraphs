@@ -2,8 +2,8 @@ import {
   LogCancelStream as CancelStreamEvent,
   LogCreateStream as CreateStreamEvent,
   LogWithdrawFromStream as WithdrawEvent,
-} from '../FuroStream/FuroStream'
-import { cancelStream, createStream, getOrCreateStream, withdrawFromStream } from '../functions/furo-stream'
+} from '../../generated/FuroStream/FuroStream'
+import { cancelStream, createStream, getOrCreateStream, withdrawFromStream } from '../functions/stream'
 import {
   createDepositTransaction,
   createDisbursementTransactions,

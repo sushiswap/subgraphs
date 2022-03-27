@@ -1,0 +1,69 @@
+enum VestingStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  DISBURSEMENT # Payment to a sender and reciever when Vesting is cancelled
+}
+
+type Furo @entity {
+  id: ID!# Hardcoded to 'Furo'
+  vestingCount: BigInt!
+  userCount: BigInt!
+  transactionCount: BigInt!
+}
+
+type Vesting @entity {
+  id: ID!# starts at 1001
+  recipient: User!
+  amount: BigInt!
+  withdrawnAmount: BigInt!
+  token: Token!
+  status: VestingStatus!
+  createdBy: User!
+  fromBentoBox: Boolean!
+  startedAt: BigInt!
+  expiresAt: BigInt!
+  transactionCount: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+  modifiedAtBlock: BigInt!
+  modifiedAtTimestamp: BigInt!
+}
+
+type Transaction @entity {
+  id: ID!
+  type: TransactionType
+  vesting: Vesting!
+  amount: BigInt!
+  to: User!
+  token: Token!
+  toBentoBox: Boolean!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+type Token @entity {
+  id: ID!
+  symbol: String!
+  symbolSuccess: Boolean!
+  name: String!
+  nameSuccess: Boolean!
+  decimals: BigInt!
+  decimalsSuccess: Boolean!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+
+type User @entity {
+  id: ID!
+  revenueVestings: [Vesting!]! @derivedFrom(field: "recipient")
+  createdVestings: [Vesting!]! @derivedFrom(field: "createdBy")
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}

@@ -1,12 +1,9 @@
-import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { Stream, Transaction, User } from '../schema'
+import { BigInt, ethereum } from '@graphprotocol/graph-ts';
 import {
-  LogCreateStream as CreateStreamEvent,
-  LogCancelStream as CancelStreamEvent,
-  LogWithdrawFromStream as WithdrawalEvent
-} from '../FuroStream/FuroStream';
+  LogCancelStream as CancelStreamEvent, LogCreateStream as CreateStreamEvent, LogWithdrawFromStream as WithdrawalEvent
+} from '../../generated/FuroStream/FuroStream';
+import { Stream, Transaction } from '../../generated/schema';
 import { DEPOSIT, DISBURSEMENT, WITHDRAWAL } from '../constants';
-import { log } from 'matchstick-as';
 import { increaseTransactionCount } from './furo';
 
 function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction {

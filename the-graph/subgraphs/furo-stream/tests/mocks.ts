@@ -4,7 +4,7 @@ import {
   LogCancelStream as CancelStreamEvent,
   LogCreateStream as CreateStreamEvent,
   LogWithdrawFromStream as WithdrawEvent,
-} from './FuroStream/FuroStream'
+} from '../generated/FuroStream/FuroStream'
 
 export function createStreamEvent(
   streamId: BigInt,

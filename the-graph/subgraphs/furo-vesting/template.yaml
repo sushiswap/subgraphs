@@ -1,0 +1,42 @@
+specVersion: 0.0.4
+description: Furo Vesting
+repository: https://github.com/sushiswap/subgraphs
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: FuroVesting
+    network: {{ network }}
+    source:
+      address: '{{ furo.vesting.address }}'
+      startBlock: {{ furo.vesting.startBlock }}
+      abi: FuroVesting
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/vesting.ts
+      entities:
+        - Token
+        - User
+        - Transaction
+        - Vesting
+        - Furo
+      abis:
+        - name: FuroVesting
+          file: ./abis/FuroVesting.json
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: SymbolBytes32
+          file: ./abis/SymbolBytes32.json
+        - name: NameBytes32
+          file: ./abis/NameBytes32.json
+      eventHandlers:
+        - event: LogCreateVesting(indexed address,indexed address,indexed address,uint32,uint32,uint32,uint32,uint128,uint128)
+          handler: onCreateVesting
+        - event: LogStopVesting(indexed uint256,indexed uint256,indexed uint256,address,bool)
+          handler: onStopVesting
+        - event: LogWithdraw(indexed uint256,indexed address,indexed bool)
+          handler: onWithdraw
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: onTransfer
