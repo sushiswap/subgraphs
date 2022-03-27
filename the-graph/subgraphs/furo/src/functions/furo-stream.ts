@@ -8,6 +8,7 @@ import {
 import { getOrCreateUser } from './user';
 import { getOrCreateToken } from './token';
 import { CANCELLED, ONGOING } from '../constants';
+import { increaseStreamCount } from './furo';
 
 
 export function getOrCreateStream(id: BigInt): Stream {
@@ -15,6 +16,7 @@ export function getOrCreateStream(id: BigInt): Stream {
 
   if (stream === null) {
     stream = new Stream(id.toString())
+    increaseStreamCount()
   }
   stream.save()
 
@@ -42,7 +44,8 @@ export function createStream(event: CreateStreamEvent): Stream {
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
   stream.save()
-  
+
+
   return stream
 }
 

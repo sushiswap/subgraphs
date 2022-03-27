@@ -1,5 +1,6 @@
 import { Address, ethereum } from '@graphprotocol/graph-ts'
 import { User } from '../../generated/schema'
+import { increaseUserCount } from './furo'
 
 
 export function getOrCreateUser(id: Address, event: ethereum.Event): User {
@@ -9,6 +10,7 @@ export function getOrCreateUser(id: Address, event: ethereum.Event): User {
     user = new User(id.toHex())
     user.createdAtBlock = event.block.number
     user.createdAtTimestamp = event.block.timestamp
+    increaseUserCount()
   }
 
   user.save()

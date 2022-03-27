@@ -7,6 +7,7 @@ import {
 } from '../../generated/FuroStream/FuroStream';
 import { DEPOSIT, DISBURSEMENT, WITHDRAWAL } from '../constants';
 import { log } from 'matchstick-as';
+import { increaseTransactionCount } from './furo';
 
 function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction {
   let transaction = Transaction.load(id)
@@ -15,6 +16,7 @@ function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction 
     transaction = new Transaction(id)
     transaction.createdAtBlock = event.block.number
     transaction.createdAtTimestamp = event.block.timestamp
+    increaseTransactionCount()
   }
 
   transaction.save()
