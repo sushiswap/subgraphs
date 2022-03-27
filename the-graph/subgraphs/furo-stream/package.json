@@ -1,0 +1,25 @@
+{
+  "name": "@sushiswap/furo-stream-subgraph",
+  "author": "Ola Stenberg <hello@olastenberg.com>",
+  "license": "MIT",
+  "repository": {
+    "url": "sushiswap/subgraphs",
+    "directory": "subgraphs/furo-stream"
+  },
+  "files": [
+    "generated"
+  ],
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ sushiswap/furo-stream",
+    "create-local": "graph create --node http://localhost:8020/ sushiswap/furo-stream",
+    "remove-local": "graph remove --node http://localhost:8020/ sushiswap/furo-stream",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/furo-stream"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.27.0",
+    "@graphprotocol/graph-ts": "^0.24.1",
+    "matchstick-as": "^0.4.2"
+  }
+}

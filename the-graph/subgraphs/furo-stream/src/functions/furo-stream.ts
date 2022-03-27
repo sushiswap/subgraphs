@@ -1,10 +1,10 @@
 import { BigInt, ethereum } from '@graphprotocol/graph-ts';
-import { Stream } from '../../generated/schema';
+import { Stream } from '../schema';
 import {
   LogCreateStream as CreateStreamEvent,
   LogCancelStream as CancelStreamEvent,
   LogWithdrawFromStream as WithdrawalEvent
-} from '../../generated/FuroStream/FuroStream';
+} from '../FuroStream/FuroStream';
 import { getOrCreateUser } from './user';
 import { getOrCreateToken } from './token';
 import { CANCELLED, ONGOING } from '../constants';

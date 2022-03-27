@@ -1,5 +1,5 @@
 import { Address, ethereum } from '@graphprotocol/graph-ts'
-import { User } from '../../generated/schema'
+import { User } from '../schema'
 import { increaseUserCount } from './furo'
 
 

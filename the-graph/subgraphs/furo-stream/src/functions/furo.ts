@@ -1,5 +1,5 @@
 import { BigInt } from '@graphprotocol/graph-ts'
-import { Furo } from '../../generated/schema'
+import { Furo } from '../schema'
 import { FURO } from '../constants'
 
 function getOrCreateFuro(): Furo {

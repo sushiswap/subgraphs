@@ -1,10 +1,10 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { Stream, Transaction, User } from '../../generated/schema'
+import { Stream, Transaction, User } from '../schema'
 import {
   LogCreateStream as CreateStreamEvent,
   LogCancelStream as CancelStreamEvent,
   LogWithdrawFromStream as WithdrawalEvent
-} from '../../generated/FuroStream/FuroStream';
+} from '../FuroStream/FuroStream';
 import { DEPOSIT, DISBURSEMENT, WITHDRAWAL } from '../constants';
 import { log } from 'matchstick-as';
 import { increaseTransactionCount } from './furo';

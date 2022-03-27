@@ -1,5 +1,5 @@
 specVersion: 0.0.4
-description: Furo
+description: Furo Stream
 repository: https://github.com/sushiswap/subgraphs
 schema:
   file: ./schema.graphql
@@ -18,6 +18,10 @@ dataSources:
       file: ./src/mappings/furo-stream.ts
       entities:
         - Token
+        - User
+        - Transaction
+        - Stream
+        - Furo
       abis:
         - name: FuroStream
           file: ./abis/FuroStream.json

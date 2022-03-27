@@ -1,7 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { assert, clearStore, test } from 'matchstick-as/assembly/index'
-import { LogCreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
-import { onCreateStream } from '../src/mappings/furo-stream'
+import { assert, clearStore, test } from 'matchstick-as'
+import { LogCreateStream as CreateStreamEvent } from './FuroStream/FuroStream'
+import { onCreateStream } from './mappings/furo-stream'
 import { createStreamEvent, createTokenMock } from './mocks'
 
 const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
