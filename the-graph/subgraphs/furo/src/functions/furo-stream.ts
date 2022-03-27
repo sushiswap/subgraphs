@@ -2,14 +2,15 @@ import { BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { Stream } from '../../generated/schema';
 import {
   LogCreateStream as CreateStreamEvent,
-  LogCancelStream as CancelStreamEvent
+  LogCancelStream as CancelStreamEvent,
+  LogWithdrawFromStream as WithdrawalEvent
 } from '../../generated/FuroStream/FuroStream';
 import { getOrCreateUser } from './user';
 import { getOrCreateToken } from './token';
 import { CANCELLED, ONGOING } from '../constants';
 
 
-function getOrCreateStream(id: BigInt): Stream {
+export function getOrCreateStream(id: BigInt): Stream {
   let stream = Stream.load(id.toString())
 
   if (stream === null) {
@@ -40,8 +41,8 @@ export function createStream(event: CreateStreamEvent): Stream {
   stream.createdAtTimestamp = event.block.timestamp
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
-
   stream.save()
+  
   return stream
 }
 
@@ -52,5 +53,16 @@ export function cancelStream(event: CancelStreamEvent): Stream {
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
   stream.save()
+
+  return stream
+}
+
+export function withdrawFromStream(event: WithdrawalEvent) : Stream {
+  const stream = getOrCreateStream(event.params.streamId)
+  stream.withdrawnAmount = stream.withdrawnAmount.plus(event.params.sharesToWithdraw)
+  stream.modifiedAtBlock = event.block.number
+  stream.modifiedAtTimestamp = event.block.timestamp
+  stream.save()
+
   return stream
 }

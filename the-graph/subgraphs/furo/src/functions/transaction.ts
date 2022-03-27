@@ -2,7 +2,8 @@ import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { Stream, Transaction, User } from '../../generated/schema'
 import {
   LogCreateStream as CreateStreamEvent,
-  LogCancelStream as CancelStreamEvent
+  LogCancelStream as CancelStreamEvent,
+  LogWithdrawFromStream as WithdrawalEvent
 } from '../../generated/FuroStream/FuroStream';
 import { DEPOSIT, DISBURSEMENT, WITHDRAWAL } from '../constants';
 import { log } from 'matchstick-as';
@@ -64,4 +65,21 @@ export function createDisbursementTransactions(stream: Stream, event: CancelStre
 
   stream.transactionCount = stream.transactionCount.plus(BigInt.fromU32(1))
   stream.save()
+}
+
+export function createWithdrawalTransaction(stream: Stream, event: WithdrawalEvent): Transaction {
+  const transactionId = stream.id.concat(":tx:").concat(stream.transactionCount.toString())
+  let transaction = getOrCreateTransaction(transactionId, event)
+  transaction.type = WITHDRAWAL
+  transaction.stream = stream.id
+  transaction.amount = event.params.sharesToWithdraw
+  transaction.to = stream.recipient
+  transaction.token = event.params.token.toHex()
+  transaction.toBentoBox = event.params.toBentoBox // TODO: is this logic correctly mapped? negation needed?
+  transaction.save()
+
+  stream.transactionCount = stream.transactionCount.plus(BigInt.fromU32(1))
+  stream.save()
+
+  return transaction as Transaction
 }
