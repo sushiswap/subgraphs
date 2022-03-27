@@ -4,6 +4,12 @@ enum VestingStatus {
   EXPIRED
 }
 
+enum SchedulePeriodType {
+  START
+  CLIFF
+  END
+}
+
 enum TransactionType {
   DEPOSIT
   WITHDRAWAL
@@ -20,19 +26,34 @@ type Furo @entity {
 type Vesting @entity {
   id: ID!# starts at 1001
   recipient: User!
-  amount: BigInt!
-  withdrawnAmount: BigInt!
+  cliffDuration: BigInt!
+  stepDuration: BigInt!
+  steps: BigInt!
+  cliffAmount: BigInt!
+  stepAmount: BigInt!
   token: Token!
+  schedule: Schedule!
   status: VestingStatus!
   createdBy: User!
   fromBentoBox: Boolean!
   startedAt: BigInt!
   expiresAt: BigInt!
-  transactionCount: BigInt!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
-  modifiedAtBlock: BigInt!
-  modifiedAtTimestamp: BigInt!
+}
+
+type Schedule @entity {
+  id: ID!
+  vesting: Vesting!
+  periods: SchedulePeriod! @derivedFrom(field: "schedule")
+}
+
+type SchedulePeriod @entity {
+  id: ID!
+  schedule: Schedule!
+  time: BigInt!
+  type: SchedulePeriodType!
+  amount: BigInt!
 }
 
 type Transaction @entity {
@@ -62,7 +83,7 @@ type Token @entity {
 
 type User @entity {
   id: ID!
-  revenueVestings: [Vesting!]! @derivedFrom(field: "recipient")
+  vestings: [Vesting!]! @derivedFrom(field: "recipient")
   createdVestings: [Vesting!]! @derivedFrom(field: "createdBy")
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
