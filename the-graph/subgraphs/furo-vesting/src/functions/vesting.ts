@@ -1,53 +1,65 @@
-// import { BigInt, ethereum } from '@graphprotocol/graph-ts';
-// import { Stream } from '../schema';
-// import {
-//   LogCreateStream as CreateStreamEvent,
-//   LogCancelStream as CancelStreamEvent,
-//   LogWithdrawFromStream as WithdrawalEvent
-// } from '../FuroStream/FuroStream';
-// import { getOrCreateUser } from './user';
-// import { getOrCreateToken } from './token';
-// import { CANCELLED, ONGOING } from '../constants';
-// import { increaseStreamCount } from './furo';
+import { BigInt } from '@graphprotocol/graph-ts'
+import { LogCreateVesting as CreateVestingEvent } from '../../generated/FuroVesting/FuroVesting'
+import { Vesting } from '../../generated/schema'
+import { ACTIVE } from '../constants'
+import { increaseVestingCount } from './furo'
+import { getOrCreateToken } from './token'
+import { getOrCreateUser } from './user'
 
+export function getOrCreateVesting(id: BigInt): Vesting {
+  let vesting = Vesting.load(id.toString())
 
-// export function getOrCreateStream(id: BigInt): Stream {
-//   let stream = Stream.load(id.toString())
+  if (vesting === null) {
+    vesting = new Vesting(id.toString())
+    increaseVestingCount()
+  }
+  vesting.save()
 
-//   if (stream === null) {
-//     stream = new Stream(id.toString())
-//     increaseStreamCount()
-//   }
-//   stream.save()
+  return vesting as Vesting
+}
 
-//   return stream as Stream
-// }
+export function createVesting(event: CreateVestingEvent): Vesting {
+  const vestId = BigInt.fromString('1') // FIXME: hardcoded id for now, Sarang will add id to event later
+  let vesting = getOrCreateVesting(vestId) //getOrCreateVesting(event.params.vestId)
+  let recipient = getOrCreateUser(event.params.recipient, event)
+  let owner = getOrCreateUser(event.params.owner, event)
+  let token = getOrCreateToken(event.params.token.toHex(), event)
+  // TODO: scheduler
 
-// export function createStream(event: CreateStreamEvent): Stream {
-//   let stream = getOrCreateStream(event.params.streamId)
-//   let recipient = getOrCreateUser(event.params.recipient, event)
-//   let sender = getOrCreateUser(event.params.sender, event)
-//   let token = getOrCreateToken(event.params.token.toHex(), event)
+  vesting.recipient = recipient.id
+  vesting.createdBy = owner.id
+  vesting.token = token.id
+  vesting.cliffDuration = event.params.cliffDuration
+  vesting.stepDuration = event.params.stepDuration
+  vesting.steps = event.params.steps
+  vesting.cliffAmount = event.params.cliffAmount
+  vesting.stepAmount = event.params.stepAmount
+  //   vesting.schedule = scheduler.id
+  vesting.status = ACTIVE
+  vesting.fromBentoBox = true //FIXME: waiting for Sarang to update the event, later use event.params.fromBentoBox
+  vesting.startedAt = event.params.start
+  vesting.expiresAt = calculateExpirationDate(vesting)
 
-//   stream.recipient = recipient.id
-//   stream.amount = event.params.amount
-//   stream.withdrawnAmount = BigInt.fromU32(0)
-//   stream.token = token.id
-//   stream.status = ONGOING
-//   stream.createdBy = sender.id
-//   stream.fromBentoBox = event.params.fromBentoBox
-//   stream.startedAt = event.params.startTime
-//   stream.expiresAt = event.params.endTime
+  vesting.createdAtBlock = event.block.number
+  vesting.createdAtTimestamp = event.block.timestamp
+  vesting.save()
 
-//   stream.createdAtBlock = event.block.number
-//   stream.createdAtTimestamp = event.block.timestamp
-//   stream.modifiedAtBlock = event.block.number
-//   stream.modifiedAtTimestamp = event.block.timestamp
-//   stream.save()
+  return vesting
+}
 
+function calculateExpirationDate(vest: Vesting): BigInt {
+  const startTime = vest.startedAt
+  const cliffDuration = vest.cliffDuration
+  const paymentDuration = vest.stepDuration.times(vest.steps)
 
-//   return stream
-// }
+  return startTime.plus(cliffDuration).plus(paymentDuration)
+}
+
+function calculateTotalAmount(vest: Vesting): BigInt {
+  const totalStepSum = vest.stepAmount.times(vest.steps)
+
+  return vest.cliffAmount.plus(totalStepSum)
+}
 
 // export function cancelStream(event: CancelStreamEvent): Stream {
 //   let stream = getOrCreateStream(event.params.streamId)

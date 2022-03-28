@@ -32,7 +32,6 @@ export function createVestingEvent(
   )
 
   event.parameters = new Array()
-  let vestIdParam = new ethereum.EventParam('vestId', ethereum.Value.fromUnsignedBigInt(vestId))
   let tokenParam = new ethereum.EventParam('token', ethereum.Value.fromAddress(token))
   let senderParam = new ethereum.EventParam('sender', ethereum.Value.fromAddress(sender))
   let recipientParam = new ethereum.EventParam('recipient', ethereum.Value.fromAddress(recipient))
@@ -43,8 +42,8 @@ export function createVestingEvent(
   let cliffAmountParam = new ethereum.EventParam('cliffAmount', ethereum.Value.fromUnsignedBigInt(cliffAmount))
   let stepAmountParam = new ethereum.EventParam('stepAmount', ethereum.Value.fromUnsignedBigInt(stepAmount))
   let fromBentoBoxParam = new ethereum.EventParam('fromBentoBox', ethereum.Value.fromBoolean(fromBentoBox))
+  let vestIdParam = new ethereum.EventParam('vestId', ethereum.Value.fromUnsignedBigInt(vestId))
 
-  event.parameters.push(vestIdParam)
   event.parameters.push(tokenParam)
   event.parameters.push(senderParam)
   event.parameters.push(recipientParam)
@@ -55,6 +54,7 @@ export function createVestingEvent(
   event.parameters.push(cliffAmountParam)
   event.parameters.push(stepAmountParam)
   event.parameters.push(fromBentoBoxParam)
+  event.parameters.push(vestIdParam)
 
   return event
 }

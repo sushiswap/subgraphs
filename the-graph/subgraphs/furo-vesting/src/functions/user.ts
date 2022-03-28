@@ -1,19 +1,19 @@
-// import { Address, ethereum } from '@graphprotocol/graph-ts'
-// import { User } from '../schema'
-// import { increaseUserCount } from './furo'
+import { Address, ethereum } from '@graphprotocol/graph-ts'
+import { User } from '../../generated/schema'
+import { increaseUserCount } from './furo'
 
 
-// export function getOrCreateUser(id: Address, event: ethereum.Event): User {
-//   let user = User.load(id.toHex())
+export function getOrCreateUser(id: Address, event: ethereum.Event): User {
+  let user = User.load(id.toHex())
 
-//   if (user === null) {
-//     user = new User(id.toHex())
-//     user.createdAtBlock = event.block.number
-//     user.createdAtTimestamp = event.block.timestamp
-//     increaseUserCount()
-//   }
+  if (user === null) {
+    user = new User(id.toHex())
+    user.createdAtBlock = event.block.number
+    user.createdAtTimestamp = event.block.timestamp
+    increaseUserCount()
+  }
 
-//   user.save()
+  user.save()
 
-//   return user as User
-// }
+  return user as User
+}
