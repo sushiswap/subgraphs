@@ -1,5 +1,4 @@
 import { BigInt } from '@graphprotocol/graph-ts'
-import { log } from 'matchstick-as'
 import { Schedule, SchedulePeriod, Vesting } from '../../generated/schema'
 import { CLIFF, END, START, STEP } from '../constants'
 

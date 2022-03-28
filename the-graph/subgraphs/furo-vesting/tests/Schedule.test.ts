@@ -1,9 +1,9 @@
-import { Address, BigInt, log } from '@graphprotocol/graph-ts'
-import { assert, clearStore, logStore, test } from 'matchstick-as'
-import { ACTIVE, CANCELLED, CLIFF, END, START, STEP, WEEK, YEAR } from '../src/constants'
-import { onCreateVesting } from '../src/mappings/vesting'
-import { createCancelStreamEvent, createTokenMock, createVestingEvent, createWithdrawEvent } from './mocks'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { assert, clearStore, test } from 'matchstick-as'
 import { LogCreateVesting as CreateVestingEvent } from '../generated/FuroVesting/FuroVesting'
+import { CLIFF, END, START, STEP, WEEK, YEAR } from '../src/constants'
+import { onCreateVesting } from '../src/mappings/vesting'
+import { createTokenMock, createVestingEvent } from './mocks'
 
 const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
 const SENDER = Address.fromString('0x00000000000000000000000000000000000a71ce')
@@ -16,9 +16,6 @@ const CLIFF_DURATION = BigInt.fromU32(YEAR)
 const biweekly = 2 * WEEK
 const STEP_DURATION = BigInt.fromU32(biweekly)
 const STEPS = BigInt.fromU32(26)
-
-const END_TIME = START_TIME.plus(CLIFF_DURATION).plus(STEPS.times(STEP_DURATION)) // Sun Mar 24 2024 12:24:55 GMT+0000, two years later
-const TOTAL_AMOUNT = CLIFF_AMOUNT.plus(STEPS.times(STEPS_AMOUNT)) // 100000000 + (26 * 10000000) = 360000000
 
 let vestingEvent: CreateVestingEvent
 

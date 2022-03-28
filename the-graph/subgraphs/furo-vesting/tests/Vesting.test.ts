@@ -1,9 +1,9 @@
-import { Address, BigInt, log } from '@graphprotocol/graph-ts'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
-import { ACTIVE, CANCELLED, WEEK, YEAR } from '../src/constants'
-import { onCreateVesting } from '../src/mappings/vesting'
-import { createCancelStreamEvent, createTokenMock, createVestingEvent, createWithdrawEvent } from './mocks'
 import { LogCreateVesting as CreateVestingEvent } from '../generated/FuroVesting/FuroVesting'
+import { ACTIVE, WEEK, YEAR } from '../src/constants'
+import { onCreateVesting } from '../src/mappings/vesting'
+import { createTokenMock, createVestingEvent } from './mocks'
 
 const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
 const SENDER = Address.fromString('0x00000000000000000000000000000000000a71ce')
@@ -47,7 +47,7 @@ function cleanup(): void {
 
 test('Created vesting contains expected fields', () => {
   setup()
-  
+
   const id = VESTING_ID.toString()
   assert.fieldEquals('Vesting', id, 'id', id)
   assert.fieldEquals('Vesting', id, 'recipient', RECIEVER.toHex())
