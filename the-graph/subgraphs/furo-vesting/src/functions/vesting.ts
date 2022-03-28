@@ -78,16 +78,7 @@ function calculateTotalAmount(vest: Vesting): BigInt {
   return vest.cliffAmount.plus(totalStepSum)
 }
 
-// export function cancelStream(event: CancelStreamEvent): Stream {
-//   let stream = getOrCreateStream(event.params.streamId)
-//   stream.amount = BigInt.fromU32(0)
-//   stream.status = CANCELLED
-//   stream.modifiedAtBlock = event.block.number
-//   stream.modifiedAtTimestamp = event.block.timestamp
-//   stream.save()
 
-//   return stream
-// }
 
 // export function withdrawFromStream(event: WithdrawalEvent) : Stream {
 //   const stream = getOrCreateStream(event.params.streamId)

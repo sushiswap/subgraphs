@@ -9,65 +9,71 @@
 // import { log } from 'matchstick-as';
 // import { increaseTransactionCount } from './furo';
 
-// function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction {
-//   let transaction = Transaction.load(id)
+import { BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { LogCreateVesting as CreateVestingEvent, LogStopVesting as CancelVestingEvent } from '../../generated/FuroVesting/FuroVesting'
+import { Transaction, Vesting } from "../../generated/schema"
+import { DEPOSIT, DISBURSEMENT } from '../constants'
+import { increaseTransactionCount } from './furo'
+
+function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction {
+  let transaction = Transaction.load(id)
   
-//   if (transaction === null) {
-//     transaction = new Transaction(id)
-//     transaction.createdAtBlock = event.block.number
-//     transaction.createdAtTimestamp = event.block.timestamp
-//     increaseTransactionCount()
-//   }
+  if (transaction === null) {
+    transaction = new Transaction(id)
+    transaction.createdAtBlock = event.block.number
+    transaction.createdAtTimestamp = event.block.timestamp
+    increaseTransactionCount()
+  }
 
-//   transaction.save()
+  transaction.save()
 
-//   return transaction as Transaction
-// }
+  return transaction as Transaction
+}
 
-// export function createDepositTransaction(stream: Stream, event: CreateStreamEvent): Transaction {
-//   const transactionId = stream.id.concat(":tx:").concat(stream.transactionCount.toString())
-//   let transaction = getOrCreateTransaction(transactionId, event)
-//   transaction.type = DEPOSIT
-//   transaction.stream = stream.id
-//   transaction.amount = event.params.amount
-//   transaction.to = event.params.recipient.toHex()
-//   transaction.token = event.params.token.toHex()
-//   transaction.toBentoBox = event.params.fromBentoBox // TODO: is this logic correctly mapped? negation needed?
-//   transaction.save()
+export function createDepositTransaction(vesting: Vesting, event: CreateVestingEvent): Transaction {
+  const transactionId = vesting.id.concat(":tx:").concat(vesting.transactionCount.toString())
+  let transaction = getOrCreateTransaction(transactionId, event)
+  transaction.type = DEPOSIT
+  transaction.vesting = vesting.id
+  transaction.amount = vesting.totalAmount
+  transaction.to = vesting.recipient
+  transaction.token = vesting.token
+  transaction.toBentoBox = true // FIXME: missing param, waiting for event change
+  transaction.save()
 
-//   stream.transactionCount = stream.transactionCount.plus(BigInt.fromU32(1))
-//   stream.save()
+  vesting.transactionCount = vesting.transactionCount.plus(BigInt.fromU32(1))
+  vesting.save()
 
-//   return transaction as Transaction
-// }
+  return transaction as Transaction
+}
 
 
-// export function createDisbursementTransactions(stream: Stream, event: CancelStreamEvent): void {  
-//   const senderTransactionId = stream.id.concat(":tx:").concat(stream.transactionCount.toString())
-//   let senderTransaction = getOrCreateTransaction(senderTransactionId, event)
-//   senderTransaction.type = DISBURSEMENT
-//   senderTransaction.stream = stream.id
-//   senderTransaction.amount = event.params.senderBalance
-//   senderTransaction.to = stream.createdBy
-//   senderTransaction.token = event.params.token.toHex()
-//   senderTransaction.toBentoBox = event.params.toBentoBox
-//   senderTransaction.save()
+export function createDisbursementTransactions(vesting: Vesting, event: CancelVestingEvent): void {  
+  const senderTransactionId = vesting.id.concat(":tx:").concat(vesting.transactionCount.toString())
+  let senderTransaction = getOrCreateTransaction(senderTransactionId, event)
+  senderTransaction.type = DISBURSEMENT
+  senderTransaction.vesting = vesting.id
+  senderTransaction.amount = event.params.recipientAmount
+  senderTransaction.to = vesting.recipient
+  senderTransaction.token = event.params.token.toHex()
+  senderTransaction.toBentoBox = event.params.toBentoBox
+  senderTransaction.save()
 
-//   stream.transactionCount = stream.transactionCount.plus(BigInt.fromU32(1))
+  vesting.transactionCount = vesting.transactionCount.plus(BigInt.fromU32(1))
 
-//   const recipientTransactionId = stream.id.concat(":tx:").concat(stream.transactionCount.toString())
-//   let recipientTransaction = getOrCreateTransaction(recipientTransactionId, event)
-//   recipientTransaction.type = DISBURSEMENT
-//   recipientTransaction.stream = stream.id
-//   recipientTransaction.amount = event.params.recipientBalance
-//   recipientTransaction.to = stream.recipient
-//   recipientTransaction.token = event.params.token.toHex()
-//   recipientTransaction.toBentoBox = event.params.toBentoBox
-//   recipientTransaction.save()
+  const recipientTransactionId = vesting.id.concat(":tx:").concat(vesting.transactionCount.toString())
+  let recipientTransaction = getOrCreateTransaction(recipientTransactionId, event)
+  recipientTransaction.type = DISBURSEMENT
+  recipientTransaction.vesting = vesting.id
+  recipientTransaction.amount = event.params.ownerAmount
+  recipientTransaction.to = vesting.createdBy
+  recipientTransaction.token = event.params.token.toHex()
+  recipientTransaction.toBentoBox = event.params.toBentoBox
+  recipientTransaction.save()
 
-//   stream.transactionCount = stream.transactionCount.plus(BigInt.fromU32(1))
-//   stream.save()
-// }
+  vesting.transactionCount = vesting.transactionCount.plus(BigInt.fromU32(1))
+  vesting.save()
+}
 
 // export function createWithdrawalTransaction(stream: Stream, event: WithdrawalEvent): Transaction {
 //   const transactionId = stream.id.concat(":tx:").concat(stream.transactionCount.toString())

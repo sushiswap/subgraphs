@@ -40,6 +40,7 @@ type Vesting @entity {
   fromBentoBox: Boolean!
   startedAt: BigInt!
   expiresAt: BigInt!
+  transactionCount: BigInt!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
   cancelledAtBlock: BigInt!
