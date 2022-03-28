@@ -56,7 +56,7 @@ test('Created vesting contains expected fields', () => {
   assert.fieldEquals('Vesting', id, 'stepAmount', STEPS_AMOUNT.toString())
   assert.fieldEquals('Vesting', id, 'totalAmount', TOTAL_AMOUNT.toString())
   assert.fieldEquals('Vesting', id, 'token', WETH_ADDRESS.toHex())
-  // assert.fieldEquals('Vesting', id, 'schedule', id)
+  assert.fieldEquals('Vesting', id, 'schedule', id)
   assert.fieldEquals('Vesting', id, 'status', ACTIVE)
   assert.fieldEquals('Vesting', id, 'createdBy', SENDER.toHex())
   assert.fieldEquals('Vesting', id, 'fromBentoBox', 'true')

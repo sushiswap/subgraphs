@@ -4,7 +4,10 @@ import { createVesting } from '../functions/vesting'
 
 export function onCreateVesting(event: LogCreateVesting): void {
     const vesting = createVesting(event)
-    createSchedule(vesting)
+    const schedule = createSchedule(vesting)
+    vesting.schedule = schedule.id
+    vesting.save()
+
 }
 export function onWithdraw(event: LogCreateVesting): void {}
 

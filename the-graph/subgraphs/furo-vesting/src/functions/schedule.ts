@@ -2,12 +2,13 @@ import { BigInt } from '@graphprotocol/graph-ts'
 import { Schedule, SchedulePeriod, Vesting } from '../../generated/schema'
 import { CLIFF, END, START, STEP } from '../constants'
 
-export function createSchedule(vesting: Vesting): void {
+export function createSchedule(vesting: Vesting): Schedule {
   let schedule = getOrCreateSchedule('1') // FIXME: waiting for event to change, hardcoded for now
   schedule.vesting = '1'
   schedule.save()
 
   createSchedulePeriods(vesting)
+  return schedule
 }
 
 function createSchedulePeriods(vesting: Vesting): void {
