@@ -1,4 +1,4 @@
-export const   ACTIVE = 'ACTIVE'
+export const ACTIVE = 'ACTIVE'
 export const CANCELLED = 'CANCELLED'
 export const EXPIRED = 'EXPIRED'
 
@@ -6,6 +6,11 @@ export const DEPOSIT = 'DEPOSIT'
 export const WITHDRAWAL = 'WITHDRAWAL'
 export const DISBURSEMENT = 'DISBURSEMENT'
 
+
+export const START = 'START'
+export const CLIFF = 'CLIFF'
+export const STEP = 'STEP'
+export const END = 'END'
 
 export const FURO = 'Furo'
 

@@ -1,8 +1,10 @@
 import { LogCreateVesting } from '../../generated/FuroVesting/FuroVesting'
+import { createSchedule } from '../functions/schedule'
 import { createVesting } from '../functions/vesting'
 
 export function onCreateVesting(event: LogCreateVesting): void {
-    createVesting(event)
+    const vesting = createVesting(event)
+    createSchedule(vesting)
 }
 export function onWithdraw(event: LogCreateVesting): void {}
 
