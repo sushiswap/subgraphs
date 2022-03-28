@@ -1,9 +1,9 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { LogCreateVesting as CreateVestingEvent } from '../generated/FuroVesting/FuroVesting'
-import { ACTIVE, WEEK, YEAR } from '../src/constants'
-import { onCreateVesting } from '../src/mappings/vesting'
-import { createTokenMock, createVestingEvent } from './mocks'
+import { ACTIVE, CANCELLED, WEEK, YEAR } from '../src/constants'
+import { onCancelVesting, onCreateVesting } from '../src/mappings/vesting'
+import { createCancelVestingEvent, createTokenMock, createVestingEvent } from './mocks'
 
 const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
 const SENDER = Address.fromString('0x00000000000000000000000000000000000a71ce')
@@ -65,6 +65,23 @@ test('Created vesting contains expected fields', () => {
   assert.fieldEquals('Vesting', id, 'expiresAt', END_TIME.toString())
   assert.fieldEquals('Vesting', id, 'createdAtBlock', vestingEvent.block.number.toString())
   assert.fieldEquals('Vesting', id, 'createdAtTimestamp', vestingEvent.block.timestamp.toString())
+
+  cleanup()
+})
+
+
+test('Stop vesting updates the vesting entity', () => {
+  setup()
+  const id = VESTING_ID.toString()
+  let recipientAmount = CLIFF_AMOUNT
+  let ownerAmount = TOTAL_AMOUNT.minus(recipientAmount)
+  let StopVestingEvent = createCancelVestingEvent(VESTING_ID, ownerAmount, recipientAmount, WETH_ADDRESS, true)
+
+  onCancelVesting(StopVestingEvent)
+
+  assert.fieldEquals('Vesting', id, 'status', CANCELLED)
+  assert.fieldEquals('Vesting', id, 'cancelledAtBlock', vestingEvent.block.number.toString())
+  assert.fieldEquals('Vesting', id, 'cancelledAtTimestamp', vestingEvent.block.timestamp.toString())
 
   cleanup()
 })

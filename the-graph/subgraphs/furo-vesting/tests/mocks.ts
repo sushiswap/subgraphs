@@ -91,7 +91,7 @@ export function createWithdrawEvent(
   return event
 }
 
-export function createCancelStreamEvent(
+export function createCancelVestingEvent(
   vestId: BigInt,
   ownerAmount: BigInt,
   recipientAmount: BigInt,
