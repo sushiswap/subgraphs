@@ -9,6 +9,8 @@ export function onCreateVesting(event: LogCreateVesting): void {
     vesting.save()
 
 }
-export function onWithdraw(event: LogCreateVesting): void {}
+export function onWithdraw(event: LogCreateVesting): void {
+    
+}
 
 export function onTransfer(event: LogCreateVesting): void {}

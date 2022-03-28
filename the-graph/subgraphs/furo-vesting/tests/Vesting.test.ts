@@ -18,6 +18,7 @@ const STEP_DURATION = BigInt.fromU32(biweekly)
 const STEPS = BigInt.fromU32(26)
 
 const END_TIME = START_TIME.plus(CLIFF_DURATION).plus(STEPS.times(STEP_DURATION)) // Sun Mar 24 2024 12:24:55 GMT+0000, two years later
+
 const TOTAL_AMOUNT = CLIFF_AMOUNT.plus(STEPS.times(STEPS_AMOUNT)) // 100000000 + (26 * 10000000) = 360000000
 
 let vestingEvent: CreateVestingEvent
@@ -46,7 +47,7 @@ function cleanup(): void {
 
 test('Created vesting contains expected fields', () => {
   setup()
-
+  
   const id = VESTING_ID.toString()
   assert.fieldEquals('Vesting', id, 'id', id)
   assert.fieldEquals('Vesting', id, 'recipient', RECIEVER.toHex())

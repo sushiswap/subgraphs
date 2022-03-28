@@ -1,4 +1,5 @@
 import { BigInt } from '@graphprotocol/graph-ts'
+import { log } from 'matchstick-as'
 import { Schedule, SchedulePeriod, Vesting } from '../../generated/schema'
 import { CLIFF, END, START, STEP } from '../constants'
 
@@ -21,16 +22,18 @@ function createSchedulePeriods(vesting: Vesting): void {
   passedAmount = passedAmount.plus(vesting.cliffAmount)
   savePeriod(vestId, 1, CLIFF, passedTime, passedAmount)
 
-  for (let i = 2; i < vesting.steps.toI32() - 1; i++) {
+  const createdPeriodCount = 2
+  for (let i = 0; i < vesting.steps.toI32() - 1; i++) {
     passedTime = passedTime.plus(vesting.stepDuration)
     passedAmount = passedAmount.plus(vesting.stepAmount)
-    savePeriod(vestId, i, STEP, passedTime, passedAmount)
+    const id = createdPeriodCount + i
+    savePeriod(vestId, id, STEP, passedTime, passedAmount)
   }
 
   passedTime = passedTime.plus(vesting.stepDuration)
   passedAmount = passedAmount.plus(vesting.stepAmount)
-
-  savePeriod(vestId, vesting.steps.toI32(), END, passedTime, passedAmount)
+  const endPeriodId = createdPeriodCount + vesting.steps.toI32()
+  savePeriod(vestId, endPeriodId, END, passedTime, passedAmount)
 }
 
 function getOrCreateSchedule(id: string): Schedule {

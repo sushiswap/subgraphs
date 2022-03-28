@@ -1,5 +1,5 @@
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
-import { assert, clearStore, test } from 'matchstick-as'
+import { assert, clearStore, logStore, test } from 'matchstick-as'
 import { ACTIVE, CANCELLED, CLIFF, END, START, STEP, WEEK, YEAR } from '../src/constants'
 import { onCreateVesting } from '../src/mappings/vesting'
 import { createCancelStreamEvent, createTokenMock, createVestingEvent, createWithdrawEvent } from './mocks'
@@ -67,10 +67,13 @@ test('vesting creates a schedule and schedule periods', () => {
   assert.fieldEquals('SchedulePeriod', cliffPeriodId, 'time', passedTime.toString())
   assert.fieldEquals('SchedulePeriod', cliffPeriodId, 'amount', passedAmount.toString())
 
-  for (let i = 2; i < STEPS.toI32() -1; i++) {
+  const createdPeriodCount = 2
+
+  for (let i = 0; i < STEPS.toI32() - 1; i++) {
     passedTime = passedTime.plus(STEP_DURATION)
     passedAmount = passedAmount.plus(STEPS_AMOUNT)
-    const stepPeriodId = id.concat(':period:'.concat(i.toString()))
+    const stepPeriodCount = createdPeriodCount + i
+    const stepPeriodId = id.concat(':period:'.concat(stepPeriodCount.toString()))
     assert.fieldEquals('SchedulePeriod', stepPeriodId, 'id', stepPeriodId)
     assert.fieldEquals('SchedulePeriod', stepPeriodId, 'type', STEP)
     assert.fieldEquals('SchedulePeriod', stepPeriodId, 'time', passedTime.toString())
@@ -80,11 +83,14 @@ test('vesting creates a schedule and schedule periods', () => {
 
   passedTime = passedTime.plus(STEP_DURATION)
   passedAmount = passedAmount.plus(STEPS_AMOUNT)
-  const endPeriodId = id.concat(':period:'.concat(STEPS.toString()))
+  const endPeriodNumber = createdPeriodCount + STEPS.toI32()
+  const endPeriodId = id.concat(':period:'.concat(endPeriodNumber.toString()))
   assert.fieldEquals('SchedulePeriod', endPeriodId, 'id', endPeriodId)
   assert.fieldEquals('SchedulePeriod', endPeriodId, 'type', END)
   assert.fieldEquals('SchedulePeriod', endPeriodId, 'time', passedTime.toString())
   assert.fieldEquals('SchedulePeriod', endPeriodId, 'amount', passedAmount.toString())
+
+  assert.fieldEquals('Vesting', id, 'expiresAt', passedTime.toString())
 
   cleanup()
 })
