@@ -1,16 +1,20 @@
-import { LogCreateVesting } from '../../generated/FuroVesting/FuroVesting'
+import {
+  LogCreateVesting as CreateVestingEvent,
+  LogStopVesting as CancelVestingEvent,
+  LogWithdraw as WithdrawalEvent,
+} from '../../generated/FuroVesting/FuroVesting'
 import { createSchedule } from '../functions/schedule'
-import { createVesting } from '../functions/vesting'
+import { cancelVesting, createVesting } from '../functions/vesting'
 
-export function onCreateVesting(event: LogCreateVesting): void {
-    const vesting = createVesting(event)
-    const schedule = createSchedule(vesting)
-    vesting.schedule = schedule.id
-    vesting.save()
-
-}
-export function onWithdraw(event: LogCreateVesting): void {
-    
+export function onCreateVesting(event: CreateVestingEvent): void {
+  const vesting = createVesting(event)
+  const schedule = createSchedule(vesting)
+  vesting.schedule = schedule.id
+  vesting.save()
 }
 
-export function onTransfer(event: LogCreateVesting): void {}
+export function onCancelVesting(event: CancelVestingEvent): void {
+    cancelVesting(event)
+}
+
+export function onWithdraw(event: WithdrawalEvent): void {}

@@ -1,7 +1,7 @@
 import { BigInt } from '@graphprotocol/graph-ts'
-import { LogCreateVesting as CreateVestingEvent } from '../../generated/FuroVesting/FuroVesting'
+import { LogCreateVesting as CreateVestingEvent, LogStopVesting as CancelVestingEvent } from '../../generated/FuroVesting/FuroVesting'
 import { Vesting } from '../../generated/schema'
-import { ACTIVE } from '../constants'
+import { ACTIVE, CANCELLED, EXPIRED } from '../constants'
 import { increaseVestingCount } from './furo'
 import { getOrCreateToken } from './token'
 import { getOrCreateUser } from './user'
@@ -45,6 +45,22 @@ export function createVesting(event: CreateVestingEvent): Vesting {
   vesting.createdAtTimestamp = event.block.timestamp
   vesting.save()
 
+  return vesting
+}
+// uint256 indexed vestId,
+// uint256 indexed ownerAmount,
+// uint256 indexed recipientAmount,
+// IERC20 token,
+// bool toBentoBox
+
+
+export function cancelVesting(event: CancelVestingEvent): Vesting {
+  let vesting = getOrCreateVesting(event.params.vestId)
+  vesting.status = CANCELLED
+  vesting.cancelledAtTimestamp = event.block.timestamp
+  vesting.cancelledAtBlock = event.block.number
+  vesting.save()
+  
   return vesting
 }
 

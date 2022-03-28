@@ -42,6 +42,8 @@ type Vesting @entity {
   expiresAt: BigInt!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
+  cancelledAtBlock: BigInt!
+  cancelledAtTimestamp: BigInt!
 }
 
 type Schedule @entity {

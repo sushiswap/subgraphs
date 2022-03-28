@@ -35,7 +35,7 @@ dataSources:
         - event: LogCreateVesting(indexed address,indexed address,indexed address,uint32,uint32,uint32,uint32,uint128,uint128)
           handler: onCreateVesting
         - event: LogStopVesting(indexed uint256,indexed uint256,indexed uint256,address,bool)
-          handler: onStopVesting
+          handler: onCancelVesting
         - event: LogWithdraw(indexed uint256,indexed address,indexed bool)
           handler: onWithdraw
         - event: Transfer(indexed address,indexed address,indexed uint256)
