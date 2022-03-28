@@ -1,4 +1,4 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { ACTIVE, CANCELLED, WEEK, YEAR } from '../src/constants'
 import { onCreateVesting } from '../src/mappings/vesting'
@@ -9,15 +9,16 @@ const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756
 const SENDER = Address.fromString('0x00000000000000000000000000000000000a71ce')
 const RECIEVER = Address.fromString('0x0000000000000000000000000000000000000b0b')
 const VESTING_ID = BigInt.fromString('1')
-const CLIFF_AMOUNT = BigInt.fromString('1000000')
-const STEPS_AMOUNT = BigInt.fromString('1000000')
+const CLIFF_AMOUNT = BigInt.fromString('100000000')
+const STEPS_AMOUNT = BigInt.fromString('10000000')
 const START_TIME = BigInt.fromString('1648297495') // 	Sat Mar 26 2022 12:24:55 GMT+0000
 const CLIFF_DURATION = BigInt.fromU32(YEAR)
 const biweekly = 2 * WEEK
-const STEP_DURATION = BigInt.fromU32(biweekly) 
+const STEP_DURATION = BigInt.fromU32(biweekly)
 const STEPS = BigInt.fromU32(26)
 
-const END_TIME = START_TIME.plus(CLIFF_DURATION).plus(STEPS.times(STEP_DURATION))
+const END_TIME = START_TIME.plus(CLIFF_DURATION).plus(STEPS.times(STEP_DURATION)) // Sun Mar 24 2024 12:24:55 GMT+0000, two years later
+const TOTAL_AMOUNT = CLIFF_AMOUNT.plus(STEPS.times(STEPS_AMOUNT)) // 100000000 + (26 * 10000000) = 360000000
 
 let vestingEvent: CreateVestingEvent
 
@@ -53,6 +54,7 @@ test('Created vesting contains expected fields', () => {
   assert.fieldEquals('Vesting', id, 'stepDuration', STEP_DURATION.toString())
   assert.fieldEquals('Vesting', id, 'cliffAmount', CLIFF_AMOUNT.toString())
   assert.fieldEquals('Vesting', id, 'stepAmount', STEPS_AMOUNT.toString())
+  assert.fieldEquals('Vesting', id, 'totalAmount', TOTAL_AMOUNT.toString())
   assert.fieldEquals('Vesting', id, 'token', WETH_ADDRESS.toHex())
   // assert.fieldEquals('Vesting', id, 'schedule', id)
   assert.fieldEquals('Vesting', id, 'status', ACTIVE)

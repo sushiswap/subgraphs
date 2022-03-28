@@ -39,6 +39,7 @@ export function createVesting(event: CreateVestingEvent): Vesting {
   vesting.fromBentoBox = true //FIXME: waiting for Sarang to update the event, later use event.params.fromBentoBox
   vesting.startedAt = event.params.start
   vesting.expiresAt = calculateExpirationDate(vesting)
+  vesting.totalAmount = calculateTotalAmount(vesting)
 
   vesting.createdAtBlock = event.block.number
   vesting.createdAtTimestamp = event.block.timestamp
@@ -56,7 +57,7 @@ function calculateExpirationDate(vest: Vesting): BigInt {
 }
 
 function calculateTotalAmount(vest: Vesting): BigInt {
-  const totalStepSum = vest.stepAmount.times(vest.steps)
+  const totalStepSum = vest.steps.times(vest.stepAmount)
 
   return vest.cliffAmount.plus(totalStepSum)
 }
