@@ -24,7 +24,7 @@ type Furo @entity {
 }
 
 type Vesting @entity {
-  id: ID!# starts at 1001
+  id: ID!# starts at 1
   recipient: User!
   cliffDuration: BigInt!
   stepDuration: BigInt!
