@@ -3,6 +3,7 @@ import { createMockedFunction, newMockEvent } from 'matchstick-as'
 import {
   CancelStream as CancelStreamEvent,
   CreateStream as CreateStreamEvent,
+  UpdateStream as UpdateStreamEvent,
   Withdraw as WithdrawEvent,
 } from '../generated/FuroStream/FuroStream'
 
@@ -122,6 +123,38 @@ export function createCancelStreamEvent(
   event.parameters.push(recipientBalanceParam)
   event.parameters.push(tokenParam)
   event.parameters.push(toBentoBoxParam)
+
+  return event
+}
+
+export function updateStreamEvent(
+  streamId: BigInt,
+  topUpAmount: BigInt,
+  extendTime: BigInt,
+  fromBentoBox: boolean
+): UpdateStreamEvent {
+  let mockEvent = newMockEvent()
+
+  let event = new UpdateStreamEvent(
+    mockEvent.address,
+    mockEvent.logIndex,
+    mockEvent.transactionLogIndex,
+    mockEvent.logType,
+    mockEvent.block,
+    mockEvent.transaction,
+    mockEvent.parameters
+  )
+
+  event.parameters = new Array()
+  let streamIdParam = new ethereum.EventParam('streamId', ethereum.Value.fromUnsignedBigInt(streamId))
+  let topUpAmountParam = new ethereum.EventParam('topUpAmount', ethereum.Value.fromUnsignedBigInt(topUpAmount))
+  let extendTimeParam = new ethereum.EventParam('extendTime', ethereum.Value.fromUnsignedBigInt(extendTime))
+  let fromBentoBoxParam = new ethereum.EventParam('fromBentoBox', ethereum.Value.fromBoolean(fromBentoBox))
+
+  event.parameters.push(streamIdParam)
+  event.parameters.push(topUpAmountParam)
+  event.parameters.push(extendTimeParam)
+  event.parameters.push(fromBentoBoxParam)
 
   return event
 }
