@@ -1,9 +1,9 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
-import { DEPOSIT, DISBURSEMENT, WITHDRAWAL } from '../src/constants'
-import { onCancelStream, onCreateStream, onWithdraw } from '../src/mappings/stream'
-import { createCancelStreamEvent, createStreamEvent, createTokenMock, createWithdrawEvent } from './mocks'
+import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from '../src/constants'
+import { onCancelStream, onCreateStream, onUpdateStream, onWithdraw } from '../src/mappings/stream'
+import { createCancelStreamEvent, createStreamEvent, createTokenMock, createUpdateStreamEvent, createWithdrawEvent } from './mocks'
 
 const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
 const WBTC_ADDRESS = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
@@ -96,6 +96,29 @@ test('Withdraw from stream creates a Transaction', () => {
   assert.fieldEquals('Transaction', id, 'toBentoBox', 'true')
   assert.fieldEquals('Transaction', id, 'createdAtBlock', withdrawalEvent.block.number.toString())
   assert.fieldEquals('Transaction', id, 'createdAtTimestamp', withdrawalEvent.block.timestamp.toString())
+
+  cleanup()
+})
+
+
+test('Update stream creates a transaction', () => {
+  setup()
+  const id = STREAM_ID.toString().concat(":tx:1")
+  const extendTime = BigInt.fromString("2628000") // a month in seconds
+  let updateStreamEvent = createUpdateStreamEvent(STREAM_ID, AMOUNT, extendTime, true)
+
+  onUpdateStream(updateStreamEvent)
+  
+  assert.entityCount('Transaction', 2)
+  assert.fieldEquals('Transaction', id, 'id', id)
+  assert.fieldEquals('Transaction', id, 'type', EXTEND)
+  assert.fieldEquals('Transaction', id, 'stream', STREAM_ID.toString())
+  assert.fieldEquals('Transaction', id, 'amount', AMOUNT.toString())
+  assert.fieldEquals('Transaction', id, 'to', RECIEVER.toHex())
+  assert.fieldEquals('Transaction', id, 'token', WETH_ADDRESS.toHex())
+  assert.fieldEquals('Transaction', id, 'toBentoBox', 'true')
+  assert.fieldEquals('Transaction', id, 'createdAtBlock', updateStreamEvent.block.number.toString())
+  assert.fieldEquals('Transaction', id, 'createdAtTimestamp', updateStreamEvent.block.timestamp.toString())
 
   cleanup()
 })
