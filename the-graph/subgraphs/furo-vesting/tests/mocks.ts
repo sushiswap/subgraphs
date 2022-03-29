@@ -61,7 +61,7 @@ export function createVestingEvent(
 
 export function createWithdrawEvent(
   vestId: BigInt,
-  amount: BigInt,
+  // amount: BigInt,
   token: Address,
   toBentoBox: boolean
 ): WithdrawEvent {
@@ -79,12 +79,12 @@ export function createWithdrawEvent(
 
   event.parameters = new Array()
   let vestIdParam = new ethereum.EventParam('vestId', ethereum.Value.fromUnsignedBigInt(vestId))
-  let amountParam = new ethereum.EventParam('amount', ethereum.Value.fromUnsignedBigInt(amount))
+  // let amountParam = new ethereum.EventParam('amount', ethereum.Value.fromUnsignedBigInt(amount))
   let tokenParam = new ethereum.EventParam('token', ethereum.Value.fromAddress(token))
   let toBentoBoxParam = new ethereum.EventParam('toBentoBox', ethereum.Value.fromBoolean(toBentoBox))
 
   event.parameters.push(vestIdParam)
-  event.parameters.push(amountParam)
+  // event.parameters.push(amountParam)
   event.parameters.push(tokenParam)
   event.parameters.push(toBentoBoxParam)
 

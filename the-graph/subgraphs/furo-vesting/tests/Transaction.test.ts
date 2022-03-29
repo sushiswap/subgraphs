@@ -100,8 +100,8 @@ test('Disbursement transactions are created when vesting is cancelled', () => {
 
 test('Withdrawal event creates withdrawal transaction', () => {
   setup()
-  const amount = BigInt.fromString("1337420") // hardcoded 
-  let withdrawalEvent = createWithdrawEvent(VESTING_ID, amount, WETH_ADDRESS, true)
+  const amount = BigInt.fromString("1337420") // FIXME: event will eventually have this as argument
+  let withdrawalEvent = createWithdrawEvent(VESTING_ID, WETH_ADDRESS, true)
 
   onWithdraw(withdrawalEvent)
 

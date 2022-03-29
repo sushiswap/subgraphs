@@ -2,8 +2,8 @@ import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { LogCreateVesting as CreateVestingEvent } from '../generated/FuroVesting/FuroVesting'
 import { ACTIVE, CANCELLED, WEEK, YEAR } from '../src/constants'
-import { onCancelVesting, onCreateVesting } from '../src/mappings/vesting'
-import { createCancelVestingEvent, createTokenMock, createVestingEvent } from './mocks'
+import { onCancelVesting, onCreateVesting, onWithdraw } from '../src/mappings/vesting'
+import { createCancelVestingEvent, createTokenMock, createVestingEvent, createWithdrawEvent } from './mocks'
 
 const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
 const SENDER = Address.fromString('0x00000000000000000000000000000000000a71ce')
@@ -82,6 +82,19 @@ test('Stop vesting updates the vesting entity', () => {
   assert.fieldEquals('Vesting', id, 'status', CANCELLED)
   assert.fieldEquals('Vesting', id, 'cancelledAtBlock', vestingEvent.block.number.toString())
   assert.fieldEquals('Vesting', id, 'cancelledAtTimestamp', vestingEvent.block.timestamp.toString())
+
+  cleanup()
+})
+
+test('On withdraw event, withdrawnAmount field is updated', () => {
+  setup()
+  const amount = BigInt.fromString("1337420") // FIXME: event will eventually have this as argument
+  let withdrawalEvent = createWithdrawEvent(VESTING_ID, WETH_ADDRESS, true)
+
+  onWithdraw(withdrawalEvent)
+
+  const id = VESTING_ID.toString().concat(":tx:1")
+  assert.fieldEquals('Vesting', id, 'withdrawnAmount', amount.toString())
 
   cleanup()
 })
