@@ -7,6 +7,7 @@ enum StreamStatus {
 
 enum TransactionType {
   DEPOSIT
+  EXTEND
   WITHDRAWAL
   DISBURSEMENT # Payment to a sender and reciever when stream is cancelled
 }
@@ -35,15 +36,6 @@ type Stream @entity {
   modifiedAtBlock: BigInt!
   modifiedAtTimestamp: BigInt!
 }
-
-# TODO: Add update entity when contract is updated
-# type StreamUpdate @entity {
-#   id: ID!
-#   stream: Stream!
-#   topUpAmount: BigInt!
-#   extendTime: BigInt!
-#   fromBentoBox: Boolean!
-# }
 
 type Transaction @entity {
   id: ID!

@@ -3,9 +3,10 @@ import {
   CancelStream as CancelStreamEvent,
   CreateStream as CreateStreamEvent,
   Withdraw as WithdrawEvent,
+  UpdateStream as UpdateStreamEvent
 } from '../../generated/FuroStream/FuroStream'
 import { Stream, Transaction } from '../../generated/schema';
-import { DEPOSIT, DISBURSEMENT, WITHDRAWAL } from '../constants';
+import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from '../constants';
 import { increaseTransactionCount } from './furo';
 
 function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction {
@@ -76,7 +77,25 @@ export function createWithdrawalTransaction(stream: Stream, event: WithdrawEvent
   transaction.amount = event.params.sharesToWithdraw
   transaction.to = stream.recipient
   transaction.token = event.params.token.toHex()
-  transaction.toBentoBox = event.params.toBentoBox // TODO: is this logic correctly mapped? negation needed?
+  transaction.toBentoBox = event.params.toBentoBox
+  transaction.save()
+
+  stream.transactionCount = stream.transactionCount.plus(BigInt.fromU32(1))
+  stream.save()
+
+  return transaction as Transaction
+}
+
+
+export function createExtendTransaction(stream: Stream, event: UpdateStreamEvent): Transaction {
+  const transactionId = stream.id.concat(":tx:").concat(stream.transactionCount.toString())
+  let transaction = getOrCreateTransaction(transactionId, event)
+  transaction.type = EXTEND
+  transaction.stream = stream.id
+  transaction.amount = event.params.topUpAmount
+  transaction.to = stream.recipient
+  transaction.token = stream.token
+  transaction.toBentoBox = event.params.fromBentoBox // TODO: is this logic correctly mapped? negation needed?
   transaction.save()
 
   stream.transactionCount = stream.transactionCount.plus(BigInt.fromU32(1))

@@ -8,6 +8,7 @@ import { cancelStream, createStream, getOrCreateStream, updateStream, withdrawFr
 import {
   createDepositTransaction,
   createDisbursementTransactions,
+  createExtendTransaction,
   createWithdrawalTransaction,
 } from '../functions/transaction'
 
@@ -23,6 +24,7 @@ export function onCancelStream(event: CancelStreamEvent): void {
 
 export function onUpdateStream(event: UpdateStreamEvent): void {
   const stream = updateStream(event)
+  createExtendTransaction(stream, event)
 }
 
 export function onWithdraw(event: WithdrawEvent): void {
