@@ -7,7 +7,7 @@ import {
 } from '../../generated/FuroStream/FuroStream'
 import { getOrCreateUser } from './user';
 import { getOrCreateToken } from './token';
-import { CANCELLED, ONGOING } from '../constants';
+import { CANCELLED, ACTIVE } from '../constants';
 import { increaseStreamCount } from './furo';
 
 
@@ -33,7 +33,7 @@ export function createStream(event: CreateStreamEvent): Stream {
   stream.amount = event.params.amount
   stream.withdrawnAmount = BigInt.fromU32(0)
   stream.token = token.id
-  stream.status = ONGOING
+  stream.status = ACTIVE
   stream.createdBy = sender.id
   stream.fromBentoBox = event.params.fromBentoBox
   stream.startedAt = event.params.startTime

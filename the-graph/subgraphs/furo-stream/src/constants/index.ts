@@ -1,4 +1,5 @@
-export const ONGOING = 'ONGOING'
+export const ACTIVE = 'ACTIVE'
+export const EXTENDED = 'EXTENDED'
 export const CANCELLED = 'CANCELLED'
 export const EXPIRED = 'EXPIRED'
 

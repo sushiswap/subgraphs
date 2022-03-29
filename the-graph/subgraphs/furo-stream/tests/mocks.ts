@@ -127,7 +127,7 @@ export function createCancelStreamEvent(
   return event
 }
 
-export function updateStreamEvent(
+export function createUpdateStreamEvent(
   streamId: BigInt,
   topUpAmount: BigInt,
   extendTime: BigInt,

@@ -1,9 +1,9 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
-import { CANCELLED, ONGOING } from '../src/constants'
-import { onCancelStream, onCreateStream, onWithdraw } from '../src/mappings/stream'
-import { createCancelStreamEvent, createStreamEvent, createTokenMock, createWithdrawEvent } from './mocks'
+import { CANCELLED, ACTIVE, EXTENDED } from '../src/constants'
+import { onCancelStream, onCreateStream, onUpdateStream, onWithdraw } from '../src/mappings/stream'
+import { createCancelStreamEvent, createStreamEvent, createTokenMock, createUpdateStreamEvent, createWithdrawEvent } from './mocks'
 
 const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
 const WBTC_ADDRESS = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
@@ -35,7 +35,7 @@ test('Stream entity contains expected fields', () => {
   assert.fieldEquals('Stream', id, 'amount', AMOUNT.toString())
   assert.fieldEquals('Stream', id, 'withdrawnAmount', '0')
   assert.fieldEquals('Stream', id, 'token', WETH_ADDRESS.toHex())
-  assert.fieldEquals('Stream', id, 'status', ONGOING)
+  assert.fieldEquals('Stream', id, 'status', ACTIVE)
   assert.fieldEquals('Stream', id, 'createdBy', SENDER.toHex())
   assert.fieldEquals('Stream', id, 'fromBentoBox', 'true')
   assert.fieldEquals('Stream', id, 'startedAt', START_TIME.toString())
@@ -68,6 +68,34 @@ test('Cancel stream', () => {
 
   cleanup()
 })
+
+test('Update stream', () => {
+  setup()
+  const id = STREAM_ID.toString()
+  const extendTime = BigInt.fromString("2628000") // a month in seconds
+  let updateStreamEvent = createUpdateStreamEvent(STREAM_ID, AMOUNT, extendTime, true)
+  updateStreamEvent.block.number = BigInt.fromString("123")
+  updateStreamEvent.block.timestamp = BigInt.fromString("11111111")
+
+  assert.fieldEquals('Stream', id, 'status', ACTIVE)
+  assert.fieldEquals('Stream', id, 'amount', AMOUNT.toString())
+  assert.fieldEquals('Stream', id, 'expiresAt', END_TIME.toString())
+  assert.fieldEquals('Stream', id, 'modifiedAtBlock', streamEvent.block.number.toString())
+  assert.fieldEquals('Stream', id, 'modifiedAtTimestamp', streamEvent.block.timestamp.toString())
+
+  onUpdateStream(updateStreamEvent)
+  
+  let expectedAmount = AMOUNT.plus(AMOUNT).toString()
+  let expectedExpirationDate = END_TIME.plus(extendTime).toString()
+  assert.fieldEquals('Stream', id, 'status', EXTENDED)
+  assert.fieldEquals('Stream', id, 'amount', expectedAmount)
+  assert.fieldEquals('Stream', id, 'expiresAt', expectedExpirationDate)
+  assert.fieldEquals('Stream', id, 'modifiedAtBlock', updateStreamEvent.block.number.toString())
+  assert.fieldEquals('Stream', id, 'modifiedAtTimestamp', updateStreamEvent.block.timestamp.toString())
+
+  cleanup()
+})
+
 
 
 test('Withdraw from stream', () => {
