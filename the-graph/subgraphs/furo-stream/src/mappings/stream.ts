@@ -4,7 +4,7 @@ import {
   UpdateStream as UpdateStreamEvent,
   Withdraw as WithdrawEvent,
 } from '../../generated/FuroStream/FuroStream'
-import { cancelStream, createStream, getOrCreateStream, withdrawFromStream } from '../functions/stream'
+import { cancelStream, createStream, getOrCreateStream, updateStream, withdrawFromStream } from '../functions/stream'
 import {
   createDepositTransaction,
   createDisbursementTransactions,
@@ -22,7 +22,7 @@ export function onCancelStream(event: CancelStreamEvent): void {
 }
 
 export function onUpdateStream(event: UpdateStreamEvent): void {
-
+  const stream = updateStream(event)
 }
 
 export function onWithdraw(event: WithdrawEvent): void {

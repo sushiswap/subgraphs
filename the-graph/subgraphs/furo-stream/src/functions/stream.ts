@@ -4,10 +4,11 @@ import {
   CancelStream as CancelStreamEvent,
   CreateStream as CreateStreamEvent,
   Withdraw as WithdrawEvent,
+  UpdateStream as UpdateStreamEvent,
 } from '../../generated/FuroStream/FuroStream'
 import { getOrCreateUser } from './user';
 import { getOrCreateToken } from './token';
-import { CANCELLED, ACTIVE } from '../constants';
+import { CANCELLED, ACTIVE, EXTENDED } from '../constants';
 import { increaseStreamCount } from './furo';
 
 
@@ -48,6 +49,19 @@ export function createStream(event: CreateStreamEvent): Stream {
 
   return stream
 }
+
+export function updateStream(event: UpdateStreamEvent): Stream {
+  let stream = getOrCreateStream(event.params.streamId)
+  stream.status = EXTENDED
+  stream.amount = stream.amount.plus(event.params.topUpAmount)
+  stream.expiresAt = stream.expiresAt.plus(event.params.extendTime)
+  stream.modifiedAtBlock = event.block.number
+  stream.modifiedAtTimestamp = event.block.timestamp
+  stream.save()
+
+  return stream
+}
+
 
 export function cancelStream(event: CancelStreamEvent): Stream {
   let stream = getOrCreateStream(event.params.streamId)
