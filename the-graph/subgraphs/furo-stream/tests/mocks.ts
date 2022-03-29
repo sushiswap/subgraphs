@@ -1,9 +1,9 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { createMockedFunction, newMockEvent } from 'matchstick-as'
 import {
-  LogCancelStream as CancelStreamEvent,
-  LogCreateStream as CreateStreamEvent,
-  LogWithdrawFromStream as WithdrawEvent,
+  CancelStream as CancelStreamEvent,
+  CreateStream as CreateStreamEvent,
+  Withdraw as WithdrawEvent,
 } from '../generated/FuroStream/FuroStream'
 
 export function createStreamEvent(

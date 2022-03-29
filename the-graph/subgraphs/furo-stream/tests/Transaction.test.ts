@@ -1,6 +1,6 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
-import { LogCreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
+import { CreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
 import { DEPOSIT, DISBURSEMENT, WITHDRAWAL } from '../src/constants'
 import { onCancelStream, onCreateStream, onWithdraw } from '../src/mappings/stream'
 import { createCancelStreamEvent, createStreamEvent, createTokenMock, createWithdrawEvent } from './mocks'

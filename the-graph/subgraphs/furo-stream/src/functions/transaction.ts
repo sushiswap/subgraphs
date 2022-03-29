@@ -1,7 +1,9 @@
 import { BigInt, ethereum } from '@graphprotocol/graph-ts';
 import {
-  LogCancelStream as CancelStreamEvent, LogCreateStream as CreateStreamEvent, LogWithdrawFromStream as WithdrawalEvent
-} from '../../generated/FuroStream/FuroStream';
+  CancelStream as CancelStreamEvent,
+  CreateStream as CreateStreamEvent,
+  Withdraw as WithdrawEvent,
+} from '../../generated/FuroStream/FuroStream'
 import { Stream, Transaction } from '../../generated/schema';
 import { DEPOSIT, DISBURSEMENT, WITHDRAWAL } from '../constants';
 import { increaseTransactionCount } from './furo';
@@ -66,7 +68,7 @@ export function createDisbursementTransactions(stream: Stream, event: CancelStre
   stream.save()
 }
 
-export function createWithdrawalTransaction(stream: Stream, event: WithdrawalEvent): Transaction {
+export function createWithdrawalTransaction(stream: Stream, event: WithdrawEvent): Transaction {
   const transactionId = stream.id.concat(":tx:").concat(stream.transactionCount.toString())
   let transaction = getOrCreateTransaction(transactionId, event)
   transaction.type = WITHDRAWAL
