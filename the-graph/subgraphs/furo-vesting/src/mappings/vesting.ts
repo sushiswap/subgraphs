@@ -9,10 +9,7 @@ import { cancelVesting, createVesting, withdrawFromVesting } from '../functions/
 
 export function onCreateVesting(event: CreateVestingEvent): void {
   const vesting = createVesting(event)
-  const schedule = createSchedule(vesting)
-  vesting.schedule = schedule.id
-  vesting.save()
-
+  createSchedule(vesting)
   createDepositTransaction(vesting, event)
 }
 

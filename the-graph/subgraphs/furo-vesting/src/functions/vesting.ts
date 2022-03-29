@@ -1,7 +1,11 @@
 import { BigInt } from '@graphprotocol/graph-ts'
-import { LogCreateVesting as CreateVestingEvent, LogStopVesting as CancelVestingEvent, LogWithdraw as WithdrawalEvent } from '../../generated/FuroVesting/FuroVesting'
+import {
+  LogCreateVesting as CreateVestingEvent,
+  LogStopVesting as CancelVestingEvent,
+  LogWithdraw as WithdrawalEvent,
+} from '../../generated/FuroVesting/FuroVesting'
 import { Vesting } from '../../generated/schema'
-import { ACTIVE, CANCELLED, EXPIRED } from '../constants'
+import { ACTIVE, CANCELLED } from '../constants'
 import { increaseVestingCount } from './furo'
 import { getOrCreateToken } from './token'
 import { getOrCreateUser } from './user'
@@ -24,7 +28,6 @@ export function createVesting(event: CreateVestingEvent): Vesting {
   let recipient = getOrCreateUser(event.params.recipient, event)
   let owner = getOrCreateUser(event.params.owner, event)
   let token = getOrCreateToken(event.params.token.toHex(), event)
-  // TODO: scheduler
 
   vesting.recipient = recipient.id
   vesting.createdBy = owner.id
@@ -34,7 +37,7 @@ export function createVesting(event: CreateVestingEvent): Vesting {
   vesting.steps = event.params.steps
   vesting.cliffAmount = event.params.cliffAmount
   vesting.stepAmount = event.params.stepAmount
-  //   vesting.schedule = scheduler.id
+  vesting.schedule = vestId.toString()
   vesting.status = ACTIVE
   vesting.fromBentoBox = true //FIXME: waiting for Sarang to update the event, later use event.params.fromBentoBox
   vesting.startedAt = event.params.start
@@ -47,12 +50,6 @@ export function createVesting(event: CreateVestingEvent): Vesting {
 
   return vesting
 }
-// uint256 indexed vestId,
-// uint256 indexed ownerAmount,
-// uint256 indexed recipientAmount,
-// IERC20 token,
-// bool toBentoBox
-
 
 export function cancelVesting(event: CancelVestingEvent): Vesting {
   let vesting = getOrCreateVesting(event.params.vestId)
@@ -60,17 +57,15 @@ export function cancelVesting(event: CancelVestingEvent): Vesting {
   vesting.cancelledAtTimestamp = event.block.timestamp
   vesting.cancelledAtBlock = event.block.number
   vesting.save()
-  
+
   return vesting
 }
 
-
-
 export function withdrawFromVesting(event: WithdrawalEvent): Vesting {
   let vesting = getOrCreateVesting(event.params.vestId)
-  vesting.withdrawnAmount = vesting.withdrawnAmount.plus(BigInt.fromString("1337420"))  // FIXME: event missing amount, update this after contract is updated
+  vesting.withdrawnAmount = vesting.withdrawnAmount.plus(BigInt.fromString('1337420')) // FIXME: event missing amount, update this after contract is updated
   vesting.save()
-  
+
   return vesting
 }
 
@@ -87,15 +82,3 @@ function calculateTotalAmount(vest: Vesting): BigInt {
 
   return vest.cliffAmount.plus(totalStepSum)
 }
-
-
-
-// export function withdrawFromStream(event: WithdrawalEvent) : Stream {
-//   const stream = getOrCreateStream(event.params.streamId)
-//   stream.withdrawnAmount = stream.withdrawnAmount.plus(event.params.sharesToWithdraw)
-//   stream.modifiedAtBlock = event.block.number
-//   stream.modifiedAtTimestamp = event.block.timestamp
-//   stream.save()
-
-//   return stream
-// }
