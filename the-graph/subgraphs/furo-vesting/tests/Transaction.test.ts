@@ -100,7 +100,7 @@ test('Disbursement transactions are created when vesting is cancelled', () => {
 
 test('Withdrawal event creates withdrawal transaction', () => {
   setup()
-  const amount = CLIFF_AMOUNT.plus(STEPS_AMOUNT)
+  const amount = BigInt.fromString("1337420") // hardcoded 
   let withdrawalEvent = createWithdrawEvent(VESTING_ID, amount, WETH_ADDRESS, true)
 
   onWithdraw(withdrawalEvent)
