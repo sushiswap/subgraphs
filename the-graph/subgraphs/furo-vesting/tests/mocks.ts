@@ -1,9 +1,9 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { createMockedFunction, newMockEvent } from 'matchstick-as'
 import {
-  LogCreateVesting as CreateVestingEvent,
-  LogStopVesting as CancelVestingEvent,
-  LogWithdraw as WithdrawEvent,
+  CreateVesting as CreateVestingEvent,
+  CancelVesting as CancelVestingEvent,
+  Withdraw as WithdrawEvent,
 } from '../generated/FuroVesting/FuroVesting'
 
 export function createVestingEvent(
@@ -32,6 +32,7 @@ export function createVestingEvent(
   )
 
   event.parameters = new Array()
+  let vestIdParam = new ethereum.EventParam('vestId', ethereum.Value.fromUnsignedBigInt(vestId))
   let tokenParam = new ethereum.EventParam('token', ethereum.Value.fromAddress(token))
   let senderParam = new ethereum.EventParam('sender', ethereum.Value.fromAddress(sender))
   let recipientParam = new ethereum.EventParam('recipient', ethereum.Value.fromAddress(recipient))
@@ -42,8 +43,8 @@ export function createVestingEvent(
   let cliffAmountParam = new ethereum.EventParam('cliffAmount', ethereum.Value.fromUnsignedBigInt(cliffAmount))
   let stepAmountParam = new ethereum.EventParam('stepAmount', ethereum.Value.fromUnsignedBigInt(stepAmount))
   let fromBentoBoxParam = new ethereum.EventParam('fromBentoBox', ethereum.Value.fromBoolean(fromBentoBox))
-  let vestIdParam = new ethereum.EventParam('vestId', ethereum.Value.fromUnsignedBigInt(vestId))
 
+  event.parameters.push(vestIdParam)
   event.parameters.push(tokenParam)
   event.parameters.push(senderParam)
   event.parameters.push(recipientParam)
@@ -54,15 +55,14 @@ export function createVestingEvent(
   event.parameters.push(cliffAmountParam)
   event.parameters.push(stepAmountParam)
   event.parameters.push(fromBentoBoxParam)
-  event.parameters.push(vestIdParam)
 
   return event
 }
 
 export function createWithdrawEvent(
   vestId: BigInt,
-  // amount: BigInt,
   token: Address,
+  amount: BigInt,
   toBentoBox: boolean
 ): WithdrawEvent {
   let mockEvent = newMockEvent()
@@ -79,13 +79,13 @@ export function createWithdrawEvent(
 
   event.parameters = new Array()
   let vestIdParam = new ethereum.EventParam('vestId', ethereum.Value.fromUnsignedBigInt(vestId))
-  // let amountParam = new ethereum.EventParam('amount', ethereum.Value.fromUnsignedBigInt(amount))
   let tokenParam = new ethereum.EventParam('token', ethereum.Value.fromAddress(token))
+  let amountParam = new ethereum.EventParam('amount', ethereum.Value.fromUnsignedBigInt(amount))
   let toBentoBoxParam = new ethereum.EventParam('toBentoBox', ethereum.Value.fromBoolean(toBentoBox))
 
   event.parameters.push(vestIdParam)
-  // event.parameters.push(amountParam)
   event.parameters.push(tokenParam)
+  event.parameters.push(amountParam)
   event.parameters.push(toBentoBoxParam)
 
   return event

@@ -32,11 +32,9 @@ dataSources:
         - name: NameBytes32
           file: ./abis/NameBytes32.json
       eventHandlers:
-        - event: LogCreateVesting(indexed address,indexed address,indexed address,uint32,uint32,uint32,uint32,uint128,uint128)
+        - event: CreateVesting(indexed uint256,address,indexed address,indexed address,uint32,uint32,uint32,uint32,uint128,uint128,bool)
           handler: onCreateVesting
-        - event: LogStopVesting(indexed uint256,indexed uint256,indexed uint256,address,bool)
+        - event: CancelVesting(indexed uint256,indexed uint256,indexed uint256,address,bool)
           handler: onCancelVesting
-        - event: LogWithdraw(indexed uint256,indexed address,indexed bool)
+        - event: Withdraw(indexed uint256,indexed address,indexed uint256,bool)
           handler: onWithdraw
-        - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: onTransfer

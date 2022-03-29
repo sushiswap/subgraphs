@@ -1,6 +1,6 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
-import { LogCreateVesting as CreateVestingEvent } from '../generated/FuroVesting/FuroVesting'
+import { CreateVesting as CreateVestingEvent } from '../generated/FuroVesting/FuroVesting'
 import { CLIFF, END, START, STEP, WEEK, YEAR } from '../src/constants'
 import { onCreateVesting } from '../src/mappings/vesting'
 import { createTokenMock, createVestingEvent } from './mocks'

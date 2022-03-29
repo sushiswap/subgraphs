@@ -1,8 +1,8 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 import {
-  LogCreateVesting as CreateVestingEvent,
-  LogStopVesting as CancelVestingEvent,
-  LogWithdraw as WithdrawalEvent,
+  CreateVesting as CreateVestingEvent,
+  CancelVesting as CancelVestingEvent,
+  Withdraw as WithdrawEvent,
 } from '../../generated/FuroVesting/FuroVesting'
 import { Vesting } from '../../generated/schema'
 import { ACTIVE, CANCELLED } from '../constants'
@@ -23,8 +23,8 @@ export function getOrCreateVesting(id: BigInt): Vesting {
 }
 
 export function createVesting(event: CreateVestingEvent): Vesting {
-  const vestId = BigInt.fromString('1') // FIXME: hardcoded id for now, Sarang will add id to event later
-  let vesting = getOrCreateVesting(vestId) //getOrCreateVesting(event.params.vestId)
+  const vestId = event.params.vestId
+  let vesting = getOrCreateVesting(vestId)
   let recipient = getOrCreateUser(event.params.recipient, event)
   let owner = getOrCreateUser(event.params.owner, event)
   let token = getOrCreateToken(event.params.token.toHex(), event)
@@ -39,7 +39,7 @@ export function createVesting(event: CreateVestingEvent): Vesting {
   vesting.stepAmount = event.params.stepAmount
   vesting.schedule = vestId.toString()
   vesting.status = ACTIVE
-  vesting.fromBentoBox = true //FIXME: waiting for Sarang to update the event, later use event.params.fromBentoBox
+  vesting.fromBentoBox = event.params.fromBentoBox
   vesting.startedAt = event.params.start
   vesting.expiresAt = calculateExpirationDate(vesting)
   vesting.totalAmount = calculateTotalAmount(vesting)
@@ -61,9 +61,9 @@ export function cancelVesting(event: CancelVestingEvent): Vesting {
   return vesting
 }
 
-export function withdrawFromVesting(event: WithdrawalEvent): Vesting {
+export function withdrawFromVesting(event: WithdrawEvent): Vesting {
   let vesting = getOrCreateVesting(event.params.vestId)
-  vesting.withdrawnAmount = vesting.withdrawnAmount.plus(BigInt.fromString('1337420')) // FIXME: event missing amount, update this after contract is updated
+  vesting.withdrawnAmount = vesting.withdrawnAmount.plus(event.params.amount)
   vesting.save()
 
   return vesting

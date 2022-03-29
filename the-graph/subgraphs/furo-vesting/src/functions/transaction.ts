@@ -1,23 +1,16 @@
-// import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
-// import { Stream, Transaction, User } from '../schema'
-// import {
-//   LogCreateStream as CreateStreamEvent,
-//   LogCancelStream as CancelStreamEvent,
-//   LogWithdrawFromStream as WithdrawalEvent
-// } from '../FuroStream/FuroStream';
-// import { DEPOSIT, DISBURSEMENT, WITHDRAWAL } from '../constants';
-// import { log } from 'matchstick-as';
-// import { increaseTransactionCount } from './furo';
-
 import { BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { LogCreateVesting as CreateVestingEvent, LogStopVesting as CancelVestingEvent, LogWithdraw as WithdrawalEvent } from '../../generated/FuroVesting/FuroVesting'
-import { Transaction, Vesting } from "../../generated/schema"
+import {
+  CreateVesting as CreateVestingEvent,
+  CancelVesting as CancelVestingEvent,
+  Withdraw as WithdrawEvent,
+} from '../../generated/FuroVesting/FuroVesting'
+import { Transaction, Vesting } from '../../generated/schema'
 import { DEPOSIT, DISBURSEMENT, WITHDRAWAL } from '../constants'
 import { increaseTransactionCount } from './furo'
 
 function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction {
   let transaction = Transaction.load(id)
-  
+
   if (transaction === null) {
     transaction = new Transaction(id)
     transaction.createdAtBlock = event.block.number
@@ -31,14 +24,14 @@ function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction 
 }
 
 export function createDepositTransaction(vesting: Vesting, event: CreateVestingEvent): Transaction {
-  const transactionId = vesting.id.concat(":tx:").concat(vesting.transactionCount.toString())
+  const transactionId = vesting.id.concat(':tx:').concat(vesting.transactionCount.toString())
   let transaction = getOrCreateTransaction(transactionId, event)
   transaction.type = DEPOSIT
   transaction.vesting = vesting.id
   transaction.amount = vesting.totalAmount
   transaction.to = vesting.recipient
   transaction.token = vesting.token
-  transaction.toBentoBox = true // FIXME: missing param, waiting for event change
+  transaction.toBentoBox = event.params.fromBentoBox // TODO: from? to? negation needed?
   transaction.save()
 
   vesting.transactionCount = vesting.transactionCount.plus(BigInt.fromU32(1))
@@ -47,9 +40,8 @@ export function createDepositTransaction(vesting: Vesting, event: CreateVestingE
   return transaction as Transaction
 }
 
-
-export function createDisbursementTransactions(vesting: Vesting, event: CancelVestingEvent): void {  
-  const senderTransactionId = vesting.id.concat(":tx:").concat(vesting.transactionCount.toString())
+export function createDisbursementTransactions(vesting: Vesting, event: CancelVestingEvent): void {
+  const senderTransactionId = vesting.id.concat(':tx:').concat(vesting.transactionCount.toString())
   let senderTransaction = getOrCreateTransaction(senderTransactionId, event)
   senderTransaction.type = DISBURSEMENT
   senderTransaction.vesting = vesting.id
@@ -61,7 +53,7 @@ export function createDisbursementTransactions(vesting: Vesting, event: CancelVe
 
   vesting.transactionCount = vesting.transactionCount.plus(BigInt.fromU32(1))
 
-  const recipientTransactionId = vesting.id.concat(":tx:").concat(vesting.transactionCount.toString())
+  const recipientTransactionId = vesting.id.concat(':tx:').concat(vesting.transactionCount.toString())
   let recipientTransaction = getOrCreateTransaction(recipientTransactionId, event)
   recipientTransaction.type = DISBURSEMENT
   recipientTransaction.vesting = vesting.id
@@ -75,15 +67,15 @@ export function createDisbursementTransactions(vesting: Vesting, event: CancelVe
   vesting.save()
 }
 
-export function createWithdrawalTransaction(vesting: Vesting, event: WithdrawalEvent): Transaction {
-  const transactionId = vesting.id.concat(":tx:").concat(vesting.transactionCount.toString())
+export function createWithdrawalTransaction(vesting: Vesting, event: WithdrawEvent): Transaction {
+  const transactionId = vesting.id.concat(':tx:').concat(vesting.transactionCount.toString())
   let transaction = getOrCreateTransaction(transactionId, event)
   transaction.type = WITHDRAWAL
   transaction.vesting = vesting.id
-  transaction.amount = BigInt.fromString("1337420") // FIXME: event missing amount, update this after contract is updated
+  transaction.amount = event.params.amount
   transaction.to = vesting.recipient
   transaction.token = event.params.token.toHex()
-  transaction.toBentoBox = event.params.toBentoBox 
+  transaction.toBentoBox = event.params.toBentoBox
   transaction.save()
 
   vesting.transactionCount = vesting.transactionCount.plus(BigInt.fromU32(1))

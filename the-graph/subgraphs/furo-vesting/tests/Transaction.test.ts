@@ -1,6 +1,6 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
-import { LogCreateVesting as CreateVestingEvent } from '../generated/FuroVesting/FuroVesting'
+import { CreateVesting as CreateVestingEvent } from '../generated/FuroVesting/FuroVesting'
 import { ACTIVE, CANCELLED, DEPOSIT, DISBURSEMENT, WEEK, WITHDRAWAL, YEAR } from '../src/constants'
 import { onCancelVesting, onCreateVesting, onWithdraw } from '../src/mappings/vesting'
 import { createCancelVestingEvent, createTokenMock, createVestingEvent, createWithdrawEvent } from './mocks'
@@ -100,8 +100,8 @@ test('Disbursement transactions are created when vesting is cancelled', () => {
 
 test('Withdrawal event creates withdrawal transaction', () => {
   setup()
-  const amount = BigInt.fromString("1337420") // FIXME: event will eventually have this as argument
-  let withdrawalEvent = createWithdrawEvent(VESTING_ID, WETH_ADDRESS, true)
+  const amount = BigInt.fromString("1337420")
+  let withdrawalEvent = createWithdrawEvent(VESTING_ID, WETH_ADDRESS, amount, true)
 
   onWithdraw(withdrawalEvent)
 

@@ -3,8 +3,8 @@ import { Schedule, SchedulePeriod, Vesting } from '../../generated/schema'
 import { CLIFF, END, START, STEP } from '../constants'
 
 export function createSchedule(vesting: Vesting): Schedule {
-  let schedule = getOrCreateSchedule('1') // FIXME: waiting for event to change, hardcoded for now
-  schedule.vesting = '1'
+  let schedule = getOrCreateSchedule(vesting.id)
+  schedule.vesting = vesting.id
   schedule.save()
 
   createSchedulePeriods(vesting)
@@ -14,25 +14,24 @@ export function createSchedule(vesting: Vesting): Schedule {
 function createSchedulePeriods(vesting: Vesting): void {
   let passedTime = vesting.startedAt
   let passedAmount = BigInt.fromU32(0)
-  let vestId = '1' // FIXME: hardcoded for now, change when event is updated
-  savePeriod(vestId, 0, START, passedTime, passedAmount)
+  savePeriod(vesting.id, 0, START, passedTime, passedAmount)
 
   passedTime = passedTime.plus(vesting.cliffDuration)
   passedAmount = passedAmount.plus(vesting.cliffAmount)
-  savePeriod(vestId, 1, CLIFF, passedTime, passedAmount)
+  savePeriod(vesting.id, 1, CLIFF, passedTime, passedAmount)
 
   const createdPeriodCount = 2
   for (let i = 0; i < vesting.steps.toI32() - 1; i++) {
     passedTime = passedTime.plus(vesting.stepDuration)
     passedAmount = passedAmount.plus(vesting.stepAmount)
     const id = createdPeriodCount + i
-    savePeriod(vestId, id, STEP, passedTime, passedAmount)
+    savePeriod(vesting.id, id, STEP, passedTime, passedAmount)
   }
 
   passedTime = passedTime.plus(vesting.stepDuration)
   passedAmount = passedAmount.plus(vesting.stepAmount)
   const endPeriodId = createdPeriodCount + vesting.steps.toI32() - 1
-  savePeriod(vestId, endPeriodId, END, passedTime, passedAmount)
+  savePeriod(vesting.id, endPeriodId, END, passedTime, passedAmount)
 }
 
 function getOrCreateSchedule(id: string): Schedule {
@@ -66,5 +65,4 @@ function savePeriod(vestId: string, number: i32, type: string, time: BigInt, amo
   period.time = time
   period.amount = amount
   period.save()
-  log.debug("{} {} {} {}", [period.id, type, time.toString(), amount.toString()])
 }
