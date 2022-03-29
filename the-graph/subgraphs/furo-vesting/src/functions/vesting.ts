@@ -1,5 +1,5 @@
 import { BigInt } from '@graphprotocol/graph-ts'
-import { LogCreateVesting as CreateVestingEvent, LogStopVesting as CancelVestingEvent } from '../../generated/FuroVesting/FuroVesting'
+import { LogCreateVesting as CreateVestingEvent, LogStopVesting as CancelVestingEvent, LogWithdraw as WithdrawalEvent } from '../../generated/FuroVesting/FuroVesting'
 import { Vesting } from '../../generated/schema'
 import { ACTIVE, CANCELLED, EXPIRED } from '../constants'
 import { increaseVestingCount } from './furo'
@@ -59,6 +59,16 @@ export function cancelVesting(event: CancelVestingEvent): Vesting {
   vesting.status = CANCELLED
   vesting.cancelledAtTimestamp = event.block.timestamp
   vesting.cancelledAtBlock = event.block.number
+  vesting.save()
+  
+  return vesting
+}
+
+
+
+export function withdrawFromVesting(event: WithdrawalEvent): Vesting {
+  let vesting = getOrCreateVesting(event.params.vestId)
+  vesting.withdrawnAmount = vesting.withdrawnAmount.plus(BigInt.fromString("1337420"))  // FIXME: event missing amount, update this after contract is updated
   vesting.save()
   
   return vesting

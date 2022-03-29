@@ -93,8 +93,7 @@ test('On withdraw event, withdrawnAmount field is updated', () => {
 
   onWithdraw(withdrawalEvent)
 
-  const id = VESTING_ID.toString().concat(":tx:1")
-  assert.fieldEquals('Vesting', id, 'withdrawnAmount', amount.toString())
+  assert.fieldEquals('Vesting', VESTING_ID.toString(), 'withdrawnAmount', amount.toString())
 
   cleanup()
 })

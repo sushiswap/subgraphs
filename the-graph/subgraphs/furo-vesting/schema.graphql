@@ -33,6 +33,7 @@ type Vesting @entity {
   cliffAmount: BigInt!
   stepAmount: BigInt!
   totalAmount: BigInt!
+  withdrawnAmount: BigInt!
   token: Token!
   schedule: Schedule!
   status: VestingStatus!

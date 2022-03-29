@@ -4,8 +4,8 @@ import {
   LogWithdraw as WithdrawalEvent,
 } from '../../generated/FuroVesting/FuroVesting'
 import { createSchedule } from '../functions/schedule'
-import { createDepositTransaction, createDisbursementTransactions } from '../functions/transaction'
-import { cancelVesting, createVesting } from '../functions/vesting'
+import { createDepositTransaction, createDisbursementTransactions, createWithdrawalTransaction } from '../functions/transaction'
+import { cancelVesting, createVesting, withdrawFromVesting } from '../functions/vesting'
 
 export function onCreateVesting(event: CreateVestingEvent): void {
   const vesting = createVesting(event)
@@ -21,4 +21,7 @@ export function onCancelVesting(event: CancelVestingEvent): void {
   createDisbursementTransactions(vesting, event)
 }
 
-export function onWithdraw(event: WithdrawalEvent): void {}
+export function onWithdraw(event: WithdrawalEvent): void {
+    const vesting = withdrawFromVesting(event)
+    createWithdrawalTransaction(vesting, event)
+}

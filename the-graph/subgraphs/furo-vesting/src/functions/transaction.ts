@@ -10,9 +10,9 @@
 // import { increaseTransactionCount } from './furo';
 
 import { BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { LogCreateVesting as CreateVestingEvent, LogStopVesting as CancelVestingEvent } from '../../generated/FuroVesting/FuroVesting'
+import { LogCreateVesting as CreateVestingEvent, LogStopVesting as CancelVestingEvent, LogWithdraw as WithdrawalEvent } from '../../generated/FuroVesting/FuroVesting'
 import { Transaction, Vesting } from "../../generated/schema"
-import { DEPOSIT, DISBURSEMENT } from '../constants'
+import { DEPOSIT, DISBURSEMENT, WITHDRAWAL } from '../constants'
 import { increaseTransactionCount } from './furo'
 
 function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction {
@@ -75,19 +75,19 @@ export function createDisbursementTransactions(vesting: Vesting, event: CancelVe
   vesting.save()
 }
 
-// export function createWithdrawalTransaction(stream: Stream, event: WithdrawalEvent): Transaction {
-//   const transactionId = stream.id.concat(":tx:").concat(stream.transactionCount.toString())
-//   let transaction = getOrCreateTransaction(transactionId, event)
-//   transaction.type = WITHDRAWAL
-//   transaction.stream = stream.id
-//   transaction.amount = event.params.sharesToWithdraw
-//   transaction.to = stream.recipient
-//   transaction.token = event.params.token.toHex()
-//   transaction.toBentoBox = event.params.toBentoBox // TODO: is this logic correctly mapped? negation needed?
-//   transaction.save()
+export function createWithdrawalTransaction(vesting: Vesting, event: WithdrawalEvent): Transaction {
+  const transactionId = vesting.id.concat(":tx:").concat(vesting.transactionCount.toString())
+  let transaction = getOrCreateTransaction(transactionId, event)
+  transaction.type = WITHDRAWAL
+  transaction.vesting = vesting.id
+  transaction.amount = BigInt.fromString("1337420") // FIXME: event missing amount, update this after contract is updated
+  transaction.to = vesting.recipient
+  transaction.token = event.params.token.toHex()
+  transaction.toBentoBox = event.params.toBentoBox 
+  transaction.save()
 
-//   stream.transactionCount = stream.transactionCount.plus(BigInt.fromU32(1))
-//   stream.save()
+  vesting.transactionCount = vesting.transactionCount.plus(BigInt.fromU32(1))
+  vesting.save()
 
-//   return transaction as Transaction
-// }
+  return transaction as Transaction
+}
