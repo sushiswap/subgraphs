@@ -4,5 +4,4 @@
 - [  ] Manual testing: Populate contract with data and query it, compare values with the public contract functions
   - [  ] query derived fields (cannot be test with unit tests, virtual fields..)
 - [  ] Review fields on `Transaction` entity: `toBentoBox` and `fromBentoBox`, might need negation to be set correctly.
-- [  ] Consider if needed: When a stream is updated, the streams amount is updated, but currently no historical data saved for this. (Could it be saved in the Transaction?)
-  
+- [  ] The current implementation expects the contracts `step` variable to become limited to a reasonable size, it's possible to create a vesting with steps=4294967295, which would create 4294967295 `SchedulePeriod` entities.  
