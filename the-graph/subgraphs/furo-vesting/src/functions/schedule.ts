@@ -1,4 +1,4 @@
-import { BigInt } from '@graphprotocol/graph-ts'
+import { BigInt, log } from '@graphprotocol/graph-ts'
 import { Schedule, SchedulePeriod, Vesting } from '../../generated/schema'
 import { CLIFF, END, START, STEP } from '../constants'
 
@@ -31,7 +31,7 @@ function createSchedulePeriods(vesting: Vesting): void {
 
   passedTime = passedTime.plus(vesting.stepDuration)
   passedAmount = passedAmount.plus(vesting.stepAmount)
-  const endPeriodId = createdPeriodCount + vesting.steps.toI32()
+  const endPeriodId = createdPeriodCount + vesting.steps.toI32() - 1
   savePeriod(vestId, endPeriodId, END, passedTime, passedAmount)
 }
 
@@ -66,4 +66,5 @@ function savePeriod(vestId: string, number: i32, type: string, time: BigInt, amo
   period.time = time
   period.amount = amount
   period.save()
+  log.debug("{} {} {} {}", [period.id, type, time.toString(), amount.toString()])
 }

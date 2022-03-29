@@ -80,7 +80,7 @@ test('vesting creates a schedule and schedule periods', () => {
 
   passedTime = passedTime.plus(STEP_DURATION)
   passedAmount = passedAmount.plus(STEPS_AMOUNT)
-  const endPeriodNumber = createdPeriodCount + STEPS.toI32()
+  const endPeriodNumber = createdPeriodCount + STEPS.toI32() - 1
   const endPeriodId = id.concat(':period:'.concat(endPeriodNumber.toString()))
   assert.fieldEquals('SchedulePeriod', endPeriodId, 'id', endPeriodId)
   assert.fieldEquals('SchedulePeriod', endPeriodId, 'type', END)
