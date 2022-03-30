@@ -64,5 +64,6 @@ function savePeriod(vestId: string, number: i32, type: string, time: BigInt, amo
   period.type = type
   period.time = time
   period.amount = amount
+  period.schedule = vestId
   period.save()
 }

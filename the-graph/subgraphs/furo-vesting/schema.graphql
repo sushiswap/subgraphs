@@ -51,7 +51,7 @@ type Vesting @entity {
 type Schedule @entity {
   id: ID!
   vesting: Vesting!
-  periods: SchedulePeriod! @derivedFrom(field: "schedule")
+  periods: [SchedulePeriod!]! @derivedFrom(field: "schedule")
 }
 
 type SchedulePeriod @entity {
@@ -64,7 +64,7 @@ type SchedulePeriod @entity {
 
 type Transaction @entity {
   id: ID!
-  type: TransactionType
+  type: TransactionType!
   vesting: Vesting!
   amount: BigInt!
   to: User!
