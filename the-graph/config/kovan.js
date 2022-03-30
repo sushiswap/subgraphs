@@ -48,7 +48,7 @@ module.exports = {
     },
   },
   furo: {
-    stream: {address: '0x0000000000000000000000000000000000000000', startBlock: 0},
-    vesting: {address: '0x0000000000000000000000000000000000000000', startBlock: 0},
+    stream: {address: '0x511D5aef6eb2eFDf71b98B4261Bbe68CC0A94Cd4', startBlock: 30725679},
+    vesting: {address: '0x54E6c99Bb11D89CA59Fe6ebaBbE3ccF8e9BF595a', startBlock: 30725781},
   }
 }
