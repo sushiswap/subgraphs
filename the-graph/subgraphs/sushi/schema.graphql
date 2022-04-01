@@ -1,0 +1,37 @@
+
+type Sushi @entity {
+  id: ID! # Hardcoded to 'Sushi'
+  userCount: BigInt!
+  transactionCount: BigInt!
+  totalSupply: BigInt!
+}
+
+enum TransactionType {
+    TRANSFER,
+    MINT,
+    BURN
+}
+
+type Transaction @entity {
+  id: ID!
+  from: User!
+  to: User!
+  amount: BigInt!
+  type: TransactionType!
+  gasUsed: BigInt!
+  gasLimit: BigInt!
+  gasPrice: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type User @entity {
+  id: ID!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+  modifiedAtBlock: BigInt!
+  modifiedAtTimestamp: BigInt!
+  balance: BigInt!
+  withdrawals: [Transaction!]! @derivedFrom(field: "from")
+  deposits: [Transaction!]! @derivedFrom(field: "to")
+}

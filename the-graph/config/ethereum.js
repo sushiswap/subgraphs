@@ -41,4 +41,12 @@ module.exports = {
       startBlock: 10794229,
     },
   },
+  sushi: {
+      address: '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2',
+      startBlock: 10750000,
+    },
+  xSushi: {
+    address: '0x8798249c2E607446EfB7Ad49eC89dD1865Ff4272',
+    startBlock: 10801571,
+  }
 }

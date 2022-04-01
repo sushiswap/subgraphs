@@ -1,7 +1,7 @@
 module.exports = {
   network: 'kovan',
   native: { address: '0xd0a1e359811322d97991e03f863a0c30c2cf029c' },
-  sushi: { address: '0x0769fd68dfb93167989c6f7254cd0d766fb2841f' },
+  sushi: { address: '0x0769fd68dfb93167989c6f7254cd0d766fb2841f', startBlock: 23647594 },
   weth: { address: '0xd0a1e359811322d97991e03f863a0c30c2cf029c' },
   wbtc: { address: '0xd3a691c852cdb01e281545a27064741f0b7f6825' },
   bentobox: { address: '0xc381a85ed7c7448da073b7d6c9d4cbf1cbf576f0', startBlock: 27205233 },
