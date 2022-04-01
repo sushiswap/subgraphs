@@ -343,8 +343,21 @@ export function onSwap(event: SwapEvent): void {
   poolKpi.save()
 
   const nativePrice = getNativeTokenPrice()
-  updatePoolDaySnapshot(event.block.timestamp, poolKpi)
-  updatePoolHourSnapshot(event.block.timestamp, poolKpi)
+  const poolDaySnapshot = updatePoolDaySnapshot(event.block.timestamp, poolKpi)
+  const poolHourSnapshot = updatePoolHourSnapshot(event.block.timestamp, poolKpi)
+
+  poolDaySnapshot.volumeNative = poolDaySnapshot.volumeNative.plus(volumeNative)
+  poolDaySnapshot.volumeUSD = poolDaySnapshot.volumeUSD.plus(volumeUSD)
+  poolDaySnapshot.feesNative = poolDaySnapshot.feesNative.plus(feesNative)
+  poolDaySnapshot.feesUSD = poolDaySnapshot.feesUSD.plus(feesUSD)
+  poolDaySnapshot.save()
+
+  poolHourSnapshot.volumeNative = poolHourSnapshot.volumeNative.plus(volumeNative)
+  poolHourSnapshot.volumeUSD = poolHourSnapshot.volumeUSD.plus(volumeUSD)
+  poolHourSnapshot.feesNative = poolHourSnapshot.feesNative.plus(feesNative)
+  poolHourSnapshot.feesUSD = poolHourSnapshot.feesUSD.plus(feesUSD)
+  poolHourSnapshot.save()
+
   updateTokenDaySnapshot(event.block.timestamp, tokenIn, tokenInKpi, nativePrice)
   updateTokenDaySnapshot(event.block.timestamp, tokenOut, tokenOutKpi, nativePrice)
 }

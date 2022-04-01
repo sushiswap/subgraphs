@@ -1,7 +1,7 @@
 import { BigInt } from '@graphprotocol/graph-ts'
-import { toDecimal } from '.'
-import { LogFlashLoan } from '../../generated/BentoBox/BentoBox'
 import { FlashLoan } from '../../generated/schema'
+import { LogFlashLoan } from '../../generated/BentoBox/BentoBox'
+import { toDecimal } from '.'
 
 export function createFlashLoan(event: LogFlashLoan, tokenDecimals: BigInt): FlashLoan {
   const flashLoan = new FlashLoan(getFlashLoanId(event))

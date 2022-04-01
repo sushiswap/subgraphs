@@ -8,24 +8,9 @@
 
 ## Run
 ```
-yarn graph test <ONE-OR-MORE-TEST-NAMES>
+yarn graph test -r
 
-yarn graph test Auction
+yarn graph test -r <ONE-OR-MORE-TEST-NAMES>
 ```
-
 NOTE:  
-if you are running Ubuntu <20.04, matchstick 0.2.0 and above is incompatible. 
-- Build a **Matchstick** image using the following command:
-```
-docker build -t matchstick .
-```
-
- - The build step might take a while, but once that's done we can quickly run our tests like this:
-```
-docker run -it --rm --mount type=bind,source=</absolute/path/../miso>,target=/matchstick matchstick
-```
-
-To run a specific test:
-```
-docker run -e=<TEST_NAME> -it --rm --mount type=bind,source=</absolute/path/../miso>,target=/matchstick matchstick
-```
+The `-r` flag is short for `--recompile`. The default behavior of matchstick used to be to recompile every time and is now changed to only recompile on changes made to a test file, therefore it's a safer bet to always use it for the time being.

@@ -3,7 +3,7 @@ import { DAY_IN_SECONDS, HOUR_IN_SECONDS } from '../constants'
 
 import { BigInt } from '@graphprotocol/graph-ts'
 
-export function updatePoolHourSnapshot(timestamp: BigInt, poolKpi: ConstantProductPoolKpi): void {
+export function updatePoolHourSnapshot(timestamp: BigInt, poolKpi: ConstantProductPoolKpi): PoolHourSnapshot {
   let id = getPoolHourSnapshotId(poolKpi.id, timestamp)
 
   let snapshot = PoolHourSnapshot.load(id)
@@ -18,19 +18,21 @@ export function updatePoolHourSnapshot(timestamp: BigInt, poolKpi: ConstantProdu
   snapshot.liquidityNative = poolKpi.liquidityNative
   snapshot.liquidityUSD = poolKpi.liquidityUSD
 
-  snapshot.volume = poolKpi.volume
-  snapshot.volumeNative = poolKpi.volumeNative
-  snapshot.volumeUSD = poolKpi.volumeUSD
+  // snapshot.volume = poolKpi.volume
+  // snapshot.volumeNative = poolKpi.volumeNative
+  // snapshot.volumeUSD = poolKpi.volumeUSD
 
-  snapshot.fees = poolKpi.fees
-  snapshot.feesNative = poolKpi.feesNative
-  snapshot.feesUSD = poolKpi.feesUSD
+  // snapshot.fees = poolKpi.fees
+  // snapshot.feesNative = poolKpi.feesNative
+  // snapshot.feesUSD = poolKpi.feesUSD
 
   snapshot.transactionCount = snapshot.transactionCount.plus(BigInt.fromI32(1))
   snapshot.save()
+
+  return snapshot
 }
 
-export function updatePoolDaySnapshot(timestamp: BigInt, poolKpi: ConstantProductPoolKpi): void {
+export function updatePoolDaySnapshot(timestamp: BigInt, poolKpi: ConstantProductPoolKpi): PoolDaySnapshot {
   let id = getPoolDaySnapshotId(poolKpi.id, timestamp)
   let snapshot = PoolDaySnapshot.load(id)
 
@@ -44,16 +46,18 @@ export function updatePoolDaySnapshot(timestamp: BigInt, poolKpi: ConstantProduc
   snapshot.liquidityNative = poolKpi.liquidityNative
   snapshot.liquidityUSD = poolKpi.liquidityUSD
 
-  snapshot.volume = poolKpi.volume
-  snapshot.volumeNative = poolKpi.volumeNative
-  snapshot.volumeUSD = poolKpi.volumeUSD
+  // snapshot.volume = poolKpi.volume
+  // snapshot.volumeNative = poolKpi.volumeNative
+  // snapshot.volumeUSD = poolKpi.volumeUSD
 
-  snapshot.fees = poolKpi.fees
-  snapshot.feesNative = poolKpi.feesNative
-  snapshot.feesUSD = poolKpi.feesUSD
+  // snapshot.fees = poolKpi.fees
+  // snapshot.feesNative = poolKpi.feesNative
+  // snapshot.feesUSD = poolKpi.feesUSD
 
   snapshot.transactionCount = snapshot.transactionCount.plus(BigInt.fromI32(1))
   snapshot.save()
+
+  return snapshot
 }
 
 function getHourStartDate(timestamp: BigInt): i32 {

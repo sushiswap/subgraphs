@@ -295,9 +295,9 @@ type IndexPool implements Pool @entity {
 
 type Transaction @entity {
   id: ID!
-  gasUsed: BigInt!
-  gasLimit: BigInt!
-  gasPrice: BigInt!
+  gasUsed: BigInt
+  gasLimit: BigInt
+  gasPrice: BigInt
   mints: [Mint!]! @derivedFrom(field: "transaction")
   burns: [Burn!]! @derivedFrom(field: "transaction")
   swaps: [Swap!]! @derivedFrom(field: "transaction")
@@ -367,8 +367,8 @@ type Collect @entity {
 
 type Token @entity {
   id: ID!
-  price: TokenPrice!
-  kpi: TokenKpi!
+  price: TokenPrice
+  kpi: TokenKpi
   rebase: Rebase!
   symbol: String!
   symbolSuccess: Boolean!
