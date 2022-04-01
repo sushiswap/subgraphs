@@ -1,1 +1,17 @@
+generated
+build
+dist
+node_modules
+package-lock.json
+yarn.lock
+addresses.ts
+subgraph.yaml
+.yarn/*
+!.yarn/patches
+!.yarn/releasesgit 
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+**/tests/.*/
 .vscode
