@@ -1,9 +1,8 @@
+// Pricing module...
+import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 import { ConstantProductPoolAsset, Token, TokenPrice } from '../../generated/schema'
 import { NATIVE_ADDRESS, STABLE_POOL_ADDRESSES, STABLE_TOKEN_ADDRESSES } from '../constants/addresses'
 import { getConstantProductPoolAsset, getConstantProductPoolKpi, getOrCreateWhitelistedPool } from '../functions'
-
-// Pricing module...
-import { BigDecimal } from '@graphprotocol/graph-ts'
 
 export function createTokenPrice(token: string): TokenPrice {
   const tokenPrice = new TokenPrice(token)
@@ -17,7 +16,7 @@ export function getTokenPrice(token: string): TokenPrice {
 }
 
 export function getOrCreateTokenPrice(token: string): TokenPrice {
-  const tokenPrice = getTokenPrice(token)
+  const tokenPrice = TokenPrice.load(token)
 
   if (tokenPrice === null) {
     return createTokenPrice(token)
@@ -32,7 +31,7 @@ export function getNativeTokenPrice(): TokenPrice {
 }
 
 // Minimum liqudiity threshold in native currency
-const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('0.000001')
+const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('5000')
 
 export function getNativePriceInUSD(): BigDecimal {
   // 1. Generate list of stable pairs
@@ -63,8 +62,8 @@ export function getNativePriceInUSD(): BigDecimal {
     if (
       asset0 === null ||
       asset1 === null ||
-      (asset0.token == NATIVE_ADDRESS && asset0.reserve.le(MINIMUM_NATIVE_LIQUIDITY)) ||
-      (asset1.token == NATIVE_ADDRESS && asset1.reserve.le(MINIMUM_NATIVE_LIQUIDITY))
+      (asset0.token == NATIVE_ADDRESS && asset0.reserve.lt(MINIMUM_NATIVE_LIQUIDITY)) ||
+      (asset1.token == NATIVE_ADDRESS && asset1.reserve.lt(MINIMUM_NATIVE_LIQUIDITY))
     ) {
       continue
     }
@@ -112,7 +111,7 @@ export function updateTokenPrice(token: Token): TokenPrice {
     // log.debug('Token whitelisted pool #{}', [token.id.concat(':').concat(i.toString())])
 
     const whitelistedPool = getOrCreateWhitelistedPool(token.id.concat(':').concat(i.toString()))
-    const whitelistedPoolKpi = getConstantProductPoolKpi(whitelistedPool.pool)
+    // const whitelistedPoolKpi = getConstantProductPoolKpi(whitelistedPool.pool)
 
     // log.debug('Got token whitelisted pool {}', [whitelistedPool.id])
 

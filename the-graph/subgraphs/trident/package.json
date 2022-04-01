@@ -16,7 +16,8 @@
     "create-local": "graph create --node http://localhost:8020/ sushiswap/trident",
     "remove-local": "graph remove --node http://localhost:8020/ sushiswap/trident",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/trident",
-    "deploy-kovan": "graph deploy --product hosted-service sushiswap/trident"
+    "deploy-kovan": "graph deploy --product hosted-service sushiswap/trident-kovan",
+    "deploy-polygon": "graph deploy --product hosted-service matthewlilley/trident-polygon"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.26.0",

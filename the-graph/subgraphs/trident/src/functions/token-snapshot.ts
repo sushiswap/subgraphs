@@ -1,7 +1,8 @@
 import { Token, TokenDaySnapshot, TokenKpi, TokenPrice } from '../../generated/schema'
+
 import { BigInt } from '@graphprotocol/graph-ts'
-import { getTokenPrice } from './token-price'
 import { DAY_IN_SECONDS } from '../constants'
+import { getTokenPrice } from './token-price'
 
 export function updateTokenDaySnapshot(
   timestamp: BigInt,
@@ -28,7 +29,6 @@ export function updateTokenDaySnapshot(
   snapshot.transactionCount = snapshot.transactionCount.plus(BigInt.fromI32(1))
   snapshot.save()
 }
-
 
 function getDayStartDate(timestamp: BigInt): i32 {
   let dayIndex = timestamp.toI32() / DAY_IN_SECONDS // get unique day within unix history

@@ -1,31 +1,14 @@
-import { Address, BigDecimal, BigInt, Bytes, ethereum, log } from '@graphprotocol/graph-ts'
-import { assert, newMockEvent, test } from 'matchstick-as/assembly/index'
-import { clearStore } from 'matchstick-as/assembly/store'
-import { ConstantProductPoolFactory, MasterDeployer } from '../generated/schema'
 import {
   ADDRESS_ZERO,
   CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS,
-  MASTER_DEPLOYER_ADDRESS, NATIVE_ADDRESS, STABLE_POOL_ADDRESSES, WHITELISTED_TOKEN_ADDRESSES
+  MASTER_DEPLOYER_ADDRESS,
+  NATIVE_ADDRESS,
+  STABLE_POOL_ADDRESSES,
+  WHITELISTED_TOKEN_ADDRESSES,
 } from '../src/constants/addresses'
-import {
-  getConstantProductPoolKpi,
-  getPoolDaySnapshotId,
-  getPoolHourSnapshotId,
-  getTokenDaySnapshotId,
-  getTokenKpi
-} from '../src/functions/index'
-import { onLogDeposit } from '../src/mappings/bentobox'
-import {
-  createBurnId,
-  createMintId,
-  createSwapId,
-  onBurn,
-  onMint,
-  onSwap,
-  onSync,
-  onTransfer
-} from '../src/mappings/constant-product-pool'
-import { onAddToWhitelist, onDeployPool } from '../src/mappings/master-deployer'
+import { Address, BigDecimal, BigInt, Bytes, ethereum, log } from '@graphprotocol/graph-ts'
+import { ConstantProductPoolFactory, MasterDeployer } from '../generated/schema'
+import { assert, newMockEvent, test } from 'matchstick-as/assembly/index'
 import {
   createAddToWhitelistEvent,
   createBurnEvent,
@@ -35,8 +18,29 @@ import {
   createSwapEvent,
   createSyncEvent,
   createTransferEvent,
-  getOrCreateTokenMock
+  getOrCreateTokenMock,
 } from './mocks'
+import {
+  createBurnId,
+  createMintId,
+  createSwapId,
+  onBurn,
+  onMint,
+  onSwap,
+  onSync,
+  onTransfer,
+} from '../src/mappings/constant-product-pool'
+import {
+  getConstantProductPoolKpi,
+  getPoolDaySnapshotId,
+  getPoolHourSnapshotId,
+  getTokenDaySnapshotId,
+  getTokenKpi,
+} from '../src/functions/index'
+import { onAddToWhitelist, onDeployPool } from '../src/mappings/master-deployer'
+
+import { clearStore } from 'matchstick-as/assembly/store'
+import { onLogDeposit } from '../src/mappings/bentobox'
 
 const BIGINT_ETH_AMOUNT = BigInt.fromString('1000000000000000001')
 const BIGINT_USD_AMOUNT = BigInt.fromString('3000000001')
@@ -72,7 +76,6 @@ function setup(): void {
 
   managePoolDeployments()
 }
-
 
 function cleanup(): void {
   clearStore()
@@ -166,9 +169,9 @@ test('Mint, assert KPIs and snapshots', () => {
   let transferEvent = createTransferEvent(mintEvent.transaction, poolAddress, ADDRESS_ZERO, BIGINT_ETH_AMOUNT)
   let syncEvent = createSyncEvent(poolAddress, BIGINT_ETH_AMOUNT, BIGINT_USD_AMOUNT)
 
-  assert.fieldEquals('TokenKpi', WHITELISTED_TOKEN_ADDRESSES[0], 'liquidity', '0.000000000000003003') 
+  assert.fieldEquals('TokenKpi', WHITELISTED_TOKEN_ADDRESSES[0], 'liquidity', '0.000000000000003003')
   assert.fieldEquals('TokenKpi', WHITELISTED_TOKEN_ADDRESSES[1], 'liquidity', '0.002002')
-  
+
   onTransfer(transferEvent)
   onSync(syncEvent)
   onMint(mintEvent)
@@ -293,7 +296,6 @@ test('Burn, assert KPIs and snapshots', () => {
   let transferEvent = createTransferEvent(burnEvent.transaction, poolAddress, ADDRESS_ZERO, BIGINT_ETH_AMOUNT)
   let syncEvent = createSyncEvent(poolAddress, BIGINT_ETH_AMOUNT, BIGINT_USD_AMOUNT)
 
-
   // When: A burn event is triggered
   onTransfer(transferEvent)
   onSync(syncEvent)
@@ -305,7 +307,7 @@ test('Burn, assert KPIs and snapshots', () => {
 
   // And: the KPIs liquidity are updated
   assert.fieldEquals('TokenKpi', WHITELISTED_TOKEN_ADDRESSES[0], 'liquidity', '13.99999999999999904')
-  log.debug("hehe", [])
+  log.debug('hehe', [])
   assert.fieldEquals('TokenKpi', WHITELISTED_TOKEN_ADDRESSES[1], 'liquidity', '13299.998999')
   assert.fieldEquals('ConstantProductPoolKpi', poolAddress.toHex(), 'liquidity', '4.000000000000000004')
 
@@ -428,7 +430,7 @@ function createDeployData(tokenAddress1: string, tokenAddress2: string, twapEnab
   return ethereum.encode(ethereum.Value.fromTuple(changetype<ethereum.Tuple>(tupleArray)))!
 }
 
-function rebase() : void {
+function rebase(): void {
   getOrCreateTokenMock(WHITELISTED_TOKEN_ADDRESSES[0], 18, 'Wrapped Ether', 'WETH')
   let depositEvent = createDepositEvent(
     Address.fromString(WHITELISTED_TOKEN_ADDRESSES[0]),
@@ -452,10 +454,9 @@ function rebase() : void {
     BigInt.fromString('1001')
   )
   onLogDeposit(depositEvent2)
-
 }
 
-function managePoolDeployments() :void {
+function managePoolDeployments(): void {
   let addWhitelistEvent = createAddToWhitelistEvent(CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS, masterDeployerOwner)
   let deployData = createDeployData(WHITELISTED_TOKEN_ADDRESSES[0], WHITELISTED_TOKEN_ADDRESSES[1], false)
   let deployPoolEvent = createDeployPoolEvent(
