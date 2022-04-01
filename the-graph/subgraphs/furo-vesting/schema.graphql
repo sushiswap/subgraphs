@@ -89,8 +89,8 @@ type Token @entity {
 
 type User @entity {
   id: ID!
-  vestings: [Vesting!]! @derivedFrom(field: "recipient")
-  createdVestings: [Vesting!]! @derivedFrom(field: "createdBy")
+  incomingVestings: [Vesting!]! @derivedFrom(field: "recipient")
+  outgoingVestings: [Vesting!]! @derivedFrom(field: "createdBy")
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
 }
