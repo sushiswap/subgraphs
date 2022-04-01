@@ -12,12 +12,13 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ sushiswap/legacy-exchange",
     "create-local": "graph create --node http://localhost:8020/ sushiswap/legacy-exchange",
     "remove-local": "graph remove --node http://localhost:8020/ sushiswap/legacy-exchange",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/legacy-exchange",
-    "deploy-ethereum": "graph deploy --product hosted-service sushiswap/legacy-exchange",
-    "deploy-kovan": "graph deploy --product hosted-service sushiswap/legacy-exchange-kovan"
+    "deploy-ethereum": "graph deploy --product hosted-service sushiswap/legacy-exchange-avalanche",
+    "deploy-kovan": "graph deploy --product hosted-service sushiswap/legacy-exchange-kovan",
+    "deploy-polygon": "graph deploy --product hosted-service sushiswap/legacy-exchange-polygon",
+    "deploy-avalanche": "graph deploy --product hosted-service sushiswap/legacy-exchange-avalanche"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "0.26.0",

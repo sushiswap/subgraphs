@@ -10,7 +10,6 @@ export function getOrCreateMasterContractApproval(event: LogSetMasterContractApp
     masterContractApproval = new MasterContractApproval(id)
     masterContractApproval.user = event.params.user.toHex()
     masterContractApproval.masterContract = event.params.masterContract.toHex()
-    masterContractApproval.approved = false
     masterContractApproval.save()
   }
 

@@ -7,13 +7,13 @@ type BentoBox @entity {
   clones: [Clone!] @derivedFrom(field: "bentoBox")
   flashloans: [FlashLoan!] @derivedFrom(field: "bentoBox")
   transactions: [Transaction!] @derivedFrom(field: "bentoBox")
-  transactionCount: BigInt!
   protocolCount: BigInt!
   userCount: BigInt!
   tokenCount: BigInt!
   masterContractCount: BigInt!
   cloneCount: BigInt!
   flashloanCount: BigInt!
+  transactionCount: BigInt!
 }
 
 type Token @entity {

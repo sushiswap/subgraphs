@@ -1,10 +1,9 @@
 import { Address } from '@graphprotocol/graph-ts'
-import { getOrCreateBentoBox } from '.'
 import { MasterContract } from '../../generated/schema'
-
+import { getOrCreateBentoBox } from '.'
 
 export function getOrCreateMasterContract(id: Address): MasterContract {
-  const bentoBox = getOrCreateBentoBox(id)
+  const bentoBox = getOrCreateBentoBox()
 
   let masterContract = MasterContract.load(id.toHex())
 
@@ -16,4 +15,3 @@ export function getOrCreateMasterContract(id: Address): MasterContract {
 
   return masterContract as MasterContract
 }
-

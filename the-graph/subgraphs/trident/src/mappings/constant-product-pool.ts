@@ -10,6 +10,7 @@ import {
 import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 import { Burn, Mint, Swap, TokenPrice } from '../../generated/schema'
 import {
+  getConstantProductPool,
   getConstantProductPoolAsset,
   getConstantProductPoolKpi,
   getNativeTokenPrice,
@@ -285,6 +286,7 @@ export function onSwap(event: SwapEvent): void {
 
   const poolAddress = event.address.toHex()
 
+  const pool = getConstantProductPool(poolAddress)
   const tokenIn = getOrCreateToken(tokenInAddress)
   const tokenInPrice = getTokenPrice(tokenInAddress)
 
@@ -329,12 +331,33 @@ export function onSwap(event: SwapEvent): void {
 
   const volumeNative = amountIn.times(tokenInPrice.derivedNative).plus(amountOut.times(tokenOutPrice.derivedNative))
   const volumeUSD = amountIn.times(tokenInPrice.derivedUSD).plus(amountOut.times(tokenOutPrice.derivedUSD))
+
+  const feesNative = volumeNative.times(pool.swapFee.divDecimal(BigDecimal.fromString('10000')))
+  const feesUSD = volumeUSD.times(pool.swapFee.divDecimal(BigDecimal.fromString('10000')))
+
   poolKpi.volumeNative = poolKpi.volumeNative.plus(volumeNative)
   poolKpi.volumeUSD = poolKpi.volumeUSD.plus(volumeUSD)
+  poolKpi.feesNative = poolKpi.feesNative.plus(feesNative)
+  poolKpi.feesUSD = poolKpi.feesUSD.plus(feesUSD)
   poolKpi.transactionCount = poolKpi.transactionCount.plus(BigInt.fromI32(1))
   poolKpi.save()
 
   const nativePrice = getNativeTokenPrice()
+  const poolDaySnapshot = updatePoolDaySnapshot(event.block.timestamp, poolKpi)
+  const poolHourSnapshot = updatePoolHourSnapshot(event.block.timestamp, poolKpi)
+
+  poolDaySnapshot.volumeNative = poolDaySnapshot.volumeNative.plus(volumeNative)
+  poolDaySnapshot.volumeUSD = poolDaySnapshot.volumeUSD.plus(volumeUSD)
+  poolDaySnapshot.feesNative = poolDaySnapshot.feesNative.plus(feesNative)
+  poolDaySnapshot.feesUSD = poolDaySnapshot.feesUSD.plus(feesUSD)
+  poolDaySnapshot.save()
+
+  poolHourSnapshot.volumeNative = poolHourSnapshot.volumeNative.plus(volumeNative)
+  poolHourSnapshot.volumeUSD = poolHourSnapshot.volumeUSD.plus(volumeUSD)
+  poolHourSnapshot.feesNative = poolHourSnapshot.feesNative.plus(feesNative)
+  poolHourSnapshot.feesUSD = poolHourSnapshot.feesUSD.plus(feesUSD)
+  poolHourSnapshot.save()
+
   updateTokenDaySnapshot(event.block.timestamp, tokenIn, tokenInKpi, nativePrice)
   updateTokenDaySnapshot(event.block.timestamp, tokenOut, tokenOutKpi, nativePrice)
 }

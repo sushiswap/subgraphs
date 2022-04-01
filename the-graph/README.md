@@ -57,5 +57,8 @@ yarn workspace @sushiswap/$APP-subgraph deploy:$NETWORK
 
 Example
 ```sh
-curl -X POST -d '{ "query": "{indexingStatusForCurrentVersion(subgraphName: \"sushiswap/kovan-miso\") { chains { latestBlock { hash number }}}}"}' https://api.thegraph.com/index-node/graphql
+node . prepare miso kovan && yarn workspace @sushiswap/miso-subgraph codegen && yarn workspace @sushiswap/miso-subgraph build && yarn workspace @sushiswap/miso-subgraph deploy-kovan
 ```
+
+curl -X POST -d '{ "query": "{indexingStatusForCurrentVersion(subgraphName: \"sushiswap/kovan-miso\") { chains { latestBlock { hash number }}}}"}' https://api.thegraph.com/index-node/graphql
+

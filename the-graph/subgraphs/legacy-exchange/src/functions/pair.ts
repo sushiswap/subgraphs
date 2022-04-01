@@ -1,12 +1,13 @@
 import { BigInt, log } from '@graphprotocol/graph-ts'
-import { Pair, PairKpi, PairAsset } from '../../generated/schema'
+import { Pair, PairAsset, PairKpi } from '../../generated/schema'
+
 import { PairCreated__Params } from '../../generated/Factory/Factory'
 import { Pair as PairTemplate } from '../../generated/templates'
 import { WHITELISTED_TOKEN_ADDRESSES } from '../constants'
-import { getOrCreateToken } from './token'
-import { getOrCreateFactory } from './factory'
-import { getOrCreateTokenPrice } from './token-price'
 import { createWhitelistedPair } from './whitelisted-pair'
+import { getOrCreateFactory } from './factory'
+import { getOrCreateToken } from './token'
+import { getOrCreateTokenPrice } from './token-price'
 
 export function createPair(params: PairCreated__Params): Pair {
   const id = params.pair.toHex()

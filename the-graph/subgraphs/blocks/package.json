@@ -1,0 +1,26 @@
+{
+  "name": "@sushiswap/blocks-subgraph",
+  "license": "MIT",
+  "repository": {
+    "url": "sushiswap/subgraphs",
+    "directory": "subgraphs/blocks"
+  },
+  "files": [
+    "generated"
+  ],
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ sushiswap/blocks",
+    "create-local": "graph create --node http://localhost:8020/ sushiswap/blocks",
+    "remove-local": "graph remove --node http://localhost:8020/ sushiswap/blocks",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/blocks",
+    "deploy-moonriver": "graph deploy --product hosted-service sushiswap/blocks-moonriver",
+    "deploy-fuse": "graph deploy --product hosted-service sushiswap/blocks-fuse"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.27.0",
+    "@graphprotocol/graph-ts": "^0.24.1",
+    "matchstick-as": "^0.4.0"
+  }
+}
