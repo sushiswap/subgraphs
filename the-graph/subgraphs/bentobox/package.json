@@ -22,7 +22,7 @@
     "deploy-goerli": "graph deploy --product hosted-service sushiswap/bentobox-goerli",
     "deploy-kovan": "graph deploy --product hosted-service sushiswap/bentobox-kovan",
     "deploy-polygon": "graph deploy --product hosted-service matthewlilley/bentobox-polygon",
-    "deploy-avalanche": "graph deploy --product hosted-service sushiswap/bentobox-avalanche",
+    "deploy-avalanche": "graph deploy --product hosted-service sushiswap/avalanche-bentobox",
     "deploy-fantom": "graph deploy --product hosted-service sushiswap/bentobox-fantom",
     "deploy-gnosis": "graph deploy --product hosted-service sushiswap/bentobox-gnosis"
   },

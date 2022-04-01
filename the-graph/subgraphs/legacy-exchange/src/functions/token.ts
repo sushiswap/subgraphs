@@ -1,9 +1,10 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Token, TokenKpi } from '../../generated/schema'
+import { createTokenPrice, getOrCreateTokenPrice } from './token-price'
+
 import { ERC20 } from '../../generated/Factory/ERC20'
 import { NameBytes32 } from '../../generated/Factory/NameBytes32'
 import { SymbolBytes32 } from '../../generated/Factory/SymbolBytes32'
-import { Token, TokenKpi } from '../../generated/schema'
-import { createTokenPrice } from './token-price'
 
 export function createTokenKpi(id: string): TokenKpi {
   const kpi = new TokenKpi(id)
@@ -14,6 +15,14 @@ export function createTokenKpi(id: string): TokenKpi {
 
 export function getTokenKpi(id: string): TokenKpi {
   return TokenKpi.load(id) as TokenKpi
+}
+
+export function getOrCreateTokenKpi(id: string): TokenKpi {
+  let tokenKpi = TokenKpi.load(id)
+  if (tokenKpi === null) {
+    tokenKpi = createTokenKpi(id)
+  }
+  return tokenKpi as TokenKpi
 }
 
 export function getOrCreateToken(id: string): Token {
@@ -35,10 +44,10 @@ export function getOrCreateToken(id: string): Token {
     token.decimals = decimals.value
     token.decimalsSuccess = decimals.success
 
-    const price = createTokenPrice(id)
+    const price = getOrCreateTokenPrice(id)
     token.price = price.id
 
-    const kpi = createTokenKpi(id)
+    const kpi = getOrCreateTokenKpi(id)
     token.kpi = kpi.id
 
     token.save()

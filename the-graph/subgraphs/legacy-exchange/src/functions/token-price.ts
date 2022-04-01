@@ -1,7 +1,8 @@
 // Pricing module...
 import { BigDecimal, log } from '@graphprotocol/graph-ts'
-import { PairAsset, Token, TokenPrice } from '../../generated/schema'
 import { NATIVE_ADDRESS, STABLE_POOL_ADDRESSES, STABLE_TOKEN_ADDRESSES } from '../constants'
+import { PairAsset, Token, TokenPrice } from '../../generated/schema'
+
 import { getOrCreateWhitelistedPair } from './whitelisted-pair'
 import { getPairAsset } from './pair'
 import { getWhitelistedPair } from '.'
