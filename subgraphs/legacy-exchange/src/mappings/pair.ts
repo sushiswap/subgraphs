@@ -270,6 +270,9 @@ export function onSync(event: SyncEvent): void {
   factory.liquidityUSD = factory.liquidityNative.times(nativePrice.derivedUSD)
   factory.save()
 
+  // TODO: Figure out how to automate whitelisted tokens entirely by programatically
+  // adding and removing them, based on a threshold...
+
   // if (!token0.whitelisted && token0Kpi.liquidityUSD.gt(BigDecimal.fromString('10000'))) {
   //   createWhitelistedToken(token0.id)
   // } else if (token0.whitelisted && token0Kpi.liquidityUSD.lt(BigDecimal.fromString('10000'))) {
