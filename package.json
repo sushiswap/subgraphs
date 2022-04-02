@@ -17,6 +17,5 @@
     "mustache": "latest",
     "prettier": "^2.4.0"
   },
-  "packageManager": "yarn@3.1.1",
-  "version": "0.0.0"
+  "packageManager": "yarn@3.1.1"
 }
