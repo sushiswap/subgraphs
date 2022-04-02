@@ -1,18 +1,22 @@
 import { Address, BigInt, ethereum, log } from '@graphprotocol/graph-ts'
-import { CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS, MASTER_DEPLOYER_ADDRESS } from '../constants/addresses'
+import {
+  CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS,
+  MASTER_DEPLOYER_ADDRESS,
+  NATIVE_ADDRESS,
+  WHITELISTED_TOKEN_ADDRESSES,
+} from '../constants'
 import {
   ConstantProductPool,
   ConstantProductPoolAsset,
   ConstantProductPoolFactory,
   ConstantProductPoolKpi,
 } from '../../generated/schema'
-import { getOrCreateTokenPrice, getTokenPrice } from './token-price'
 
 import { DeployPool__Params } from '../../generated/MasterDeployer/MasterDeployer'
-import { WHITELISTED_TOKEN_ADDRESSES } from '../constants/addresses'
 import { createWhitelistedPool } from './whitelisted-pool'
 import { getOrCreateMasterDeployer } from './master-deployer'
 import { getOrCreateToken } from './token'
+import { getOrCreateTokenPrice } from './token-price'
 
 export function getOrCreateConstantProductPoolFactory(
   id: Address = CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS
@@ -62,20 +66,6 @@ export function createConstantProductPool(deployParams: DeployPool__Params): Con
 
   const pool = new ConstantProductPool(id)
 
-  if (id == '0xca5953773602e8c789f0635f40e05e816165b85c') {
-    log.info('STARGATE POOL DEPLOYED!!!', [])
-    log.info('ASSET 0 {}', [assets[0].toHex()])
-    log.info('ASSET 1 {}', [assets[1].toHex()])
-    log.info('ASSET LENGTH {}', [assets.length.toString()])
-    for (let i = 0; i < WHITELISTED_TOKEN_ADDRESSES.length; i++) {
-      log.info('WHITELIST TOKEN {}', [WHITELISTED_TOKEN_ADDRESSES[i]])
-    }
-    log.info('INCLUDES USDC {}', [
-      WHITELISTED_TOKEN_ADDRESSES.includes('0x2791bca1f2de4661ed88a30c99a7a9449aa84174') ? 'true' : 'false',
-    ])
-    log.info('ABS INDEX {}', [(Math.abs(0 - 1) as i32).toString()])
-  }
-
   const kpi = createConstantProductPoolKpi(id)
 
   pool.kpi = kpi.id
@@ -100,7 +90,7 @@ export function createConstantProductPool(deployParams: DeployPool__Params): Con
     asset.token = token.id
     asset.save()
 
-    if (WHITELISTED_TOKEN_ADDRESSES.includes(token.id)) {
+    if (WHITELISTED_TOKEN_ADDRESSES.includes(token.id) || token.id == NATIVE_ADDRESS) {
       const address = assets[Math.abs(i - 1) as i32].toHex()
       const tokenPrice = getOrCreateTokenPrice(address)
 

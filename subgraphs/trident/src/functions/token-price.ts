@@ -111,9 +111,6 @@ export function updateTokenPrice(token: Token): TokenPrice {
     // log.debug('Token whitelisted pool #{}', [token.id.concat(':').concat(i.toString())])
 
     const whitelistedPool = getOrCreateWhitelistedPool(token.id.concat(':').concat(i.toString()))
-    // const whitelistedPoolKpi = getConstantProductPoolKpi(whitelistedPool.pool)
-
-    // log.debug('Got token whitelisted pool {}', [whitelistedPool.id])
 
     const asset0 = getConstantProductPoolAsset(whitelistedPool.pool.concat(':asset:0'))
     const asset1 = getConstantProductPoolAsset(whitelistedPool.pool.concat(':asset:1'))

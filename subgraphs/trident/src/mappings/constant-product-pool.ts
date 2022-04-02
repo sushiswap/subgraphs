@@ -73,10 +73,6 @@ export function onMint(event: MintEvent): void {
   token1Kpi.liquidity = token1Kpi.liquidity.plus(amount1)
   token1Kpi.transactionCount = token1Kpi.transactionCount.plus(BigInt.fromI32(1))
 
-  // const liquidity = event.params.liquidity.divDecimal(BigDecimal.fromString('1e18'))
-
-  // poolKpi.liquidity = poolKpi.liquidity.plus(liquidity)
-
   const transaction = getOrCreateTransaction(event)
 
   const mint = new Mint(createMintId(transaction.id, poolKpi.transactionCount))
@@ -164,9 +160,6 @@ export function onBurn(event: BurnEvent): void {
   burn.origin = event.transaction.from
   burn.logIndex = event.logIndex
 
-  // const liquidity = event.params.liquidity.divDecimal(BigDecimal.fromString('1e18'))
-
-  // poolKpi.liquidity = poolKpi.liquidity.minus(liquidity)
   poolKpi.transactionCount = poolKpi.transactionCount.plus(BigInt.fromI32(1))
   poolKpi.save()
 
@@ -396,6 +389,11 @@ export function onTransfer(event: Transfer): void {
   }
 
   poolKpi.save()
+
+  // Increment factory count
+  const factory = getOrCreateConstantProductPoolFactory()
+  factory.transactionCount = factory.transactionCount.plus(BigInt.fromI32(1))
+  factory.save()
 
   const senderLiquidityPosition = getOrCreateLiquidityPosition(poolAddress.concat(':').concat(sender))
   const recipientLiquidityPosition = getOrCreateLiquidityPosition(poolAddress.concat(':').concat(recipient))

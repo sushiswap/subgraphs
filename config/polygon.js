@@ -23,7 +23,9 @@ module.exports = {
   hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
   indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
   whitelistedTokenAddresses: [
-    // WNATIVE
+    // WNATIVE - This is actually quite important, though uneeded here anymore since
+    // it's now apart of the whitelisted token check in createPair, because the
+    // base should always be whitelisted or pricing never begins.
     NATIVE_ADDRESS,
     // WETH
     WETH_ADDRESS,
@@ -59,6 +61,7 @@ module.exports = {
   legacy: {
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
       startBlock: 11333218,
     },
   },

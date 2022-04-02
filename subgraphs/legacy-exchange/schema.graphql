@@ -8,20 +8,23 @@ type Factory @entity {
   # Volume NATIVE
   volumeNative: BigDecimal!
 
-  # Untracked volume
-  untrackedVolumeUSD: BigDecimal!
-
   # Liquidity USD
   liquidityUSD: BigDecimal!
 
   # Liquidity NATIVE
   liquidityNative: BigDecimal!
 
+  # Fees USD
+  feesUSD: BigDecimal!
+
+  # Fees NATIVE
+  feesNative: BigDecimal!
+
   # Pair count
   pairCount: BigInt!
 
   # Transaction count
-  txCount: BigInt!
+  transactionCount: BigInt!
 
   # Token count
   tokenCount: BigInt!
@@ -34,34 +37,57 @@ type Factory @entity {
 
   # Tokens
   tokens: [Token!]! @derivedFrom(field: "factory")
+
+  # Block
+  block: BigInt!
+
+  # Timestamp
+  timestamp: BigInt!
 }
 
 type Pair @entity {
   # Contract address
   id: ID!
+
   # Factory
   factory: Factory!
+
   # Token 0
   token0: Token!
+
   # Token 1
   token1: Token!
+
   # Assets
   assets: [PairAsset!]! @derivedFrom(field: "pair")
+
   # Candles
   candles: [Candle!]! @derivedFrom(field: "pair")
+
   # Kpi
   kpi: PairKpi!
+
   # Block
   block: BigInt!
+
   # Timestamp
   timestamp: BigInt!
 }
 
 type PairAsset @entity {
+  # Pair address
   id: ID!
+
+  # Pair
   pair: Pair!
+
+  # Token
   token: Token!
+
+  # Reserve
   reserve: BigDecimal!
+
+  # Price
   price: BigDecimal!
 }
 
@@ -135,23 +161,6 @@ type WhitelistedPair @entity {
   pair: Pair!
 }
 
-type User @entity {
-  # User address
-  id: ID!
-}
-
-type Transaction @entity {
-  id: ID!
-  gasUsed: BigInt!
-  gasLimit: BigInt!
-  gasPrice: BigInt!
-  mints: [Mint!]! @derivedFrom(field: "transaction")
-  burns: [Burn!]! @derivedFrom(field: "transaction")
-  swaps: [Swap!]! @derivedFrom(field: "transaction")
-  block: BigInt!
-  timestamp: BigInt!
-}
-
 type Mint @entity {
   id: ID!
   pair: Pair!
@@ -200,6 +209,203 @@ type Swap @entity {
   logIndex: BigInt!
   block: BigInt!
   timestamp: BigInt!
+}
+
+type Transaction @entity {
+  id: ID!
+  gasUsed: BigInt!
+  gasLimit: BigInt!
+  gasPrice: BigInt!
+  mints: [Mint!]! @derivedFrom(field: "transaction")
+  burns: [Burn!]! @derivedFrom(field: "transaction")
+  swaps: [Swap!]! @derivedFrom(field: "transaction")
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+# Interface extension hasn't reached the wild yet for GraphQL schema spec, so this one is useless for now
+interface Snapshot {
+  id: ID!
+  date: Int!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+interface TokenSnapshot {
+  id: ID!
+  date: Int!
+  token: Token!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  price: BigDecimal!
+  priceUSD: BigDecimal!
+  priceNative: BigDecimal!
+  transactionCount: BigInt!
+}
+
+interface PairSnapshot {
+  id: ID!
+  date: Int!
+  pair: Pair!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+
+
+type PairHourSnapshot implements PairSnapshot @entity {
+  id: ID!
+  date: Int!
+  pair: Pair!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type PairDaySnapshot implements PairSnapshot @entity {
+  id: ID!
+  date: Int!
+  pair: Pair!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type TokenHourSnapshot implements TokenSnapshot @entity {
+  id: ID!
+  date: Int!
+  token: Token!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  price: BigDecimal!
+  priceUSD: BigDecimal!
+  priceNative: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type TokenDaySnapshot implements TokenSnapshot @entity {
+  id: ID!
+  date: Int!
+  token: Token!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  price: BigDecimal!
+  priceNative: BigDecimal!
+  priceUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+interface FactorySnapshot {
+  id: ID!
+  date: Int!
+  factory: Factory!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type FactoryHourSnapshot implements FactorySnapshot @entity {
+  id: ID!
+  date: Int!
+  factory: Factory!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type FactoryDaySnapshot implements FactorySnapshot @entity {
+  id: ID!
+  date: Int!
+  factory: Factory!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type User @entity {
+  # User address
+  id: ID!
+  # Liquidity positions
+  liquidityPositions: [LiquidityPosition!] @derivedFrom(field: "user")
+}
+
+type LiquidityPosition @entity {
+  id: ID!
+  pair: Pair!
+  user: User!
+  balance: BigDecimal!
 }
 
 type Candle @entity {

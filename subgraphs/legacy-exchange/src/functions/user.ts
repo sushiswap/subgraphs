@@ -4,6 +4,7 @@ import { User } from '../../generated/schema'
 export function createUser(id: string): User {
   const user = new User(id)
   user.save()
+
   return user
 }
 

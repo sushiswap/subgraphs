@@ -58,12 +58,6 @@ type WhitelistedFactory @entity {
   masterDeployer: MasterDeployer!
 }
 
-type WhitelistedPool @entity {
-  id: ID!
-  price: TokenPrice!
-  pool: Pool!
-}
-
 interface FactoryKpi {
   id: ID!
   liquidity: BigDecimal!
@@ -293,17 +287,59 @@ type IndexPool implements Pool @entity {
   timestamp: BigInt!
 }
 
-type Transaction @entity {
+type Token @entity {
   id: ID!
-  gasUsed: BigInt
-  gasLimit: BigInt
-  gasPrice: BigInt
-  mints: [Mint!]! @derivedFrom(field: "transaction")
-  burns: [Burn!]! @derivedFrom(field: "transaction")
-  swaps: [Swap!]! @derivedFrom(field: "transaction")
-  collects: [Collect!]! @derivedFrom(field: "transaction")
+  price: TokenPrice
+  kpi: TokenKpi
+  rebase: Rebase!
+  symbol: String!
+  symbolSuccess: Boolean!
+  name: String!
+  nameSuccess: Boolean!
+  decimals: BigInt!
+  decimalsSuccess: Boolean!
+  snapshots: [TokenSnapshot!]! @derivedFrom(field: "token")
   block: BigInt!
   timestamp: BigInt!
+}
+
+type TokenKpi @entity {
+  id: ID!
+  token: Token!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  fees: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type TokenPrice @entity {
+  id: ID!
+  # preferredPool: Pool!
+  token: Token!
+  derivedNative: BigDecimal!
+  derivedUSD: BigDecimal!
+  whitelistedPoolCount: BigInt!
+  whitelistedPools: [WhitelistedPool!]! @derivedFrom(field: "price")
+}
+
+type WhitelistedToken @entity {
+  id: ID!
+  price: TokenPrice!
+  token: Token!
+}
+
+type WhitelistedPool @entity {
+  id: ID!
+  price: TokenPrice!
+  pool: Pool!
 }
 
 type Mint @entity {
@@ -365,47 +401,17 @@ type Collect @entity {
   timestamp: BigInt!
 }
 
-type Token @entity {
+type Transaction @entity {
   id: ID!
-  price: TokenPrice
-  kpi: TokenKpi
-  rebase: Rebase!
-  symbol: String!
-  symbolSuccess: Boolean!
-  name: String!
-  nameSuccess: Boolean!
-  decimals: BigInt!
-  decimalsSuccess: Boolean!
-  snapshots: [TokenSnapshot!]! @derivedFrom(field: "token")
+  gasUsed: BigInt
+  gasLimit: BigInt
+  gasPrice: BigInt
+  mints: [Mint!]! @derivedFrom(field: "transaction")
+  burns: [Burn!]! @derivedFrom(field: "transaction")
+  swaps: [Swap!]! @derivedFrom(field: "transaction")
+  collects: [Collect!]! @derivedFrom(field: "transaction")
   block: BigInt!
   timestamp: BigInt!
-}
-
-type TokenKpi @entity {
-  id: ID!
-  token: Token!
-  liquidity: BigDecimal!
-  liquidityNative: BigDecimal!
-  liquidityUSD: BigDecimal!
-  volume: BigDecimal!
-  volumeNative: BigDecimal!
-  volumeUSD: BigDecimal!
-  fees: BigDecimal!
-  feesNative: BigDecimal!
-  feesUSD: BigDecimal!
-  transactionCount: BigInt!
-  block: BigInt!
-  timestamp: BigInt!
-}
-
-type TokenPrice @entity {
-  id: ID!
-  # preferredPool: Pool!
-  token: Token!
-  derivedNative: BigDecimal!
-  derivedUSD: BigDecimal!
-  whitelistedPoolCount: BigInt!
-  whitelistedPools: [WhitelistedPool!]! @derivedFrom(field: "price")
 }
 
 # Interface extension hasn't reached the wild yet for GraphQL schema spec, so this one is useless for now

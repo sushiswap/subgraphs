@@ -3,9 +3,8 @@ import { BigDecimal, log } from '@graphprotocol/graph-ts'
 import { NATIVE_ADDRESS, STABLE_POOL_ADDRESSES, STABLE_TOKEN_ADDRESSES } from '../constants'
 import { PairAsset, Token, TokenPrice } from '../../generated/schema'
 
-import { getOrCreateWhitelistedPair } from './whitelisted-pair'
 import { getPairAsset } from './pair'
-import { getWhitelistedPair } from '.'
+import { getWhitelistedPair } from './whitelisted-pair'
 
 export function createTokenPrice(token: string): TokenPrice {
   const tokenPrice = new TokenPrice(token)
@@ -15,7 +14,6 @@ export function createTokenPrice(token: string): TokenPrice {
 }
 
 export function getTokenPrice(token: string): TokenPrice {
-  log.debug('getTokenPrice {}', [token])
   return TokenPrice.load(token) as TokenPrice
 }
 
@@ -66,8 +64,8 @@ export function getNativePriceInUSD(): BigDecimal {
     if (
       asset0 === null ||
       asset1 === null ||
-      (asset0.token == NATIVE_ADDRESS && asset0.reserve.le(MINIMUM_NATIVE_LIQUIDITY)) ||
-      (asset1.token == NATIVE_ADDRESS && asset1.reserve.le(MINIMUM_NATIVE_LIQUIDITY))
+      (asset0.token == NATIVE_ADDRESS && asset0.reserve.lt(MINIMUM_NATIVE_LIQUIDITY)) ||
+      (asset1.token == NATIVE_ADDRESS && asset1.reserve.lt(MINIMUM_NATIVE_LIQUIDITY))
     ) {
       continue
     }
@@ -99,10 +97,7 @@ export function updateTokenPrice(token: Token): TokenPrice {
 
   const nativeTokenPrice = getTokenPrice(NATIVE_ADDRESS)
 
-  log.debug('updateTokenPrice 2', [])
-
   if (token.id == NATIVE_ADDRESS) {
-    // Unless this subgraph understands BentoBox shares/amounts, derivedNative will be 1e18 shares of the NATIVE token
     nativeTokenPrice.derivedNative = BigDecimal.fromString('1')
     nativeTokenPrice.derivedUSD = getNativePriceInUSD()
     nativeTokenPrice.save()
@@ -114,9 +109,10 @@ export function updateTokenPrice(token: Token): TokenPrice {
   const tokenPriceToUpdate = getTokenPrice(token.id)
 
   for (let i = 0, j = tokenPriceToUpdate.whitelistedPairCount.toI32(); i < j; i++) {
-    log.debug('Token whitelisted pool #{}', [token.id.concat(':').concat(i.toString())])
-    //0xaba8cac6866b83ae4eec97dd07ed254282f6ad8a
+    log.debug('Token {} whitelisted pool #{}', [token.symbol, token.id.concat(':').concat(i.toString())])
+
     const whitelistedPair = getWhitelistedPair(token.id.concat(':').concat(i.toString()))
+
     const asset0 = getPairAsset(whitelistedPair.pair.concat(':asset:0'))
     const asset1 = getPairAsset(whitelistedPair.pair.concat(':asset:1'))
 
@@ -124,24 +120,59 @@ export function updateTokenPrice(token: Token): TokenPrice {
       const tokenPrice1 = getTokenPrice(asset1.token)
       const nativeLiquidity = asset1.reserve.times(tokenPrice1.derivedNative)
 
+      log.debug(
+        'Trying to price asset 0 {} - Opposite reserve: {} derivedNative: {} derivedUSD: {} nativeLiquidity: {}',
+        [
+          token.symbol,
+          asset1.reserve.toString(),
+          tokenPrice1.derivedNative.toString(),
+          tokenPrice1.derivedUSD.toString(),
+          nativeLiquidity.toString(),
+        ]
+      )
+
       if (nativeLiquidity.gt(mostLiquidity) && nativeLiquidity.gt(MINIMUM_NATIVE_LIQUIDITY)) {
         mostLiquidity = nativeLiquidity
         const derivedNative = asset1.price.times(tokenPrice1.derivedNative)
         const derivedUSD = derivedNative.times(nativeTokenPrice.derivedUSD)
         tokenPriceToUpdate.derivedNative = derivedNative
         tokenPriceToUpdate.derivedUSD = derivedUSD
+
+        log.debug('Token price past threshold for update symbol: {} derivedNative: {} derivedUSD: {}', [
+          token.symbol,
+          derivedNative.toString(),
+          derivedUSD.toString(),
+        ])
       }
     }
 
     if (token.id == asset1.token) {
       const tokenPrice0 = getTokenPrice(asset0.token)
       const nativeLiquidity = asset0.reserve.times(tokenPrice0.derivedNative)
+
+      log.debug(
+        'Trying to price asset 1 {} - Opposite reserve: {} derivedNative: {} derivedUSD: {} nativeLiquidity: {}',
+        [
+          token.symbol,
+          asset0.reserve.toString(),
+          tokenPrice0.derivedNative.toString(),
+          tokenPrice0.derivedUSD.toString(),
+          nativeLiquidity.toString(),
+        ]
+      )
+
       if (nativeLiquidity.gt(mostLiquidity) && nativeLiquidity.gt(MINIMUM_NATIVE_LIQUIDITY)) {
         mostLiquidity = nativeLiquidity
         const derivedNative = asset0.price.times(tokenPrice0.derivedNative)
         const derivedUSD = derivedNative.times(nativeTokenPrice.derivedUSD)
         tokenPriceToUpdate.derivedNative = derivedNative
         tokenPriceToUpdate.derivedUSD = derivedUSD
+
+        log.debug('Token price past threshold for update symbol: {} derivedNative: {} derivedUSD: {}', [
+          token.symbol,
+          derivedNative.toString(),
+          derivedUSD.toString(),
+        ])
       }
     }
   }
