@@ -7,7 +7,7 @@ import {
 } from '../../generated/FuroStream/FuroStream'
 import { Stream, Transaction } from '../../generated/schema'
 import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from '../constants'
-import { increaseTransactionCount } from './furo'
+import { increaseTransactionCount } from './furo-stream'
 
 function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction {
   let transaction = Transaction.load(id)

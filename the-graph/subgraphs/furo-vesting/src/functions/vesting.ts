@@ -6,7 +6,7 @@ import {
 } from '../../generated/FuroVesting/FuroVesting'
 import { Vesting } from '../../generated/schema'
 import { ACTIVE, CANCELLED } from '../constants'
-import { increaseVestingCount } from './furo'
+import { increaseVestingCount } from './furo-vesting'
 import { getOrCreateToken } from './token'
 import { getOrCreateUser } from './user'
 

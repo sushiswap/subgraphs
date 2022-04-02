@@ -6,7 +6,7 @@ import {
 } from '../../generated/FuroVesting/FuroVesting'
 import { Transaction, Vesting } from '../../generated/schema'
 import { DEPOSIT, DISBURSEMENT, WITHDRAWAL } from '../constants'
-import { increaseTransactionCount } from './furo'
+import { increaseTransactionCount } from './furo-vesting'
 
 function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction {
   let transaction = Transaction.load(id)

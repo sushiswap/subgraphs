@@ -7,7 +7,7 @@ import {
 } from '../../generated/FuroStream/FuroStream'
 import { Stream } from '../../generated/schema'
 import { ACTIVE, CANCELLED, EXTENDED } from '../constants'
-import { increaseStreamCount } from './furo'
+import { increaseStreamCount } from './furo-stream'
 import { getOrCreateToken } from './token'
 import { getOrCreateUser } from './user'
 
