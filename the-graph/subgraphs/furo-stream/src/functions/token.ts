@@ -4,7 +4,6 @@ import { NameBytes32 } from '../../generated/FuroStream/NameBytes32'
 import { SymbolBytes32 } from '../../generated/FuroStream/SymbolBytes32'
 import { Token } from '../../generated/schema'
 
-
 export function getOrCreateToken(id: string, event: ethereum.Event): Token {
   let token = Token.load(id)
 
@@ -25,7 +24,7 @@ export function getOrCreateToken(id: string, event: ethereum.Event): Token {
     token.decimalsSuccess = decimals.success
     token.createdAtBlock = event.block.number
     token.createdAtTimestamp = event.block.timestamp
-    
+
     token.save()
   }
 

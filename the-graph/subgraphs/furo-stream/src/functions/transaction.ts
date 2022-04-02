@@ -1,17 +1,17 @@
-import { BigInt, ethereum } from '@graphprotocol/graph-ts';
+import { BigInt, ethereum } from '@graphprotocol/graph-ts'
 import {
   CancelStream as CancelStreamEvent,
   CreateStream as CreateStreamEvent,
+  UpdateStream as UpdateStreamEvent,
   Withdraw as WithdrawEvent,
-  UpdateStream as UpdateStreamEvent
 } from '../../generated/FuroStream/FuroStream'
-import { Stream, Transaction } from '../../generated/schema';
-import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from '../constants';
-import { increaseTransactionCount } from './furo';
+import { Stream, Transaction } from '../../generated/schema'
+import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from '../constants'
+import { increaseTransactionCount } from './furo'
 
 function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction {
   let transaction = Transaction.load(id)
-  
+
   if (transaction === null) {
     transaction = new Transaction(id)
     transaction.createdAtBlock = event.block.number
@@ -25,14 +25,14 @@ function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction 
 }
 
 export function createDepositTransaction(stream: Stream, event: CreateStreamEvent): Transaction {
-  const transactionId = stream.id.concat(":tx:").concat(stream.transactionCount.toString())
+  const transactionId = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
   let transaction = getOrCreateTransaction(transactionId, event)
   transaction.type = DEPOSIT
   transaction.stream = stream.id
   transaction.amount = event.params.amount
   transaction.to = event.params.recipient.toHex()
   transaction.token = event.params.token.toHex()
-  transaction.toBentoBox = event.params.fromBentoBox // TODO: is this logic correctly mapped? negation needed?
+  transaction.toBentoBox = event.params.fromBentoBox
   transaction.save()
 
   stream.transactionCount = stream.transactionCount.plus(BigInt.fromU32(1))
@@ -41,9 +41,8 @@ export function createDepositTransaction(stream: Stream, event: CreateStreamEven
   return transaction as Transaction
 }
 
-
-export function createDisbursementTransactions(stream: Stream, event: CancelStreamEvent): void {  
-  const senderTransactionId = stream.id.concat(":tx:").concat(stream.transactionCount.toString())
+export function createDisbursementTransactions(stream: Stream, event: CancelStreamEvent): void {
+  const senderTransactionId = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
   let senderTransaction = getOrCreateTransaction(senderTransactionId, event)
   senderTransaction.type = DISBURSEMENT
   senderTransaction.stream = stream.id
@@ -55,7 +54,7 @@ export function createDisbursementTransactions(stream: Stream, event: CancelStre
 
   stream.transactionCount = stream.transactionCount.plus(BigInt.fromU32(1))
 
-  const recipientTransactionId = stream.id.concat(":tx:").concat(stream.transactionCount.toString())
+  const recipientTransactionId = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
   let recipientTransaction = getOrCreateTransaction(recipientTransactionId, event)
   recipientTransaction.type = DISBURSEMENT
   recipientTransaction.stream = stream.id
@@ -70,7 +69,7 @@ export function createDisbursementTransactions(stream: Stream, event: CancelStre
 }
 
 export function createWithdrawalTransaction(stream: Stream, event: WithdrawEvent): Transaction {
-  const transactionId = stream.id.concat(":tx:").concat(stream.transactionCount.toString())
+  const transactionId = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
   let transaction = getOrCreateTransaction(transactionId, event)
   transaction.type = WITHDRAWAL
   transaction.stream = stream.id
@@ -86,16 +85,15 @@ export function createWithdrawalTransaction(stream: Stream, event: WithdrawEvent
   return transaction as Transaction
 }
 
-
 export function createExtendTransaction(stream: Stream, event: UpdateStreamEvent): Transaction {
-  const transactionId = stream.id.concat(":tx:").concat(stream.transactionCount.toString())
+  const transactionId = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
   let transaction = getOrCreateTransaction(transactionId, event)
   transaction.type = EXTEND
   transaction.stream = stream.id
   transaction.amount = event.params.topUpAmount
   transaction.to = stream.recipient
   transaction.token = stream.token
-  transaction.toBentoBox = event.params.fromBentoBox // TODO: is this logic correctly mapped? negation needed?
+  transaction.toBentoBox = event.params.fromBentoBox 
   transaction.save()
 
   stream.transactionCount = stream.transactionCount.plus(BigInt.fromU32(1))

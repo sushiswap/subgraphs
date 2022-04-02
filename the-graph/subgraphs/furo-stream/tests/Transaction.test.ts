@@ -3,10 +3,15 @@ import { assert, clearStore, test } from 'matchstick-as'
 import { CreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
 import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from '../src/constants'
 import { onCancelStream, onCreateStream, onUpdateStream, onWithdraw } from '../src/mappings/stream'
-import { createCancelStreamEvent, createStreamEvent, createTokenMock, createUpdateStreamEvent, createWithdrawEvent } from './mocks'
+import {
+  createCancelStreamEvent,
+  createStreamEvent,
+  createTokenMock,
+  createUpdateStreamEvent,
+  createWithdrawEvent,
+} from './mocks'
 
 const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
-const WBTC_ADDRESS = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
 const SENDER = Address.fromString('0x00000000000000000000000000000000000a71ce')
 const RECIEVER = Address.fromString('0x0000000000000000000000000000000000000b0b')
 const STREAM_ID = BigInt.fromString('1001')
@@ -16,7 +21,6 @@ const END_TIME = BigInt.fromString('1650972295') // 	Tue Apr 26 2022 11:24:55 GM
 let streamEvent: CreateStreamEvent
 
 function setup(): void {
-
   streamEvent = createStreamEvent(STREAM_ID, SENDER, RECIEVER, WETH_ADDRESS, AMOUNT, START_TIME, END_TIME, true)
   createTokenMock(WETH_ADDRESS.toHex(), BigInt.fromString('18'), 'Wrapped Ether', 'WETH')
   onCreateStream(streamEvent)
@@ -28,7 +32,7 @@ function cleanup(): void {
 
 test('on create stream event, a transaction entity is created', () => {
   setup()
-  const id = STREAM_ID.toString().concat(":tx:0")
+  const id = STREAM_ID.toString().concat(':tx:0')
 
   assert.fieldEquals('Transaction', id, 'id', id)
   assert.fieldEquals('Transaction', id, 'type', DEPOSIT)
@@ -43,15 +47,14 @@ test('on create stream event, a transaction entity is created', () => {
   cleanup()
 })
 
-
 test('Cancel stream', () => {
   setup()
-  const id1 = STREAM_ID.toString().concat(":tx:1")
-  const id2 = STREAM_ID.toString().concat(":tx:2")
+  const id1 = STREAM_ID.toString().concat(':tx:1')
+  const id2 = STREAM_ID.toString().concat(':tx:2')
   const amount2 = BigInt.fromString('2000000')
   let cancelStreamEvent = createCancelStreamEvent(STREAM_ID, amount2, AMOUNT, WETH_ADDRESS, true)
-  cancelStreamEvent.block.number = BigInt.fromString("123")
-  cancelStreamEvent.block.timestamp = BigInt.fromString("11111111")
+  cancelStreamEvent.block.number = BigInt.fromString('123')
+  cancelStreamEvent.block.timestamp = BigInt.fromString('11111111')
 
   onCancelStream(cancelStreamEvent)
   assert.entityCount('Transaction', 3)
@@ -79,11 +82,11 @@ test('Cancel stream', () => {
 
 test('Withdraw from stream creates a Transaction', () => {
   setup()
-  const id = STREAM_ID.toString().concat(":tx:1")
+  const id = STREAM_ID.toString().concat(':tx:1')
   const amount2 = BigInt.fromString('2000')
   let withdrawalEvent = createWithdrawEvent(STREAM_ID, amount2, RECIEVER, WETH_ADDRESS, true)
-  withdrawalEvent.block.number = BigInt.fromString("123")
-  withdrawalEvent.block.timestamp = BigInt.fromString("11111111")
+  withdrawalEvent.block.number = BigInt.fromString('123')
+  withdrawalEvent.block.timestamp = BigInt.fromString('11111111')
 
   onWithdraw(withdrawalEvent)
   assert.entityCount('Transaction', 2)
@@ -100,15 +103,14 @@ test('Withdraw from stream creates a Transaction', () => {
   cleanup()
 })
 
-
 test('Update stream creates a transaction', () => {
   setup()
-  const id = STREAM_ID.toString().concat(":tx:1")
-  const extendTime = BigInt.fromString("2628000") // a month in seconds
+  const id = STREAM_ID.toString().concat(':tx:1')
+  const extendTime = BigInt.fromString('2628000') // a month in seconds
   let updateStreamEvent = createUpdateStreamEvent(STREAM_ID, AMOUNT, extendTime, true)
 
   onUpdateStream(updateStreamEvent)
-  
+
   assert.entityCount('Transaction', 2)
   assert.fieldEquals('Transaction', id, 'id', id)
   assert.fieldEquals('Transaction', id, 'type', EXTEND)

@@ -1,7 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
-import { DEPOSIT, DISBURSEMENT, FURO_STREAM, WITHDRAWAL } from '../src/constants'
+import { FURO_STREAM } from '../src/constants'
 import { onCancelStream, onCreateStream, onWithdraw } from '../src/mappings/stream'
 import { createCancelStreamEvent, createStreamEvent, createTokenMock, createWithdrawEvent } from './mocks'
 
@@ -16,7 +16,6 @@ const END_TIME = BigInt.fromString('1650972295') // 	Tue Apr 26 2022 11:24:55 GM
 let streamEvent: CreateStreamEvent
 
 function setup(): void {
-
   streamEvent = createStreamEvent(STREAM_ID, SENDER, RECIEVER, WETH_ADDRESS, AMOUNT, START_TIME, END_TIME, true)
   createTokenMock(WETH_ADDRESS.toHex(), BigInt.fromString('18'), 'Wrapped Ether', 'WETH')
   onCreateStream(streamEvent)
@@ -36,7 +35,6 @@ test('counter variables increases when stream is created', () => {
   cleanup()
 })
 
-
 test('transaction count increases when a stream is cancelled', () => {
   setup()
   const amount2 = BigInt.fromString('2000000')
@@ -45,7 +43,7 @@ test('transaction count increases when a stream is cancelled', () => {
   onCancelStream(cancelStreamEvent)
 
   assert.fieldEquals('FuroStream', FURO_STREAM, 'transactionCount', '3')
- 
+
   cleanup()
 })
 
@@ -60,5 +58,3 @@ test('transaction count increases on withdrawal', () => {
 
   cleanup()
 })
-
-

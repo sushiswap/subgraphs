@@ -1,16 +1,15 @@
-import { BigInt, ethereum } from '@graphprotocol/graph-ts';
-import { Stream } from '../../generated/schema';
+import { BigInt } from '@graphprotocol/graph-ts'
 import {
   CancelStream as CancelStreamEvent,
   CreateStream as CreateStreamEvent,
-  Withdraw as WithdrawEvent,
   UpdateStream as UpdateStreamEvent,
+  Withdraw as WithdrawEvent,
 } from '../../generated/FuroStream/FuroStream'
-import { getOrCreateUser } from './user';
-import { getOrCreateToken } from './token';
-import { CANCELLED, ACTIVE, EXTENDED } from '../constants';
-import { increaseStreamCount } from './furo';
-
+import { Stream } from '../../generated/schema'
+import { ACTIVE, CANCELLED, EXTENDED } from '../constants'
+import { increaseStreamCount } from './furo'
+import { getOrCreateToken } from './token'
+import { getOrCreateUser } from './user'
 
 export function getOrCreateStream(id: BigInt): Stream {
   let stream = Stream.load(id.toString())
@@ -46,7 +45,6 @@ export function createStream(event: CreateStreamEvent): Stream {
   stream.modifiedAtTimestamp = event.block.timestamp
   stream.save()
 
-
   return stream
 }
 
@@ -62,7 +60,6 @@ export function updateStream(event: UpdateStreamEvent): Stream {
   return stream
 }
 
-
 export function cancelStream(event: CancelStreamEvent): Stream {
   let stream = getOrCreateStream(event.params.streamId)
   stream.amount = BigInt.fromU32(0)
@@ -74,7 +71,7 @@ export function cancelStream(event: CancelStreamEvent): Stream {
   return stream
 }
 
-export function withdrawFromStream(event: WithdrawEvent) : Stream {
+export function withdrawFromStream(event: WithdrawEvent): Stream {
   const stream = getOrCreateStream(event.params.streamId)
   stream.withdrawnAmount = stream.withdrawnAmount.plus(event.params.sharesToWithdraw)
   stream.modifiedAtBlock = event.block.number
