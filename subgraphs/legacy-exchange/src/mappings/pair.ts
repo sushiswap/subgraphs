@@ -251,6 +251,11 @@ export function onSync(event: SyncEvent): void {
 
   const liquidityUSD = pairKpi.liquidityNative.times(nativePrice.derivedUSD)
 
+  const factory = getFactory()
+  factory.liquidityNative = factory.liquidityNative.minus(pairKpi.liquidityNative).plus(liquidityNative)
+  factory.liquidityUSD = factory.liquidityNative.times(nativePrice.derivedUSD)
+  factory.save()
+
   pairKpi.liquidityNative = liquidityNative
   pairKpi.liquidityUSD = liquidityUSD
   pairKpi.save()
@@ -264,11 +269,6 @@ export function onSync(event: SyncEvent): void {
   token1Kpi.liquidityNative = token1Kpi.liquidityNative.plus(reserve1.times(token1Price.derivedNative))
   token1Kpi.liquidityUSD = token1Kpi.liquidityUSD.plus(token1Kpi.liquidityNative.times(nativePrice.derivedUSD))
   token1Kpi.save()
-
-  const factory = getFactory()
-  factory.liquidityNative = factory.liquidityNative.minus(pairKpi.liquidityNative).plus(liquidityNative)
-  factory.liquidityUSD = factory.liquidityNative.times(nativePrice.derivedUSD)
-  factory.save()
 
   // TODO: Figure out how to automate whitelisted tokens entirely by programatically
   // adding and removing them, based on a threshold...
