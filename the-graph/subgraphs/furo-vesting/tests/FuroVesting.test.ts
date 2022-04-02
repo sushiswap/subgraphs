@@ -45,7 +45,7 @@ function cleanup(): void {
   clearStore()
 }
 
-test('counter variables increases when stream is created', () => {
+test('counter variables increases when vesting is created', () => {
   setup()
 
   assert.fieldEquals('FuroVesting', FURO_VESTING, 'vestingCount', '1')
@@ -56,7 +56,7 @@ test('counter variables increases when stream is created', () => {
 })
 
 
-test('transaction count increases when a stream is cancelled', () => {
+test('transaction count increases when a vesting is cancelled', () => {
   setup()
   let recipientAmount = CLIFF_AMOUNT
   let ownerAmount = TOTAL_AMOUNT.minus(recipientAmount)

@@ -41,7 +41,7 @@ function cleanup(): void {
   clearStore()
 }
 
-test('users are created on stream creation event', () => {
+test('users are created on vesting creation event', () => {
   setup()
 
   assert.entityCount('User', 2)

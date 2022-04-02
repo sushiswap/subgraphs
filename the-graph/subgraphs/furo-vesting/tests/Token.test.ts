@@ -44,7 +44,7 @@ function cleanup(): void {
   clearStore()
 }
 
-test('Token is created on stream creation event', () => {
+test('Token is created on vesting creation event', () => {
   setup()
 
   assert.entityCount('Token', 1)
