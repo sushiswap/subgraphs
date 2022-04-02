@@ -1,33 +1,33 @@
 import { BigInt } from '@graphprotocol/graph-ts'
-import { Furo } from '../../generated/schema'
-import { FURO } from '../constants'
+import { FuroVesting } from '../../generated/schema'
+import { FURO_VESTING } from '../constants'
 
-function getOrCreateFuro(): Furo {
-  let furo = Furo.load(FURO)
+function getOrCreateFuro(): FuroVesting {
+  let furoVesting = FuroVesting.load(FURO_VESTING)
 
-  if (furo === null) {
-    furo = new Furo(FURO)
+  if (furoVesting === null) {
+    furoVesting = new FuroVesting(FURO_VESTING)
   }
 
-  furo.save()
+  furoVesting.save()
 
-  return furo as Furo
+  return furoVesting as FuroVesting
 }
 
 export function increaseTransactionCount(): void {
-  const furo = getOrCreateFuro()
-  furo.transactionCount = furo.transactionCount.plus(BigInt.fromU32(1))
-  furo.save()
+  const furoVesting = getOrCreateFuro()
+  furoVesting.transactionCount = furoVesting.transactionCount.plus(BigInt.fromU32(1))
+  furoVesting.save()
 }
 
 export function increaseUserCount(): void {
-  const furo = getOrCreateFuro()
-  furo.userCount = furo.userCount.plus(BigInt.fromU32(1))
-  furo.save()
+  const furoVesting = getOrCreateFuro()
+  furoVesting.userCount = furoVesting.userCount.plus(BigInt.fromU32(1))
+  furoVesting.save()
 }
 
 export function increaseVestingCount(): void {
-  const furo = getOrCreateFuro()
-  furo.vestingCount = furo.vestingCount.plus(BigInt.fromU32(1))
-  furo.save()
+  const furoVesting = getOrCreateFuro()
+  furoVesting.vestingCount = furoVesting.vestingCount.plus(BigInt.fromU32(1))
+  furoVesting.save()
 }

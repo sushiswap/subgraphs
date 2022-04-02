@@ -17,8 +17,8 @@ enum TransactionType {
   DISBURSEMENT # Payment to a sender and reciever when Vesting is cancelled
 }
 
-type Furo @entity {
-  id: ID!# Hardcoded to 'Furo'
+type FuroVesting @entity {
+  id: ID!# Hardcoded to 'FuroVesting'
   vestingCount: BigInt!
   userCount: BigInt!
   transactionCount: BigInt!

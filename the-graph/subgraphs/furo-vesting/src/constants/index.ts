@@ -12,7 +12,7 @@ export const CLIFF = 'CLIFF'
 export const STEP = 'STEP'
 export const END = 'END'
 
-export const FURO = 'Furo'
+export const FURO_VESTING = 'FuroVesting'
 
 const HOUR = 60 * 60
 const DAY = 24 * HOUR

@@ -17,11 +17,11 @@ dataSources:
       language: wasm/assemblyscript
       file: ./src/mappings/vesting.ts
       entities:
+        - FuroVesting
         - Token
         - User
         - Transaction
         - Vesting
-        - Furo
       abis:
         - name: FuroVesting
           file: ./abis/FuroVesting.json

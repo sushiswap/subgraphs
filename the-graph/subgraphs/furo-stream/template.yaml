@@ -17,11 +17,11 @@ dataSources:
       language: wasm/assemblyscript
       file: ./src/mappings/stream.ts
       entities:
+        - FuroStream
         - Token
         - User
         - Transaction
         - Stream
-        - Furo
       abis:
         - name: FuroStream
           file: ./abis/FuroStream.json
