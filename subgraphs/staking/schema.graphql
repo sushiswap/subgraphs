@@ -1,0 +1,61 @@
+type User @entity {
+  id: ID!
+  stakes: [Stake!] @derivedFrom(field: "user")
+  incentives: [_Subscription!] @derivedFrom(field: "user")
+  totalSubscriptionCount: BigInt!
+  activeSubscriptionCount: BigInt!
+  rewardClaimCount: BigInt!
+  rewardClaims: [RewardClaim!] @derivedFrom(field: "user")
+}
+
+
+type Token @entity {
+  id: ID!
+  symbol: String!
+  symbolSuccess: Boolean!
+  name: String!
+  nameSuccess: Boolean!
+  decimals: BigInt!
+  decimalsSuccess: Boolean!
+}
+
+type Stake @entity {
+  id: ID!
+  user: User!
+  token: Token!
+  liquidity: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+
+type Incentive @entity {
+  id: ID!
+  creator: User!
+  token: Token!
+  rewardToken: Token!
+  rewardRemaining: BigInt!
+  endTime: BigInt!
+  lastRewardTime: BigInt!
+  liquidityStaked: BigInt!
+  subscriptions: [_Subscription!] @derivedFrom(field: "incentive")
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type _Subscription @entity {
+  id: ID!
+  user: User!
+  incentive: Incentive!
+  token: Token!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type RewardClaim @entity {
+  id: ID!
+  user: User!
+  token: Token!
+  incentive: Incentive!
+  amount: BigInt!
+}

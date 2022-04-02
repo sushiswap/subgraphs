@@ -1,0 +1,29 @@
+{
+  "name": "@sushiswap/legacy-exchange-subgraph",
+  "author": "Matthew Lilley <hello@matthewlilley.com>",
+  "license": "MIT",
+  "repository": {
+    "url": "sushiswap/subgraphs",
+    "directory": "subgraphs/legacy-exchange"
+  },
+  "files": [
+    "generated"
+  ],
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "create-local": "graph create --node http://localhost:8020/ sushiswap/legacy-exchange",
+    "remove-local": "graph remove --node http://localhost:8020/ sushiswap/legacy-exchange",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/legacy-exchange",
+    "deploy-ethereum": "graph deploy --product hosted-service sushiswap/legacy-exchange-avalanche",
+    "deploy-kovan": "graph deploy --product hosted-service sushiswap/legacy-exchange-kovan",
+    "deploy-polygon": "graph deploy --product hosted-service matthewlilley/legacy-exchange-polygon",
+    "deploy-avalanche": "graph deploy --product hosted-service sushiswap/legacy-exchange-avalanche"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "0.26.0",
+    "@graphprotocol/graph-ts": "0.23.1",
+    "@sushiswap/core": "1.4.2",
+    "matchstick-as": "0.2.3"
+  }
+}

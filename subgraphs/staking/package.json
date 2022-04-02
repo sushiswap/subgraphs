@@ -1,0 +1,26 @@
+{
+  "name": "@sushiswap/staking-subgraph",
+  "author": "Matthew Lilley <hello@matthewlilley.com>",
+  "license": "MIT",
+  "repository": {
+    "url": "sushiswap/subgraphs",
+    "directory": "subgraphs/staking"
+  },
+  "files": [
+    "generated"
+  ],
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ sushiswap/staking",
+    "create-local": "graph create --node http://localhost:8020/ sushiswap/staking",
+    "remove-local": "graph remove --node http://localhost:8020/ sushiswap/staking",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/staking",
+    "deploy-kovan": "graph deploy --product hosted-service sushiswap/kovan-staking"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.27.0",
+    "@graphprotocol/graph-ts": "^0.24.1",
+    "matchstick-as": "^0.4.0"
+  }
+}
