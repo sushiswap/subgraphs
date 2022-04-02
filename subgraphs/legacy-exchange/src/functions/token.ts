@@ -1,11 +1,11 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { Token, TokenKpi } from '../../generated/schema'
-import { createTokenPrice, getOrCreateTokenPrice } from './token-price'
 
 import { ERC20 } from '../../generated/Factory/ERC20'
 import { NameBytes32 } from '../../generated/Factory/NameBytes32'
 import { SymbolBytes32 } from '../../generated/Factory/SymbolBytes32'
 import { getFactory } from './factory'
+import { getOrCreateTokenPrice } from './token-price'
 
 export function createTokenKpi(id: string): TokenKpi {
   const kpi = new TokenKpi(id)
@@ -51,11 +51,11 @@ export function getOrCreateToken(id: string): Token {
     const kpi = getOrCreateTokenKpi(id)
     token.kpi = kpi.id
 
+    token.save()
+
     const factory = getFactory()
     factory.tokenCount = factory.tokenCount.plus(BigInt.fromI32(1))
     factory.save()
-
-    token.save()
   }
 
   return token as Token
