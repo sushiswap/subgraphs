@@ -245,10 +245,14 @@ export function onSync(event: SyncEvent): void {
     token1Price = updateTokenPrice(token1)
   }
 
-  pairKpi.liquidityNative = asset0.reserve
+  const liquidityNative = asset0.reserve
     .times(token0Price.derivedNative)
     .plus(asset1.reserve.times(token1Price.derivedNative))
-  pairKpi.liquidityUSD = pairKpi.liquidityNative.times(nativePrice.derivedUSD)
+
+  const liquidityUSD = pairKpi.liquidityNative.times(nativePrice.derivedUSD)
+
+  pairKpi.liquidityNative = liquidityNative
+  pairKpi.liquidityUSD = liquidityUSD
   pairKpi.save()
 
   token0Kpi.liquidity = token0Kpi.liquidity.plus(reserve0)
@@ -260,6 +264,11 @@ export function onSync(event: SyncEvent): void {
   token1Kpi.liquidityNative = token1Kpi.liquidityNative.plus(reserve1.times(token1Price.derivedNative))
   token1Kpi.liquidityUSD = token1Kpi.liquidityUSD.plus(token1Kpi.liquidityNative.times(nativePrice.derivedUSD))
   token1Kpi.save()
+
+  const factory = getFactory()
+  factory.liquidityNative = factory.liquidityNative.minus(pairKpi.liquidityNative).plus(liquidityNative)
+  factory.liquidityUSD = factory.liquidityNative.times(nativePrice.derivedUSD)
+  factory.save()
 
   // if (!token0.whitelisted && token0Kpi.liquidityUSD.gt(BigDecimal.fromString('10000'))) {
   //   createWhitelistedToken(token0.id)
@@ -275,10 +284,6 @@ export function onSync(event: SyncEvent): void {
 }
 
 export function onSwap(event: SwapEvent): void {
-  const factory = getFactory()
-  factory.transactionCount = factory.transactionCount.plus(BigInt.fromI32(1))
-  factory.save()
-
   const pairAddress = event.address.toHex()
 
   const pairKpi = getPairKpi(pairAddress)
@@ -346,6 +351,14 @@ export function onSwap(event: SwapEvent): void {
   pairKpi.feesUSD = pairKpi.feesUSD.plus(feesUSD)
   pairKpi.transactionCount = pairKpi.transactionCount.plus(BigInt.fromI32(1))
   pairKpi.save()
+
+  const factory = getFactory()
+  factory.volumeUSD = factory.volumeUSD.plus(volumeUSD)
+  factory.volumeNative = factory.volumeNative.plus(volumeNative)
+  factory.feesNative = factory.feesNative.plus(feesNative)
+  factory.feesUSD = factory.feesUSD.plus(feesUSD)
+  factory.transactionCount = factory.transactionCount.plus(BigInt.fromI32(1))
+  factory.save()
 
   const nativePrice = getNativeTokenPrice()
   const pairDaySnapshot = updatePairDaySnapshot(event.block.timestamp, pairKpi)

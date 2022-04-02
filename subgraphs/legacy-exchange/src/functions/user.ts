@@ -1,9 +1,15 @@
-import { Address } from '@graphprotocol/graph-ts'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
+
 import { User } from '../../generated/schema'
+import { getFactory } from './factory'
 
 export function createUser(id: string): User {
   const user = new User(id)
   user.save()
+
+  const factory = getFactory()
+  factory.tokenCount = factory.tokenCount.plus(BigInt.fromI32(1))
+  factory.save()
 
   return user
 }
