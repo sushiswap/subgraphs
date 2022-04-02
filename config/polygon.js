@@ -57,7 +57,7 @@ module.exports = {
     // DAI/WMATIC/30/TRUE
     '0x1bd908569c1157417abae2ed3de3cb04c734b984',
   ],
-  minimumLiquidity: 3000,
+  minimumNativeLiquidity: 1000,
   legacy: {
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',

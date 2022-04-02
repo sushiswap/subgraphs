@@ -18,7 +18,8 @@
     "deploy-ethereum": "graph deploy --product hosted-service sushiswap/legacy-exchange-avalanche",
     "deploy-kovan": "graph deploy --product hosted-service sushiswap/legacy-exchange-kovan",
     "deploy-polygon": "graph deploy --product hosted-service matthewlilley/legacy-exchange-polygon",
-    "deploy-avalanche": "graph deploy --product hosted-service sushiswap/legacy-exchange-avalanche"
+    "deploy-avalanche": "graph deploy --product hosted-service sushiswap/legacy-exchange-avalanche",
+    "deploy-arbitrum": "graph deploy --product hosted-service matthewlilley/legacy-exchange-arbitrum"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "0.26.0",

@@ -1,6 +1,6 @@
 import { BigInt, log } from '@graphprotocol/graph-ts'
 import { NATIVE_ADDRESS, WHITELISTED_TOKEN_ADDRESSES } from '../constants'
-import { Pair, PairAsset, PairKpi } from '../../generated/schema'
+import { Pair, PairAsset, PairKpi, WhitelistedToken } from '../../generated/schema'
 
 import { PairCreated__Params } from '../../generated/Factory/Factory'
 import { Pair as PairTemplate } from '../../generated/templates'
@@ -46,7 +46,9 @@ export function createPair(params: PairCreated__Params): Pair {
     asset.token = token.id
     asset.save()
 
-    if (WHITELISTED_TOKEN_ADDRESSES.includes(token.id) || token.id == NATIVE_ADDRESS) {
+    const whitelistedToken = WhitelistedToken.load(token.id)
+
+    if (WHITELISTED_TOKEN_ADDRESSES.includes(token.id) || whitelistedToken !== null || token.id == NATIVE_ADDRESS) {
       const address = assets[Math.abs(i - 1) as i32].toHex()
       const tokenPrice = getOrCreateTokenPrice(address)
 

@@ -1,6 +1,6 @@
 import { ADDRESS_ZERO, NATIVE_ADDRESS, STABLE_POOL_ADDRESSES } from '../constants'
 import { Address, BigDecimal, BigInt, ByteArray, Bytes, log } from '@graphprotocol/graph-ts'
-import { Burn, Candle, Mint, Swap, TokenPrice } from '../../generated/schema'
+import { Burn, Candle, Mint, Swap, TokenPrice, WhitelistedToken } from '../../generated/schema'
 import {
   Burn as BurnEvent,
   Mint as MintEvent,
@@ -225,8 +225,6 @@ export function onSync(event: SyncEvent): void {
   let token0Price: TokenPrice
   let token1Price: TokenPrice
 
-  log.debug('debug 7', [])
-
   // If the pool is one in which we want to update the native price
   if (STABLE_POOL_ADDRESSES.includes(pairAddress)) {
     if (token0.id == NATIVE_ADDRESS) {
@@ -273,17 +271,21 @@ export function onSync(event: SyncEvent): void {
   // TODO: Figure out how to automate whitelisted tokens entirely by programatically
   // adding and removing them, based on a threshold...
 
-  // if (!token0.whitelisted && token0Kpi.liquidityUSD.gt(BigDecimal.fromString('10000'))) {
-  //   createWhitelistedToken(token0.id)
-  // } else if (token0.whitelisted && token0Kpi.liquidityUSD.lt(BigDecimal.fromString('10000'))) {
-  //   deleteWhitelistedToken(token0.id)
-  // }
+  const whitelisted0 = WhitelistedToken.load(token0.id)
 
-  // if (!token1.whitelisted && token1Kpi.liquidityUSD.gt(BigDecimal.fromString('10000'))) {
-  //   createWhitelistedToken(token1.id)
-  // } else if (token1.whitelisted && token1Kpi.liquidityUSD.lt(BigDecimal.fromString('10000'))) {
-  //   deleteWhitelistedToken(token1.id)
-  // }
+  if (whitelisted0 === null && token0Kpi.liquidityUSD.gt(BigDecimal.fromString('10000'))) {
+    createWhitelistedToken(token0.id)
+  } else if (whitelisted0 !== null && token0Kpi.liquidityUSD.lt(BigDecimal.fromString('10000'))) {
+    deleteWhitelistedToken(token0.id)
+  }
+
+  const whitelisted1 = WhitelistedToken.load(token1.id)
+
+  if (whitelisted1 === null && token1Kpi.liquidityUSD.gt(BigDecimal.fromString('10000'))) {
+    createWhitelistedToken(token1.id)
+  } else if (whitelisted1 !== null && token1Kpi.liquidityUSD.lt(BigDecimal.fromString('10000'))) {
+    deleteWhitelistedToken(token1.id)
+  }
 }
 
 export function onSwap(event: SwapEvent): void {

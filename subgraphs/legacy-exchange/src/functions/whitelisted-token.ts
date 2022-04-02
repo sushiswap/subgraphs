@@ -1,10 +1,12 @@
-import { store } from '@graphprotocol/graph-ts'
 import { WhitelistedToken } from '../../generated/schema'
+import { store } from '@graphprotocol/graph-ts'
 
 export function createWhitelistedToken(id: string): WhitelistedToken {
-  const token = new WhitelistedToken(id)
-  token.save()
-  return token
+  const whitelisted = new WhitelistedToken(id)
+  whitelisted.token = id
+  whitelisted.price = id
+  whitelisted.save()
+  return whitelisted
 }
 
 export function getWhitelistedToken(id: string): WhitelistedToken {

@@ -33,7 +33,7 @@ export function getNativeTokenPrice(): TokenPrice {
 }
 
 // Minimum liqudiity threshold in native currency
-const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('3')
+const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('100')
 
 export function getNativePriceInUSD(): BigDecimal {
   // 1. Generate list of stable pairs

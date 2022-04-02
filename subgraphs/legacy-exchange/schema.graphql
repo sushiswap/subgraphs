@@ -38,6 +38,9 @@ type Factory @entity {
   # Tokens
   tokens: [Token!]! @derivedFrom(field: "factory")
 
+  # Whitelisted Tokens
+  whitelistedTokens: [WhitelistedToken!]! @derivedFrom(field: "factory")
+
   # Block
   block: BigInt!
 
@@ -151,6 +154,7 @@ type TokenPrice @entity {
 
 type WhitelistedToken @entity {
   id: ID!
+  factory: Factory!
   price: TokenPrice!
   token: Token!
 }
