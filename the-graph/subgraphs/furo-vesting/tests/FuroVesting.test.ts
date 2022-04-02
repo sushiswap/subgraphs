@@ -1,7 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateVesting as CreateVestingEvent } from '../generated/FuroVesting/FuroVesting'
-import { ACTIVE, CANCELLED, FURO_VESTING, WEEK, YEAR } from '../src/constants'
+import { FURO_VESTING, WEEK, YEAR } from '../src/constants'
 import { onCancelVesting, onCreateVesting, onWithdraw } from '../src/mappings/vesting'
 import { createCancelVestingEvent, createTokenMock, createVestingEvent, createWithdrawEvent } from './mocks'
 
@@ -16,8 +16,6 @@ const CLIFF_DURATION = BigInt.fromU32(YEAR)
 const biweekly = 2 * WEEK
 const STEP_DURATION = BigInt.fromU32(biweekly)
 const STEPS = BigInt.fromU32(26)
-
-const END_TIME = START_TIME.plus(CLIFF_DURATION).plus(STEPS.times(STEP_DURATION)) // Sun Mar 24 2024 12:24:55 GMT+0000, two years later
 
 const TOTAL_AMOUNT = CLIFF_AMOUNT.plus(STEPS.times(STEPS_AMOUNT)) // 100000000 + (26 * 10000000) = 360000000
 
@@ -55,7 +53,6 @@ test('counter variables increases when vesting is created', () => {
   cleanup()
 })
 
-
 test('transaction count increases when a vesting is cancelled', () => {
   setup()
   let recipientAmount = CLIFF_AMOUNT
@@ -65,13 +62,13 @@ test('transaction count increases when a vesting is cancelled', () => {
   onCancelVesting(cancelVestingEvent)
 
   assert.fieldEquals('FuroVesting', FURO_VESTING, 'transactionCount', '3')
- 
+
   cleanup()
 })
 
 test('transaction count increases on withdrawal', () => {
   setup()
-  const amount = BigInt.fromString("1337420")
+  const amount = BigInt.fromString('1337420')
   let withdrawalEvent = createWithdrawEvent(VESTING_ID, WETH_ADDRESS, amount, true)
 
   onWithdraw(withdrawalEvent)
@@ -80,5 +77,3 @@ test('transaction count increases on withdrawal', () => {
 
   cleanup()
 })
-
-

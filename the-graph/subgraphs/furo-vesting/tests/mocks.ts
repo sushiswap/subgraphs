@@ -1,8 +1,8 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { createMockedFunction, newMockEvent } from 'matchstick-as'
 import {
-  CreateVesting as CreateVestingEvent,
   CancelVesting as CancelVestingEvent,
+  CreateVesting as CreateVestingEvent,
   Withdraw as WithdrawEvent,
 } from '../generated/FuroVesting/FuroVesting'
 

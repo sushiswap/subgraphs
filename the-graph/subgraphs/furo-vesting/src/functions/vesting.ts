@@ -1,7 +1,7 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 import {
-  CreateVesting as CreateVestingEvent,
   CancelVesting as CancelVestingEvent,
+  CreateVesting as CreateVestingEvent,
   Withdraw as WithdrawEvent,
 } from '../../generated/FuroVesting/FuroVesting'
 import { Vesting } from '../../generated/schema'

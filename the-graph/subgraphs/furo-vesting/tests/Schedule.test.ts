@@ -49,7 +49,7 @@ test('vesting creates a schedule and schedule periods', () => {
   assert.fieldEquals('Schedule', id, 'vesting', id)
 
   let passedTime = START_TIME
-  let passedAmount = BigInt.fromString("0")
+  let passedAmount = BigInt.fromString('0')
   const startPeriodId = id.concat(':period:0')
   assert.fieldEquals('SchedulePeriod', startPeriodId, 'id', startPeriodId)
   assert.fieldEquals('SchedulePeriod', startPeriodId, 'type', START)
@@ -76,7 +76,6 @@ test('vesting creates a schedule and schedule periods', () => {
     assert.fieldEquals('SchedulePeriod', stepPeriodId, 'time', passedTime.toString())
     assert.fieldEquals('SchedulePeriod', stepPeriodId, 'amount', passedAmount.toString())
   }
-
 
   passedTime = passedTime.plus(STEP_DURATION)
   passedAmount = passedAmount.plus(STEPS_AMOUNT)

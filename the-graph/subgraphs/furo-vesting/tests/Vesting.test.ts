@@ -69,7 +69,6 @@ test('Created vesting contains expected fields', () => {
   cleanup()
 })
 
-
 test('Stop vesting updates the vesting entity', () => {
   setup()
   const id = VESTING_ID.toString()
@@ -88,7 +87,7 @@ test('Stop vesting updates the vesting entity', () => {
 
 test('On withdraw event, withdrawnAmount field is updated', () => {
   setup()
-  const amount = BigInt.fromString("1337420")
+  const amount = BigInt.fromString('1337420')
   let withdrawalEvent = createWithdrawEvent(VESTING_ID, WETH_ADDRESS, amount, true)
 
   onWithdraw(withdrawalEvent)

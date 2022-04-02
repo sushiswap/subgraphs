@@ -1,7 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateVesting as CreateVestingEvent } from '../generated/FuroVesting/FuroVesting'
-import { ACTIVE, CANCELLED, DEPOSIT, DISBURSEMENT, WEEK, WITHDRAWAL, YEAR } from '../src/constants'
+import { DEPOSIT, DISBURSEMENT, WEEK, WITHDRAWAL, YEAR } from '../src/constants'
 import { onCancelVesting, onCreateVesting, onWithdraw } from '../src/mappings/vesting'
 import { createCancelVestingEvent, createTokenMock, createVestingEvent, createWithdrawEvent } from './mocks'
 
@@ -16,8 +16,6 @@ const CLIFF_DURATION = BigInt.fromU32(YEAR)
 const biweekly = 2 * WEEK
 const STEP_DURATION = BigInt.fromU32(biweekly)
 const STEPS = BigInt.fromU32(26)
-
-const END_TIME = START_TIME.plus(CLIFF_DURATION).plus(STEPS.times(STEP_DURATION)) // Sun Mar 24 2024 12:24:55 GMT+0000, two years later
 
 const TOTAL_AMOUNT = CLIFF_AMOUNT.plus(STEPS.times(STEPS_AMOUNT)) // 100000000 + (26 * 10000000) = 360000000
 
@@ -48,7 +46,7 @@ function cleanup(): void {
 test('Deposit transaction is created on vesting creation event', () => {
   setup()
 
-  const id = VESTING_ID.toString().concat(":tx:0")
+  const id = VESTING_ID.toString().concat(':tx:0')
   assert.fieldEquals('Transaction', id, 'id', id)
   assert.fieldEquals('Transaction', id, 'type', DEPOSIT)
   assert.fieldEquals('Transaction', id, 'vesting', VESTING_ID.toString())
@@ -62,7 +60,6 @@ test('Deposit transaction is created on vesting creation event', () => {
   cleanup()
 })
 
-
 test('Disbursement transactions are created when vesting is cancelled', () => {
   setup()
   let recipientAmount = CLIFF_AMOUNT
@@ -71,7 +68,7 @@ test('Disbursement transactions are created when vesting is cancelled', () => {
 
   onCancelVesting(cancelVestingEvent)
 
-  const id = VESTING_ID.toString().concat(":tx:1")
+  const id = VESTING_ID.toString().concat(':tx:1')
   assert.fieldEquals('Transaction', id, 'id', id)
   assert.fieldEquals('Transaction', id, 'type', DISBURSEMENT)
   assert.fieldEquals('Transaction', id, 'vesting', VESTING_ID.toString())
@@ -82,8 +79,7 @@ test('Disbursement transactions are created when vesting is cancelled', () => {
   assert.fieldEquals('Transaction', id, 'createdAtBlock', vestingEvent.block.number.toString())
   assert.fieldEquals('Transaction', id, 'createdAtTimestamp', vestingEvent.block.timestamp.toString())
 
-
-  const id2 = VESTING_ID.toString().concat(":tx:2")
+  const id2 = VESTING_ID.toString().concat(':tx:2')
   assert.fieldEquals('Transaction', id2, 'id', id2)
   assert.fieldEquals('Transaction', id2, 'type', DISBURSEMENT)
   assert.fieldEquals('Transaction', id2, 'vesting', VESTING_ID.toString())
@@ -97,15 +93,14 @@ test('Disbursement transactions are created when vesting is cancelled', () => {
   cleanup()
 })
 
-
 test('Withdrawal event creates withdrawal transaction', () => {
   setup()
-  const amount = BigInt.fromString("1337420")
+  const amount = BigInt.fromString('1337420')
   let withdrawalEvent = createWithdrawEvent(VESTING_ID, WETH_ADDRESS, amount, true)
 
   onWithdraw(withdrawalEvent)
 
-  const id = VESTING_ID.toString().concat(":tx:1")
+  const id = VESTING_ID.toString().concat(':tx:1')
   assert.fieldEquals('Transaction', id, 'id', id)
   assert.fieldEquals('Transaction', id, 'type', WITHDRAWAL)
   assert.fieldEquals('Transaction', id, 'vesting', VESTING_ID.toString())

@@ -2,7 +2,6 @@ import { Address, ethereum } from '@graphprotocol/graph-ts'
 import { User } from '../../generated/schema'
 import { increaseUserCount } from './furo'
 
-
 export function getOrCreateUser(id: Address, event: ethereum.Event): User {
   let user = User.load(id.toHex())
 
