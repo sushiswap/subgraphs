@@ -12,8 +12,8 @@ enum TransactionType {
   DISBURSEMENT # Payment to a sender and reciever when stream is cancelled
 }
 
-type Furo @entity {
-  id: ID!# Hardcoded to 'Furo'
+type FuroStream @entity {
+  id: ID!# Hardcoded to 'FuroStream'
   streamCount: BigInt!
   userCount: BigInt!
   transactionCount: BigInt!

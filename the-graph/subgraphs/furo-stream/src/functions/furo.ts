@@ -1,17 +1,17 @@
 import { BigInt } from '@graphprotocol/graph-ts'
-import { Furo } from '../../generated/schema'
-import { FURO } from '../constants'
+import { FuroStream } from '../../generated/schema'
+import { FURO_STREAM } from '../constants'
 
-function getOrCreateFuro(): Furo {
-  let furo = Furo.load(FURO)
+function getOrCreateFuro(): FuroStream {
+  let furo = FuroStream.load(FURO_STREAM)
 
   if (furo === null) {
-    furo = new Furo(FURO)
+    furo = new FuroStream(FURO_STREAM)
   }
 
   furo.save()
 
-  return furo as Furo
+  return furo as FuroStream
 }
 
 export function increaseTransactionCount(): void {

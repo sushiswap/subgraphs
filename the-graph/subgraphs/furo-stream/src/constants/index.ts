@@ -8,4 +8,4 @@ export const EXTEND = 'EXTEND'
 export const WITHDRAWAL = 'WITHDRAWAL'
 export const DISBURSEMENT = 'DISBURSEMENT'
 
-export const FURO = 'Furo'
+export const FURO_STREAM = 'FuroStream'

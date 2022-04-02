@@ -1,7 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
-import { DEPOSIT, DISBURSEMENT, FURO, WITHDRAWAL } from '../src/constants'
+import { DEPOSIT, DISBURSEMENT, FURO_STREAM, WITHDRAWAL } from '../src/constants'
 import { onCancelStream, onCreateStream, onWithdraw } from '../src/mappings/stream'
 import { createCancelStreamEvent, createStreamEvent, createTokenMock, createWithdrawEvent } from './mocks'
 
@@ -29,9 +29,9 @@ function cleanup(): void {
 test('counter variables increases when stream is created', () => {
   setup()
 
-  assert.fieldEquals('Furo', FURO, 'streamCount', '1')
-  assert.fieldEquals('Furo', FURO, 'userCount', '2')
-  assert.fieldEquals('Furo', FURO, 'transactionCount', '1')
+  assert.fieldEquals('FuroStream', FURO_STREAM, 'streamCount', '1')
+  assert.fieldEquals('FuroStream', FURO_STREAM, 'userCount', '2')
+  assert.fieldEquals('FuroStream', FURO_STREAM, 'transactionCount', '1')
 
   cleanup()
 })
@@ -44,7 +44,7 @@ test('transaction count increases when a stream is cancelled', () => {
 
   onCancelStream(cancelStreamEvent)
 
-  assert.fieldEquals('Furo', FURO, 'transactionCount', '3')
+  assert.fieldEquals('FuroStream', FURO_STREAM, 'transactionCount', '3')
  
   cleanup()
 })
@@ -56,7 +56,7 @@ test('transaction count increases on withdrawal', () => {
 
   onWithdraw(withdrawalEvent)
 
-  assert.fieldEquals('Furo', FURO, 'transactionCount', '2')
+  assert.fieldEquals('FuroStream', FURO_STREAM, 'transactionCount', '2')
 
   cleanup()
 })
