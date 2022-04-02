@@ -8,7 +8,7 @@ export function createUser(id: string): User {
   user.save()
 
   const factory = getFactory()
-  factory.tokenCount = factory.tokenCount.plus(BigInt.fromI32(1))
+  factory.userCount = factory.userCount.plus(BigInt.fromI32(1))
   factory.save()
 
   return user
