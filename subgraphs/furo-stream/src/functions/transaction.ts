@@ -8,6 +8,7 @@ import {
 import { Stream, Transaction } from '../../generated/schema'
 import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from '../constants'
 import { increaseTransactionCount } from './furo-stream'
+import { getOrCreateUser } from './user'
 
 function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction {
   let transaction = Transaction.load(id)
@@ -70,11 +71,12 @@ export function createDisbursementTransactions(stream: Stream, event: CancelStre
 
 export function createWithdrawalTransaction(stream: Stream, event: WithdrawEvent): Transaction {
   const transactionId = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
+  let recipient = getOrCreateUser(event.params.withdrawTo, event)
   let transaction = getOrCreateTransaction(transactionId, event)
   transaction.type = WITHDRAWAL
   transaction.stream = stream.id
   transaction.amount = event.params.sharesToWithdraw
-  transaction.to = stream.recipient
+  transaction.to = recipient.id
   transaction.token = event.params.token.toHex()
   transaction.toBentoBox = event.params.toBentoBox
   transaction.save()
