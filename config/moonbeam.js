@@ -34,6 +34,10 @@ module.exports = {
     // FRAX
     '0x322E86852e492a7Ee17f28a78c663da38FB33bfb',
   ],
+  bentobox: {
+    address: '0x80c7dd17b01855a6d2347444a0fcc36136a314de',
+    startBlock: 504558,
+  },
   legacy: {
     factory: {
       address: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',

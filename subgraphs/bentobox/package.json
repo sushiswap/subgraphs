@@ -26,7 +26,10 @@
     "deploy-bsc": "graph deploy --product hosted-service matthewlilley/bentobox-bsc",
     "deploy-fantom": "graph deploy --product hosted-service matthewlilley/bentobox-fantom",
     "deploy-gnosis": "graph deploy --product hosted-service matthewlilley/bentobox-gnosis",
-    "deploy-arbitrum": "graph deploy --product hosted-service matthewlilley/bentobox-arbitrum"
+    "deploy-arbitrum": "graph deploy --product hosted-service matthewlilley/bentobox-arbitrum",
+    "deploy-celo": "graph deploy --product hosted-service matthewlilley/bentobox-celo",
+    "deploy-moonriver": "graph deploy --product hosted-service matthewlilley/bentobox-moonriver",
+    "deploy-moonbeam": "graph deploy --product hosted-service matthewlilley/bentobox-moonbeam"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.27.0",
