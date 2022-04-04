@@ -16,7 +16,7 @@
     "create-local": "graph create --node http://localhost:8020/ sushiswap/bentobox",
     "remove-local": "graph remove --node http://localhost:8020/ sushiswap/bentobox",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/bentobox",
-    "deploy-ethereum": "graph deploy --product hosted-service sushiswap/bentobox",
+    "deploy-ethereum": "graph deploy --product hosted-service matthewlilley/bentobox-ethereum",
     "deploy-ropsten": "graph deploy --product hosted-service sushiswap/bentobox-ropsten",
     "deploy-rinkeby": "graph deploy --product hosted-service sushiswap/bentobox-rinkeby",
     "deploy-goerli": "graph deploy --product hosted-service sushiswap/bentobox-goerli",
