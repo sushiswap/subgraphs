@@ -271,21 +271,21 @@ export function onSync(event: SyncEvent): void {
   // TODO: Figure out how to automate whitelisted tokens entirely by programatically
   // adding and removing them, based on a threshold...
 
-  const whitelisted0 = WhitelistedToken.load(token0.id)
+  // const whitelisted0 = WhitelistedToken.load(token0.id)
 
-  if (whitelisted0 === null && token0Kpi.liquidityUSD.gt(BigDecimal.fromString('10000'))) {
-    createWhitelistedToken(token0.id)
-  } else if (whitelisted0 !== null && token0Kpi.liquidityUSD.lt(BigDecimal.fromString('10000'))) {
-    deleteWhitelistedToken(token0.id)
-  }
+  // if (whitelisted0 === null && token0Kpi.liquidityUSD.gt(BigDecimal.fromString('10000'))) {
+  //   createWhitelistedToken(token0.id)
+  // } else if (whitelisted0 !== null && token0Kpi.liquidityUSD.lt(BigDecimal.fromString('10000'))) {
+  //   deleteWhitelistedToken(token0.id)
+  // }
 
-  const whitelisted1 = WhitelistedToken.load(token1.id)
+  // const whitelisted1 = WhitelistedToken.load(token1.id)
 
-  if (whitelisted1 === null && token1Kpi.liquidityUSD.gt(BigDecimal.fromString('10000'))) {
-    createWhitelistedToken(token1.id)
-  } else if (whitelisted1 !== null && token1Kpi.liquidityUSD.lt(BigDecimal.fromString('10000'))) {
-    deleteWhitelistedToken(token1.id)
-  }
+  // if (whitelisted1 === null && token1Kpi.liquidityUSD.gt(BigDecimal.fromString('10000'))) {
+  //   createWhitelistedToken(token1.id)
+  // } else if (whitelisted1 !== null && token1Kpi.liquidityUSD.lt(BigDecimal.fromString('10000'))) {
+  //   deleteWhitelistedToken(token1.id)
+  // }
 }
 
 export function onSwap(event: SwapEvent): void {
