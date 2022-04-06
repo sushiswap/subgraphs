@@ -13,6 +13,8 @@ export const END = 'END'
 
 export const FURO_VESTING = 'FuroVesting'
 
+export const MAX_STEP_THRESHOLD = 160
+
 const HOUR = 60 * 60
 const DAY = 24 * HOUR
 export const WEEK = 7 * DAY

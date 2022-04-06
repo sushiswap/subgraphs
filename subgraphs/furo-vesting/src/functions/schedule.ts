@@ -1,6 +1,6 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 import { Schedule, SchedulePeriod, Vesting } from '../../generated/schema'
-import { CLIFF, END, START, STEP } from '../constants'
+import { CLIFF, END, MAX_STEP_THRESHOLD, START, STEP } from '../constants'
 
 export function createSchedule(vesting: Vesting): Schedule {
   let schedule = getOrCreateSchedule(vesting.id)
@@ -20,18 +20,7 @@ function createSchedulePeriods(vesting: Vesting): void {
   passedAmount = passedAmount.plus(vesting.cliffAmount)
   savePeriod(vesting.id, 1, CLIFF, passedTime, passedAmount)
 
-  const createdPeriodCount = 2
-  for (let i = 0; i < vesting.steps.toI32() - 1; i++) {
-    passedTime = passedTime.plus(vesting.stepDuration)
-    passedAmount = passedAmount.plus(vesting.stepAmount)
-    const id = createdPeriodCount + i
-    savePeriod(vesting.id, id, STEP, passedTime, passedAmount)
-  }
-
-  passedTime = passedTime.plus(vesting.stepDuration)
-  passedAmount = passedAmount.plus(vesting.stepAmount)
-  const endPeriodId = createdPeriodCount + vesting.steps.toI32() - 1
-  savePeriod(vesting.id, endPeriodId, END, passedTime, passedAmount)
+  createStepPeriods(vesting, passedTime, passedAmount)
 }
 
 function getOrCreateSchedule(id: string): Schedule {
@@ -57,6 +46,29 @@ function getOrCreateSchedulePeriod(id: string, number: i32): SchedulePeriod {
   period.save()
 
   return period as SchedulePeriod
+}
+
+function createStepPeriods(vesting: Vesting, passedTime: BigInt, passedAmount: BigInt): void {
+  const createdPeriodCount = 2
+
+  if (vesting.steps.toI32() <= MAX_STEP_THRESHOLD) {
+    for (let i = 0; i < vesting.steps.toI32() - 1; i++) {
+      passedTime = passedTime.plus(vesting.stepDuration)
+      passedAmount = passedAmount.plus(vesting.stepAmount)
+      const id = createdPeriodCount + i
+      savePeriod(vesting.id, id, STEP, passedTime, passedAmount)
+    }
+
+    passedTime = passedTime.plus(vesting.stepDuration)
+    passedAmount = passedAmount.plus(vesting.stepAmount)
+    const endPeriodId = createdPeriodCount + vesting.steps.toI32() - 1
+    savePeriod(vesting.id, endPeriodId, END, passedTime, passedAmount)
+  } else {
+    passedTime = passedTime.plus(vesting.stepDuration)
+    passedAmount = passedAmount.plus(vesting.stepAmount)
+    savePeriod(vesting.id, createdPeriodCount, STEP, passedTime, passedAmount)
+    savePeriod(vesting.id, createdPeriodCount + 1, END, vesting.expiresAt, vesting.totalAmount)
+  }
 }
 
 function savePeriod(vestId: string, number: i32, type: string, time: BigInt, amount: BigInt): void {

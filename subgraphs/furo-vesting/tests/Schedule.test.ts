@@ -1,5 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { assert, clearStore, test } from 'matchstick-as'
+import { assert, clearStore, logStore, test } from 'matchstick-as'
 import { CreateVesting as CreateVestingEvent } from '../generated/FuroVesting/FuroVesting'
 import { CLIFF, END, START, STEP, WEEK, YEAR } from '../src/constants'
 import { onCreateVesting } from '../src/mappings/vesting'
@@ -93,12 +93,11 @@ test('vesting creates a schedule and schedule periods with multiple steps', () =
 })
 
 test('vesting with 365 steps only creates 3 periods', () => {
-  setup()
   const streamId = BigInt.fromString('2')
   const steps = BigInt.fromU32(365)
   const stepduration = BigInt.fromU32(60*60*24)
   const totalAmount = CLIFF_AMOUNT.plus(steps.times(STEPS_AMOUNT)) // 100000000 + (200 * 10000000) = 2100000000
-  const endTime = START_TIME.plus(CLIFF_DURATION).plus(steps.times(STEP_DURATION)) 
+  const endTime = START_TIME.plus(CLIFF_DURATION).plus(steps.times(stepduration)) 
 
   const vestingEvent2 = createVestingEvent(
     streamId,
@@ -118,7 +117,7 @@ test('vesting with 365 steps only creates 3 periods', () => {
 
   assert.fieldEquals('Schedule', id, 'id', id)
   assert.fieldEquals('Schedule', id, 'vesting', id)
-  assert.entityCount('SchedulePeriod', 3)
+  assert.entityCount('SchedulePeriod', 4)
 
   let passedTime = START_TIME
   let passedAmount = BigInt.fromString('0')
@@ -136,7 +135,15 @@ test('vesting with 365 steps only creates 3 periods', () => {
   assert.fieldEquals('SchedulePeriod', cliffPeriodId, 'time', passedTime.toString())
   assert.fieldEquals('SchedulePeriod', cliffPeriodId, 'amount', passedAmount.toString())
 
-  const endPeriodId = id.concat(':period:2')
+  passedTime = passedTime.plus(stepduration)
+  passedAmount = passedAmount.plus(STEPS_AMOUNT)
+  const stepPeriodId = id.concat(':period:2')
+  assert.fieldEquals('SchedulePeriod', stepPeriodId, 'id', stepPeriodId)
+  assert.fieldEquals('SchedulePeriod', stepPeriodId, 'type', STEP)
+  assert.fieldEquals('SchedulePeriod', stepPeriodId, 'time', passedTime.toString())
+  assert.fieldEquals('SchedulePeriod', stepPeriodId, 'amount', passedAmount.toString())
+
+  const endPeriodId = id.concat(':period:3')
   assert.fieldEquals('SchedulePeriod', endPeriodId, 'id', endPeriodId)
   assert.fieldEquals('SchedulePeriod', endPeriodId, 'type', END)
   assert.fieldEquals('SchedulePeriod', endPeriodId, 'time', endTime.toString())
