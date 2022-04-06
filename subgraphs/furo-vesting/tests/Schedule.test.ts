@@ -41,12 +41,13 @@ function cleanup(): void {
   clearStore()
 }
 
-test('vesting creates a schedule and schedule periods', () => {
+test('vesting creates a schedule and schedule periods with multiple steps', () => {
   setup()
 
   const id = VESTING_ID.toString()
   assert.fieldEquals('Schedule', id, 'id', id)
   assert.fieldEquals('Schedule', id, 'vesting', id)
+  assert.entityCount('SchedulePeriod', 28)
 
   let passedTime = START_TIME
   let passedAmount = BigInt.fromString('0')
@@ -87,6 +88,61 @@ test('vesting creates a schedule and schedule periods', () => {
   assert.fieldEquals('SchedulePeriod', endPeriodId, 'amount', passedAmount.toString())
 
   assert.fieldEquals('Vesting', id, 'expiresAt', passedTime.toString())
+
+  cleanup()
+})
+
+test('vesting with 365 steps only creates 3 periods', () => {
+  setup()
+  const streamId = BigInt.fromString('2')
+  const steps = BigInt.fromU32(365)
+  const stepduration = BigInt.fromU32(60*60*24)
+  const totalAmount = CLIFF_AMOUNT.plus(steps.times(STEPS_AMOUNT)) // 100000000 + (200 * 10000000) = 2100000000
+  const endTime = START_TIME.plus(CLIFF_DURATION).plus(steps.times(STEP_DURATION)) 
+
+  const vestingEvent2 = createVestingEvent(
+    streamId,
+    WETH_ADDRESS,
+    SENDER,
+    RECIEVER,
+    START_TIME,
+    CLIFF_DURATION,
+    stepduration,
+    steps,
+    CLIFF_AMOUNT,
+    STEPS_AMOUNT,
+    true
+  )
+  const id = streamId.toString()
+  onCreateVesting(vestingEvent2)
+
+  assert.fieldEquals('Schedule', id, 'id', id)
+  assert.fieldEquals('Schedule', id, 'vesting', id)
+  assert.entityCount('SchedulePeriod', 3)
+
+  let passedTime = START_TIME
+  let passedAmount = BigInt.fromString('0')
+  const startPeriodId = id.concat(':period:0')
+  assert.fieldEquals('SchedulePeriod', startPeriodId, 'id', startPeriodId)
+  assert.fieldEquals('SchedulePeriod', startPeriodId, 'type', START)
+  assert.fieldEquals('SchedulePeriod', startPeriodId, 'time', passedTime.toString())
+  assert.fieldEquals('SchedulePeriod', startPeriodId, 'amount', passedAmount.toString())
+
+  passedTime = passedTime.plus(CLIFF_DURATION)
+  passedAmount = passedAmount.plus(CLIFF_AMOUNT)
+  const cliffPeriodId = id.concat(':period:1')
+  assert.fieldEquals('SchedulePeriod', cliffPeriodId, 'id', cliffPeriodId)
+  assert.fieldEquals('SchedulePeriod', cliffPeriodId, 'type', CLIFF)
+  assert.fieldEquals('SchedulePeriod', cliffPeriodId, 'time', passedTime.toString())
+  assert.fieldEquals('SchedulePeriod', cliffPeriodId, 'amount', passedAmount.toString())
+
+  const endPeriodId = id.concat(':period:2')
+  assert.fieldEquals('SchedulePeriod', endPeriodId, 'id', endPeriodId)
+  assert.fieldEquals('SchedulePeriod', endPeriodId, 'type', END)
+  assert.fieldEquals('SchedulePeriod', endPeriodId, 'time', endTime.toString())
+  assert.fieldEquals('SchedulePeriod', endPeriodId, 'amount', totalAmount.toString())
+
+  assert.fieldEquals('Vesting', id, 'expiresAt', endTime.toString())
 
   cleanup()
 })
