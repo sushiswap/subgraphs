@@ -3,9 +3,10 @@ import {
   CancelVesting as CancelVestingEvent,
   CreateVesting as CreateVestingEvent,
   Withdraw as WithdrawEvent,
+  Transfer as TransferEvent,
 } from '../../generated/FuroVesting/FuroVesting'
 import { Vesting } from '../../generated/schema'
-import { ACTIVE, CANCELLED } from '../constants'
+import { ACTIVE, CANCELLED, ZERO_ADDRESS } from '../constants'
 import { increaseVestingCount } from './furo-vesting'
 import { getOrCreateToken } from './token'
 import { getOrCreateUser } from './user'
@@ -46,6 +47,8 @@ export function createVesting(event: CreateVestingEvent): Vesting {
 
   vesting.createdAtBlock = event.block.number
   vesting.createdAtTimestamp = event.block.timestamp
+  vesting.modifiedAtBlock = event.block.number
+  vesting.modifiedAtTimestamp = event.block.timestamp
   vesting.save()
 
   return vesting
@@ -54,6 +57,8 @@ export function createVesting(event: CreateVestingEvent): Vesting {
 export function cancelVesting(event: CancelVestingEvent): Vesting {
   let vesting = getOrCreateVesting(event.params.vestId)
   vesting.status = CANCELLED
+  vesting.modifiedAtBlock = event.block.number
+  vesting.modifiedAtTimestamp = event.block.timestamp
   vesting.cancelledAtTimestamp = event.block.timestamp
   vesting.cancelledAtBlock = event.block.number
   vesting.save()
@@ -64,9 +69,33 @@ export function cancelVesting(event: CancelVestingEvent): Vesting {
 export function withdrawFromVesting(event: WithdrawEvent): Vesting {
   let vesting = getOrCreateVesting(event.params.vestId)
   vesting.withdrawnAmount = vesting.withdrawnAmount.plus(event.params.amount)
+  vesting.modifiedAtBlock = event.block.number
+  vesting.modifiedAtTimestamp = event.block.timestamp
   vesting.save()
 
   return vesting
+}
+
+export function transferVesting(event: TransferEvent): void {
+  if (!isValidTransfer(event)) {
+    return
+  }
+
+  let recipient = getOrCreateUser(event.params.to, event)
+  let vesting = getOrCreateVesting(event.params.tokenId)
+  vesting.recipient = recipient.id
+  vesting.modifiedAtBlock = event.block.number
+  vesting.modifiedAtTimestamp = event.block.timestamp
+  vesting.save()
+}
+
+/**
+ * Validate that the transfer is NOT a mint or burn transaction
+ * @param event
+ * @returns boolean
+ */
+function isValidTransfer(event: TransferEvent): boolean {
+  return !event.params.from.equals(ZERO_ADDRESS) && !event.params.to.equals(ZERO_ADDRESS)
 }
 
 function calculateExpirationDate(vest: Vesting): BigInt {

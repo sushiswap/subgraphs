@@ -44,6 +44,8 @@ type Vesting @entity {
   transactionCount: BigInt!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
+  modifiedAtBlock: BigInt!
+  modifiedAtTimestamp: BigInt!
   cancelledAtBlock: BigInt!
   cancelledAtTimestamp: BigInt!
 }

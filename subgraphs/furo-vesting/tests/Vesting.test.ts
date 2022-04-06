@@ -65,6 +65,8 @@ test('Created vesting contains expected fields', () => {
   assert.fieldEquals('Vesting', id, 'expiresAt', END_TIME.toString())
   assert.fieldEquals('Vesting', id, 'createdAtBlock', vestingEvent.block.number.toString())
   assert.fieldEquals('Vesting', id, 'createdAtTimestamp', vestingEvent.block.timestamp.toString())
+  assert.fieldEquals('Vesting', id, 'modifiedAtBlock', vestingEvent.block.number.toString())
+  assert.fieldEquals('Vesting', id, 'modifiedAtTimestamp', vestingEvent.block.timestamp.toString())
 
   cleanup()
 })
@@ -79,8 +81,10 @@ test('Stop vesting updates the vesting entity', () => {
   onCancelVesting(cancelVestingEvent)
 
   assert.fieldEquals('Vesting', id, 'status', CANCELLED)
-  assert.fieldEquals('Vesting', id, 'cancelledAtBlock', vestingEvent.block.number.toString())
-  assert.fieldEquals('Vesting', id, 'cancelledAtTimestamp', vestingEvent.block.timestamp.toString())
+  assert.fieldEquals('Vesting', id, 'cancelledAtBlock', cancelVestingEvent.block.number.toString())
+  assert.fieldEquals('Vesting', id, 'cancelledAtTimestamp', cancelVestingEvent.block.timestamp.toString())
+  assert.fieldEquals('Vesting', id, 'modifiedAtBlock', cancelVestingEvent.block.number.toString())
+  assert.fieldEquals('Vesting', id, 'modifiedAtTimestamp', cancelVestingEvent.block.timestamp.toString())
 
   cleanup()
 })
@@ -138,6 +142,8 @@ test('Transfer event updates the vesting recipient', () => {
 
   // Then: The Vestings recipient is updated
   assert.fieldEquals('Vesting', id, 'recipient', SENDER.toHex())
+  assert.fieldEquals('Vesting', id, 'modifiedAtBlock', transactionEvent.block.number.toString())
+  assert.fieldEquals('Vesting', id, 'modifiedAtTimestamp', transactionEvent.block.timestamp.toString())
 
   cleanup()
 })

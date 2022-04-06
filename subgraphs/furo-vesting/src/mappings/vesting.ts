@@ -10,7 +10,7 @@ import {
   createDisbursementTransactions,
   createWithdrawalTransaction,
 } from '../functions/transaction'
-import { cancelVesting, createVesting, withdrawFromVesting } from '../functions/vesting'
+import { cancelVesting, createVesting, transferVesting, withdrawFromVesting } from '../functions/vesting'
 
 export function onCreateVesting(event: CreateVestingEvent): void {
   const vesting = createVesting(event)
@@ -29,5 +29,5 @@ export function onWithdraw(event: WithdrawEvent): void {
 }
 
 export function onTransfer(event: TransferEvent): void {
-  
+  transferVesting(event)
 }
