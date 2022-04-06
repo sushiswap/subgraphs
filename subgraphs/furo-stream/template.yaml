@@ -40,3 +40,5 @@ dataSources:
           handler: onUpdateStream
         - event: Withdraw(indexed uint256,indexed uint256,indexed address,address,bool)
           handler: onWithdraw
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: onTransfer

@@ -1,6 +1,7 @@
 import {
   CancelStream as CancelStreamEvent,
   CreateStream as CreateStreamEvent,
+  Transfer as TransferEvent,
   UpdateStream as UpdateStreamEvent,
   Withdraw as WithdrawEvent,
 } from '../../generated/FuroStream/FuroStream'
@@ -30,4 +31,9 @@ export function onUpdateStream(event: UpdateStreamEvent): void {
 export function onWithdraw(event: WithdrawEvent): void {
   const stream = withdrawFromStream(event)
   createWithdrawalTransaction(stream, event)
+}
+
+
+export function onTransfer(event: TransferEvent): void {
+
 }
