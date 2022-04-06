@@ -4,6 +4,7 @@ import {
   CancelStream as CancelStreamEvent,
   CreateStream as CreateStreamEvent,
   UpdateStream as UpdateStreamEvent,
+  Transfer as TransferEvent,
   Withdraw as WithdrawEvent,
 } from '../generated/FuroStream/FuroStream'
 
@@ -155,6 +156,35 @@ export function createUpdateStreamEvent(
   event.parameters.push(topUpAmountParam)
   event.parameters.push(extendTimeParam)
   event.parameters.push(fromBentoBoxParam)
+
+  return event
+}
+
+export function createTransferEvent(
+  from: Address,
+  to: Address,
+  tokenId: BigInt
+): TransferEvent {
+  let mockEvent = newMockEvent()
+
+  let event = new TransferEvent(
+    mockEvent.address,
+    mockEvent.logIndex,
+    mockEvent.transactionLogIndex,
+    mockEvent.logType,
+    mockEvent.block,
+    mockEvent.transaction,
+    mockEvent.parameters
+  )
+
+  event.parameters = new Array()
+  let fromParam = new ethereum.EventParam('from', ethereum.Value.fromAddress(from))
+  let toParam = new ethereum.EventParam('to', ethereum.Value.fromAddress(to))
+  let tokenIdParam = new ethereum.EventParam('tokenId', ethereum.Value.fromUnsignedBigInt(tokenId))
+
+  event.parameters.push(fromParam)
+  event.parameters.push(toParam)
+  event.parameters.push(tokenIdParam)
 
   return event
 }

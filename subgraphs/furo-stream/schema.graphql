@@ -10,6 +10,7 @@ enum TransactionType {
   EXTEND
   WITHDRAWAL
   DISBURSEMENT # Payment to a sender and reciever when stream is cancelled
+  OWNERSHIP_TRANSFER
 }
 
 type FuroStream @entity {

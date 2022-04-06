@@ -2,15 +2,17 @@ import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
 import { ACTIVE, CANCELLED, EXTENDED } from '../src/constants'
-import { onCancelStream, onCreateStream, onUpdateStream, onWithdraw } from '../src/mappings/stream'
+import { onCancelStream, onCreateStream, onTransfer, onUpdateStream, onWithdraw } from '../src/mappings/stream'
 import {
   createCancelStreamEvent,
   createStreamEvent,
   createTokenMock,
+  createTransferEvent,
   createUpdateStreamEvent,
   createWithdrawEvent,
 } from './mocks'
 
+const ZERO_ADDRESS = Address.fromString('0x0000000000000000000000000000000000000000')
 const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
 const SENDER = Address.fromString('0x00000000000000000000000000000000000a71ce')
 const RECIEVER = Address.fromString('0x0000000000000000000000000000000000000b0b')
@@ -121,6 +123,51 @@ test('Withdraw from stream', () => {
   assert.fieldEquals('Stream', id, 'withdrawnAmount', amount2.toString())
   assert.fieldEquals('Stream', id, 'modifiedAtBlock', withdrawalEvent.block.number.toString())
   assert.fieldEquals('Stream', id, 'modifiedAtTimestamp', withdrawalEvent.block.timestamp.toString())
+
+  cleanup()
+})
+
+
+test('Mint transaction does NOT update the streams recipient', () => {
+  setup()
+  const id = STREAM_ID.toString().concat(':tx:1')
+  let transactionEvent = createTransferEvent(RECIEVER, ZERO_ADDRESS, STREAM_ID)
+  assert.fieldEquals('Stream', id, 'recipient', RECIEVER.toHex())
+
+  onTransfer(transactionEvent)
+
+  assert.fieldEquals('Stream', id, 'recipient', RECIEVER.toHex())
+
+  cleanup()
+})
+
+
+test('Burn transaction does NOT update the streams recipient', () => {
+  setup()
+  const id = STREAM_ID.toString().concat(':tx:1')
+  let transactionEvent = createTransferEvent(ZERO_ADDRESS, RECIEVER, STREAM_ID)
+  assert.fieldEquals('Stream', id, 'recipient', RECIEVER.toHex())
+
+  onTransfer(transactionEvent)
+
+  assert.fieldEquals('Stream', id, 'recipient', RECIEVER.toHex())
+
+  cleanup()
+})
+
+
+test('Transfer event updates the stream recipient', () => {
+  setup()
+  const id = STREAM_ID.toString().concat(':tx:1')
+  let transactionEvent = createTransferEvent(RECIEVER, SENDER, STREAM_ID)
+
+  assert.fieldEquals('Stream', id, 'recipient', RECIEVER.toHex())
+
+  // When: Reciever gives transfers the stream to sender
+  onTransfer(transactionEvent)
+
+  // Then: The Streams recipient is updated
+  assert.fieldEquals('Stream', id, 'recipient', SENDER.toHex())
 
   cleanup()
 })
