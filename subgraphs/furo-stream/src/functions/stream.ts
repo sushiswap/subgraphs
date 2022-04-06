@@ -1,12 +1,14 @@
 import { BigInt } from '@graphprotocol/graph-ts'
+import { log } from 'matchstick-as'
 import {
   CancelStream as CancelStreamEvent,
   CreateStream as CreateStreamEvent,
   UpdateStream as UpdateStreamEvent,
+  Transfer as TransferEvent,
   Withdraw as WithdrawEvent,
 } from '../../generated/FuroStream/FuroStream'
 import { Stream } from '../../generated/schema'
-import { ACTIVE, CANCELLED, EXTENDED } from '../constants'
+import { ACTIVE, CANCELLED, EXTENDED, ZERO_ADDRESS } from '../constants'
 import { increaseStreamCount } from './furo-stream'
 import { getOrCreateToken } from './token'
 import { getOrCreateUser } from './user'
@@ -78,4 +80,26 @@ export function withdrawFromStream(event: WithdrawEvent): Stream {
   stream.save()
 
   return stream
+}
+
+export function transferStream(event: TransferEvent): void {
+  if (!isValidTransfer(event)) {
+    return 
+  }
+
+  let stream = getOrCreateStream(event.params.tokenId)
+  stream.recipient = event.params.to.toHex()
+  stream.modifiedAtBlock = event.block.number
+  stream.modifiedAtTimestamp = event.block.timestamp
+  stream.save()
+
+}
+
+/**
+ * Validate that the transfer is NOT a mint or burn transaction
+ * @param event
+ * @returns boolean
+ */
+function isValidTransfer(event: TransferEvent): boolean {
+  return !event.params.from.equals(ZERO_ADDRESS) && !event.params.to.equals(ZERO_ADDRESS)
 }
