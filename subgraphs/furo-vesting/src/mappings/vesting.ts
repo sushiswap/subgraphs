@@ -1,6 +1,7 @@
 import {
   CancelVesting as CancelVestingEvent,
   CreateVesting as CreateVestingEvent,
+  Transfer as TransferEvent,
   Withdraw as WithdrawEvent,
 } from '../../generated/FuroVesting/FuroVesting'
 import { createSchedule } from '../functions/schedule'
@@ -25,4 +26,8 @@ export function onCancelVesting(event: CancelVestingEvent): void {
 export function onWithdraw(event: WithdrawEvent): void {
   const vesting = withdrawFromVesting(event)
   createWithdrawalTransaction(vesting, event)
+}
+
+export function onTransfer(event: TransferEvent): void {
+  
 }

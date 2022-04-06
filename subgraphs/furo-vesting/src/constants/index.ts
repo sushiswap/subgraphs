@@ -1,3 +1,5 @@
+import { Address } from "@graphprotocol/graph-ts"
+
 export const ACTIVE = 'ACTIVE'
 export const CANCELLED = 'CANCELLED'
 export const EXPIRED = 'EXPIRED'
@@ -13,6 +15,7 @@ export const END = 'END'
 
 export const FURO_VESTING = 'FuroVesting'
 
+export const ZERO_ADDRESS = Address.fromString('0x0000000000000000000000000000000000000000')
 export const MAX_STEP_THRESHOLD = 160
 
 const HOUR = 60 * 60

@@ -38,3 +38,5 @@ dataSources:
           handler: onCancelVesting
         - event: Withdraw(indexed uint256,indexed address,indexed uint256,bool)
           handler: onWithdraw
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: onTransfer

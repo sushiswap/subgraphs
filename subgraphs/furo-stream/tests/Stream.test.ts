@@ -1,5 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { assert, clearStore, log, test } from 'matchstick-as'
+import { assert, clearStore, test } from 'matchstick-as'
 import { CreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
 import { ACTIVE, CANCELLED, EXTENDED, ZERO_ADDRESS } from '../src/constants'
 import { onCancelStream, onCreateStream, onTransfer, onUpdateStream, onWithdraw } from '../src/mappings/stream'
@@ -9,7 +9,7 @@ import {
   createTokenMock,
   createTransferEvent,
   createUpdateStreamEvent,
-  createWithdrawEvent,
+  createWithdrawEvent
 } from './mocks'
 
 const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
@@ -162,10 +162,9 @@ test('Transfer event updates the stream recipient', () => {
 
   assert.fieldEquals('Stream', id, 'recipient', RECIEVER.toHex())
 
-  // When: Reciever gives transfers the stream to sender
+  // When: Reciever transfers the stream to sender
   onTransfer(transactionEvent)
 
-  log.debug("test", [])
   // Then: The Streams recipient is updated
   assert.fieldEquals('Stream', id, 'recipient', SENDER.toHex())
 
