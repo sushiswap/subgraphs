@@ -62,12 +62,18 @@ test('Cancel stream', () => {
 
   assert.fieldEquals('Stream', id, 'modifiedAtBlock', streamEvent.block.number.toString())
   assert.fieldEquals('Stream', id, 'modifiedAtTimestamp', streamEvent.block.timestamp.toString())
+  assert.fieldEquals('Stream', id, 'amount', AMOUNT.toString())
 
+  // When: a stream is cancelled
   onCancelStream(cancelStreamEvent)
 
-  assert.fieldEquals('Stream', id, 'status', CANCELLED)
+  // Then: modifiedAt is updated
   assert.fieldEquals('Stream', id, 'modifiedAtBlock', cancelStreamEvent.block.number.toString())
   assert.fieldEquals('Stream', id, 'modifiedAtTimestamp', cancelStreamEvent.block.timestamp.toString())
+
+  // And: the amount remains and the status is changed
+  assert.fieldEquals('Stream', id, 'status', CANCELLED)
+  assert.fieldEquals('Stream', id, 'amount', AMOUNT.toString())
 
   cleanup()
 })
