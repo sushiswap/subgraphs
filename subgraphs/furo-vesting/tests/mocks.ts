@@ -3,6 +3,7 @@ import { createMockedFunction, newMockEvent } from 'matchstick-as'
 import {
   CancelVesting as CancelVestingEvent,
   CreateVesting as CreateVestingEvent,
+  Transfer as TransferEvent,
   Withdraw as WithdrawEvent,
 } from '../generated/FuroVesting/FuroVesting'
 
@@ -128,6 +129,36 @@ export function createCancelVestingEvent(
 
   return event
 }
+
+export function createTransferEvent(
+  from: Address,
+  to: Address,
+  tokenId: BigInt
+): TransferEvent {
+  let mockEvent = newMockEvent()
+
+  let event = new TransferEvent(
+    mockEvent.address,
+    mockEvent.logIndex,
+    mockEvent.transactionLogIndex,
+    mockEvent.logType,
+    mockEvent.block,
+    mockEvent.transaction,
+    mockEvent.parameters
+  )
+
+  event.parameters = new Array()
+  let fromParam = new ethereum.EventParam('from', ethereum.Value.fromAddress(from))
+  let toParam = new ethereum.EventParam('to', ethereum.Value.fromAddress(to))
+  let tokenIdParam = new ethereum.EventParam('tokenId', ethereum.Value.fromUnsignedBigInt(tokenId))
+
+  event.parameters.push(fromParam)
+  event.parameters.push(toParam)
+  event.parameters.push(tokenIdParam)
+
+  return event
+}
+
 
 export function createTokenMock(contractAddress: string, decimals: BigInt, name: string, symbol: string): void {
   createMockedFunction(Address.fromString(contractAddress), 'decimals', 'decimals():(uint8)').returns([

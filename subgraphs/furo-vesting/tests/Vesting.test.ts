@@ -1,9 +1,9 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateVesting as CreateVestingEvent } from '../generated/FuroVesting/FuroVesting'
-import { ACTIVE, CANCELLED, WEEK, YEAR } from '../src/constants'
-import { onCancelVesting, onCreateVesting, onWithdraw } from '../src/mappings/vesting'
-import { createCancelVestingEvent, createTokenMock, createVestingEvent, createWithdrawEvent } from './mocks'
+import { ACTIVE, CANCELLED, WEEK, YEAR, ZERO_ADDRESS } from '../src/constants'
+import { onCancelVesting, onCreateVesting, onTransfer, onWithdraw } from '../src/mappings/vesting'
+import { createCancelVestingEvent, createTokenMock, createTransferEvent, createVestingEvent, createWithdrawEvent } from './mocks'
 
 const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
 const SENDER = Address.fromString('0x00000000000000000000000000000000000a71ce')
@@ -93,6 +93,51 @@ test('On withdraw event, withdrawnAmount field is updated', () => {
   onWithdraw(withdrawalEvent)
 
   assert.fieldEquals('Vesting', VESTING_ID.toString(), 'withdrawnAmount', amount.toString())
+
+  cleanup()
+})
+
+
+test('Mint transaction does NOT update the vesting recipient', () => {
+  setup()
+  const id = VESTING_ID.toString()
+  let transactionEvent = createTransferEvent(RECIEVER, ZERO_ADDRESS, VESTING_ID)
+  assert.fieldEquals('Vesting', id, 'recipient', RECIEVER.toHex())
+
+  onTransfer(transactionEvent)
+
+  assert.fieldEquals('Vesting', id, 'recipient', RECIEVER.toHex())
+
+  cleanup()
+})
+
+
+test('Burn transaction does NOT update the vesting recipient', () => {
+  setup()
+  const id = VESTING_ID.toString()
+  let transactionEvent = createTransferEvent(ZERO_ADDRESS, RECIEVER, VESTING_ID)
+  assert.fieldEquals('Vesting', id, 'recipient', RECIEVER.toHex())
+
+  onTransfer(transactionEvent)
+
+  assert.fieldEquals('Vesting', id, 'recipient', RECIEVER.toHex())
+
+  cleanup()
+})
+
+
+test('Transfer event updates the vesting recipient', () => {
+  setup()
+  const id = VESTING_ID.toString()
+  let transactionEvent = createTransferEvent(RECIEVER, SENDER, VESTING_ID)
+
+  assert.fieldEquals('Vesting', id, 'recipient', RECIEVER.toHex())
+
+  // When: Reciever transfers the vesting to sender
+  onTransfer(transactionEvent)
+
+  // Then: The Vestings recipient is updated
+  assert.fieldEquals('Vesting', id, 'recipient', SENDER.toHex())
 
   cleanup()
 })
