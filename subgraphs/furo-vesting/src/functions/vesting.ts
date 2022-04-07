@@ -17,8 +17,8 @@ export function getOrCreateVesting(id: BigInt): Vesting {
   if (vesting === null) {
     vesting = new Vesting(id.toString())
     increaseVestingCount()
+    vesting.save()
   }
-  vesting.save()
 
   return vesting as Vesting
 }

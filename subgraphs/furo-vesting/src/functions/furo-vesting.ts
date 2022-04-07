@@ -7,9 +7,9 @@ function getOrCreateFuro(): FuroVesting {
 
   if (furoVesting === null) {
     furoVesting = new FuroVesting(FURO_VESTING)
+    furoVesting.save()
   }
 
-  furoVesting.save()
 
   return furoVesting as FuroVesting
 }

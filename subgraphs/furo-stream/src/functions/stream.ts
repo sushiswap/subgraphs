@@ -19,8 +19,8 @@ export function getOrCreateStream(id: BigInt): Stream {
   if (stream === null) {
     stream = new Stream(id.toString())
     increaseStreamCount()
+    stream.save()
   }
-  stream.save()
 
   return stream as Stream
 }

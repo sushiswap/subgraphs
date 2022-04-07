@@ -10,9 +10,9 @@ export function getOrCreateUser(id: Address, event: ethereum.Event): User {
     user.createdAtBlock = event.block.number
     user.createdAtTimestamp = event.block.timestamp
     increaseUserCount()
+    user.save()
   }
 
-  user.save()
 
   return user as User
 }

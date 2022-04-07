@@ -7,9 +7,9 @@ function getOrCreateFuro(): FuroStream {
 
   if (furoStream === null) {
     furoStream = new FuroStream(FURO_STREAM)
+    furoStream.save()
   }
 
-  furoStream.save()
 
   return furoStream as FuroStream
 }

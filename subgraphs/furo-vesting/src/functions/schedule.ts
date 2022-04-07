@@ -28,9 +28,9 @@ function getOrCreateSchedule(id: string): Schedule {
 
   if (schedule === null) {
     schedule = new Schedule(id)
+    schedule.save()
   }
 
-  schedule.save()
 
   return schedule as Schedule
 }
