@@ -1,5 +1,5 @@
 {
-  "name": "@sushiswap/legacy-exchange-subgraph",
+  "name": "legacy-exchange",
   "author": "Matthew Lilley <hello@matthewlilley.com>",
   "license": "MIT",
   "repository": {

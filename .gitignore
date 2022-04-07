@@ -6,12 +6,12 @@ package-lock.json
 yarn.lock
 addresses.ts
 subgraph.yaml
-.yarn/*
-!.yarn/patches
-!.yarn/releasesgit 
-!.yarn/plugins
-!.yarn/sdks
-!.yarn/versions
+
 .pnp.*
 **/tests/.*/
 .vscode
+
+# turbo
+.turbo
+build/**
+dist/**

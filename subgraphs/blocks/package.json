@@ -1,5 +1,5 @@
 {
-  "name": "@sushiswap/blocks-subgraph",
+  "name": "blocks",
   "license": "MIT",
   "repository": {
     "url": "sushiswap/subgraphs",
@@ -11,6 +11,7 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
+    "test": "graph test -r",
     "deploy": "graph deploy --node https://api.thegraph.com/deploy/ sushiswap/blocks",
     "create-local": "graph create --node http://localhost:8020/ sushiswap/blocks",
     "remove-local": "graph remove --node http://localhost:8020/ sushiswap/blocks",
@@ -21,6 +22,8 @@
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.27.0",
     "@graphprotocol/graph-ts": "^0.24.1",
-    "matchstick-as": "^0.4.0"
+    "matchstick-as": "^0.4.0",
+    "assemblyscript": "^0.19.20",
+    "wabt": "1.0.24"
   }
 }

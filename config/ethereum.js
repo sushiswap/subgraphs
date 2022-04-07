@@ -38,6 +38,10 @@ module.exports = {
     address: '0xf5bce5077908a1b7370b9ae04adc565ebd643966',
     startBlock: 12094175,
   },
+  blocks: {
+    address: '0x6e38A457C722C6011B2dfa06d49240e797844d66',
+    startBlock: 49880,
+  },
   legacy: {
     factory: {
       address: '0xc0aee478e3658e2610c5f7a4a2e1777ce9e4f2ac',

@@ -1,0 +1,14 @@
+{
+    "$schema": "https://turborepo.org/schema.json",
+    "pipeline": {
+        "codegen": {
+          "outputs": [".generated/**"]
+        },
+      "build": {
+        "outputs": [".build/**"]
+      },
+      "test": {
+        "outputs": []
+      }
+    }
+  }

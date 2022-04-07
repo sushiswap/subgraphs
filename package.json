@@ -15,7 +15,7 @@
     "@sushiswap/prettier-config": "^0.1.0",
     "commander": "^8.3.0",
     "mustache": "latest",
-    "prettier": "^2.4.0"
-  },
-  "packageManager": "yarn@3.1.1"
+    "prettier": "^2.4.0",
+    "turbo": "^1.1.10"
+  }
 }

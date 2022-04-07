@@ -1,5 +1,5 @@
 {
-    "name": "@sushiswap/candles-subgraph",
+    "name": "candles",
     "author": "Matthew Lilley <hello@matthewlilley.com>",
     "license": "MIT",
     "repository": {
