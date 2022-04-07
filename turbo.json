@@ -1,18 +1,15 @@
 {
     "$schema": "https://turborepo.org/schema.json",
     "pipeline": {
-        "generate": {
+        "codegen": {
           "cache": false
         },
       "build": {
         "dependsOn": ["^codegen"],
-        "outputs": [".something/**"]
+        "outputs": [".build/**"]
       },
       "test": {
         "dependsOn": ["^build"],
-        "outputs": []
-      },
-      "lint": {
         "outputs": []
       }
     }

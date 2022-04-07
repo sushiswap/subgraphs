@@ -1,5 +1,5 @@
 {
-  "name": "@sushiswap/trident-subgraph",
+  "name": "trident",
   "author": "Matthew Lilley <hello@matthewlilley.com>",
   "license": "MIT",
   "repository": {
@@ -12,6 +12,7 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
+    "test": "graph test -r",
     "deploy": "graph deploy --node https://api.thegraph.com/deploy/ sushiswap/trident",
     "create-local": "graph create --node http://localhost:8020/ sushiswap/trident",
     "remove-local": "graph remove --node http://localhost:8020/ sushiswap/trident",
@@ -23,6 +24,8 @@
     "@graphprotocol/graph-cli": "^0.26.0",
     "@graphprotocol/graph-ts": "^0.24.1",
     "@sushiswap/trident": "1.0.0-canary.30",
-    "matchstick-as": "^0.3.0"
+    "matchstick-as": "^0.3.0",
+    "assemblyscript": "^0.19.20",
+    "wabt": "1.0.24"
   }
 }

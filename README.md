@@ -1,5 +1,7 @@
 # The Graph
-This repository contains multiple subgraphs:
+
+This repository contains multiple subgraphs:  
+
 - [auction-maker](./subgraphs/auction-maker/README.md)
 - [bentobox](./subgraphs/bentobox/README.md)
 - [blocks](./subgraphs/blocks/README.md)
@@ -16,7 +18,9 @@ This repository contains multiple subgraphs:
 ## CLI
 
 ### Prepare
+
 Replace `<APP_NAME>` and `<NETWORK>`, e.g. `miso` and `kovan`
+
 ```sh
 node . prepare <APP_NAME> <NETWORK>
 ```
@@ -28,43 +32,48 @@ node . deploy <APP_NAME> <NETWORK>
 ```
 
 ### Logging
+
 ```sh
 node . log sushiswap/<SUBGRAPH_NAME> 
 ```
 
 ## Testing
 
-https://thegraph.com/docs/developer/matchstick
+[Matchstick documentation](https://thegraph.com/docs/developer/matchstick)
 
 ```sh
 # Run all tests
-yarn workspace @sushiswap/<APP_NAME>-subgraph graph test -r
+pnpm exec turbo run test --scope=<SUBGRAPH_NAME>
 
 # Run single test
-yarn workspace @sushiswap/<APP_NAME>-subgraph graph test <TEST_NAME> -r
+pnpm exec turbo run test -- <TEST> --scope=<SUBGRAPH_NAME>
 ```
 
-
 ## Misc
+
 Deploy a subgraph by running the command below and replacing `<APP_NAME>` and `<NETWORK_TYPE>`, e.g. `miso` and `kovan`
+
 ```sh
 APP=<APP_NAME> && NETWORK=<NETWORK_TYPE> && \
 node . prepare $APP $NETWORK && \
-yarn workspace @sushiswap/$APP-subgraph codegen && \
-yarn workspace @sushiswap/$APP-subgraph build
+pnpm exec turbo run codegen --scope=$APP && \
+pnpm exec turbo run build --scope=$APP
 ```
 
 ```sh
-yarn workspace @sushiswap/$APP-subgraph deploy:$NETWORK
+pnpm exec turbo run deploy:$NETWORK --scope=$APP
 ```
 
+## Query
 
-## Query 
+Example:  
 
-Example
 ```sh
-node . prepare miso kovan && yarn workspace @sushiswap/miso-subgraph codegen && yarn workspace @sushiswap/miso-subgraph build && yarn workspace @sushiswap/miso-subgraph deploy-kovan
+node . prepare miso kovan && pnpm exec turbo run codegen --scope=miso && pnpm exec turbo run build --scope=miso && pnpm exec turbo run deploy:kovan --scope=miso
 ```
 
+## Check status
+
+```sh
 curl -X POST -d '{ "query": "{indexingStatusForCurrentVersion(subgraphName: \"sushiswap/kovan-miso\") { chains { latestBlock { hash number }}}}"}' https://api.thegraph.com/index-node/graphql
-
+```

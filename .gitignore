@@ -12,6 +12,6 @@ subgraph.yaml
 .vscode
 
 # turbo
-.git ignore
+.turbo
 build/**
 dist/**

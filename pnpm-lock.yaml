@@ -20,31 +20,43 @@ importers:
     specifiers:
       '@graphprotocol/graph-cli': ^0.27.0
       '@graphprotocol/graph-ts': ^0.24.1
+      assemblyscript: ^0.19.20
       matchstick-as: ^0.4.2
+      wabt: 1.0.24
     devDependencies:
       '@graphprotocol/graph-cli': 0.27.0
       '@graphprotocol/graph-ts': 0.24.1
+      assemblyscript: 0.19.23
       matchstick-as: 0.4.2
+      wabt: 1.0.24
 
   subgraphs/bentobox:
     specifiers:
       '@graphprotocol/graph-cli': ^0.27.0
       '@graphprotocol/graph-ts': ^0.24.1
+      assemblyscript: ^0.19.20
       matchstick-as: ^0.4.0
+      wabt: 1.0.24
     devDependencies:
       '@graphprotocol/graph-cli': 0.27.0
       '@graphprotocol/graph-ts': 0.24.1
+      assemblyscript: 0.19.23
       matchstick-as: 0.4.2
+      wabt: 1.0.24
 
   subgraphs/blocks:
     specifiers:
       '@graphprotocol/graph-cli': ^0.27.0
       '@graphprotocol/graph-ts': ^0.24.1
+      assemblyscript: ^0.19.20
       matchstick-as: ^0.4.0
+      wabt: 1.0.24
     devDependencies:
       '@graphprotocol/graph-cli': 0.27.0
       '@graphprotocol/graph-ts': 0.24.1
+      assemblyscript: 0.19.23
       matchstick-as: 0.4.2
+      wabt: 1.0.24
 
   subgraphs/candles:
     specifiers:
@@ -62,21 +74,29 @@ importers:
     specifiers:
       '@graphprotocol/graph-cli': ^0.27.0
       '@graphprotocol/graph-ts': ^0.24.1
+      assemblyscript: ^0.19.20
       matchstick-as: ^0.4.2
+      wabt: 1.0.24
     devDependencies:
       '@graphprotocol/graph-cli': 0.27.0
       '@graphprotocol/graph-ts': 0.24.1
+      assemblyscript: 0.19.23
       matchstick-as: 0.4.2
+      wabt: 1.0.24
 
   subgraphs/furo-vesting:
     specifiers:
       '@graphprotocol/graph-cli': ^0.27.0
       '@graphprotocol/graph-ts': ^0.24.1
+      assemblyscript: ^0.19.20
       matchstick-as: ^0.4.2
+      wabt: 1.0.24
     devDependencies:
       '@graphprotocol/graph-cli': 0.27.0
       '@graphprotocol/graph-ts': 0.24.1
+      assemblyscript: 0.19.23
       matchstick-as: 0.4.2
+      wabt: 1.0.24
 
   subgraphs/legacy-exchange:
     specifiers:
@@ -95,12 +115,16 @@ importers:
       '@graphprotocol/graph-cli': ^0.27.0
       '@graphprotocol/graph-ts': ^0.24.1
       '@sushiswap/miso': 1.0.0-canary.40
+      assemblyscript: ^0.19.20
       matchstick-as: ^0.4.0
+      wabt: 1.0.24
     devDependencies:
       '@graphprotocol/graph-cli': 0.27.0
       '@graphprotocol/graph-ts': 0.24.1
       '@sushiswap/miso': 1.0.0-canary.40
+      assemblyscript: 0.19.23
       matchstick-as: 0.4.2
+      wabt: 1.0.24
 
   subgraphs/staking:
     specifiers:
@@ -116,33 +140,45 @@ importers:
     specifiers:
       '@graphprotocol/graph-cli': ^0.27.0
       '@graphprotocol/graph-ts': ^0.24.1
+      assemblyscript: ^0.19.20
       matchstick-as: ^0.4.0
+      wabt: 1.0.24
     devDependencies:
       '@graphprotocol/graph-cli': 0.27.0
       '@graphprotocol/graph-ts': 0.24.1
+      assemblyscript: 0.19.23
       matchstick-as: 0.4.2
+      wabt: 1.0.24
 
   subgraphs/trident:
     specifiers:
       '@graphprotocol/graph-cli': ^0.26.0
       '@graphprotocol/graph-ts': ^0.24.1
       '@sushiswap/trident': 1.0.0-canary.30
+      assemblyscript: ^0.19.20
       matchstick-as: ^0.3.0
+      wabt: 1.0.24
     devDependencies:
       '@graphprotocol/graph-cli': 0.26.0
       '@graphprotocol/graph-ts': 0.24.1
       '@sushiswap/trident': 1.0.0-canary.30
+      assemblyscript: 0.19.23
       matchstick-as: 0.3.0
+      wabt: 1.0.24
 
   subgraphs/xsushi:
     specifiers:
       '@graphprotocol/graph-cli': ^0.27.0
       '@graphprotocol/graph-ts': ^0.24.1
+      assemblyscript: ^0.19.20
       matchstick-as: ^0.4.0
+      wabt: 1.0.24
     devDependencies:
       '@graphprotocol/graph-cli': 0.27.0
       '@graphprotocol/graph-ts': 0.24.1
+      assemblyscript: 0.19.23
       matchstick-as: 0.4.2
+      wabt: 1.0.24
 
 packages:
 
@@ -1110,7 +1146,7 @@ packages:
       import-fresh: 3.3.0
       parse-json: 5.2.0
       path-type: 4.0.0
-      yaml: 1.9.2
+      yaml: 1.10.2
     dev: true
 
   /create-hash/1.2.0:
@@ -2809,6 +2845,7 @@ packages:
     resolution: {integrity: sha512-N9iVG+CGJsI4b4ZGazjwLnxErD2d9Pe4DPvvXSxYA9tFNu8ymXME4Qs5HIQ0LMJpNM7zj+m0NlNnNeqFpKzqnA==}
     deprecated: Unmaintained
     dev: true
+    bundledDependencies: []
 
   /protocol-buffers-schema/3.6.0:
     resolution: {integrity: sha512-TdDRD+/QNdrCGCE7v8340QyuXd4kIWIgapsE2+n/SaGiSSbomYl4TjHlvIoCWRpE7wFt02EpB35VVA2ImcBVqw==}
@@ -2986,7 +3023,7 @@ packages:
     resolution: {integrity: sha512-uWjbaKIK3T1OSVptzX7Nl6PvQ3qAGtKEtVRjRuazjfL3Bx5eI409VZSqgND+4UNnmzLVdPj9FqFJNPqBZFve4w==}
     hasBin: true
     dependencies:
-      glob: 7.1.6
+      glob: 7.2.0
     dev: true
 
   /rimraf/3.0.2:

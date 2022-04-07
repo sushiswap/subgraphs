@@ -1,5 +1,5 @@
 {
-  "name": "@sushiswap/miso-subgraph",
+  "name": "miso",
   "author": "Matthew Lilley <hello@matthewlilley.com>",
   "license": "MIT",
   "repository": {
@@ -12,6 +12,7 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
+    "test": "graph test -r",
     "deploy": "graph deploy --node https://api.thegraph.com/deploy/ sushiswap/miso",
     "create-local": "graph create --node http://localhost:8020/ sushiswap/miso",
     "remove-local": "graph remove --node http://localhost:8020/ sushiswap/miso",
@@ -22,6 +23,8 @@
     "@graphprotocol/graph-cli": "^0.27.0",
     "@graphprotocol/graph-ts": "^0.24.1",
     "@sushiswap/miso": "1.0.0-canary.40",
-    "matchstick-as": "^0.4.0"
+    "matchstick-as": "^0.4.0",
+    "assemblyscript": "^0.19.20",
+    "wabt": "1.0.24"
   }
 }
