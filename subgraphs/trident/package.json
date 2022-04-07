@@ -21,6 +21,7 @@
     "deploy-polygon": "graph deploy --product hosted-service matthewlilley/trident-polygon"
   },
   "devDependencies": {
+    "abi": "workspace:*",
     "@graphprotocol/graph-cli": "^0.26.0",
     "@graphprotocol/graph-ts": "^0.24.1",
     "@sushiswap/trident": "1.0.0-canary.30",

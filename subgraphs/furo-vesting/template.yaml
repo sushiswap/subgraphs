@@ -26,11 +26,11 @@ dataSources:
         - name: FuroVesting
           file: ./abis/FuroVesting.json
         - name: ERC20
-          file: ./abis/ERC20.json
+          file: ./node_modules/abi/ERC20/ERC20.json
         - name: SymbolBytes32
-          file: ./abis/SymbolBytes32.json
+          file: ./node_modules/abi/ERC20/SymbolBytes32.json
         - name: NameBytes32
-          file: ./abis/NameBytes32.json
+          file: ./node_modules/abi/ERC20/NameBytes32.json
       eventHandlers:
         - event: CreateVesting(indexed uint256,address,indexed address,indexed address,uint32,uint32,uint32,uint32,uint128,uint128,bool)
           handler: onCreateVesting

@@ -33,6 +33,7 @@
     "deploy-moonbeam": "graph deploy --product hosted-service matthewlilley/bentobox-moonbeam"
   },
   "devDependencies": {
+    "abi": "workspace:*",
     "@graphprotocol/graph-cli": "^0.27.0",
     "@graphprotocol/graph-ts": "^0.24.1",
     "matchstick-as": "^0.4.0",
