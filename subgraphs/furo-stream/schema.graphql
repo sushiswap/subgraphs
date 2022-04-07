@@ -1,0 +1,71 @@
+enum StreamStatus {
+  ACTIVE
+  EXTENDED
+  CANCELLED
+  EXPIRED
+}
+
+enum TransactionType {
+  DEPOSIT
+  EXTEND
+  WITHDRAWAL
+  DISBURSEMENT # Payment to a sender and reciever when stream is cancelled
+}
+
+type FuroStream @entity {
+  id: ID!# Hardcoded to 'FuroStream'
+  streamCount: BigInt!
+  userCount: BigInt!
+  transactionCount: BigInt!
+}
+
+type Stream @entity {
+  id: ID!# starts at 1001
+  recipient: User!
+  amount: BigInt!
+  withdrawnAmount: BigInt!
+  token: Token!
+  status: StreamStatus!
+  createdBy: User!
+  fromBentoBox: Boolean!
+  startedAt: BigInt!
+  expiresAt: BigInt!
+  transactionCount: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+  modifiedAtBlock: BigInt!
+  modifiedAtTimestamp: BigInt!
+}
+
+type Transaction @entity {
+  id: ID!
+  type: TransactionType
+  stream: Stream!
+  amount: BigInt!
+  to: User!
+  token: Token!
+  toBentoBox: Boolean!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+type Token @entity {
+  id: ID!
+  symbol: String!
+  symbolSuccess: Boolean!
+  name: String!
+  nameSuccess: Boolean!
+  decimals: BigInt!
+  decimalsSuccess: Boolean!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+
+type User @entity {
+  id: ID!
+  incomingStreams: [Stream!]! @derivedFrom(field: "recipient")
+  outgoingStreams: [Stream!]! @derivedFrom(field: "createdBy")
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}

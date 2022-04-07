@@ -1,11 +1,17 @@
 # The Graph
 This repository contains multiple subgraphs:
+- [auction-maker](./subgraphs/auction-maker/README.md)
 - [bentobox](./subgraphs/bentobox/README.md)
 - [blocks](./subgraphs/blocks/README.md)
 - [candles](./subgraphs/candles/README.md)
+- [furo-stream](./subgraphs/furo-stream/README.md)
+- [furo-vesting](./subgraphs/furo-vesting/README.md)
 - [legacy-exchange](./subgraphs/legacy-exchange/README.md)
+- [miso](./subgraphs/miso/README.md)
 - [staking](./subgraphs/staking/README.md)
+- [sushi](./subgraphs/sushi/README.md)
 - [trident](./subgraphs/trident/README.md)
+- [xsushi](./subgraphs/xsushi/README.md)
 
 ## CLI
 

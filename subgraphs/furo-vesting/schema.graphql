@@ -1,0 +1,98 @@
+enum VestingStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+}
+
+enum SchedulePeriodType {
+  START
+  CLIFF
+  STEP
+  END
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  DISBURSEMENT # Payment to a sender and reciever when Vesting is cancelled
+}
+
+type FuroVesting @entity {
+  id: ID!# Hardcoded to 'FuroVesting'
+  vestingCount: BigInt!
+  userCount: BigInt!
+  transactionCount: BigInt!
+}
+
+type Vesting @entity {
+  id: ID!# starts at 1
+  recipient: User!
+  cliffDuration: BigInt!
+  stepDuration: BigInt!
+  steps: BigInt!
+  cliffAmount: BigInt!
+  stepAmount: BigInt!
+  totalAmount: BigInt!
+  withdrawnAmount: BigInt!
+  token: Token!
+  schedule: Schedule!
+  status: VestingStatus!
+  createdBy: User!
+  fromBentoBox: Boolean!
+  startedAt: BigInt!
+  expiresAt: BigInt!
+  transactionCount: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+  modifiedAtBlock: BigInt!
+  modifiedAtTimestamp: BigInt!
+  cancelledAtBlock: BigInt!
+  cancelledAtTimestamp: BigInt!
+}
+
+type Schedule @entity {
+  id: ID!
+  vesting: Vesting!
+  periods: [SchedulePeriod!]! @derivedFrom(field: "schedule")
+}
+
+type SchedulePeriod @entity {
+  id: ID!
+  schedule: Schedule!
+  time: BigInt!
+  type: SchedulePeriodType!
+  amount: BigInt!
+}
+
+type Transaction @entity {
+  id: ID!
+  type: TransactionType!
+  vesting: Vesting!
+  amount: BigInt!
+  to: User!
+  token: Token!
+  toBentoBox: Boolean!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+type Token @entity {
+  id: ID!
+  symbol: String!
+  symbolSuccess: Boolean!
+  name: String!
+  nameSuccess: Boolean!
+  decimals: BigInt!
+  decimalsSuccess: Boolean!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+
+type User @entity {
+  id: ID!
+  incomingVestings: [Vesting!]! @derivedFrom(field: "recipient")
+  outgoingVestings: [Vesting!]! @derivedFrom(field: "createdBy")
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
