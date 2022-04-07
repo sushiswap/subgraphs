@@ -5,20 +5,16 @@ importers:
   .:
     specifiers:
       '@sushiswap/prettier-config': ^0.1.0
-      assemblyscript: ^0.19.20
       commander: ^8.3.0
       mustache: latest
       prettier: ^2.4.0
       turbo: ^1.1.10
-      wabt: 1.0.24
     devDependencies:
       '@sushiswap/prettier-config': 0.1.0_prettier@2.6.2
-      assemblyscript: 0.19.23
       commander: 8.3.0
       mustache: 4.2.0
       prettier: 2.6.2
       turbo: 1.1.10
-      wabt: 1.0.24
 
   subgraphs/auction-maker:
     specifiers:
@@ -164,14 +160,14 @@ importers:
       '@graphprotocol/graph-ts': ^0.24.1
       '@sushiswap/trident': 1.0.0-canary.30
       assemblyscript: ^0.19.20
-      matchstick-as: ^0.4.2
+      matchstick-as: ^0.3.0
       wabt: 1.0.24
     devDependencies:
       '@graphprotocol/graph-cli': 0.26.0
       '@graphprotocol/graph-ts': 0.24.1
       '@sushiswap/trident': 1.0.0-canary.30
       assemblyscript: 0.19.23
-      matchstick-as: 0.4.2
+      matchstick-as: 0.3.0
       wabt: 1.0.24
 
   subgraphs/xsushi:
@@ -2349,6 +2345,14 @@ packages:
 
   /matchstick-as/0.2.3:
     resolution: {integrity: sha512-Eg/GFoIGSVj4pNJZJwV7azDOIoiADkOyM3VChQlaEbS0NmjsOnREcNT0za0Qyh2RgFbMH/JBPVo+vbHvm2+thg==}
+    dependencies:
+      '@graphprotocol/graph-ts': 0.24.1
+      assemblyscript: 0.19.23
+      wabt: 1.0.24
+    dev: true
+
+  /matchstick-as/0.3.0:
+    resolution: {integrity: sha512-+nxHlchVHzvcJzcNc8WxCV5FpADVqVJwEBuaq3IvZjp29xVoe/RWpodmTvQw+Pk6bRMAPI5grdmTPjR4hGgrcw==}
     dependencies:
       '@graphprotocol/graph-ts': 0.24.1
       assemblyscript: 0.19.23

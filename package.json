@@ -16,8 +16,6 @@
     "commander": "^8.3.0",
     "mustache": "latest",
     "prettier": "^2.4.0",
-    "turbo": "^1.1.10",
-    "assemblyscript": "^0.19.20",
-    "wabt": "1.0.24"
+    "turbo": "^1.1.10"
   }
 }
