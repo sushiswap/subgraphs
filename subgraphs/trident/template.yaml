@@ -23,11 +23,11 @@ dataSources:
         - Token
       abis:
         - name: BentoBox
-          file: ./abis/BentoBox.json
+          file: ./node_modules/abi/BentoBox/BentoBox.json
         - name: ERC20
-          file: ./abis/ERC20.json
+          file: ./node_modules/abi/ERC20/ERC20.json
         - name: SymbolBytes32
-          file: ./abis/SymbolBytes32.json
+          file: ./node_modules/abi/ERC20/SymbolBytes32.json
       eventHandlers:
         - event: LogDeposit(indexed address,indexed address,indexed address,uint256,uint256)
           handler: onLogDeposit
@@ -81,11 +81,11 @@ dataSources:
         - name: IndexPoolFactory
           file: ./abis/IndexPoolFactory.json
         - name: ERC20
-          file: ./abis/ERC20.json
-        - name: NameBytes32
-          file: ./abis/NameBytes32.json
+          file: ./node_modules/abi/ERC20/ERC20.json
         - name: SymbolBytes32
-          file: ./abis/SymbolBytes32.json
+          file: ./node_modules/abi/ERC20/SymbolBytes32.json
+        - name: NameBytes32
+          file: ./node_modules/abi/ERC20/NameBytes32.json
       eventHandlers:
         - event: DeployPool(indexed address,indexed address,bytes)
           handler: onDeployPool
@@ -123,11 +123,11 @@ templates:
         - name: ConstantProductPoolFactory
           file: ./abis/ConstantProductPoolFactory.json
         - name: ERC20
-          file: ./abis/ERC20.json
-        - name: NameBytes32
-          file: ./abis/NameBytes32.json
+          file: ./node_modules/abi/ERC20/ERC20.json
         - name: SymbolBytes32
-          file: ./abis/SymbolBytes32.json
+          file: ./node_modules/abi/ERC20/SymbolBytes32.json
+        - name: NameBytes32
+          file: ./node_modules/abi/ERC20/NameBytes32.json
       eventHandlers:
         - event: Mint(indexed address,uint256,uint256,indexed address)
           handler: onMint
@@ -159,11 +159,11 @@ templates:
   #       - name: ConcentratedLiquidityPoolFactory
   #         file: ./abis/ConcentratedLiquidityPoolFactory.json
   #       - name: ERC20
-  #         file: ./abis/ERC20.json
-  #       - name: NameBytes32
-  #         file: ./abis/NameBytes32.json
+  #         file: ./node_modules/abi/ERC20/ERC20.json
   #       - name: SymbolBytes32
-  #         file: ./abis/SymbolBytes32.json
+  #         file: ./node_modules/abi/ERC20/SymbolBytes32.json
+  #       - name: NameBytes32
+  #         file: ./node_modules/abi/ERC20/NameBytes32.json
   #     eventHandlers:
   #       - event: Mint(indexed address,uint256,uint256)
   #         handler: onMint
