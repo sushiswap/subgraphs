@@ -1,5 +1,7 @@
 const { Command } = require('commander')
 const { exec } = require('child_process')
+const { getSubDirectories } = require('./utils')
+const fs = require('fs')
 
 const program = new Command()
 
@@ -50,5 +52,23 @@ program
       }(subgraphName: \\"${subgraphName}\\") { subgraph synced fatalError { message } nonFatalErrors { message } } }"}'`
     ).stdout.pipe(process.stdout)
   })
+
+program.command('ls').action(() => {
+
+  const configPath = './config/'
+  const networks = fs.readdirSync(configPath).filter((network) => network.endsWith('.js'))
+
+  for (let i = 0; i < networks.length; i++) {
+    const data = require('../'.concat(configPath.concat(networks[i])))
+    const network = networks[i].slice(0, networks[i].length - 3)
+    console.log(network.concat(' contracts:'))
+    const contracts = Object.keys(data).filter((v, i) => i !== 0)
+    for (index in contracts) {
+      console.log('\t'.concat('- ').concat(contracts[index]))
+    }
+    console.log('')
+  }
+
+})
 
 program.parse(process.argv)
