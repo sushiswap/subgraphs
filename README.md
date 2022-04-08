@@ -39,6 +39,35 @@ Deploy to another user, e.g. miso to kovan
 node . deploy miso kovan -u <USERNAME>
 ```
 
+### List network and contracts
+
+List networks and available contracts
+
+```sh
+node . ls
+```
+
+Output example:
+
+```sh
+arbitrum contracts:
+        - native
+        - sushi
+        - weth
+        - wbtc
+        - bentobox
+        - whitelistedTokenAddresses
+        - stableTokenAddresses
+        - minimumNativeLiquidity
+        - legacy
+
+avalanche contracts:
+        - bentobox
+        - legacy
+
+...
+```
+
 ### Logging
 
 ```sh
