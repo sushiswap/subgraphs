@@ -12,6 +12,7 @@
   "author": "Matthew Lilley <hello@matthewlilley.com>",
   "license": "MIT",
   "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.27.0",
     "@sushiswap/prettier-config": "^0.1.0",
     "commander": "^8.3.0",
     "mustache": "latest",

@@ -1,6 +1,5 @@
 const { Command } = require('commander')
 const { exec } = require('child_process')
-const { getSubDirectories } = require('./utils')
 const fs = require('fs')
 
 const program = new Command()
@@ -21,8 +20,11 @@ program
 program
   .command('deploy')
   .arguments('<subgraph> <network>')
-  .action((subgraph, network) => {
-    console.log('deploy command called', { subgraph, network })
+  .option('-u, --user [string]')
+  .action((subgraph, network, options) => {
+    const user = options.user ? options.user : 'sushiswap'
+    console.log(`starting deployment at ${user}/${subgraph}-${network}`)
+
     exec(
       `node_modules/.bin/mustache config/${network}.js subgraphs/${subgraph}/template.yaml > subgraphs/${subgraph}/subgraph.yaml`
     ).stdout.pipe(process.stdout)
@@ -32,7 +34,7 @@ program
     exec(`cd subgraphs/${subgraph} && ../../node_modules/.bin/graph codegen`).stdout.pipe(process.stdout)
     exec(`node_modules/.bin/graph build subgraphs/${subgraph}/subgraph.yaml`).stdout.pipe(process.stdout)
     exec(
-      `node_modules/.bin/graph deploy --product hosted-service sushiswap/${subgraph}-${network} subgraphs/${subgraph}/subgraph.yaml`
+      `node_modules/.bin/graph deploy --product hosted-service ${user}/${subgraph}-${network} subgraphs/${subgraph}/subgraph.yaml`
     ).stdout.pipe(process.stdout)
   })
 
@@ -54,7 +56,6 @@ program
   })
 
 program.command('ls').action(() => {
-
   const configPath = './config/'
   const networks = fs.readdirSync(configPath).filter((network) => network.endsWith('.js'))
 
@@ -68,7 +69,6 @@ program.command('ls').action(() => {
     }
     console.log('')
   }
-
 })
 
 program.parse(process.argv)

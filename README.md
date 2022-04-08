@@ -27,8 +27,16 @@ node . prepare <APP_NAME> <NETWORK>
 
 ### Deploy
 
+Deploy to `sushiswap/<APPNAME>-<NETWORK>`
+
 ```sh
-node . deploy <APP_NAME> <NETWORK>
+node . deploy <APP_NAME> <NETWORK> 
+```
+
+Deploy to another user, e.g. miso to kovan  
+
+```sh
+node . deploy miso kovan -u <USERNAME>
 ```
 
 ### Logging
