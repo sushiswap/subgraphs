@@ -38,6 +38,9 @@ module.exports = {
     address: '0xf5bce5077908a1b7370b9ae04adc565ebd643966',
     startBlock: 12094175,
   },
+  kashi: {
+    medium: '0x2cba6ab6574646badc84f0544d05059e57a5dc42',
+  },
   blocks: {
     address: '0x6e38A457C722C6011B2dfa06d49240e797844d66',
     startBlock: 49880,

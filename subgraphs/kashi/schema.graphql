@@ -1,0 +1,168 @@
+type BentoBox @entity {
+  # Contract ID
+  id: ID!
+
+  kashiPairs: [KashiPair!] @derivedFrom(field: "bentoBox")
+  masterContracts: [MasterContract!] @derivedFrom(field: "bentoBox")
+
+  masterContractCount: BigInt!
+  kashiPairCount: BigInt!
+
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type MasterContract @entity {
+  id: ID!
+  bentoBox: BentoBox!
+  clones: [Clone!] @derivedFrom(field: "masterContract")
+  masterContractApprovals: [MasterContractApproval!] @derivedFrom(field: "masterContract")
+}
+
+type Clone @entity {
+  id: ID!
+  bentoBox: BentoBox!
+  masterContract: MasterContract!
+  data: String!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type MasterContractApproval @entity {
+  # concatenate UserAddress with MasterContract
+  id: ID!
+  masterContract: MasterContract!
+  user: User!
+  approved: Boolean!
+}
+
+type User @entity {
+  id: ID!
+  bentoBox: BentoBox!
+  kashiPairs: [UserKashiPair!] @derivedFrom(field: "user")
+}
+
+enum KashiPairType {
+  medium
+}
+
+type KashiPair @entity {
+  id: ID!
+  bentoBox: BentoBox!
+  type: KashiPairType!
+  masterContract: MasterContract!
+  owner: Bytes!
+  feeTo: Bytes!
+  name: String!
+  symbol: String!
+  oracle: Bytes!
+  asset: Bytes!
+  collateral: Bytes!
+  exchangeRate: BigInt!
+  totalAssetElastic: BigInt!
+  totalAssetBase: BigInt!
+  totalCollateralShare: BigInt!
+  totalBorrowElastic: BigInt!
+  totalBorrowBase: BigInt!
+  interestPerSecond: BigInt!
+  utilization: BigInt!
+  feesEarnedFraction: BigInt!
+  totalFeesEarnedFraction: BigInt!
+  lastAccrued: BigInt!
+  supplyAPR: BigInt!
+  borrowAPR: BigInt!
+  transactions: [KashiPairAction!] @derivedFrom(field: "pair")
+  users: [UserKashiPair!] @derivedFrom(field: "pair")
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+enum KashiPairActionType {
+  addAsset
+  removeAsset
+  addCollateral
+  removeCollateral
+  borrow
+  repay
+}
+
+type KashiPairAction @entity {
+  id: ID!
+  type: KashiPairActionType!
+  pair: KashiPair!
+  root: UserKashiPair!
+  token: Bytes!
+  amount: BigInt
+  share: BigInt
+  feeAmount: BigInt
+  fraction: BigInt
+  part: BigInt
+  poolPercentage: BigInt!
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type UserKashiPair @entity {
+  id: ID!
+  user: User!
+  pair: KashiPair!
+  assetFraction: BigInt! #comes from balanceOf on pair contract
+  collateralShare: BigInt!
+  borrowPart: BigInt!
+  transactions: [KashiPairAction!] @derivedFrom(field: "root")
+  block: BigInt!
+  timestamp: BigInt!
+}
+
+type KashiPairHourData @entity {
+  # pair id - hour start timestamp
+  id: ID!
+
+  hourStartUnix: Int!
+
+  pair: KashiPair!
+
+  totalAssetElastic: BigInt!
+  totalAssetBase: BigInt!
+  totalCollateralShare: BigInt!
+  totalBorrowElastic: BigInt!
+  totalBorrowBase: BigInt!
+
+  #hourlyVolumeSupplied
+  #hourlyVolumeBorrowed
+  #hourlyTxns
+
+  #totalFeesEarnedFraction: BigInt!
+  avgExchangeRate: BigInt!
+  avgUtilization: BigInt!
+  avgInterestPerSecond: BigInt!
+  #avgSupplyInterestPerSecond: BigInt!
+  #avgBorrowInterestPerSecond: BigInt!
+}
+
+type KashiPairDayData @entity {
+  # pair id - day start timestamp
+  id: ID!
+
+  # date - hour start timestamp
+  date: Int!
+
+  pair: KashiPair!
+
+  totalAssetElastic: BigInt!
+  totalAssetBase: BigInt!
+  totalCollateralShare: BigInt!
+  totalBorrowElastic: BigInt!
+  totalBorrowBase: BigInt!
+
+  #hourlyVolumeSupplied
+  #hourlyVolumeBorrowed
+  #hourlyTxns
+
+  #totalFeesEarnedFraction: BigInt!
+  avgExchangeRate: BigInt!
+  avgUtilization: BigInt!
+  avgInterestPerSecond: BigInt!
+  #avgSupplyInterestPerSecond: BigInt!
+  #avgBorrowInterestPerSecond: BigInt!
+}
