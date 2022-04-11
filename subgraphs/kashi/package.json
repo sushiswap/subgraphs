@@ -1,0 +1,28 @@
+{
+  "name": "kashi",
+  "author": "Lufy <lufy@sushi.com>",
+  "license": "MIT",
+  "repository": {
+    "url": "sushiswap/subgraphs",
+    "directory": "subgraphs/kashi"
+  },
+  "files": [
+    "generated"
+  ],
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ sushiswap/kashi",
+    "create-local": "graph create --node http://localhost:8020/ sushiswap/kashi",
+    "remove-local": "graph remove --node http://localhost:8020/ sushiswap/kashi",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/kashi"
+  },
+  "devDependencies": {
+    "abi": "workspace:*",
+    "@graphprotocol/graph-cli": "^0.27.0",
+    "@graphprotocol/graph-ts": "^0.24.1",
+    "matchstick-as": "^0.4.2",
+    "assemblyscript": "^0.19.20",
+    "wabt": "1.0.24"
+  }
+}
