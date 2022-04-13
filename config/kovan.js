@@ -55,5 +55,5 @@ module.exports = {
     stream: {address: '0x511D5aef6eb2eFDf71b98B4261Bbe68CC0A94Cd4', startBlock: 30725679},
     vesting: {address: '0x54E6c99Bb11D89CA59Fe6ebaBbE3ccF8e9BF595a', startBlock: 30725781},
   },
-  auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+  auctionMaker: { address: '0xbf39c9D339Be64F7aBA850F83aF78F983e0FE468', startBlock: 30995032 },
 }

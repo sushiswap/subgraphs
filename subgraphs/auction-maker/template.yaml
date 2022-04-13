@@ -39,5 +39,3 @@ dataSources:
           handler: onBid
         - event: Ended(indexed address,indexed address,indexed uint128)
           handler: onAuctionEnded
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: onOwnershipTransfer
