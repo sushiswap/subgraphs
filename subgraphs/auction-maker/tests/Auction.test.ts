@@ -28,7 +28,7 @@ test('Auction is created', () => {
   assert.fieldEquals('Auction', id, 'id', id)
   assert.fieldEquals('Auction', id, 'token', TOKEN.toHex())
   assert.fieldEquals('Auction', id, 'status', ONGOING)
-  assert.fieldEquals('Auction', id, 'highestBidder', ALICE.toHex())
+  assert.fieldEquals('Auction', id, 'leadingBid', event.transaction.hash.toHex())
   assert.fieldEquals('Auction', id, 'bidAmount', AMOUNT.toString())
   assert.fieldEquals('Auction', id, 'token', TOKEN.toHex())
   assert.fieldEquals('Auction', id, 'rewardAmount', REWARD_AMOUNT.toString())
@@ -55,7 +55,7 @@ test('Bid updates the auction', () => {
 
   // Then: the auction entity contains the expected field values
   let maxTTL = auctionEvent.block.timestamp.plus(MAX_TTL).toString()
-  assert.fieldEquals('Auction', id, 'highestBidder', ALICE.toHex())
+  assert.fieldEquals('Auction', id, 'leadingBid', auctionEvent.transaction.hash.toHex())
   assert.fieldEquals('Auction', id, 'bidAmount', AMOUNT.toString())
   assert.fieldEquals('Auction', id, 'minTTL', auctionEvent.block.timestamp.plus(MIN_TTL).toString())
   assert.fieldEquals('Auction', id, 'maxTTL', maxTTL)
@@ -67,7 +67,7 @@ test('Bid updates the auction', () => {
 
   // Then: the auctions highest bidder and amount is updated
   assert.entityCount('Auction', 1)
-  assert.fieldEquals('Auction', id, 'highestBidder', BOB.toHex())
+  assert.fieldEquals('Auction', id, 'leadingBid', bidEvent.transaction.hash.toHex())
   assert.fieldEquals('Auction', id, 'bidAmount', AMOUNT.toString())
 
   // And: the timestamps are also updated

@@ -16,7 +16,7 @@ export function createAuction(event: CreateAuctionEvent): Auction {
 
   auction.status = ONGOING
   auction.token = token.id
-  auction.highestBidder = event.params.bidder.toHex()
+  auction.leadingBid = event.transaction.hash.toHex()
   auction.bidAmount = event.params.bidAmount
   auction.rewardAmount = event.params.rewardAmount
   auction.maxTTL = event.block.timestamp.plus(MAX_TTL)
@@ -36,7 +36,7 @@ export function updateAuction(event: BidEvent): Auction {
   const token = getOrCreateToken(event.params.token.toHex())
   const auctionId = token.id.concat(':').concat(token.auctionCount.toString())
   const auction = getOrCreateAuction(auctionId)
-  auction.highestBidder = event.params.bidder.toHex()
+  auction.leadingBid = event.transaction.hash.toHex()
   auction.bidAmount = event.params.bidAmount
   auction.minTTL = event.block.timestamp.plus(MIN_TTL)
   auction.modifiedAtBlock = event.block.number

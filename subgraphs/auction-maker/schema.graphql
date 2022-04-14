@@ -22,7 +22,7 @@ type User @entity {
 
 type Auction @entity {
   id: ID! # {token.id}:{token.auctionCount}
-  highestBidder: User!
+  leadingBid: Bid!
   token: Token!
   bidAmount: BigInt!
   rewardAmount: BigInt!
