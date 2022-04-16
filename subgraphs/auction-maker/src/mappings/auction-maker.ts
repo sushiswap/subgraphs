@@ -6,16 +6,19 @@ import {
 import { createAuction, endAuction, updateAuction } from './functions/auction'
 import { createBid, createInitialBid } from './functions/bid'
 import { getOrCreateUser } from './functions/user'
+import { getOrCreateUserAuction } from './functions/user-auction'
 
 export function onAuctionCreated(event: AuctionCreatedEvent): void {
-  getOrCreateUser(event.params.bidder.toHex(), event)
+  const user = getOrCreateUser(event.params.bidder.toHex(), event)
   const auction = createAuction(event)
+  getOrCreateUserAuction(user.id, auction.id)
   createInitialBid(auction, event)
 }
 
 export function onBid(event: BidEvent): void {
-  getOrCreateUser(event.params.bidder.toHex(), event)
+  const user = getOrCreateUser(event.params.bidder.toHex(), event)
   const auction = updateAuction(event)
+  getOrCreateUserAuction(user.id, auction.id)
   createBid(auction, event)
 }
 

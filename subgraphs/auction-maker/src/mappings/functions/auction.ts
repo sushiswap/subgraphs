@@ -68,6 +68,7 @@ function getOrCreateAuction(id: string): Auction {
 
   if (auction == null) {
     auction = new Auction(id)
+    auction.save()
   }
 
   return auction

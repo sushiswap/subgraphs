@@ -14,6 +14,7 @@ type AuctionMaker @entity {
 type User @entity {
   id: ID!
   bids: [Bid!]! @derivedFrom(field: "user")
+  auctions: [UserAuction!]! @derivedFrom(field: "user")
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
   modifiedAtBlock: BigInt!
@@ -34,6 +35,12 @@ type Auction @entity {
   createdAtTimestamp: BigInt!
   modifiedAtBlock: BigInt!
   modifiedAtTimestamp: BigInt!
+}
+
+type UserAuction @entity {
+  id: ID!# {user.id}:{auction.id}
+  user: User!
+  auction: Auction!
 }
 
 type Bid @entity {
