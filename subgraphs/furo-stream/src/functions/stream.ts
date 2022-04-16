@@ -32,7 +32,7 @@ export function createStream(event: CreateStreamEvent): Stream {
   let token = getOrCreateToken(event.params.token.toHex(), event)
 
   stream.recipient = recipient.id
-  stream.amount = event.params.amount
+  stream.totalAmount = event.params.amount
   stream.withdrawnAmount = BigInt.fromU32(0)
   stream.token = token.id
   stream.status = ACTIVE
@@ -53,7 +53,7 @@ export function createStream(event: CreateStreamEvent): Stream {
 export function updateStream(event: UpdateStreamEvent): Stream {
   let stream = getOrCreateStream(event.params.streamId)
   stream.status = EXTENDED
-  stream.amount = stream.amount.plus(event.params.topUpAmount)
+  stream.totalAmount = stream.totalAmount.plus(event.params.topUpAmount)
   stream.expiresAt = stream.expiresAt.plus(event.params.extendTime)
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp

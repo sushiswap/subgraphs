@@ -22,7 +22,7 @@ type FuroStream @entity {
 type Stream @entity {
   id: ID!# starts at 1001
   recipient: User!
-  amount: BigInt!
+  totalAmount: BigInt!
   withdrawnAmount: BigInt!
   token: Token!
   status: StreamStatus!

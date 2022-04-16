@@ -37,7 +37,7 @@ test('Stream entity contains expected fields', () => {
   const id = STREAM_ID.toString()
   assert.fieldEquals('Stream', id, 'id', id)
   assert.fieldEquals('Stream', id, 'recipient', RECIEVER.toHex())
-  assert.fieldEquals('Stream', id, 'amount', AMOUNT.toString())
+  assert.fieldEquals('Stream', id, 'totalAmount', AMOUNT.toString())
   assert.fieldEquals('Stream', id, 'withdrawnAmount', '0')
   assert.fieldEquals('Stream', id, 'token', WETH_ADDRESS.toHex())
   assert.fieldEquals('Stream', id, 'status', ACTIVE)
@@ -63,7 +63,7 @@ test('Cancel stream', () => {
 
   assert.fieldEquals('Stream', id, 'modifiedAtBlock', streamEvent.block.number.toString())
   assert.fieldEquals('Stream', id, 'modifiedAtTimestamp', streamEvent.block.timestamp.toString())
-  assert.fieldEquals('Stream', id, 'amount', AMOUNT.toString())
+  assert.fieldEquals('Stream', id, 'totalAmount', AMOUNT.toString())
 
   // When: a stream is cancelled
   onCancelStream(cancelStreamEvent)
@@ -74,7 +74,7 @@ test('Cancel stream', () => {
 
   // And: the amount remains and the status is changed
   assert.fieldEquals('Stream', id, 'status', CANCELLED)
-  assert.fieldEquals('Stream', id, 'amount', AMOUNT.toString())
+  assert.fieldEquals('Stream', id, 'totalAmount', AMOUNT.toString())
 
   cleanup()
 })
@@ -88,7 +88,7 @@ test('Update stream', () => {
   updateStreamEvent.block.timestamp = BigInt.fromString('11111111')
 
   assert.fieldEquals('Stream', id, 'status', ACTIVE)
-  assert.fieldEquals('Stream', id, 'amount', AMOUNT.toString())
+  assert.fieldEquals('Stream', id, 'totalAmount', AMOUNT.toString())
   assert.fieldEquals('Stream', id, 'expiresAt', END_TIME.toString())
   assert.fieldEquals('Stream', id, 'modifiedAtBlock', streamEvent.block.number.toString())
   assert.fieldEquals('Stream', id, 'modifiedAtTimestamp', streamEvent.block.timestamp.toString())
@@ -98,7 +98,7 @@ test('Update stream', () => {
   let expectedAmount = AMOUNT.plus(AMOUNT).toString()
   let expectedExpirationDate = END_TIME.plus(extendTime).toString()
   assert.fieldEquals('Stream', id, 'status', EXTENDED)
-  assert.fieldEquals('Stream', id, 'amount', expectedAmount)
+  assert.fieldEquals('Stream', id, 'totalAmount', expectedAmount)
   assert.fieldEquals('Stream', id, 'expiresAt', expectedExpirationDate)
   assert.fieldEquals('Stream', id, 'modifiedAtBlock', updateStreamEvent.block.number.toString())
   assert.fieldEquals('Stream', id, 'modifiedAtTimestamp', updateStreamEvent.block.timestamp.toString())
