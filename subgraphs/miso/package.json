@@ -22,7 +22,7 @@
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.27.0",
     "@graphprotocol/graph-ts": "^0.24.1",
-    "@sushiswap/miso": "1.0.0-canary.40",
+    "@sushiswap/miso": "1.0.0-canary.47",
     "matchstick-as": "^0.4.0",
     "assemblyscript": "^0.19.20",
     "wabt": "1.0.24"
