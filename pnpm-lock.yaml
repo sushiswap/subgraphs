@@ -143,14 +143,14 @@ importers:
     specifiers:
       '@graphprotocol/graph-cli': ^0.27.0
       '@graphprotocol/graph-ts': ^0.24.1
-      '@sushiswap/miso': 1.0.0-canary.40
+      '@sushiswap/miso': 1.0.0-canary.47
       assemblyscript: ^0.19.20
       matchstick-as: ^0.4.0
       wabt: 1.0.24
     devDependencies:
       '@graphprotocol/graph-cli': 0.27.0
       '@graphprotocol/graph-ts': 0.24.1
-      '@sushiswap/miso': 1.0.0-canary.40
+      '@sushiswap/miso': 1.0.0-canary.47
       assemblyscript: 0.19.23
       matchstick-as: 0.4.2
       wabt: 1.0.24
@@ -489,8 +489,8 @@ packages:
     resolution: {integrity: sha512-Khd2i6Bob9uk7dCgVkhUioEoxRP28m6aj25MegAHvnJyxZPVzZDhxSkeL6wdv5MeAp2DwHkYqUq03KDfVTTP4Q==}
     dev: true
 
-  /@sushiswap/miso/1.0.0-canary.40:
-    resolution: {integrity: sha512-nO+S8TIIP4VkXgC0vdXVAqr+DqOpAe4V1eltCvsIi84fWwFs3f9Kdk2rC6QLxLpMfOGlD/I8/MdQ0mf+DfHFHg==}
+  /@sushiswap/miso/1.0.0-canary.47:
+    resolution: {integrity: sha512-bEDm9ZDE8jh1A+edGnYYH8dTNHytel7sk6k8EKS42Xw0szrjghWMq7HbOQ3PXrMFj2ChDOz/g6G3DZ0JrJasGA==}
     dev: true
 
   /@sushiswap/prettier-config/0.1.0_prettier@2.6.2:
@@ -2890,6 +2890,7 @@ packages:
     resolution: {integrity: sha512-N9iVG+CGJsI4b4ZGazjwLnxErD2d9Pe4DPvvXSxYA9tFNu8ymXME4Qs5HIQ0LMJpNM7zj+m0NlNnNeqFpKzqnA==}
     deprecated: Unmaintained
     dev: true
+    bundledDependencies: []
 
   /protocol-buffers-schema/3.6.0:
     resolution: {integrity: sha512-TdDRD+/QNdrCGCE7v8340QyuXd4kIWIgapsE2+n/SaGiSSbomYl4TjHlvIoCWRpE7wFt02EpB35VVA2ImcBVqw==}
