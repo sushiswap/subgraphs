@@ -45,6 +45,10 @@ module.exports = {
     address: '0x6e38A457C722C6011B2dfa06d49240e797844d66',
     startBlock: 49880,
   },
+  miso: {
+    accessControls: { address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4', startBlock: 14598164 },
+    market: { address: '0x281bd3a3f96ae7c96049493a7ba9449df2c5b0fe', startBlock: 14598240 },
+  },
   legacy: {
     factory: {
       address: '0xc0aee478e3658e2610c5f7a4a2e1777ce9e4f2ac',
