@@ -58,6 +58,10 @@ module.exports = {
     '0x1bd908569c1157417abae2ed3de3cb04c734b984',
   ],
   minimumNativeLiquidity: 1000,
+  miso: {
+    accessControls: { address: '0x6b2a3ff504798886862ca5ce501e080947a506a2', startBlock: 26075438 },
+    market: { address: '0x3e603c14af37ebdad31709c4f848fc6ad5bec715', startBlock: 26075762 },
+  },
   legacy: {
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',

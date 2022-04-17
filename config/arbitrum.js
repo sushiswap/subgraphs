@@ -55,6 +55,10 @@ module.exports = {
     FRAX_ADDRESS,
   ],
   minimumNativeLiquidity: 1,
+  miso: {
+    accessControls: { address: '0x1be211d8da40bc0ae8719c6663307bfc987b1d6c', startBlock: 9930886 },
+    market: { address: '0x351447fc9bd20a917783e159e61e86edda0b0187', startBlock: 9931078 },
+  },
   legacy: {
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
