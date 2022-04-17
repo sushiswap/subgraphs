@@ -20,7 +20,7 @@ dataSources:
         - Role
       abis:
         - name: AccessControls
-          file: ../../node_modules/@sushiswap/miso/artifacts/contracts/Access/MISOAccessControls.sol/MISOAccessControls.json
+          file: ./node_modules/@sushiswap/miso/artifacts/contracts/Access/MISOAccessControls.sol/MISOAccessControls.json
       eventHandlers:
         - event: RoleAdminChanged(indexed bytes32,indexed bytes32,indexed bytes32)
           handler: onRoleAdminChanged
@@ -47,7 +47,7 @@ dataSources:
         - Auction
       abis:
         - name: MISOMarket
-          file: ../../node_modules/@sushiswap/miso/artifacts/contracts/MISOMarket.sol/MISOMarket.json
+          file: ./node_modules/@sushiswap/miso/artifacts/contracts/MISOMarket.sol/MISOMarket.json
       eventHandlers:
         - event: AuctionTemplateAdded(address,uint256)
           handler: onAuctionTemplateAdded
