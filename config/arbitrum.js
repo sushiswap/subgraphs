@@ -19,6 +19,9 @@ module.exports = {
     // base: '',
     startBlock: 229409,
   },
+  kashi: {
+    medium: '0xa010ee0226cd071bebd8919a1f675cae1f1f5d3e',
+  },
   whitelistedTokenAddresses: [
     // WNATIVE - This is actually quite important, though uneeded here anymore since
     // it's now apart of the whitelisted token check in createPair, because the
