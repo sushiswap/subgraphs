@@ -40,6 +40,7 @@ export function createStream(event: CreateStreamEvent): Stream {
   stream.fromBentoBox = event.params.fromBentoBox
   stream.startedAt = event.params.startTime
   stream.expiresAt = event.params.endTime
+  stream.txHash = event.transaction.hash.toHex()
 
   stream.createdAtBlock = event.block.number
   stream.createdAtTimestamp = event.block.timestamp

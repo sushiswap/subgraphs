@@ -45,6 +45,7 @@ test('Stream entity contains expected fields', () => {
   assert.fieldEquals('Stream', id, 'fromBentoBox', 'true')
   assert.fieldEquals('Stream', id, 'startedAt', START_TIME.toString())
   assert.fieldEquals('Stream', id, 'expiresAt', END_TIME.toString())
+  assert.fieldEquals('Stream', id, 'txHash', streamEvent.transaction.hash.toHex())
   assert.fieldEquals('Stream', id, 'createdAtBlock', streamEvent.block.number.toString())
   assert.fieldEquals('Stream', id, 'createdAtTimestamp', streamEvent.block.timestamp.toString())
   assert.fieldEquals('Stream', id, 'modifiedAtBlock', streamEvent.block.number.toString())

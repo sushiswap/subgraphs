@@ -30,6 +30,7 @@ type Stream @entity {
   fromBentoBox: Boolean!
   startedAt: BigInt!
   expiresAt: BigInt!
+  txHash: String!
   transactionCount: BigInt!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
