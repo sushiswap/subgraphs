@@ -44,6 +44,7 @@ export function createVesting(event: CreateVestingEvent): Vesting {
   vesting.startedAt = event.params.start
   vesting.expiresAt = calculateExpirationDate(vesting)
   vesting.totalAmount = calculateTotalAmount(vesting)
+  vesting.txHash = event.transaction.hash.toHex()
 
   vesting.createdAtBlock = event.block.number
   vesting.createdAtTimestamp = event.block.timestamp

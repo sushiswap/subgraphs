@@ -63,6 +63,7 @@ test('Created vesting contains expected fields', () => {
   assert.fieldEquals('Vesting', id, 'fromBentoBox', 'true')
   assert.fieldEquals('Vesting', id, 'startedAt', START_TIME.toString())
   assert.fieldEquals('Vesting', id, 'expiresAt', END_TIME.toString())
+  assert.fieldEquals('Vesting', id, 'txHash', vestingEvent.transaction.hash.toHex())
   assert.fieldEquals('Vesting', id, 'createdAtBlock', vestingEvent.block.number.toString())
   assert.fieldEquals('Vesting', id, 'createdAtTimestamp', vestingEvent.block.timestamp.toString())
   assert.fieldEquals('Vesting', id, 'modifiedAtBlock', vestingEvent.block.number.toString())
