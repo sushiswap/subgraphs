@@ -66,6 +66,7 @@ export function updateStream(event: UpdateStreamEvent): Stream {
 export function cancelStream(event: CancelStreamEvent): Stream {
   let stream = getOrCreateStream(event.params.streamId)
   stream.status = CANCELLED
+  stream.withdrawnAmount = stream.withdrawnAmount.plus(event.params.recipientBalance)
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
   stream.save()

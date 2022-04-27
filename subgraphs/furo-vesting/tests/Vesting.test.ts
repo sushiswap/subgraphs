@@ -78,6 +78,7 @@ test('Stop vesting updates the vesting entity', () => {
   let recipientAmount = CLIFF_AMOUNT
   let ownerAmount = TOTAL_AMOUNT.minus(recipientAmount)
   let cancelVestingEvent = createCancelVestingEvent(VESTING_ID, ownerAmount, recipientAmount, WETH_ADDRESS, true)
+  assert.fieldEquals('Vesting', id, 'withdrawnAmount', '0')
 
   onCancelVesting(cancelVestingEvent)
 
@@ -86,6 +87,8 @@ test('Stop vesting updates the vesting entity', () => {
   assert.fieldEquals('Vesting', id, 'cancelledAtTimestamp', cancelVestingEvent.block.timestamp.toString())
   assert.fieldEquals('Vesting', id, 'modifiedAtBlock', cancelVestingEvent.block.number.toString())
   assert.fieldEquals('Vesting', id, 'modifiedAtTimestamp', cancelVestingEvent.block.timestamp.toString())
+  assert.fieldEquals('Vesting', id, 'withdrawnAmount', cancelVestingEvent.params.recipientAmount.toString())
+
 
   cleanup()
 })
