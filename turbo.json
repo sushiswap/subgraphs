@@ -2,10 +2,10 @@
     "$schema": "https://turborepo.org/schema.json",
     "pipeline": {
         "codegen": {
-          "outputs": [".generated/**"]
+          "outputs": ["generated/**"]
         },
       "build": {
-        "outputs": [".build/**"]
+        "outputs": ["build/**"]
       },
       "test": {
         "outputs": []
