@@ -6,7 +6,7 @@ type XSushi @entity {
   totalXsushiSupply: BigInt!
   sushiEntered: BigInt!
   sushiLeaved: BigInt!
-  # sushiDirectTransfer: BigInt!
+  fee: BigInt!
   # xSushiBurned: BigInt!
   # xSushiMinted: BigInt!
   # xSushiSushiRatio: BigDecimal!
@@ -15,7 +15,7 @@ type XSushi @entity {
 
 enum TransactionType {
   TRANSFER
-  DIRECT
+  FEE
   MINT
   BURN
 }
@@ -35,11 +35,29 @@ type Transaction @entity {
 
 type User @entity {
   id: ID!
+  balance: BigInt!
+  withdrawals: [Transaction!]! @derivedFrom(field: "from")
+  deposits: [Transaction!]! @derivedFrom(field: "to")
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
   modifiedAtBlock: BigInt!
   modifiedAtTimestamp: BigInt!
-  balance: BigInt!
-  withdrawals: [Transaction!]! @derivedFrom(field: "from")
-  deposits: [Transaction!]! @derivedFrom(field: "to")
+}
+
+type FeeSender @entity {
+  id: ID!
+  totalFeeSent: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+  modifiedAtBlock: BigInt!
+  modifiedAtTimestamp: BigInt!
+}
+
+type Fee @entity {
+  id: ID!
+  sender: FeeSender!
+  amount: BigInt!
+  block: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
 }

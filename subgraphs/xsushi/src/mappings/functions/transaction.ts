@@ -2,7 +2,7 @@ import { BigInt } from '@graphprotocol/graph-ts'
 import { log } from 'matchstick-as'
 import { Transaction } from '../../../generated/schema'
 import { Transfer as TransferEvent } from '../../../generated/xSushi/xSushi'
-import { ADDRESS_ZERO, BURN, DIRECT, MINT, TRANSFER } from '../../constants'
+import { ADDRESS_ZERO, BURN, FEES, MINT, TRANSFER } from '../../constants'
 import { XSUSHI_ADDRESS } from '../../constants/addresses'
 import { getOrCreateXSushi } from './xsushi'
 
@@ -31,7 +31,7 @@ function createTransaction(event: TransferEvent): Transaction {
   const xSushi = getOrCreateXSushi()
   xSushi.transactionCount = xSushi.transactionCount.plus(BigInt.fromU32(1))
 
-  if (isBurning(event)) {
+  if (isBurnTransaction(event)) {
     transaction.type = BURN
     const burnAmount = event.params.value.times(xSushi.totalSushiSupply).div(xSushi.totalXsushiSupply)
     xSushi.sushiLeaved = xSushi.sushiLeaved.plus(burnAmount)
@@ -39,7 +39,7 @@ function createTransaction(event: TransferEvent): Transaction {
     xSushi.totalXsushiSupply = xSushi.totalXsushiSupply.minus(event.params.value)
     // xSushi.xSushiBurned = xSushi.xSushiBurned.plus(event.params.value)
     transaction.amount = burnAmount
-  } else if (isMinting(event)) {
+  } else if (isMintTransaction(event)) {
     transaction.type = MINT
     xSushi.totalSushiSupply = xSushi.totalSushiSupply.plus(event.params.value)
     xSushi.totalXsushiSupply = xSushi.totalXsushiSupply.plus(event.params.value)
@@ -51,11 +51,13 @@ function createTransaction(event: TransferEvent): Transaction {
     //   const mintAmount = event.params.value.times(xSushi.totalXsushiSupply).div(xSushi.totalSushiSupply)
     //   xSushi.totalXsushiSupply = mintAmount
     // }
-  } else if (isDirectTransfer(event)) {
-    transaction.type = DIRECT
-    xSushi.totalSushiSupply = xSushi.totalSushiSupply.plus(event.params.value)
-    xSushi.sushiEntered = xSushi.sushiEntered.plus(event.params.value)
-  } else {
+  } 
+  // else if (isFeeTransaction(event)) {
+  //   transaction.type = FEES
+  //   xSushi.totalSushiSupply = xSushi.totalSushiSupply.plus(event.params.value)
+  //   xSushi.sushiEntered = xSushi.sushiEntered.plus(event.params.value)
+  // } 
+  else {
     xSushi.totalSushiSupply = xSushi.totalSushiSupply.plus(event.params.value)
     transaction.type = TRANSFER
   }
@@ -66,14 +68,14 @@ function createTransaction(event: TransferEvent): Transaction {
   return transaction as Transaction
 }
 
-function isMinting(event: TransferEvent): boolean {
+function isMintTransaction(event: TransferEvent): boolean {
   return event.params.from == ADDRESS_ZERO
 }
 
-function isBurning(event: TransferEvent): boolean {
+function isBurnTransaction(event: TransferEvent): boolean {
   return event.params.to == ADDRESS_ZERO
 }
 
-function isDirectTransfer(event: TransferEvent): boolean {
-  return event.params.to == XSUSHI_ADDRESS
-}
+// function isFeeTransaction(event: TransferEvent): boolean {
+//   return event.params.to == XSUSHI_ADDRESS
+// }
