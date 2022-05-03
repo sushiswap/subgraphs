@@ -30,7 +30,7 @@ test('Transfer', () => {
   cleanup()
 })
 
-test('Zero address is sender sets transaction type to MINT', () => {
+test('Zero address is sender, transaction type is set to MINT', () => {
   const reciever = Address.fromString('0x0000000000000000000000000000000000000b0b')
   const amount = BigInt.fromString('1337')
   let transferEvent = createTransferEvent(ADDRESS_ZERO, reciever, amount)
@@ -43,7 +43,7 @@ test('Zero address is sender sets transaction type to MINT', () => {
   cleanup()
 })
 
-test('Zero address is reciever sets transaction type to BURN', () => {
+test('Zero address is reciever, transaction type is set to BURN', () => {
   const sender = Address.fromString('0x0000000000000000000000000000000000000b0b')
   const amount = BigInt.fromString('1337')
   let transferEvent = createTransferEvent(sender, ADDRESS_ZERO, amount)

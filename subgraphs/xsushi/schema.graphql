@@ -1,15 +1,21 @@
-
 type XSushi @entity {
   id: ID! # Hardcoded to 'xSushi'
   userCount: BigInt!
   transactionCount: BigInt!
   totalSupply: BigInt!
+  sushiEntered: BigInt!
+  sushiLeaved: BigInt!
+  sushiDirectTransfer: BigInt!
+  xSushiMinted: BigInt!
+  xSushiBurned: BigInt!
+  xSushiSushiRatio: BigDecimal!
+  sushiXsushiRatio: BigDecimal!
 }
 
 enum TransactionType {
-    TRANSFER,
-    MINT,
-    BURN
+  TRANSFER
+  MINT
+  BURN
 }
 
 type Transaction @entity {

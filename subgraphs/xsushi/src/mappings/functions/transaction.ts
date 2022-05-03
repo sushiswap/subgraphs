@@ -26,20 +26,22 @@ function createTransaction(event: TransferEvent): Transaction {
   transaction.block = event.block.number
   transaction.timestamp = event.block.timestamp
 
-  const sushi = getOrCreateXSushi()
-  sushi.transactionCount = sushi.transactionCount.plus(BigInt.fromU32(1))
+  const xSushi = getOrCreateXSushi()
+  xSushi.transactionCount = xSushi.transactionCount.plus(BigInt.fromU32(1))
 
   if (isBurning(event)) {
     transaction.type = BURN
-    sushi.totalSupply = sushi.totalSupply.minus(event.params.value)
+    xSushi.totalSupply = xSushi.totalSupply.minus(event.params.value)
+    xSushi.sushiLeaved = xSushi.sushiLeaved.plus(event.params.value)
   } else if (isMinting(event)) {
     transaction.type = MINT
-    sushi.totalSupply = sushi.totalSupply.plus(event.params.value)
+    xSushi.totalSupply = xSushi.totalSupply.plus(event.params.value)
+    xSushi.sushiEntered = xSushi.sushiEntered.plus(event.params.value)
   } else {
     transaction.type = TRANSFER
   }
   
-  sushi.save()
+  xSushi.save()
   transaction.save()
   
 
