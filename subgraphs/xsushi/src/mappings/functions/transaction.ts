@@ -1,7 +1,9 @@
 import { BigInt } from '@graphprotocol/graph-ts'
+import { log } from 'matchstick-as'
 import { Transaction } from '../../../generated/schema'
 import { Transfer as TransferEvent } from '../../../generated/xSushi/xSushi'
-import { ADDRESS_ZERO, BURN, MINT, TRANSFER } from '../constants'
+import { ADDRESS_ZERO, BURN, DIRECT, MINT, TRANSFER } from '../../constants'
+import { XSUSHI_ADDRESS } from '../../constants/addresses'
 import { getOrCreateXSushi } from './xsushi'
 
 export function getOrCreateTransaction(event: TransferEvent): Transaction {
@@ -15,7 +17,7 @@ export function getOrCreateTransaction(event: TransferEvent): Transaction {
 }
 
 function createTransaction(event: TransferEvent): Transaction {
-  const id = event.transaction.hash.toHex() 
+  const id = event.transaction.hash.toHex()
   const transaction = new Transaction(id)
   transaction.from = event.params.from.toHex()
   transaction.to = event.params.to.toHex()
@@ -31,19 +33,35 @@ function createTransaction(event: TransferEvent): Transaction {
 
   if (isBurning(event)) {
     transaction.type = BURN
-    xSushi.totalSupply = xSushi.totalSupply.minus(event.params.value)
-    xSushi.sushiLeaved = xSushi.sushiLeaved.plus(event.params.value)
+    const burnAmount = event.params.value.times(xSushi.totalSushiSupply).div(xSushi.totalXsushiSupply)
+    xSushi.sushiLeaved = xSushi.sushiLeaved.plus(burnAmount)
+    xSushi.totalSushiSupply = xSushi.totalSushiSupply.minus(burnAmount)
+    xSushi.totalXsushiSupply = xSushi.totalXsushiSupply.minus(event.params.value)
+    // xSushi.xSushiBurned = xSushi.xSushiBurned.plus(event.params.value)
+    transaction.amount = burnAmount
   } else if (isMinting(event)) {
     transaction.type = MINT
-    xSushi.totalSupply = xSushi.totalSupply.plus(event.params.value)
+    xSushi.totalSushiSupply = xSushi.totalSushiSupply.plus(event.params.value)
+    xSushi.totalXsushiSupply = xSushi.totalXsushiSupply.plus(event.params.value)
+    xSushi.sushiEntered = xSushi.sushiEntered.plus(event.params.value)
+
+    // if (xSushi.totalSushiSupply.isZero() || xSushi.totalXsushiSupply.isZero()) {
+    //   xSushi.totalXsushiSupply = xSushi.totalXsushiSupply.plus(event.params.value)
+    // } else {
+    //   const mintAmount = event.params.value.times(xSushi.totalXsushiSupply).div(xSushi.totalSushiSupply)
+    //   xSushi.totalXsushiSupply = mintAmount
+    // }
+  } else if (isDirectTransfer(event)) {
+    transaction.type = DIRECT
+    xSushi.totalSushiSupply = xSushi.totalSushiSupply.plus(event.params.value)
     xSushi.sushiEntered = xSushi.sushiEntered.plus(event.params.value)
   } else {
+    xSushi.totalSushiSupply = xSushi.totalSushiSupply.plus(event.params.value)
     transaction.type = TRANSFER
   }
-  
+
   xSushi.save()
   transaction.save()
-  
 
   return transaction as Transaction
 }
@@ -54,4 +72,8 @@ function isMinting(event: TransferEvent): boolean {
 
 function isBurning(event: TransferEvent): boolean {
   return event.params.to == ADDRESS_ZERO
+}
+
+function isDirectTransfer(event: TransferEvent): boolean {
+  return event.params.to == XSUSHI_ADDRESS
 }

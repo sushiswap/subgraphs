@@ -1,6 +1,7 @@
 import { Address } from "@graphprotocol/graph-ts"
 
 export const XSUSHI = "xSushi"
+export const DIRECT = "DIRECT"
 export const TRANSFER = "TRANSFER"
 export const MINT = "MINT"
 export const BURN = "BURN"
