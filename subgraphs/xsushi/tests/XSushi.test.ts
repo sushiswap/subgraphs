@@ -1,8 +1,9 @@
 import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts'
 import { assert, test, clearStore } from 'matchstick-as/assembly/index'
 import { ADDRESS_ZERO, XSUSHI } from '../src/constants'
-import { onTransfer } from '../src/mappings/xsushi'
-import { createTransferEvent } from './mocks'
+import { XSUSHI_ADDRESS } from '../src/constants/addresses'
+import { onSushiTransfer, onTransfer } from '../src/mappings/xsushi'
+import { createSushiTransferEvent, createTransferEvent } from './mocks'
 
 function cleanup(): void {
   clearStore()
@@ -39,7 +40,6 @@ test('XSushi count field increase on transactions', () => {
   assert.fieldEquals('XSushi', XSUSHI, 'totalSushiSupply', '1000')
   assert.fieldEquals('XSushi', XSUSHI, 'totalXsushiSupply', '1000')
 
-
   cleanup()
 })
 
@@ -60,12 +60,25 @@ test('xSushiLeaved is increased on burn', () => {
   const reciever = Address.fromString('0x0000000000000000000000000000000000000b0b')
   let mintEvent = createTransferEvent(ADDRESS_ZERO, reciever, amount)
   let burnEvent = createTransferEvent(reciever, ADDRESS_ZERO, amount)
-  burnEvent.transaction.hash = Address.fromString("0xA16081F360e3847006dB660bae1c6d1b2e17eC2B");
+  burnEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2B')
   onTransfer(mintEvent)
 
   onTransfer(burnEvent)
 
   assert.fieldEquals('XSushi', XSUSHI, 'sushiLeaved', amount.toString())
 
+  cleanup()
+})
+
+test('totalFeeAmount is increased on direct sushi transfer', () => {
+  const sender = Address.fromString('0x00000000000000000000000000000000000a71ce')
+  const amount = BigInt.fromString('1337')
+  let transferEvent = createSushiTransferEvent(sender, XSUSHI_ADDRESS, amount)
+  onSushiTransfer(transferEvent)
+
+  assert.fieldEquals('XSushi', XSUSHI, 'totalFeeAmount', amount.toString())
+
+  onSushiTransfer(transferEvent)
+  assert.fieldEquals('XSushi', XSUSHI, 'totalFeeAmount', amount.times(BigInt.fromString('2')).toString())
   cleanup()
 })

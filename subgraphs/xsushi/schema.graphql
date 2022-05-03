@@ -6,7 +6,7 @@ type XSushi @entity {
   totalXsushiSupply: BigInt!
   sushiEntered: BigInt!
   sushiLeaved: BigInt!
-  fee: BigInt!
+  totalFeeAmount: BigInt!
   # xSushiBurned: BigInt!
   # xSushiMinted: BigInt!
   # xSushiSushiRatio: BigDecimal!
@@ -47,6 +47,7 @@ type User @entity {
 type FeeSender @entity {
   id: ID!
   totalFeeSent: BigInt!
+  fees: [Fee!]! @derivedFrom(field: "sender")
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
   modifiedAtBlock: BigInt!

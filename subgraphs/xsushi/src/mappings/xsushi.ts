@@ -6,6 +6,7 @@ import { getOrCreateUser } from './functions/user'
 import { getOrCreateFee } from './functions/fee'
 import { XSUSHI_ADDRESS } from '../constants/addresses'
 import { getOrCreateFeeSender } from './functions/fee-sender'
+import { getOrCreateXSushi } from './functions/xsushi'
 
 export function onTransfer(event: TransferEvent): void {
   let sender = getOrCreateUser(event.params.from.toHex(), event)
@@ -30,6 +31,11 @@ export function onSushiTransfer(event: SushiTransferEvent): void {
     sender.modifiedAtBlock = event.block.number
     sender.modifiedAtTimestamp = event.block.timestamp
     sender.save()
+    
     getOrCreateFee(event)
+
+    let xSushi = getOrCreateXSushi()
+    xSushi.totalFeeAmount = xSushi.totalFeeAmount.plus(event.params.value)
+    xSushi.save()
   }
 }

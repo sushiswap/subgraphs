@@ -1,5 +1,5 @@
-import { Fee, FeeSender } from '../../../generated/schema'
-import {Transfer as SushiTransferEvent} from '../../../generated/sushi/sushi'
+import { FeeSender } from '../../../generated/schema'
+import { Transfer as SushiTransferEvent } from '../../../generated/sushi/sushi'
 
 export function getOrCreateFeeSender(event: SushiTransferEvent): FeeSender {
   const id = event.params.from.toHex()

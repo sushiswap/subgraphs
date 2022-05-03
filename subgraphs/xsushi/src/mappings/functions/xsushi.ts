@@ -1,4 +1,3 @@
-import { BigInt } from "@graphprotocol/graph-ts";
 import { XSushi } from "../../../generated/schema";
 import { XSUSHI } from "../../constants";
 
