@@ -70,15 +70,17 @@ test('xSushiLeaved is increased on burn', () => {
   cleanup()
 })
 
-test('totalFeeAmount is increased on direct sushi transfer', () => {
+test('sushi transfer to sushibar increases fee amount and total sushi supply', () => {
   const sender = Address.fromString('0x00000000000000000000000000000000000a71ce')
   const amount = BigInt.fromString('1337')
   let transferEvent = createSushiTransferEvent(sender, XSUSHI_ADDRESS, amount)
   onSushiTransfer(transferEvent)
 
   assert.fieldEquals('XSushi', XSUSHI, 'totalFeeAmount', amount.toString())
+  assert.fieldEquals('XSushi', XSUSHI, 'totalSushiSupply', amount.toString())
 
   onSushiTransfer(transferEvent)
   assert.fieldEquals('XSushi', XSUSHI, 'totalFeeAmount', amount.times(BigInt.fromString('2')).toString())
+  assert.fieldEquals('XSushi', XSUSHI, 'totalSushiSupply', amount.times(BigInt.fromString('2')).toString())
   cleanup()
 })

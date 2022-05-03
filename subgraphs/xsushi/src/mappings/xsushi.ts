@@ -31,11 +31,12 @@ export function onSushiTransfer(event: SushiTransferEvent): void {
     sender.modifiedAtBlock = event.block.number
     sender.modifiedAtTimestamp = event.block.timestamp
     sender.save()
-    
+
     getOrCreateFee(event)
 
     let xSushi = getOrCreateXSushi()
     xSushi.totalFeeAmount = xSushi.totalFeeAmount.plus(event.params.value)
+    xSushi.totalSushiSupply = xSushi.totalSushiSupply.plus(event.params.value)
     xSushi.save()
   }
 }
