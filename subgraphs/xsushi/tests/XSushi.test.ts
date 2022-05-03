@@ -43,19 +43,19 @@ test('XSushi count field increase on transactions', () => {
   cleanup()
 })
 
-test('xSushiEntered is increased on mint', () => {
+test('sushi staked is increased on mint', () => {
   const reciever = Address.fromString('0x0000000000000000000000000000000000000b0b')
   const amount = BigInt.fromString('1337')
   let transferEvent = createTransferEvent(ADDRESS_ZERO, reciever, amount)
 
   onTransfer(transferEvent)
 
-  assert.fieldEquals('XSushi', XSUSHI, 'sushiEntered', amount.toString())
+  assert.fieldEquals('XSushi', XSUSHI, 'sushiStaked', amount.toString())
 
   cleanup()
 })
 
-test('xSushiLeaved is increased on burn', () => {
+test('sushi harvested is increased on burn', () => {
   const amount = BigInt.fromString('1337')
   const reciever = Address.fromString('0x0000000000000000000000000000000000000b0b')
   let mintEvent = createTransferEvent(ADDRESS_ZERO, reciever, amount)
@@ -65,7 +65,7 @@ test('xSushiLeaved is increased on burn', () => {
 
   onTransfer(burnEvent)
 
-  assert.fieldEquals('XSushi', XSUSHI, 'sushiLeaved', amount.toString())
+  assert.fieldEquals('XSushi', XSUSHI, 'sushiHarvested', amount.toString())
 
   cleanup()
 })

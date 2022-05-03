@@ -4,11 +4,11 @@ type XSushi @entity {
   transactionCount: BigInt!
   totalSushiSupply: BigInt!
   totalXsushiSupply: BigInt!
-  sushiEntered: BigInt!
-  sushiLeaved: BigInt!
+  sushiStaked: BigInt!
+  sushiHarvested: BigInt!
   totalFeeAmount: BigInt!
-  # xSushiBurned: BigInt!
-  # xSushiMinted: BigInt!
+  xSushiBurned: BigInt!
+  xSushiMinted: BigInt!
   # xSushiSushiRatio: BigDecimal!
   # sushiXsushiRatio: BigDecimal!
 }

@@ -34,15 +34,17 @@ function createTransaction(event: TransferEvent): Transaction {
   if (isBurnTransaction(event)) {
     transaction.type = BURN
     const burnAmount = event.params.value.times(xSushi.totalSushiSupply).div(xSushi.totalXsushiSupply)
-    xSushi.sushiLeaved = xSushi.sushiLeaved.plus(burnAmount)
     xSushi.totalSushiSupply = xSushi.totalSushiSupply.minus(burnAmount)
     xSushi.totalXsushiSupply = xSushi.totalXsushiSupply.minus(event.params.value)
+    xSushi.xSushiBurned = xSushi.xSushiBurned.plus(event.params.value)
+    xSushi.sushiHarvested = xSushi.sushiHarvested.plus(burnAmount)
     transaction.amount = burnAmount
   } else if (isMintTransaction(event)) {
     transaction.type = MINT
     xSushi.totalSushiSupply = xSushi.totalSushiSupply.plus(event.params.value)
     xSushi.totalXsushiSupply = xSushi.totalXsushiSupply.plus(event.params.value)
-    xSushi.sushiEntered = xSushi.sushiEntered.plus(event.params.value)
+    xSushi.xSushiMinted = xSushi.xSushiMinted.plus(event.params.value)
+    xSushi.sushiStaked = xSushi.sushiStaked.plus(event.params.value)
   } 
   else {
     xSushi.totalSushiSupply = xSushi.totalSushiSupply.plus(event.params.value)
