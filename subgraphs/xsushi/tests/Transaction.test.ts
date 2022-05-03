@@ -1,7 +1,6 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { assert, test, clearStore } from 'matchstick-as/assembly/index'
-import { ADDRESS_ZERO, BURN, FEES, MINT, TRANSFER } from '../src/constants'
-import { XSUSHI_ADDRESS } from '../src/constants/addresses'
+import { assert, clearStore, test } from 'matchstick-as/assembly/index'
+import { ADDRESS_ZERO, BURN, MINT, TRANSFER } from '../src/constants'
 import { onTransfer } from '../src/mappings/xsushi'
 import { createTransferEvent } from './mocks'
 

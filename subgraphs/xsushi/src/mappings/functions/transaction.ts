@@ -33,21 +33,26 @@ function createTransaction(event: TransferEvent): Transaction {
 
   if (isBurnTransaction(event)) {
     transaction.type = BURN
-    const burnAmount = event.params.value.times(xSushi.totalSushiSupply).div(xSushi.totalXsushiSupply)
-    xSushi.totalSushiSupply = xSushi.totalSushiSupply.minus(burnAmount)
+    const harvestAmount = event.params.value.times(xSushi.totalSushiSupply).div(xSushi.totalXsushiSupply)
+    xSushi.totalSushiSupply = xSushi.totalSushiSupply.minus(harvestAmount)
     xSushi.totalXsushiSupply = xSushi.totalXsushiSupply.minus(event.params.value)
     xSushi.xSushiBurned = xSushi.xSushiBurned.plus(event.params.value)
-    xSushi.sushiHarvested = xSushi.sushiHarvested.plus(burnAmount)
-    transaction.amount = burnAmount
+    xSushi.sushiHarvested = xSushi.sushiHarvested.plus(harvestAmount)
+    transaction.amount = harvestAmount
   } else if (isMintTransaction(event)) {
     transaction.type = MINT
     xSushi.totalSushiSupply = xSushi.totalSushiSupply.plus(event.params.value)
-    xSushi.totalXsushiSupply = xSushi.totalXsushiSupply.plus(event.params.value)
-    xSushi.xSushiMinted = xSushi.xSushiMinted.plus(event.params.value)
     xSushi.sushiStaked = xSushi.sushiStaked.plus(event.params.value)
-  } 
-  else {
-    xSushi.totalSushiSupply = xSushi.totalSushiSupply.plus(event.params.value)
+
+    if (xSushi.totalXsushiSupply.isZero() || xSushi.totalSushiSupply.isZero()) {
+      xSushi.totalXsushiSupply = xSushi.totalXsushiSupply.plus(event.params.value)
+      xSushi.xSushiMinted = xSushi.xSushiMinted.plus(event.params.value)
+    } else {
+      const shares = event.params.value.times(xSushi.totalXsushiSupply).div(xSushi.totalSushiSupply)
+      xSushi.totalXsushiSupply = xSushi.totalXsushiSupply.plus(shares)
+      xSushi.xSushiMinted = xSushi.xSushiMinted.plus(shares)
+    }
+  } else {
     transaction.type = TRANSFER
   }
 
@@ -64,4 +69,3 @@ function isMintTransaction(event: TransferEvent): boolean {
 function isBurnTransaction(event: TransferEvent): boolean {
   return event.params.to == ADDRESS_ZERO
 }
-

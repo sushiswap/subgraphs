@@ -9,7 +9,7 @@ function cleanup(): void {
   clearStore()
 }
 
-test('XSushi count field increase on transactions', () => {
+test('XSushi counts/supplies updates on transactions', () => {
   const alice = Address.fromString('0x00000000000000000000000000000000000a71ce')
   const bob = Address.fromString('0x0000000000000000000000000000000000000b0b')
   const amount = BigInt.fromString('1337')
@@ -84,3 +84,21 @@ test('sushi transfer to sushibar increases fee amount and total sushi supply', (
   assert.fieldEquals('XSushi', XSUSHI, 'totalSushiSupply', amount.times(BigInt.fromString('2')).toString())
   cleanup()
 })
+
+
+
+test('xSushiMinted and xSushiBurned is updated on mint/burn transactions', () => {
+    const amount = BigInt.fromString('1337')
+    const reciever = Address.fromString('0x0000000000000000000000000000000000000b0b')
+    let mintEvent = createTransferEvent(ADDRESS_ZERO, reciever, amount)
+    let burnEvent = createTransferEvent(reciever, ADDRESS_ZERO, amount)
+    burnEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2B')
+    
+    onTransfer(mintEvent)
+    assert.fieldEquals('XSushi', XSUSHI, 'xSushiMinted', amount.toString())
+  
+    onTransfer(burnEvent)
+    assert.fieldEquals('XSushi', XSUSHI, 'xSushiBurned', amount.toString())
+  
+    cleanup()
+  })
