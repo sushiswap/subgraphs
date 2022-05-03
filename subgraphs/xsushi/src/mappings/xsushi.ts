@@ -7,6 +7,8 @@ import { getOrCreateFee } from './functions/fee'
 import { XSUSHI_ADDRESS } from '../constants/addresses'
 import { getOrCreateFeeSender } from './functions/fee-sender'
 import { getOrCreateXSushi } from './functions/xsushi'
+import { BIG_DECIMAL_1E18 } from '../constants'
+import { BigDecimal } from '@graphprotocol/graph-ts'
 
 export function onTransfer(event: TransferEvent): void {
   let sender = getOrCreateUser(event.params.from.toHex(), event)
@@ -37,6 +39,11 @@ export function onSushiTransfer(event: SushiTransferEvent): void {
     let xSushi = getOrCreateXSushi()
     xSushi.totalFeeAmount = xSushi.totalFeeAmount.plus(event.params.value)
     xSushi.totalSushiSupply = xSushi.totalSushiSupply.plus(event.params.value)
+
+    const xSushiSupply = !xSushi.totalXsushiSupply.isZero() ? xSushi.totalXsushiSupply.divDecimal(BIG_DECIMAL_1E18) : BigDecimal.fromString('1')
+    const sushiSupply = !xSushi.totalSushiSupply.isZero() ? xSushi.totalSushiSupply.divDecimal(BIG_DECIMAL_1E18): BigDecimal.fromString('1')
+    xSushi.sushiXsushiRatio = sushiSupply.div(xSushiSupply)
+    xSushi.xSushiSushiRatio = xSushiSupply.div(sushiSupply)
     xSushi.save()
   }
 }

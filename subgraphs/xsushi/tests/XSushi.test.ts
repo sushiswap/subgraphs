@@ -1,5 +1,5 @@
 import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts'
-import { assert, test, clearStore } from 'matchstick-as/assembly/index'
+import { assert, test, clearStore, logStore } from 'matchstick-as/assembly/index'
 import { ADDRESS_ZERO, XSUSHI } from '../src/constants'
 import { XSUSHI_ADDRESS } from '../src/constants/addresses'
 import { onSushiTransfer, onTransfer } from '../src/mappings/xsushi'
@@ -10,7 +10,6 @@ function cleanup(): void {
 }
 
 test('XSushi counts/supplies updates on transactions', () => {
-  const alice = Address.fromString('0x00000000000000000000000000000000000a71ce')
   const bob = Address.fromString('0x0000000000000000000000000000000000000b0b')
   const amount = BigInt.fromString('1337')
 
@@ -62,7 +61,6 @@ test('sushi harvested is increased on burn', () => {
   let burnEvent = createTransferEvent(reciever, ADDRESS_ZERO, amount)
   burnEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2B')
   onTransfer(mintEvent)
-
   onTransfer(burnEvent)
 
   assert.fieldEquals('XSushi', XSUSHI, 'sushiHarvested', amount.toString())
@@ -93,12 +91,66 @@ test('xSushiMinted and xSushiBurned is updated on mint/burn transactions', () =>
     let mintEvent = createTransferEvent(ADDRESS_ZERO, reciever, amount)
     let burnEvent = createTransferEvent(reciever, ADDRESS_ZERO, amount)
     burnEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2B')
-    
+
     onTransfer(mintEvent)
     assert.fieldEquals('XSushi', XSUSHI, 'xSushiMinted', amount.toString())
   
     onTransfer(burnEvent)
     assert.fieldEquals('XSushi', XSUSHI, 'xSushiBurned', amount.toString())
   
+    cleanup()
+  })
+
+
+test('ratio test', () => {
+    const aliceAmount = BigInt.fromString('1000')
+    const bobAmount = BigInt.fromString('500')
+    const feeAmount = BigInt.fromString('500')
+    const alice = Address.fromString('0x00000000000000000000000000000000000a71ce')
+    const bob = Address.fromString('0x0000000000000000000000000000000000000b0b')
+    const pool = Address.fromString('0x0000000000000000000000000000000000000001')
+    let aliceStakeEvent = createTransferEvent(ADDRESS_ZERO, alice, aliceAmount)
+    let aliceHarvestEvent = createTransferEvent(alice, ADDRESS_ZERO, aliceAmount)
+    aliceHarvestEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2B')
+    let bobStakeEvent = createTransferEvent(ADDRESS_ZERO, bob, bobAmount)
+    bobStakeEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2C')
+    let bobHarvestEvent = createTransferEvent(bob, ADDRESS_ZERO, bobAmount)
+    bobHarvestEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2D')
+    let transferEvent = createSushiTransferEvent(pool, XSUSHI_ADDRESS, feeAmount)
+    transferEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2E')
+
+    // When: alice deposits 1000 and bob 500
+    onTransfer(aliceStakeEvent)
+    assert.fieldEquals('XSushi', XSUSHI, 'xSushiSushiRatio', '1')
+    assert.fieldEquals('XSushi', XSUSHI, 'sushiXsushiRatio', '1')
+
+    onTransfer(bobStakeEvent)
+
+    // Then: the ratios remains unchanged
+    assert.fieldEquals('XSushi', XSUSHI, 'xSushiSushiRatio', '1')
+    assert.fieldEquals('XSushi', XSUSHI, 'sushiXsushiRatio', '1')
+
+    // When: 500 in fees are transferred
+    onSushiTransfer(transferEvent)
+
+    // Then: the ratios are updated
+    assert.fieldEquals('XSushi', XSUSHI, 'xSushiSushiRatio', '0.75')
+    assert.fieldEquals('XSushi', XSUSHI, 'sushiXsushiRatio', '1.333333333333333333333333333333333')
+
+    // When: alice harvests
+    onTransfer(aliceHarvestEvent)
+
+    // Then: the ratio changes
+    assert.fieldEquals('XSushi', XSUSHI, 'xSushiSushiRatio', '0.7496251874062968515742128935532234')
+    assert.fieldEquals('XSushi', XSUSHI, 'sushiXsushiRatio', '1.334')
+   
+    // When: bob harvests
+    onTransfer(bobHarvestEvent)
+
+    // Then: the ratios changes back to 1
+    assert.fieldEquals('XSushi', XSUSHI, 'xSushiSushiRatio', '1')
+    assert.fieldEquals('XSushi', XSUSHI, 'sushiXsushiRatio', '1')
+
+
     cleanup()
   })

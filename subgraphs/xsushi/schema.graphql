@@ -9,8 +9,8 @@ type XSushi @entity {
   totalFeeAmount: BigInt!
   xSushiBurned: BigInt!
   xSushiMinted: BigInt!
-  # xSushiSushiRatio: BigDecimal!
-  # sushiXsushiRatio: BigDecimal!
+  xSushiSushiRatio: BigDecimal!
+  sushiXsushiRatio: BigDecimal!
 }
 
 enum TransactionType {

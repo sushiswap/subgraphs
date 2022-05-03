@@ -27,7 +27,6 @@ test('Fee is sent twice, FeeSender is created and updated', () => {
     assert.fieldEquals('FeeSender', sender.toHex(), 'modifiedAtBlock', transferEvent.block.number.toString())
     assert.fieldEquals('FeeSender', sender.toHex(), 'modifiedAtTimestamp', transferEvent.block.timestamp.toString())
 
-
     onSushiTransfer(transferEvent2)
     assert.fieldEquals('FeeSender', sender.toHex(), 'totalFeeSent', amount.times(BigInt.fromString("2")).toString())
     assert.fieldEquals('FeeSender', sender.toHex(), 'modifiedAtBlock', transferEvent2.block.number.toString())
