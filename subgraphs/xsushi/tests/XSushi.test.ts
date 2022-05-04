@@ -1,4 +1,4 @@
-import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal, BigInt, Bytes } from '@graphprotocol/graph-ts'
 import { assert, test, clearStore, logStore } from 'matchstick-as/assembly/index'
 import { ADDRESS_ZERO, XSUSHI } from '../src/constants'
 import { XSUSHI_ADDRESS } from '../src/constants/addresses'
@@ -23,8 +23,8 @@ test('XSushi counts/supplies updates on transactions', () => {
   assert.fieldEquals('XSushi', XSUSHI, 'userCount', '2')
 
   // And: supply is increased
-  assert.fieldEquals('XSushi', XSUSHI, 'totalSushiSupply', amount.toString())
-  assert.fieldEquals('XSushi', XSUSHI, 'totalXsushiSupply', amount.toString())
+  assert.fieldEquals('XSushi', XSUSHI, 'sushiSupply', '0.000000000000001337')
+  assert.fieldEquals('XSushi', XSUSHI, 'xSushiSupply', '0.000000000000001337')
 
   // When: the zero-address recieves a transaction (burn)
   let burnEvent = createTransferEvent(bob, ADDRESS_ZERO, BigInt.fromString('337'))
@@ -36,8 +36,8 @@ test('XSushi counts/supplies updates on transactions', () => {
   assert.fieldEquals('XSushi', XSUSHI, 'userCount', '2')
 
   // And: the total supply is decreased
-  assert.fieldEquals('XSushi', XSUSHI, 'totalSushiSupply', '1000')
-  assert.fieldEquals('XSushi', XSUSHI, 'totalXsushiSupply', '1000')
+  assert.fieldEquals('XSushi', XSUSHI, 'sushiSupply', '0.000000000000001')
+  assert.fieldEquals('XSushi', XSUSHI, 'xSushiSupply', '0.000000000000001')
 
   cleanup()
 })
@@ -49,7 +49,7 @@ test('sushi staked is increased on mint', () => {
 
   onTransfer(transferEvent)
 
-  assert.fieldEquals('XSushi', XSUSHI, 'sushiStaked', amount.toString())
+  assert.fieldEquals('XSushi', XSUSHI, 'sushiStaked', '0.000000000000001337')
 
   cleanup()
 })
@@ -63,7 +63,7 @@ test('sushi harvested is increased on burn', () => {
   onTransfer(mintEvent)
   onTransfer(burnEvent)
 
-  assert.fieldEquals('XSushi', XSUSHI, 'sushiHarvested', amount.toString())
+  assert.fieldEquals('XSushi', XSUSHI, 'sushiHarvested', '0.000000000000001337')
 
   cleanup()
 })
@@ -74,12 +74,12 @@ test('sushi transfer to sushibar increases fee amount and total sushi supply', (
   let transferEvent = createSushiTransferEvent(sender, XSUSHI_ADDRESS, amount)
   onSushiTransfer(transferEvent)
 
-  assert.fieldEquals('XSushi', XSUSHI, 'totalFeeAmount', amount.toString())
-  assert.fieldEquals('XSushi', XSUSHI, 'totalSushiSupply', amount.toString())
+  assert.fieldEquals('XSushi', XSUSHI, 'totalFeeAmount', '0.000000000000001337')
+  assert.fieldEquals('XSushi', XSUSHI, 'sushiSupply', '0.000000000000001337')
 
   onSushiTransfer(transferEvent)
-  assert.fieldEquals('XSushi', XSUSHI, 'totalFeeAmount', amount.times(BigInt.fromString('2')).toString())
-  assert.fieldEquals('XSushi', XSUSHI, 'totalSushiSupply', amount.times(BigInt.fromString('2')).toString())
+  assert.fieldEquals('XSushi', XSUSHI, 'totalFeeAmount', '0.000000000000002674')
+  assert.fieldEquals('XSushi', XSUSHI, 'sushiSupply', '0.000000000000002674')
   cleanup()
 })
 
@@ -93,10 +93,10 @@ test('xSushiMinted and xSushiBurned is updated on mint/burn transactions', () =>
     burnEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2B')
 
     onTransfer(mintEvent)
-    assert.fieldEquals('XSushi', XSUSHI, 'xSushiMinted', amount.toString())
+    assert.fieldEquals('XSushi', XSUSHI, 'xSushiMinted', '0.000000000000001337')
   
     onTransfer(burnEvent)
-    assert.fieldEquals('XSushi', XSUSHI, 'xSushiBurned', amount.toString())
+    assert.fieldEquals('XSushi', XSUSHI, 'xSushiBurned', '0.000000000000001337')
   
     cleanup()
   })
@@ -141,8 +141,8 @@ test('ratio test', () => {
     onTransfer(aliceHarvestEvent)
 
     // Then: the ratio changes
-    assert.fieldEquals('XSushi', XSUSHI, 'xSushiSushiRatio', '0.7496251874062968515742128935532234')
-    assert.fieldEquals('XSushi', XSUSHI, 'sushiXsushiRatio', '1.334')
+    assert.fieldEquals('XSushi', XSUSHI, 'xSushiSushiRatio', '0.7499999999999999999999999999999996')
+    assert.fieldEquals('XSushi', XSUSHI, 'sushiXsushiRatio', '1.333333333333333333333333333333334')
    
     // When: bob harvests
     onTransfer(bobHarvestEvent)

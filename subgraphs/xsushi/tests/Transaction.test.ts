@@ -19,7 +19,7 @@ test('Transfer', () => {
   assert.fieldEquals('Transaction', transactionId, 'id', transactionId)
   assert.fieldEquals('Transaction', transactionId, 'from', sender.toHex())
   assert.fieldEquals('Transaction', transactionId, 'to', reciever.toHex())
-  assert.fieldEquals('Transaction', transactionId, 'amount', transferEvent.params.value.toString())
+  assert.fieldEquals('Transaction', transactionId, 'amount', '0.000000000000001337')
   assert.fieldEquals('Transaction', transactionId, 'gasUsed', transferEvent.block.gasUsed.toString())
   assert.fieldEquals('Transaction', transactionId, 'type', TRANSFER)
   assert.fieldEquals('Transaction', transactionId, 'gasLimit', transferEvent.transaction.gasLimit.toString())
@@ -56,7 +56,7 @@ test('Zero address is reciever, transaction type is set to BURN', () => {
   const transactionId = burnEvent.transaction.hash.toHex()
   assert.fieldEquals('Transaction', transactionId, 'to', ADDRESS_ZERO.toHex())
   assert.fieldEquals('Transaction', transactionId, 'type', BURN)
-  assert.fieldEquals('Transaction', transactionId, 'amount', amount.toString())
+  assert.fieldEquals('Transaction', transactionId, 'amount', '0.000000000000001337')
 
   cleanup()
 })
