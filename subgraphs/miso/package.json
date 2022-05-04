@@ -25,12 +25,13 @@
     "deploy-moonriver": "graph deploy --product hosted-service sushiswap/miso-moonriver",
     "deploy-moonbeam": "graph deploy --product hosted-service sushiswap/miso-moonbeam",
     "deploy-polygon": "graph deploy --product hosted-service sushiswap/miso-polygon",
-    "deploy-harmony": "graph deploy --product hosted-service sushiswap/miso-harmony"
+    "deploy-harmony": "graph deploy --product hosted-service sushiswap/miso-harmony",
+    "deploy-ethereum": "graph deploy --product hosted-service sushiswap/miso-ethereum"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.27.0",
     "@graphprotocol/graph-ts": "^0.24.1",
-    "@sushiswap/miso": "1.0.0-canary.47",
+    "@sushiswap/miso": "1.0.0-canary.48",
     "matchstick-as": "^0.4.0",
     "assemblyscript": "^0.19.20",
     "wabt": "1.0.24"
