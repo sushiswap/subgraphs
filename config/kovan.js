@@ -37,14 +37,11 @@ module.exports = {
     // DAI/WETH
     '0x1d56ed2fe715d287fabd122423bac57126d6f1c9',
   ],
-
   miso: {
     accessControls: { address: '0x1B0449d235b02C1773f391f500dCC3f8EbEaEff9', startBlock: 29430407 },
     market: { address: '0x2a4E1AA493a1a31ACB5EAc419c809D69A2c62058', startBlock: 29836253 },
   },
-
   staking: { address: '0x1CeD9B90aa573849b42ADAC7204860823c290dAc', startBlock: 30184681 },
-
   legacy: {
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
@@ -52,8 +49,13 @@ module.exports = {
     },
   },
   furo: {
-    stream: {address: '0x511D5aef6eb2eFDf71b98B4261Bbe68CC0A94Cd4', startBlock: 30725679},
-    vesting: {address: '0x54E6c99Bb11D89CA59Fe6ebaBbE3ccF8e9BF595a', startBlock: 30725781},
+    stream: { address: '0x2a214DF929fba60509Dc2a236376ac53453cf443', startBlock: 31095812 },
+    vesting: { address: '0x24B159BF6fC4588438098323AE4c852ad37584a6', startBlock: 31095825 },
   },
   auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+  staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+  blocks: {
+    address: '0x0000000000000000000000000000000000000000',
+    startBlock: 0,
+  },
 }

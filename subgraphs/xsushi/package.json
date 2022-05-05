@@ -9,7 +9,7 @@
     "generated"
   ],
   "scripts": {
-    "generate": "graph codegen && mustache ../../config/$NETWORK.js template.yaml > subgraph.yaml && mustache ../../config/$NETWORK.js src/constants/index.template.ts > src/constants/index.ts",
+    "generate": "mustache ../../config/ethereum.js template.yaml > subgraph.yaml && mustache ../../config/ethereum.js src/constants/index.template.ts > src/constants/index.ts && graph codegen",
     "build": "graph build",
     "test": "graph test -r",
     "deploy": "graph deploy --node https://api.thegraph.com/deploy/ sushiswap/xsushi",
@@ -18,9 +18,10 @@
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/xsushi"
   },
   "devDependencies": {
+    "abi": "workspace:*",
     "@graphprotocol/graph-cli": "^0.27.0",
     "@graphprotocol/graph-ts": "^0.24.1",
-    "matchstick-as": "^0.4.0",
+    "matchstick-as": "^0.4.2",
     "assemblyscript": "^0.19.20",
     "wabt": "1.0.24"
   }

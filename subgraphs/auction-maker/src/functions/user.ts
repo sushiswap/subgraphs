@@ -1,5 +1,5 @@
 import { ethereum } from '@graphprotocol/graph-ts'
-import { User } from '../../../generated/schema'
+import { User } from '../../generated/schema'
 import { increaseUserCount } from './auction-maker'
 
 export function getOrCreateUser(id: string, event: ethereum.Event): User {

@@ -3,8 +3,8 @@ import {
   Ended as AuctionEndedEvent,
   PlacedBid as BidEvent,
   Started as CreateAuctionEvent,
-} from '../../../generated/AuctionMaker/AuctionMaker'
-import { Auction } from '../../../generated/schema'
+} from '../../generated/AuctionMaker/AuctionMaker'
+import { Auction } from '../../generated/schema'
 import { FINISHED, MAX_TTL, MIN_TTL, ONGOING } from '../constants'
 import { increaseAuctionCount, increaseFinishedAuctionCount } from './auction-maker'
 import { getOrCreateToken } from './token'

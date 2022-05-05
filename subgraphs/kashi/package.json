@@ -10,7 +10,7 @@
     "generated"
   ],
   "scripts": {
-    "generate": "graph codegen && mustache ../../config/$NETWORK.js template.yaml > subgraph.yaml && mustache ../../config/$NETWORK.js src/constants/index.template.ts > src/constants/index.ts",
+    "generate": "mustache ../../config/$NETWORK.js template.yaml > subgraph.yaml && mustache ../../config/$NETWORK.js src/constants/index.template.ts > src/constants/index.ts && graph codegen",
     "build": "graph build",
     "deploy": "graph deploy --node https://api.thegraph.com/deploy/ sushiswap/kashi",
     "create-local": "graph create --node http://localhost:8020/ sushiswap/kashi",

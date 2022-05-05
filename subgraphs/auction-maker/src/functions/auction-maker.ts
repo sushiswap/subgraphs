@@ -1,5 +1,5 @@
 import { BigInt } from '@graphprotocol/graph-ts'
-import { AuctionMaker } from '../../../generated/schema'
+import { AuctionMaker } from '../../generated/schema'
 import { AUCTION_MAKER } from '../constants'
 
 export function increaseUserCount(): void {

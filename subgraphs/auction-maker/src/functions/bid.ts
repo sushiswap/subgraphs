@@ -1,5 +1,5 @@
-import { PlacedBid as BidEvent, Started as AuctionCreatedEvent } from '../../../generated/AuctionMaker/AuctionMaker'
-import { Auction, Bid } from '../../../generated/schema'
+import { PlacedBid as BidEvent, Started as AuctionCreatedEvent } from '../../generated/AuctionMaker/AuctionMaker'
+import { Auction, Bid } from '../../generated/schema'
 import { increaseBidCount } from './auction-maker'
 
 export function createInitialBid(auction: Auction, event: AuctionCreatedEvent): Bid {

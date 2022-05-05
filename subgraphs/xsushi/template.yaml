@@ -25,3 +25,23 @@ dataSources:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: onTransfer
+  - kind: ethereum/contract
+    name: sushi
+    network: {{ network }}
+    source:
+      address: '{{ sushi.address }}'
+      startBlock: {{ xSushi.startBlock }}
+      abi: sushi
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/xsushi.ts
+      entities:
+        - Transaction
+      abis:
+        - name: sushi
+          file: ./node_modules/abi/SUSHI/SUSHI.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: onSushiTransfer

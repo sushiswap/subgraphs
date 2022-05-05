@@ -1,6 +1,6 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 import { FuroStream } from '../../generated/schema'
-import { FURO_STREAM } from '../constants'
+import { FURO_STREAM } from '../constants/index.template'
 
 function getOrCreateFuro(): FuroStream {
   let furoStream = FuroStream.load(FURO_STREAM)

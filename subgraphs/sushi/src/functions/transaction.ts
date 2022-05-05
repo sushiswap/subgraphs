@@ -1,6 +1,6 @@
 import { BigInt } from '@graphprotocol/graph-ts'
-import { Transaction } from '../../../generated/schema'
-import { Transfer as TransferEvent } from '../../../generated/Sushi/Sushi'
+import { Transaction } from '../../generated/schema'
+import { Transfer as TransferEvent } from '../../generated/Sushi/Sushi'
 import { ADDRESS_ZERO, BURN, MINT, TRANSFER } from '../constants'
 import { getOrCreateSushi } from './sushi'
 
@@ -15,7 +15,7 @@ export function getOrCreateTransaction(event: TransferEvent): Transaction {
 }
 
 function createTransaction(event: TransferEvent): Transaction {
-  const id = event.transaction.hash.toHex() 
+  const id = event.transaction.hash.toHex()
   const transaction = new Transaction(id)
   transaction.from = event.params.from.toHex()
   transaction.to = event.params.to.toHex()
@@ -38,10 +38,9 @@ function createTransaction(event: TransferEvent): Transaction {
   } else {
     transaction.type = TRANSFER
   }
-  
+
   sushi.save()
   transaction.save()
-  
 
   return transaction as Transaction
 }

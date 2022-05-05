@@ -1,8 +1,8 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { ERC20 } from '../../../generated/AuctionMaker/ERC20'
-import { NameBytes32 } from '../../../generated/AuctionMaker/NameBytes32'
-import { SymbolBytes32 } from '../../../generated/AuctionMaker/SymbolBytes32'
-import { Token } from '../../../generated/schema'
+import { ERC20 } from '../../generated/AuctionMaker/ERC20'
+import { NameBytes32 } from '../../generated/AuctionMaker/NameBytes32'
+import { SymbolBytes32 } from '../../generated/AuctionMaker/SymbolBytes32'
+import { Token } from '../../generated/schema'
 
 export function getOrCreateToken(id: string): Token {
   let token = Token.load(id)

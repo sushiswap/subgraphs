@@ -49,8 +49,14 @@ module.exports = {
       startBlock: 503713,
     },
   },
-  miso: {
-    accessControls: { address: '0xF4d73326C13a4Fc5FD7A064217e12780e9Bd62c3', startBlock: 504596 },
-    market: { address: '0x438a2b1C6c715fb1B051c04CA65755560d8B8d43', startBlock: 504666 },
+  furo: {
+    stream: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+    vesting: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+  },
+  auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+  staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+  blocks: {
+    address: '0x0000000000000000000000000000000000000000',
+    startBlock: 0,
   },
 }

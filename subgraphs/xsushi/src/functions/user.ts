@@ -1,8 +1,7 @@
-import { Transfer as TransferEvent } from '../../../generated/xSushi/xSushi'
-import { User } from '../../../generated/schema'
-import { UserType } from '../enums'
-import { getOrCreateXSushi as getOrCreateXSushi } from './xsushi'
 import { BigInt } from '@graphprotocol/graph-ts'
+import { User } from '../../generated/schema'
+import { Transfer as TransferEvent } from '../../generated/xSushi/xSushi'
+import { getOrCreateXSushi } from './xsushi'
 
 export function createUser(id: string, event: TransferEvent): User {
   const user = new User(id)
@@ -18,8 +17,7 @@ export function createUser(id: string, event: TransferEvent): User {
   return user
 }
 
-export function getOrCreateUser(type: UserType, event: TransferEvent): User {
-  const id = type === UserType.SENDER ? event.params.from.toHex() : event.params.to.toHex()
+export function getOrCreateUser(id: string, event: TransferEvent): User {
   const user = User.load(id)
 
   if (user === null) {

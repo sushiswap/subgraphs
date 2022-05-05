@@ -5,6 +5,10 @@
     "packages/*",
     "subgraphs/*"
   ],
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test"
+  },
   "main": "./bin/index.js",
   "bin": {
     "subgraph-cli": "./bin/index.js"

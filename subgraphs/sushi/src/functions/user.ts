@@ -1,5 +1,5 @@
-import { Transfer as TransferEvent } from '../../../generated/Sushi/Sushi'
-import { User } from '../../../generated/schema'
+import { Transfer as TransferEvent } from '../../generated/Sushi/Sushi'
+import { User } from '../../generated/schema'
 import { UserType } from '../enums'
 import { getOrCreateSushi } from './sushi'
 import { BigInt } from '@graphprotocol/graph-ts'

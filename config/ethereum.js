@@ -4,7 +4,6 @@ module.exports = {
   sushi: { address: '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2' },
   weth: { address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' },
   wbtc: { address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599' },
-
   whitelistedTokenAddresses: [
     // WETH
     '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -65,4 +64,14 @@ module.exports = {
     startBlock: 10801571,
   },
   minimumNativeLiquidity: '3',
+  furo: {
+    stream: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+    vesting: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+  },
+  auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+  staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+  blocks: {
+    address: '0x0000000000000000000000000000000000000000',
+    startBlock: 0,
+  },
 }
