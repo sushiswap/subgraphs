@@ -15,26 +15,10 @@ This repository contains multiple subgraphs:
 - [trident](./subgraphs/trident/README.md)
 - [xsushi](./subgraphs/xsushi/README.md)
 
-## CLI
-
-### Prepare
-
-Replace `<APP_NAME>` and `<NETWORK>`, e.g. `miso` and `kovan`
+## Build
 
 ```sh
-node . prepare <APP_NAME> <NETWORK>
-```
-
-### Deploy
-
-```sh
-node . deploy <APP_NAME> <NETWORK>
-```
-
-### Logging
-
-```sh
-node . log sushiswap/<SUBGRAPH_NAME> 
+NETWORK=polygon pnpm exec turbo run build --scope=<subgraph>
 ```
 
 ## Testing
@@ -76,4 +60,12 @@ node . prepare miso kovan && pnpm exec turbo run codegen --scope=miso && pnpm ex
 
 ```sh
 curl -X POST -d '{ "query": "{indexingStatusForCurrentVersion(subgraphName: \"sushiswap/kovan-miso\") { chains { latestBlock { hash number }}}}"}' https://api.thegraph.com/index-node/graphql
+```
+
+## CLI
+
+### Logging
+
+```sh
+node . log sushiswap/<subgraph> 
 ```

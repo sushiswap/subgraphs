@@ -1,6 +1,6 @@
 import { Address } from '@graphprotocol/graph-ts'
 import { AccessControl as AccessControls } from '../../generated/schema'
-import { ACCESS_CONTROLS_ADDRESS } from '../constants/addresses'
+import { ACCESS_CONTROLS_ADDRESS } from '../constants'
 
 export function createAccessControls(id: Address = ACCESS_CONTROLS_ADDRESS): AccessControls {
   const accessControls = new AccessControls(id.toHex())

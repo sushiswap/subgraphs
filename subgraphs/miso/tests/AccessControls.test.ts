@@ -1,7 +1,6 @@
 import { Address, Bytes } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
-import { ACCESS_CONTROLS_ADDRESS } from '../src/constants/addresses'
-import { ADMIN, MINTER, OPERATOR, SMART_CONTRACT } from '../src/constants/index'
+import { ADMIN, MINTER, OPERATOR, SMART_CONTRACT, ACCESS_CONTROLS_ADDRESS } from '../src/constants'
 import { onRoleAdminChanged, onRoleGranted, onRoleRevoked } from '../src/mappings/access-controls'
 import { createRoleAdminChangedEvent, createRoleGrantedEvent, createRoleRevokedEvent } from './mocks'
 

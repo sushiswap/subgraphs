@@ -1,4 +1,4 @@
-lockfileVersion: 5.3
+lockfileVersion: 5.4
 
 importers:
 
@@ -143,14 +143,14 @@ importers:
     specifiers:
       '@graphprotocol/graph-cli': ^0.27.0
       '@graphprotocol/graph-ts': ^0.24.1
-      '@sushiswap/miso': 1.0.0-canary.47
+      '@sushiswap/miso': 1.0.0-canary.48
       assemblyscript: ^0.19.20
       matchstick-as: ^0.4.0
       wabt: 1.0.24
     devDependencies:
       '@graphprotocol/graph-cli': 0.27.0
       '@graphprotocol/graph-ts': 0.24.1
-      '@sushiswap/miso': 1.0.0-canary.47
+      '@sushiswap/miso': 1.0.0-canary.48
       assemblyscript: 0.19.23
       matchstick-as: 0.4.2
       wabt: 1.0.24
@@ -189,7 +189,7 @@ importers:
     specifiers:
       '@graphprotocol/graph-cli': ^0.26.0
       '@graphprotocol/graph-ts': ^0.24.1
-      '@sushiswap/trident': 1.0.0-canary.30
+      '@sushiswap/trident': 1.0.0-canary.37
       abi: workspace:*
       assemblyscript: ^0.19.20
       matchstick-as: ^0.3.0
@@ -197,7 +197,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli': 0.26.0
       '@graphprotocol/graph-ts': 0.24.1
-      '@sushiswap/trident': 1.0.0-canary.30
+      '@sushiswap/trident': 1.0.0-canary.37
       abi: link:../../packages/abi
       assemblyscript: 0.19.23
       matchstick-as: 0.3.0
@@ -489,8 +489,8 @@ packages:
     resolution: {integrity: sha512-Khd2i6Bob9uk7dCgVkhUioEoxRP28m6aj25MegAHvnJyxZPVzZDhxSkeL6wdv5MeAp2DwHkYqUq03KDfVTTP4Q==}
     dev: true
 
-  /@sushiswap/miso/1.0.0-canary.47:
-    resolution: {integrity: sha512-bEDm9ZDE8jh1A+edGnYYH8dTNHytel7sk6k8EKS42Xw0szrjghWMq7HbOQ3PXrMFj2ChDOz/g6G3DZ0JrJasGA==}
+  /@sushiswap/miso/1.0.0-canary.48:
+    resolution: {integrity: sha512-D7qlWtvH2VjXbptb3hVQgrRYTKZCNFQUrsjjhIeUZIiyzJnrLMiUybwKVQdWPHICXLm6f1WXiy988VpqpE0TYQ==}
     dev: true
 
   /@sushiswap/prettier-config/0.1.0_prettier@2.6.2:
@@ -501,8 +501,8 @@ packages:
       prettier: 2.6.2
     dev: true
 
-  /@sushiswap/trident/1.0.0-canary.30:
-    resolution: {integrity: sha512-0AUQbNzjY4V1q/DLeDRGo8AqudjqIgPTjzlPyPTh2oHPlVvO4fI/FO6BdXp2bi7aiNdaGgLwMZYHQFMJoZh74g==}
+  /@sushiswap/trident/1.0.0-canary.37:
+    resolution: {integrity: sha512-KTAbfEk6z1RarLLlwpZ6mxZX+lkrDmc5j+d06Obbojpqdv28qg6O8VzuWO1g9Odtm0K3O430KrkyR6ZLUF/SRQ==}
     dev: true
 
   /@types/bn.js/5.1.0:

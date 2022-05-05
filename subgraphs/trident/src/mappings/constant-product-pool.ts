@@ -1,4 +1,4 @@
-import { ADDRESS_ZERO, NATIVE_ADDRESS, STABLE_POOL_ADDRESSES } from '../constants/addresses'
+import { ADDRESS_ZERO, NATIVE_ADDRESS, STABLE_POOL_ADDRESSES } from '../constants'
 import {
   Approval,
   Burn as BurnEvent,

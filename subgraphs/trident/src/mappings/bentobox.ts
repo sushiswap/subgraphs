@@ -1,8 +1,11 @@
 import {
-  LogDeposit, LogFlashLoan, LogStrategyLoss, LogStrategyProfit, LogWithdraw
+  LogDeposit,
+  LogFlashLoan,
+  LogStrategyLoss,
+  LogStrategyProfit,
+  LogWithdraw,
 } from '../../generated/BentoBox/BentoBox'
-import { getOrCreateRebase } from '../../src/functions/rebase'
-import { getOrCreateToken, toDecimal } from '../functions'
+import { getOrCreateToken, toDecimal, getOrCreateRebase } from '../functions'
 
 export function onLogDeposit(event: LogDeposit): void {
   const tokenAddress = event.params.token.toHex()

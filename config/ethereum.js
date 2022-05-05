@@ -64,4 +64,5 @@ module.exports = {
     address: '0x8798249c2e607446efb7ad49ec89dd1865ff4272',
     startBlock: 10801571,
   },
+  minimumNativeLiquidity: '3',
 }

@@ -1,7 +1,7 @@
 import { Transfer as TransferEvent } from '../../generated/xSushi/xSushi'
-import { UserType } from './enums'
-import { getOrCreateTransaction } from './functions/transaction'
-import { getOrCreateUser } from './functions/user'
+import { UserType } from '../enums'
+import { getOrCreateTransaction } from '../functions/transaction'
+import { getOrCreateUser } from '../functions/user'
 
 export function onTransfer(event: TransferEvent): void {
   let sender = getOrCreateUser(UserType.SENDER, event)

@@ -8,3 +8,5 @@ class KashiType {
 }
 
 export const KASHI_MEDIUM: KashiType = { address: Address.fromString('{{ kashi.medium }}'), type: 'medium' }
+
+export * from './kashi-constants'

@@ -10,7 +10,7 @@
     "generated"
   ],
   "scripts": {
-    "codegen": "graph codegen",
+    "generate": "graph codegen && mustache ../../config/$NETWORK.js template.yaml > subgraph.yaml && mustache ../../config/$NETWORK.js src/constants/index.template.ts > src/constants/index.ts",
     "build": "graph build",
     "test": "graph test -r",
     "deploy": "graph deploy --node https://api.thegraph.com/deploy/ sushiswap/bentobox",
@@ -30,7 +30,8 @@
     "deploy-arbitrum": "graph deploy --product hosted-service matthewlilley/bentobox-arbitrum",
     "deploy-celo": "graph deploy --product hosted-service matthewlilley/bentobox-celo",
     "deploy-moonriver": "graph deploy --product hosted-service matthewlilley/bentobox-moonriver",
-    "deploy-moonbeam": "graph deploy --product hosted-service matthewlilley/bentobox-moonbeam"
+    "deploy-moonbeam": "graph deploy --product hosted-service matthewlilley/bentobox-moonbeam",
+    "deploy-optimism": "graph deploy --product hosted-service matthewlilley/bentobox-optimism"
   },
   "devDependencies": {
     "abi": "workspace:*",

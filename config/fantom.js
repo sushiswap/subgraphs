@@ -14,4 +14,5 @@ module.exports = {
       startBlock: 2457879,
     },
   },
+  minimumNativeLiquidity: '15000',
 }

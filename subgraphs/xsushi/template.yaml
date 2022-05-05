@@ -21,7 +21,7 @@ dataSources:
         - User
       abis:
         - name: xSushi
-          file: ./abis/xSushi.json
+          file: ./node_modules/abi/xSUSHI/xSUSHI.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: onTransfer

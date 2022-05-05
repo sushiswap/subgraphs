@@ -1,4 +1,4 @@
-import { ADDRESS_ZERO, CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS, MASTER_DEPLOYER_ADDRESS } from '../constants/addresses'
+import { ADDRESS_ZERO, CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS, MASTER_DEPLOYER_ADDRESS } from '../constants'
 import {
   AddToWhitelist,
   BarFeeUpdated,
