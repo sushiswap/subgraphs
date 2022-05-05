@@ -1,11 +1,7 @@
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
-import { log } from 'matchstick-as'
 import { Transaction } from '../../../generated/schema'
-import { Transfer as TransferEvent } from '../../../generated/xSushi/xSushi'
 import { Transfer as SushiTransferEvent } from '../../../generated/sushi/sushi'
-import { ADDRESS_ZERO, BIG_DECIMAL_1E18, BURN, FEES, MINT, TRANSFER } from '../../constants'
-import { XSUSHI_ADDRESS } from '../../constants/addresses'
-import { getOrCreateXSushi } from './xsushi'
+import { Transfer as TransferEvent } from '../../../generated/xSushi/xSushi'
+import { ADDRESS_ZERO } from '../../constants'
 
 export function getOrCreateTransaction(event: TransferEvent): Transaction {
   const transaction = Transaction.load(event.transaction.hash.toHex())

@@ -1,5 +1,5 @@
-import { Address, BigDecimal, BigInt, Bytes } from '@graphprotocol/graph-ts'
-import { assert, test, clearStore, logStore } from 'matchstick-as/assembly/index'
+import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts'
+import { assert, clearStore, test } from 'matchstick-as/assembly/index'
 import { ADDRESS_ZERO, XSUSHI } from '../src/constants'
 import { XSUSHI_ADDRESS } from '../src/constants/addresses'
 import { onSushiTransfer, onTransfer } from '../src/mappings/xsushi'
@@ -10,13 +10,22 @@ function cleanup(): void {
 }
 
 test('XSushi counts/supplies updates on transactions', () => {
+  cleanup()
   const bob = Address.fromString('0x0000000000000000000000000000000000000b0b')
   const amount = BigInt.fromString('1337')
-
-  // When: the zero-address make a transaction (mint)
   let mintEvent = createTransferEvent(ADDRESS_ZERO, bob, amount)
+  let sushiStakeEvent = createSushiTransferEvent(bob, XSUSHI_ADDRESS, amount)
   mintEvent.transaction.hash = Address.fromString('0x0000000000000000000000000000000000000001') as Bytes
+  sushiStakeEvent.transaction.hash = Address.fromString('0x0000000000000000000000000000000000000001') as Bytes
+  const harvestAmount = BigInt.fromString('337')
+  let burnEvent = createTransferEvent(bob, ADDRESS_ZERO, harvestAmount)
+  let sushiHarvestEvent = createSushiTransferEvent(XSUSHI_ADDRESS, bob, harvestAmount)
+  burnEvent.transaction.hash = Address.fromString('0x0000000000000000000000000000000000000002') as Bytes
+  sushiHarvestEvent.transaction.hash = Address.fromString('0x0000000000000000000000000000000000000002') as Bytes
+
+  // When: staking sushi
   onTransfer(mintEvent)
+  onSushiTransfer(sushiStakeEvent)
 
   // Then: count fields are increased
   assert.fieldEquals('XSushi', XSUSHI, 'transactionCount', '1')
@@ -26,10 +35,9 @@ test('XSushi counts/supplies updates on transactions', () => {
   assert.fieldEquals('XSushi', XSUSHI, 'sushiSupply', '0.000000000000001337')
   assert.fieldEquals('XSushi', XSUSHI, 'xSushiSupply', '0.000000000000001337')
 
-  // When: the zero-address recieves a transaction (burn)
-  let burnEvent = createTransferEvent(bob, ADDRESS_ZERO, BigInt.fromString('337'))
-  burnEvent.transaction.hash = Address.fromString('0x0000000000000000000000000000000000000002') as Bytes
+  // When: harvesting sushi
   onTransfer(burnEvent)
+  onSushiTransfer(sushiHarvestEvent)
 
   // Then: the transaction count increase and userCount remains
   assert.fieldEquals('XSushi', XSUSHI, 'transactionCount', '2')
@@ -42,33 +50,49 @@ test('XSushi counts/supplies updates on transactions', () => {
   cleanup()
 })
 
-test('sushi staked is increased on mint', () => {
+test('sushi staked', () => {
+  cleanup()
   const reciever = Address.fromString('0x0000000000000000000000000000000000000b0b')
   const amount = BigInt.fromString('1337')
-  let transferEvent = createTransferEvent(ADDRESS_ZERO, reciever, amount)
+  let mintEvent = createTransferEvent(ADDRESS_ZERO, reciever, amount)
+  let sushiStakeEvent = createSushiTransferEvent(reciever, XSUSHI_ADDRESS, amount)
+  mintEvent.transaction.hash = Address.fromString('0x0000000000000000000000000000000000000001') as Bytes
+  sushiStakeEvent.transaction.hash = Address.fromString('0x0000000000000000000000000000000000000001') as Bytes
 
-  onTransfer(transferEvent)
+  onTransfer(mintEvent)
+  onSushiTransfer(sushiStakeEvent)
 
   assert.fieldEquals('XSushi', XSUSHI, 'sushiStaked', '0.000000000000001337')
 
   cleanup()
 })
 
-test('sushi harvested is increased on burn', () => {
+test('sushi harvested', () => {
+  cleanup()
   const amount = BigInt.fromString('1337')
-  const reciever = Address.fromString('0x0000000000000000000000000000000000000b0b')
-  let mintEvent = createTransferEvent(ADDRESS_ZERO, reciever, amount)
-  let burnEvent = createTransferEvent(reciever, ADDRESS_ZERO, amount)
-  burnEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2B')
+  const bob = Address.fromString('0x0000000000000000000000000000000000000b0b')
+  let mintEvent = createTransferEvent(ADDRESS_ZERO, bob, amount)
+  let sushiStakeEvent = createSushiTransferEvent(bob, XSUSHI_ADDRESS, amount)
+  mintEvent.transaction.hash = Address.fromString('0x0000000000000000000000000000000000000001') as Bytes
+  sushiStakeEvent.transaction.hash = Address.fromString('0x0000000000000000000000000000000000000001') as Bytes
+  const harvestAmount = BigInt.fromString('337')
+  let burnEvent = createTransferEvent(bob, ADDRESS_ZERO, harvestAmount)
+  let sushiHarvestEvent = createSushiTransferEvent(XSUSHI_ADDRESS, bob, harvestAmount)
+  burnEvent.transaction.hash = Address.fromString('0x0000000000000000000000000000000000000002') as Bytes
+  sushiHarvestEvent.transaction.hash = Address.fromString('0x0000000000000000000000000000000000000002') as Bytes
   onTransfer(mintEvent)
-  onTransfer(burnEvent)
+  onSushiTransfer(sushiStakeEvent)
 
-  assert.fieldEquals('XSushi', XSUSHI, 'sushiHarvested', '0.000000000000001337')
+  onTransfer(burnEvent)
+  onSushiTransfer(sushiHarvestEvent)
+
+  assert.fieldEquals('XSushi', XSUSHI, 'sushiHarvested', '0.000000000000000337')
 
   cleanup()
 })
 
 test('sushi transfer to sushibar increases fee amount and total sushi supply', () => {
+  cleanup()
   const sender = Address.fromString('0x00000000000000000000000000000000000a71ce')
   const amount = BigInt.fromString('1337')
   let transferEvent = createSushiTransferEvent(sender, XSUSHI_ADDRESS, amount)
@@ -83,74 +107,91 @@ test('sushi transfer to sushibar increases fee amount and total sushi supply', (
   cleanup()
 })
 
-
-
 test('xSushiMinted and xSushiBurned is updated on mint/burn transactions', () => {
-    const amount = BigInt.fromString('1337')
-    const reciever = Address.fromString('0x0000000000000000000000000000000000000b0b')
-    let mintEvent = createTransferEvent(ADDRESS_ZERO, reciever, amount)
-    let burnEvent = createTransferEvent(reciever, ADDRESS_ZERO, amount)
-    burnEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2B')
+  cleanup()
+  const amount = BigInt.fromString('1337')
+  const reciever = Address.fromString('0x0000000000000000000000000000000000000b0b')
+  let mintEvent = createTransferEvent(ADDRESS_ZERO, reciever, amount)
+  let burnEvent = createTransferEvent(reciever, ADDRESS_ZERO, amount)
+  burnEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2B')
 
-    onTransfer(mintEvent)
-    assert.fieldEquals('XSushi', XSUSHI, 'xSushiMinted', '0.000000000000001337')
-  
-    onTransfer(burnEvent)
-    assert.fieldEquals('XSushi', XSUSHI, 'xSushiBurned', '0.000000000000001337')
-  
-    cleanup()
-  })
+  onTransfer(mintEvent)
+  assert.fieldEquals('XSushi', XSUSHI, 'xSushiMinted', '0.000000000000001337')
 
+  onTransfer(burnEvent)
+  assert.fieldEquals('XSushi', XSUSHI, 'xSushiBurned', '0.000000000000001337')
+
+  cleanup()
+})
 
 test('ratio test', () => {
-    const aliceAmount = BigInt.fromString('1000')
-    const bobAmount = BigInt.fromString('500')
-    const feeAmount = BigInt.fromString('500')
-    const alice = Address.fromString('0x00000000000000000000000000000000000a71ce')
-    const bob = Address.fromString('0x0000000000000000000000000000000000000b0b')
-    const pool = Address.fromString('0x0000000000000000000000000000000000000001')
-    let aliceStakeEvent = createTransferEvent(ADDRESS_ZERO, alice, aliceAmount)
-    let aliceHarvestEvent = createTransferEvent(alice, ADDRESS_ZERO, aliceAmount)
-    aliceHarvestEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2B')
-    let bobStakeEvent = createTransferEvent(ADDRESS_ZERO, bob, bobAmount)
-    bobStakeEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2C')
-    let bobHarvestEvent = createTransferEvent(bob, ADDRESS_ZERO, bobAmount)
-    bobHarvestEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2D')
-    let transferEvent = createSushiTransferEvent(pool, XSUSHI_ADDRESS, feeAmount)
-    transferEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2E')
+  cleanup()
+  const aliceStakeAmount = BigInt.fromString('1000')
+  const aliceHarvestAmount = BigInt.fromString('1333')
+  const bobStakeAmount = BigInt.fromString('500')
+  const bobHarvestAmount = BigInt.fromString('667')
+  const feeAmount = BigInt.fromString('500')
+  const alice = Address.fromString('0x00000000000000000000000000000000000a71ce')
+  const bob = Address.fromString('0x0000000000000000000000000000000000000b0b')
+  const pool = Address.fromString('0x0000000000000000000000000000000000000001')
+  let aliceMintEvent = createTransferEvent(ADDRESS_ZERO, alice, aliceStakeAmount)
+  let aliceStakeEvent = createSushiTransferEvent(alice, XSUSHI_ADDRESS, aliceStakeAmount)
+  aliceMintEvent.transaction.hash = Address.fromString('0x0000000000000000000000000000000000000001') as Bytes
+  aliceStakeEvent.transaction.hash = Address.fromString('0x0000000000000000000000000000000000000001') as Bytes
 
-    // When: alice deposits 1000 and bob 500
-    onTransfer(aliceStakeEvent)
-    assert.fieldEquals('XSushi', XSUSHI, 'xSushiSushiRatio', '1')
-    assert.fieldEquals('XSushi', XSUSHI, 'sushiXsushiRatio', '1')
+  let aliceBurnEvent = createTransferEvent(alice, ADDRESS_ZERO, aliceStakeAmount)
+  let aliceHarvestEvent = createSushiTransferEvent(XSUSHI_ADDRESS, alice, aliceHarvestAmount)
+  aliceBurnEvent.transaction.hash = Address.fromString('0x0000000000000000000000000000000000000002')
+  aliceHarvestEvent.transaction.hash = Address.fromString('0x0000000000000000000000000000000000000002')
 
-    onTransfer(bobStakeEvent)
+  let bobMintEvent = createTransferEvent(ADDRESS_ZERO, bob, bobStakeAmount)
+  let bobStakeEvent = createSushiTransferEvent(bob, XSUSHI_ADDRESS, bobStakeAmount)
+  bobMintEvent.transaction.hash = Address.fromString('0x0000000000000000000000000000000000000003')
+  bobStakeEvent.transaction.hash = Address.fromString('0x0000000000000000000000000000000000000003')
 
-    // Then: the ratios remains unchanged
-    assert.fieldEquals('XSushi', XSUSHI, 'xSushiSushiRatio', '1')
-    assert.fieldEquals('XSushi', XSUSHI, 'sushiXsushiRatio', '1')
+  let bobBurnEvent = createTransferEvent(bob, ADDRESS_ZERO, bobStakeAmount)
+  let bobHarvestEvent = createSushiTransferEvent(XSUSHI_ADDRESS, bob, bobHarvestAmount)
+  bobMintEvent.transaction.hash = Address.fromString('0x0000000000000000000000000000000000000004')
+  bobHarvestEvent.transaction.hash = Address.fromString('0x0000000000000000000000000000000000000004')
 
-    // When: 500 in fees are transferred
-    onSushiTransfer(transferEvent)
+  let feeEvent = createSushiTransferEvent(pool, XSUSHI_ADDRESS, feeAmount)
+  feeEvent.transaction.hash = Address.fromString('0x0000000000000000000000000000000000000005')
 
-    // Then: the ratios are updated
-    assert.fieldEquals('XSushi', XSUSHI, 'xSushiSushiRatio', '0.75')
-    assert.fieldEquals('XSushi', XSUSHI, 'sushiXsushiRatio', '1.333333333333333333333333333333333')
+  // When: alice deposits 1000 and bob 500
+  onTransfer(aliceMintEvent)
+  onSushiTransfer(aliceStakeEvent)
+  assert.fieldEquals('XSushi', XSUSHI, 'xSushiSushiRatio', '1')
+  assert.fieldEquals('XSushi', XSUSHI, 'sushiXsushiRatio', '1')
 
-    // When: alice harvests
-    onTransfer(aliceHarvestEvent)
+  onTransfer(bobMintEvent)
+  onSushiTransfer(bobStakeEvent)
 
-    // Then: the ratio changes
-    assert.fieldEquals('XSushi', XSUSHI, 'xSushiSushiRatio', '0.7499999999999999999999999999999996')
-    assert.fieldEquals('XSushi', XSUSHI, 'sushiXsushiRatio', '1.333333333333333333333333333333334')
-   
-    // When: bob harvests
-    onTransfer(bobHarvestEvent)
+  // Then: the ratios remains unchanged
+  assert.fieldEquals('XSushi', XSUSHI, 'xSushiSushiRatio', '1')
+  assert.fieldEquals('XSushi', XSUSHI, 'sushiXsushiRatio', '1')
 
-    // Then: the ratios changes back to 1
-    assert.fieldEquals('XSushi', XSUSHI, 'xSushiSushiRatio', '1')
-    assert.fieldEquals('XSushi', XSUSHI, 'sushiXsushiRatio', '1')
+  // When: 500 in fees are transferred
+  onSushiTransfer(feeEvent)
 
+  // Then: the ratios are updated
+  assert.fieldEquals('XSushi', XSUSHI, 'xSushiSushiRatio', '0.75')
+  assert.fieldEquals('XSushi', XSUSHI, 'sushiXsushiRatio', '1.333333333333333333333333333333333')
 
-    cleanup()
-  })
+  // When: alice harvests
+  onTransfer(aliceBurnEvent)
+  onSushiTransfer(aliceHarvestEvent)
+
+  // Then: the ratio changes
+  assert.fieldEquals('XSushi', XSUSHI, 'xSushiSushiRatio', '0.7496251874062968515742128935532234')
+  assert.fieldEquals('XSushi', XSUSHI, 'sushiXsushiRatio', '1.334')
+
+  // When: bob harvests
+  onTransfer(bobBurnEvent)
+  onSushiTransfer(bobHarvestEvent)
+
+  // Then: the ratios changes back to 1
+  assert.fieldEquals('XSushi', XSUSHI, 'xSushiSushiRatio', '1')
+  assert.fieldEquals('XSushi', XSUSHI, 'sushiXsushiRatio', '1')
+
+  cleanup()
+})

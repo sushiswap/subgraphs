@@ -1,5 +1,5 @@
 import { Fee } from '../../../generated/schema'
-import {Transfer as SushiTransferEvent} from '../../../generated/sushi/sushi'
+import { Transfer as SushiTransferEvent } from '../../../generated/sushi/sushi'
 
 export function getOrCreateFee(event: SushiTransferEvent): Fee {
   const id = event.transaction.hash.toHex()

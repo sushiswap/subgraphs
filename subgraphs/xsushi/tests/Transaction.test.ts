@@ -1,8 +1,9 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
 import { ADDRESS_ZERO, BURN, MINT, TRANSFER } from '../src/constants'
-import { onTransfer } from '../src/mappings/xsushi'
-import { createTransferEvent } from './mocks'
+import { XSUSHI_ADDRESS } from '../src/constants/addresses'
+import { onSushiTransfer, onTransfer } from '../src/mappings/xsushi'
+import { createSushiTransferEvent, createTransferEvent } from './mocks'
 
 function cleanup(): void {
   clearStore()
@@ -48,10 +49,13 @@ test('Zero address is reciever, transaction type is set to BURN', () => {
   const amount = BigInt.fromString('1337')
   const reciever = Address.fromString('0x0000000000000000000000000000000000000b0b')
   let mintEvent = createTransferEvent(ADDRESS_ZERO, reciever, amount)
+  let sushiStakeEvent = createSushiTransferEvent(sender, XSUSHI_ADDRESS, amount)
   let burnEvent = createTransferEvent(sender, ADDRESS_ZERO, amount)
-  burnEvent.transaction.hash = Address.fromString("0xA16081F360e3847006dB660bae1c6d1b2e17eC2B");
-  
+  burnEvent.transaction.hash = Address.fromString('0xA16081F360e3847006dB660bae1c6d1b2e17eC2B')
+
   onTransfer(mintEvent)
+  onSushiTransfer(sushiStakeEvent)
+
   onTransfer(burnEvent)
   const transactionId = burnEvent.transaction.hash.toHex()
   assert.fieldEquals('Transaction', transactionId, 'to', ADDRESS_ZERO.toHex())
