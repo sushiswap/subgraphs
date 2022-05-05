@@ -1,7 +1,6 @@
 import { Address, BigDecimal } from "@graphprotocol/graph-ts"
 
 export const XSUSHI = "xSushi"
-export const FEES = "FEES"
 export const TRANSFER = "TRANSFER"
 export const MINT = "MINT"
 export const BURN = "BURN"
