@@ -1,4 +1,4 @@
-import { Address, ByteArray, Bytes, crypto, ethereum } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal, ByteArray, Bytes, crypto, ethereum } from '@graphprotocol/graph-ts'
 
 export function getCreate2Address(from: Bytes, salt: Bytes, initCodeHash: Bytes): Bytes {
   return Bytes.fromHexString(
@@ -32,6 +32,9 @@ export const STABLE_POOL_ADDRESSES: string[] = STABLE_TOKEN_ADDRESSES.map<string
     Bytes.fromByteArray(Bytes.fromHexString('{{ legacy.factory.initCodeHash }}'))
   ).toHex()
 })
+
+// Minimum liqudiity threshold in native currency
+export const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('{{ minimumNativeLiquidity }}')
 
 // export const STABLE_POOL_ADDRESSES: string[] = '{{ stablePoolAddresses }}'.split(',')
 

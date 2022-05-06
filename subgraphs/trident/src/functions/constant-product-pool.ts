@@ -10,6 +10,8 @@ import {
   ConstantProductPoolAsset,
   ConstantProductPoolFactory,
   ConstantProductPoolKpi,
+  TokenPricePool,
+  WhitelistedToken,
 } from '../../generated/schema'
 
 import { DeployPool__Params } from '../../generated/MasterDeployer/MasterDeployer'
@@ -17,6 +19,7 @@ import { createWhitelistedPool } from './whitelisted-pool'
 import { getOrCreateMasterDeployer } from './master-deployer'
 import { getOrCreateToken } from './token'
 import { getOrCreateTokenPrice } from './token-price'
+import { createWhitelistedToken } from './whitelisted-token'
 
 export function getOrCreateConstantProductPoolFactory(
   id: Address = CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS
@@ -90,7 +93,8 @@ export function createConstantProductPool(deployParams: DeployPool__Params): Con
     asset.token = token.id
     asset.save()
 
-    if (WHITELISTED_TOKEN_ADDRESSES.includes(token.id) || token.id == NATIVE_ADDRESS) {
+    // if (WHITELISTED_TOKEN_ADDRESSES.includes(token.id) || token.id == NATIVE_ADDRESS) {
+    if (token.id == NATIVE_ADDRESS || WhitelistedToken.load(token.id) !== null) {
       const address = assets[Math.abs(i - 1) as i32].toHex()
       const tokenPrice = getOrCreateTokenPrice(address)
 
@@ -103,6 +107,12 @@ export function createConstantProductPool(deployParams: DeployPool__Params): Con
 
       tokenPrice.whitelistedPoolCount = tokenPrice.whitelistedPoolCount.plus(BigInt.fromI32(1))
       tokenPrice.save()
+
+      createWhitelistedToken(address)
+
+      // Define relationship so that in "sync" we don't add it again.
+      const tokenPricePool = new TokenPricePool(tokenPrice.token.concat(':').concat(id))
+      tokenPricePool.save()
     }
   }
 

@@ -152,6 +152,10 @@ type TokenPrice @entity {
   whitelistedPairs: [WhitelistedPair!]! @derivedFrom(field: "price")
 }
 
+type TokenPricePair @entity {
+  id: ID!
+}
+
 type WhitelistedToken @entity {
   id: ID!
   factory: Factory!

@@ -1,4 +1,4 @@
-import { Address, ByteArray, Bytes, crypto, ethereum } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal, ByteArray, Bytes, crypto, ethereum } from '@graphprotocol/graph-ts'
 
 export function getCreate2Address(from: Bytes, salt: Bytes, initCodeHash: Bytes): Bytes {
   return Bytes.fromHexString(
@@ -16,23 +16,26 @@ export function getCreate2Address(from: Bytes, salt: Bytes, initCodeHash: Bytes)
 
 export const ADDRESS_ZERO = Address.fromString('0x0000000000000000000000000000000000000000')
 
-export const FACTORY_ADDRESS = Address.fromString('0xc35dadb65012ec5796536bd9864ed8773abc74c4')
+export const FACTORY_ADDRESS = Address.fromString('0xc35DADB65012eC5796536bD9864eD8773aBc74C4')
 
-export const NATIVE_ADDRESS = '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270'
+export const NATIVE_ADDRESS = '0xacc15dc74880c9944775448304b263d191c6077f'
 
-export const WHITELISTED_TOKEN_ADDRESSES: string[] = '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270,0x7ceb23fd6bc0add59e62ac25578270cff1b9f619,0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6,0x2791bca1f2de4661ed88a30c99a7a9449aa84174,0xc2132d05d31c914a87c6611c10748aeb04b58e8f,0x8f3cf7ad23cd3cadbd9735aff958023239c6a063'.split(',')
+export const WHITELISTED_TOKEN_ADDRESSES: string[] = '0xAcc15dC74880C9944775448304B263D191c6077F,0x30D2a9F5FDf90ACe8c17952cbb4eE48a55D916A7,0x8f552a71EFE5eeFc207Bf75485b356A0b3f01eC9,0x8e70cD5B4Ff3f62659049e74b6649c6603A0E594,0xc234A67a4F840E61adE794be47de455361b52413,0x1DC78Acda13a8BC4408B207c9E48CDBc096D95e0,0x085416975fe14C2A731a97eC38B9bF8135231F62,0x322E86852e492a7Ee17f28a78c663da38FB33bfb'.split(',')
 
-export const STABLE_TOKEN_ADDRESSES: string[] = '0x2791bca1f2de4661ed88a30c99a7a9449aa84174,0xc2132d05d31c914a87c6611c10748aeb04b58e8f,0x8f3cf7ad23cd3cadbd9735aff958023239c6a063'.split(',')
+export const STABLE_TOKEN_ADDRESSES: string[] = '0x8f552a71efe5eefc207bf75485b356a0b3f01ec9,0x8e70cd5b4ff3f62659049e74b6649c6603a0e594,0xc234a67a4f840e61ade794be47de455361b52413,0x085416975fe14c2a731a97ec38b9bf8135231f62,0x322e86852e492a7ee17f28a78c663da38fb33bfb'.split(',')
 
 export const STABLE_POOL_ADDRESSES: string[] = STABLE_TOKEN_ADDRESSES.map<string>((address: string) => {
   const tokens: string[] = [address, NATIVE_ADDRESS].sort()
   return getCreate2Address(
-    Bytes.fromByteArray(Bytes.fromHexString('0xc35dadb65012ec5796536bd9864ed8773abc74c4')),
+    Bytes.fromByteArray(Bytes.fromHexString('0xc35DADB65012eC5796536bD9864eD8773aBc74C4')),
     Bytes.fromByteArray(crypto.keccak256(ByteArray.fromHexString('0x' + tokens[0].slice(2) + tokens[1].slice(2)))),
     Bytes.fromByteArray(Bytes.fromHexString('0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303'))
   ).toHex()
 })
 
-// export const STABLE_POOL_ADDRESSES: string[] = '0xd5ed08fdedd447a3172449e6d4e2e5265157e6a3,0x699e820323dd5e51b243003ef74ac812b7f280ed,0x25d8dfef6f432eb0f7db0b9f61fef352f08b1979,0x1bd908569c1157417abae2ed3de3cb04c734b984'.split(',')
+// Minimum liqudiity threshold in native currency
+export const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('0.1')
+
+// export const STABLE_POOL_ADDRESSES: string[] = ''.split(',')
 
 export * from './time'

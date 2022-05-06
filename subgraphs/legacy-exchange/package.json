@@ -19,7 +19,8 @@
     "deploy-kovan": "graph deploy --product hosted-service sushiswap/legacy-exchange-kovan",
     "deploy-polygon": "graph deploy --product hosted-service matthewlilley/legacy-exchange-polygon",
     "deploy-avalanche": "graph deploy --product hosted-service sushiswap/legacy-exchange-avalanche",
-    "deploy-arbitrum": "graph deploy --product hosted-service matthewlilley/legacy-exchange-arbitrum"
+    "deploy-arbitrum": "graph deploy --product hosted-service matthewlilley/legacy-exchange-arbitrum",
+    "deploy-moonbeam": "graph deploy --product hosted-service matthewlilley/legacy-exchange-moonbeam"
   },
   "devDependencies": {
     "abi": "workspace:*",

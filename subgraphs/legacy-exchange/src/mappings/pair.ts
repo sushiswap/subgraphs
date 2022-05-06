@@ -1,6 +1,6 @@
 import { ADDRESS_ZERO, NATIVE_ADDRESS, STABLE_POOL_ADDRESSES } from '../constants'
 import { Address, BigDecimal, BigInt, ByteArray, Bytes, log } from '@graphprotocol/graph-ts'
-import { Burn, Candle, Mint, Swap, TokenPrice, WhitelistedToken } from '../../generated/schema'
+import { Burn, Candle, Mint, Swap, TokenPrice, WhitelistedToken, TokenPricePair } from '../../generated/schema'
 import {
   Burn as BurnEvent,
   Mint as MintEvent,
@@ -11,6 +11,7 @@ import {
 } from '../../generated/templates/Pair/Pair'
 import {
   createUsersIfNotExist,
+  createWhitelistedPair,
   createWhitelistedToken,
   deleteWhitelistedToken,
   getFactory,
@@ -224,6 +225,39 @@ export function onSync(event: SyncEvent): void {
   let nativePrice: TokenPrice
   let token0Price: TokenPrice
   let token1Price: TokenPrice
+
+  const assets = [asset0, asset1]
+
+  for (let i = 0; i < assets.length; i++) {
+    const whitelisted = WhitelistedToken.load(assets[i].token)
+
+    if (whitelisted) {
+      const address = assets[Math.abs(i - 1) as i32].token
+
+      // Check if a relation is already defined between the token to price and pool
+      if (TokenPricePair.load(address.concat(':').concat(pairAddress)) !== null) {
+        continue
+      }
+
+      const tokenPrice = getOrCreateTokenPrice(address)
+
+      const whitelistedPair = createWhitelistedPair(
+        tokenPrice.token.concat(':').concat(tokenPrice.whitelistedPairCount.toString())
+      )
+      whitelistedPair.pair = pairAddress
+      whitelistedPair.price = tokenPrice.id
+      whitelistedPair.save()
+
+      tokenPrice.whitelistedPairCount = tokenPrice.whitelistedPairCount.plus(BigInt.fromI32(1))
+      tokenPrice.save()
+
+      createWhitelistedToken(address)
+
+      // Define relationship so we don't add it again here
+      const tokenPricePair = new TokenPricePair(tokenPrice.token.concat(':').concat(pairAddress))
+      tokenPricePair.save()
+    }
+  }
 
   // If the pool is one in which we want to update the native price
   if (STABLE_POOL_ADDRESSES.includes(pairAddress)) {
