@@ -22,22 +22,22 @@ module.exports = {
   constantProductPoolFactory: { address: '0x05689fcfee31fce4a67fbc7cab13e74f80a4e288' },
   hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
   indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
-  whitelistedTokenAddresses: [
-    // WNATIVE - This is actually quite important, though uneeded here anymore since
-    // it's now apart of the whitelisted token check in createPair, because the
-    // base should always be whitelisted or pricing never begins.
-    NATIVE_ADDRESS,
-    // WETH
-    WETH_ADDRESS,
-    // WBTC
-    WBTC_ADDRESS,
-    // USDC
-    USDC_ADDRESS,
-    // USDT
-    USDT_ADDRESS,
-    // DAI
-    DAI_ADDRESS,
-  ],
+  // whitelistedTokenAddresses: [
+  //   // WNATIVE - This is actually quite important, though uneeded here anymore since
+  //   // it's now apart of the whitelisted token check in createPair, because the
+  //   // base should always be whitelisted or pricing never begins.
+  //   NATIVE_ADDRESS,
+  //   // WETH
+  //   WETH_ADDRESS,
+  //   // WBTC
+  //   WBTC_ADDRESS,
+  //   // USDC
+  //   USDC_ADDRESS,
+  //   // USDT
+  //   USDT_ADDRESS,
+  //   // DAI
+  //   DAI_ADDRESS,
+  // ],
   stableTokenAddresses: [
     // USDC
     USDC_ADDRESS,
@@ -45,18 +45,22 @@ module.exports = {
     USDT_ADDRESS,
     // DAI
     DAI_ADDRESS,
+    // MIM
+    // '0x49a0400587a7f65072c87c4910449fdcc5c47242',
+    // FRAX
+    // '0x45c32fa6df82ead1e2ef74d17b76547eddfaff89',
   ],
-  // List of STABLE/NATIVE pools to use to price NATIVE in USD
-  stablePoolAddresses: [
-    // USDC/MATIC/5/FALSE
-    '0xd5ed08fdedd447a3172449e6d4e2e5265157e6a3',
-    // USDC/WMATIC/30/TRUE
-    '0x699e820323dd5e51b243003ef74ac812b7f280ed',
-    // USDT/WMATIC/30/TRUE
-    '0x25d8dfef6f432eb0f7db0b9f61fef352f08b1979',
-    // DAI/WMATIC/30/TRUE
-    '0x1bd908569c1157417abae2ed3de3cb04c734b984',
-  ],
+  // // List of STABLE/NATIVE pools to use to price NATIVE in USD
+  // stablePoolAddresses: [
+  //   // USDC/MATIC/5/FALSE
+  //   '0xd5ed08fdedd447a3172449e6d4e2e5265157e6a3',
+  //   // USDC/WMATIC/30/TRUE
+  //   '0x699e820323dd5e51b243003ef74ac812b7f280ed',
+  //   // USDT/WMATIC/30/TRUE
+  //   '0x25d8dfef6f432eb0f7db0b9f61fef352f08b1979',
+  //   // DAI/WMATIC/30/TRUE
+  //   '0x1bd908569c1157417abae2ed3de3cb04c734b984',
+  // ],
   minimumNativeLiquidity: 1000,
   miso: {
     accessControls: { address: '0x6b2a3ff504798886862ca5ce501e080947a506a2', startBlock: 26075438 },

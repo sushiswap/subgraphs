@@ -69,7 +69,7 @@ module.exports = {
     address: '0x8798249c2e607446efb7ad49ec89dd1865ff4272',
     startBlock: 10801571,
   },
-  minimumNativeLiquidity: '3',
+  minimumNativeLiquidity: '1',
   furo: {
     stream: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
     vesting: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
