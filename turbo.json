@@ -10,7 +10,7 @@
     },
     "build": {
       "outputs": ["build/**"],
-      "dependsOn": ["generate"]
+      "dependsOn": ["generate", "$NETWORK"]
     },
     "test": {
       "outputs": []
