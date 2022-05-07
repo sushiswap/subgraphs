@@ -3,8 +3,8 @@ import { store } from '@graphprotocol/graph-ts'
 
 export function createWhitelistedToken(id: string): WhitelistedToken {
   const whitelisted = new WhitelistedToken(id)
-  whitelisted.token = id
-  whitelisted.price = id
+  // whitelisted.token = id
+  // whitelisted.price = id
   whitelisted.save()
   return whitelisted
 }
