@@ -113,9 +113,25 @@ export function updateTokenPrice(token: Token): TokenPrice {
     const asset0 = getPairAsset(whitelistedPair.pair.concat(':asset:0'))
     const asset1 = getPairAsset(whitelistedPair.pair.concat(':asset:1'))
 
+    const tokenPrice0 = getTokenPrice(asset0.token)
+    const nativeLiquidity0 = asset0.reserve.times(tokenPrice0.derivedNative)
+    const tokenPrice1 = getTokenPrice(asset1.token)
+    const nativeLiquidity1 = asset1.reserve.times(tokenPrice1.derivedNative)
+
+    // Ensure we never use pools which are grossly unbalanced because this will cause lots of tears and
+    // become a major issue with aggregate totals. 95% seems like a maximum acceptable deviation...
+    if (
+      nativeLiquidity1.gt(BigDecimal.fromString('0')) &&
+      nativeLiquidity0.div(nativeLiquidity1).times(BigDecimal.fromString('100')).lt(BigDecimal.fromString('95')) &&
+      nativeLiquidity0.gt(BigDecimal.fromString('0')) &&
+      nativeLiquidity1.div(nativeLiquidity0).times(BigDecimal.fromString('100')).lt(BigDecimal.fromString('95'))
+    ) {
+      continue
+    }
+
     if (token.id == asset0.token) {
-      const tokenPrice1 = getTokenPrice(asset1.token)
-      const nativeLiquidity = asset1.reserve.times(tokenPrice1.derivedNative)
+      // const tokenPrice1 = getTokenPrice(asset1.token)
+      // const nativeLiquidity = asset1.reserve.times(tokenPrice1.derivedNative)
 
       log.debug(
         'Trying to price asset 0 {} - Opposite reserve: {} derivedNative: {} derivedUSD: {} nativeLiquidity: {}',
@@ -124,12 +140,12 @@ export function updateTokenPrice(token: Token): TokenPrice {
           asset1.reserve.toString(),
           tokenPrice1.derivedNative.toString(),
           tokenPrice1.derivedUSD.toString(),
-          nativeLiquidity.toString(),
+          nativeLiquidity1.toString(),
         ]
       )
 
-      if (nativeLiquidity.gt(mostLiquidity) && nativeLiquidity.gt(MINIMUM_NATIVE_LIQUIDITY)) {
-        mostLiquidity = nativeLiquidity
+      if (nativeLiquidity1.gt(mostLiquidity) && nativeLiquidity1.gt(MINIMUM_NATIVE_LIQUIDITY)) {
+        mostLiquidity = nativeLiquidity1
         const derivedNative = asset1.price.times(tokenPrice1.derivedNative)
         const derivedUSD = derivedNative.times(nativeTokenPrice.derivedUSD)
         tokenPriceToUpdate.derivedNative = derivedNative
@@ -144,8 +160,8 @@ export function updateTokenPrice(token: Token): TokenPrice {
     }
 
     if (token.id == asset1.token) {
-      const tokenPrice0 = getTokenPrice(asset0.token)
-      const nativeLiquidity = asset0.reserve.times(tokenPrice0.derivedNative)
+      // const tokenPrice0 = getTokenPrice(asset0.token)
+      // const nativeLiquidity = asset0.reserve.times(tokenPrice0.derivedNative)
 
       log.debug(
         'Trying to price asset 1 {} - Opposite reserve: {} derivedNative: {} derivedUSD: {} nativeLiquidity: {}',
@@ -154,12 +170,12 @@ export function updateTokenPrice(token: Token): TokenPrice {
           asset0.reserve.toString(),
           tokenPrice0.derivedNative.toString(),
           tokenPrice0.derivedUSD.toString(),
-          nativeLiquidity.toString(),
+          nativeLiquidity0.toString(),
         ]
       )
 
-      if (nativeLiquidity.gt(mostLiquidity) && nativeLiquidity.gt(MINIMUM_NATIVE_LIQUIDITY)) {
-        mostLiquidity = nativeLiquidity
+      if (nativeLiquidity0.gt(mostLiquidity) && nativeLiquidity0.gt(MINIMUM_NATIVE_LIQUIDITY)) {
+        mostLiquidity = nativeLiquidity0
         const derivedNative = asset0.price.times(tokenPrice0.derivedNative)
         const derivedUSD = derivedNative.times(nativeTokenPrice.derivedUSD)
         tokenPriceToUpdate.derivedNative = derivedNative
