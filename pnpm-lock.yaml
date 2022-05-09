@@ -189,7 +189,7 @@ importers:
     specifiers:
       '@graphprotocol/graph-cli': ^0.26.0
       '@graphprotocol/graph-ts': ^0.24.1
-      '@sushiswap/trident': 1.0.0-canary.37
+      '@sushiswap/trident': 1.0.0-canary.38
       abi: workspace:*
       assemblyscript: ^0.19.20
       matchstick-as: ^0.3.0
@@ -197,7 +197,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli': 0.26.0
       '@graphprotocol/graph-ts': 0.24.1
-      '@sushiswap/trident': 1.0.0-canary.37
+      '@sushiswap/trident': 1.0.0-canary.38
       abi: link:../../packages/abi
       assemblyscript: 0.19.23
       matchstick-as: 0.3.0
@@ -503,8 +503,8 @@ packages:
       prettier: 2.6.2
     dev: true
 
-  /@sushiswap/trident/1.0.0-canary.37:
-    resolution: {integrity: sha512-KTAbfEk6z1RarLLlwpZ6mxZX+lkrDmc5j+d06Obbojpqdv28qg6O8VzuWO1g9Odtm0K3O430KrkyR6ZLUF/SRQ==}
+  /@sushiswap/trident/1.0.0-canary.38:
+    resolution: {integrity: sha512-TnhOhKGevcMmGfj5rbABmmOmus7j0kHmDu2lNbPvnq+z7RB9mEsLG6DiyzEM9t+5SMm3ckTwt1GXhRgYPmy7mQ==}
     dev: true
 
   /@types/bn.js/5.1.0:

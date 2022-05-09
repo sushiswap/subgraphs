@@ -235,37 +235,37 @@ export function onSync(event: Sync): void {
   let token0Price: TokenPrice
   let token1Price: TokenPrice
 
-  const assets = [asset0, asset1]
+  // const assets = [asset0, asset1]
 
-  for (let i = 0; i < assets.length; i++) {
-    const whitelisted = WhitelistedToken.load(assets[i].token)
-    if (whitelisted) {
-      const address = assets[Math.abs(i - 1) as i32].token
+  // for (let i = 0; i < assets.length; i++) {
+  //   const whitelisted = WhitelistedToken.load(assets[i].token)
+  //   if (whitelisted && assets[Math.abs(i - 1) as i32].toHex() !== NATIVE_ADDRESS) {
+  //     const address = assets[Math.abs(i - 1) as i32].token
 
-      // Check if a relation is already defined between the token to price and pool
-      if (TokenPricePool.load(address.concat(':').concat(poolAddress)) !== null) {
-        continue
-      }
+  //     // Check if a relation is already defined between the token to price and pool
+  //     if (TokenPricePool.load(address.concat(':').concat(poolAddress)) !== null) {
+  //       continue
+  //     }
 
-      const tokenPrice = getOrCreateTokenPrice(address)
+  //     const tokenPrice = getOrCreateTokenPrice(address)
 
-      const whitelistedPool = createWhitelistedPool(
-        tokenPrice.token.concat(':').concat(tokenPrice.whitelistedPoolCount.toString())
-      )
-      whitelistedPool.pool = poolAddress
-      whitelistedPool.price = tokenPrice.id
-      whitelistedPool.save()
+  //     const whitelistedPool = createWhitelistedPool(
+  //       tokenPrice.token.concat(':').concat(tokenPrice.whitelistedPoolCount.toString())
+  //     )
+  //     whitelistedPool.pool = poolAddress
+  //     whitelistedPool.price = tokenPrice.id
+  //     whitelistedPool.save()
 
-      tokenPrice.whitelistedPoolCount = tokenPrice.whitelistedPoolCount.plus(BigInt.fromI32(1))
-      tokenPrice.save()
+  //     tokenPrice.whitelistedPoolCount = tokenPrice.whitelistedPoolCount.plus(BigInt.fromI32(1))
+  //     tokenPrice.save()
 
-      createWhitelistedToken(address)
+  //     createWhitelistedToken(address)
 
-      // Define relationship so we don't add it again here
-      const tokenPricePool = new TokenPricePool(tokenPrice.token.concat(':').concat(poolAddress))
-      tokenPricePool.save()
-    }
-  }
+  //     // Define relationship so we don't add it again here
+  //     const tokenPricePool = new TokenPricePool(tokenPrice.token.concat(':').concat(poolAddress))
+  //     tokenPricePool.save()
+  //   }
+  // }
 
   // If the pool is one in which we want to update the native price
   if (STABLE_POOL_ADDRESSES.includes(poolAddress)) {

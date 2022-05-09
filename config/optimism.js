@@ -12,11 +12,11 @@ module.exports = {
     base: 'QmYJh2tYmFv9yGxeyRHDTKKCFgyHAv7wgczpWojF5B4BqN',
     startBlock: 7019815,
   },
-  masterDeployer: { address: '0x1b02da8cb0d097eb8d57a175b88c7d8b47997506', startBlock: 7019990 },
+  masterDeployer: { address: '0xcaabdd9cf4b61813d4a52f980d6bc1b713fe66f5', startBlock: 7464195 },
   concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
   constantProductPoolFactory: {
-    address: '0x0769fd68dfb93167989c6f7254cd0d766fb2841f',
-    initCodeHash: '0x953e4e8b8d75b1566b035158eb8f23be70b74bb4ff3eb020de19a926e0ebbd56',
+    address: '0x93395129bd3fcf49d95730d3c2737c17990ff328',
+    initCodeHash: '0x3172d82413be467c1130709f7479a07def9b99caf8e0059f248c131081e4ea09',
   },
   hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
   indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
@@ -45,9 +45,9 @@ module.exports = {
   // List of STABLE/NATIVE pools to use to price NATIVE in USD
   stablePoolAddresses: [
     // USDC/WETH/30/FALSE
-    '0xf74c68E33281e911415EEb9A032c4EF5197BB3F0',
+    '0x1e31a2c6e6614273d740358affb46bef180efb7b',
     // DAI/WETH/30/FALSE
-    '0xf1f284621a698d900cec56f5a9c2a14fd8119609',
+    // '0xf1f284621a698d900cec56f5a9c2a14fd8119609',
   ],
   minimumNativeLiquidity: '0.01',
 

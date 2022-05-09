@@ -94,7 +94,10 @@ export function createConstantProductPool(deployParams: DeployPool__Params): Con
     asset.save()
 
     // if (WHITELISTED_TOKEN_ADDRESSES.includes(token.id) || token.id == NATIVE_ADDRESS) {
-    if (token.id == NATIVE_ADDRESS || WhitelistedToken.load(token.id) !== null) {
+    if (
+      token.id == NATIVE_ADDRESS ||
+      (WhitelistedToken.load(token.id) !== null && assets[Math.abs(i - 1) as i32].toHex() != NATIVE_ADDRESS)
+    ) {
       const address = assets[Math.abs(i - 1) as i32].toHex()
       const tokenPrice = getOrCreateTokenPrice(address)
 

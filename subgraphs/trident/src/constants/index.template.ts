@@ -54,25 +54,27 @@ export const WHITELISTED_TOKEN_ADDRESSES: string[] = '{{ whitelistedTokenAddress
 
 export const STABLE_TOKEN_ADDRESSES: string[] = '{{ stableTokenAddresses }}'.split(',')
 
+export const STABLE_POOL_ADDRESSES: string[] = '{{ stablePoolAddresses }}'.split(',')
+
 const STABLE_POOL_PERMUTATIONS = combinate(STABLE_TOKEN_ADDRESSES, NATIVE_ADDRESS, [true, false], [1, 5, 10, 30, 100])
 
-export const STABLE_POOL_ADDRESSES: string[] = STABLE_POOL_PERMUTATIONS.map<string>((perm: CombinateReturn) => {
-  return getCreate2Address(
-    Bytes.fromByteArray(Bytes.fromHexString('{{ constantProductPoolFactory.address }}')),
-    Bytes.fromByteArray(
-      crypto.keccak256(
-        ByteArray.fromHexString(
-          '0x' +
-            perm.tokens[0].slice(2).padStart(32, '0') +
-            perm.tokens[1].slice(2).padStart(32, '0') +
-            perm.fee.toString(16).padStart(32, '0') +
-            (+perm.oracle).toString(16).padStart(32, '0')
-        )
-      )
-    ),
-    Bytes.fromByteArray(Bytes.fromHexString('{{ constantProductPoolFactory.initCodeHash }}'))
-  ).toHex()
-})
+// export const STABLE_POOL_ADDRESSES: string[] = STABLE_POOL_PERMUTATIONS.map<string>((perm: CombinateReturn) => {
+//   return getCreate2Address(
+//     Bytes.fromByteArray(Bytes.fromHexString('{{ constantProductPoolFactory.address }}')),
+//     Bytes.fromByteArray(
+//       crypto.keccak256(
+//         ByteArray.fromHexString(
+//           '0x' +
+//             perm.tokens[0].slice(2).padStart(32, '0') +
+//             perm.tokens[1].slice(2).padStart(32, '0') +
+//             perm.fee.toString(16).padStart(32, '0') +
+//             (+perm.oracle).toString(16).padStart(32, '0')
+//         )
+//       )
+//     ),
+//     Bytes.fromByteArray(Bytes.fromHexString('{{ constantProductPoolFactory.initCodeHash }}'))
+//   ).toHex()
+// })
 
 // Minimum liqudiity threshold in native currency
 export const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('{{ minimumNativeLiquidity }}')

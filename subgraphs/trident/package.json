@@ -25,7 +25,7 @@
     "abi": "workspace:*",
     "@graphprotocol/graph-cli": "^0.26.0",
     "@graphprotocol/graph-ts": "^0.24.1",
-    "@sushiswap/trident": "1.0.0-canary.37",
+    "@sushiswap/trident": "1.0.0-canary.38",
     "matchstick-as": "^0.3.0",
     "assemblyscript": "^0.19.20",
     "wabt": "1.0.24"
