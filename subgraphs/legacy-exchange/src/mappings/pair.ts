@@ -226,12 +226,30 @@ export function onSync(event: SyncEvent): void {
   let token0Price: TokenPrice
   let token1Price: TokenPrice
 
+  // If the pool is one in which we want to update the native price
+  if (STABLE_POOL_ADDRESSES.includes(pairAddress)) {
+    if (token0.id == NATIVE_ADDRESS) {
+      token0Price = updateTokenPrice(token0)
+      token1Price = updateTokenPrice(token1)
+      nativePrice = token0Price
+    } else {
+      token1Price = updateTokenPrice(token1)
+      token0Price = updateTokenPrice(token0)
+      nativePrice = token1Price
+    }
+  } else {
+    // Avoid making this call unless neccasary
+    nativePrice = getOrCreateTokenPrice(NATIVE_ADDRESS)
+    token0Price = updateTokenPrice(token0)
+    token1Price = updateTokenPrice(token1)
+  }
+
   const assets = [asset0, asset1]
 
   for (let i = 0; i < assets.length; i++) {
     const whitelisted = WhitelistedToken.load(assets[i].token)
 
-    if (whitelisted) {
+    if (whitelisted && assets[Math.abs(i - 1) as i32].token != NATIVE_ADDRESS) {
       const address = assets[Math.abs(i - 1) as i32].token
 
       // Check if a relation is already defined between the token to price and pool
@@ -257,24 +275,6 @@ export function onSync(event: SyncEvent): void {
       const tokenPricePair = new TokenPricePair(tokenPrice.token.concat(':').concat(pairAddress))
       tokenPricePair.save()
     }
-  }
-
-  // If the pool is one in which we want to update the native price
-  if (STABLE_POOL_ADDRESSES.includes(pairAddress)) {
-    if (token0.id == NATIVE_ADDRESS) {
-      token0Price = updateTokenPrice(token0)
-      token1Price = updateTokenPrice(token1)
-      nativePrice = token0Price
-    } else {
-      token1Price = updateTokenPrice(token1)
-      token0Price = updateTokenPrice(token0)
-      nativePrice = token1Price
-    }
-  } else {
-    // Avoid making this call unless neccasary
-    nativePrice = getOrCreateTokenPrice(NATIVE_ADDRESS)
-    token0Price = updateTokenPrice(token0)
-    token1Price = updateTokenPrice(token1)
   }
 
   const liquidityNative = asset0.reserve
