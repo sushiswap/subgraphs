@@ -119,30 +119,46 @@ export function updateTokenPrice(token: Token): TokenPrice {
     const nativeLiquidity1 = asset1.reserve.times(tokenPrice1.derivedNative)
 
     // Ensure we never use pools which are grossly unbalanced because this will cause lots of tears and
-    // become a major issue with aggregate totals. 95% seems like a maximum acceptable deviation...
+    // become a major issue with aggregate totals. 5% seems like a reasonable deviation before forcing
+    // a reset...
     if (
       nativeLiquidity1.gt(BigDecimal.fromString('0')) &&
-      nativeLiquidity0.div(nativeLiquidity1).times(BigDecimal.fromString('100')).lt(BigDecimal.fromString('95')) &&
+      nativeLiquidity0.div(nativeLiquidity1).times(BigDecimal.fromString('100')).lt(BigDecimal.fromString('95'))
+    ) {
+      asset0.price = BigDecimal.fromString('0')
+      asset0.save()
+
+      tokenPrice0.derivedNative = BigDecimal.fromString('0')
+      tokenPrice0.derivedUSD = BigDecimal.fromString('0')
+      tokenPrice0.save()
+    }
+
+    if (
       nativeLiquidity0.gt(BigDecimal.fromString('0')) &&
       nativeLiquidity1.div(nativeLiquidity0).times(BigDecimal.fromString('100')).lt(BigDecimal.fromString('95'))
     ) {
-      continue
+      asset1.price = BigDecimal.fromString('0')
+      asset1.save()
+
+      tokenPrice1.derivedNative = BigDecimal.fromString('0')
+      tokenPrice1.derivedUSD = BigDecimal.fromString('0')
+      tokenPrice1.save()
     }
 
     if (token.id == asset0.token) {
       // const tokenPrice1 = getTokenPrice(asset1.token)
       // const nativeLiquidity = asset1.reserve.times(tokenPrice1.derivedNative)
 
-      log.debug(
-        'Trying to price asset 0 {} - Opposite reserve: {} derivedNative: {} derivedUSD: {} nativeLiquidity: {}',
-        [
-          token.symbol,
-          asset1.reserve.toString(),
-          tokenPrice1.derivedNative.toString(),
-          tokenPrice1.derivedUSD.toString(),
-          nativeLiquidity1.toString(),
-        ]
-      )
+      // log.debug(
+      //   'Trying to price asset 0 {} - Opposite reserve: {} derivedNative: {} derivedUSD: {} nativeLiquidity: {}',
+      //   [
+      //     token.symbol,
+      //     asset1.reserve.toString(),
+      //     tokenPrice1.derivedNative.toString(),
+      //     tokenPrice1.derivedUSD.toString(),
+      //     nativeLiquidity1.toString(),
+      //   ]
+      // )
 
       if (nativeLiquidity1.gt(mostLiquidity) && nativeLiquidity1.gt(MINIMUM_NATIVE_LIQUIDITY)) {
         mostLiquidity = nativeLiquidity1
