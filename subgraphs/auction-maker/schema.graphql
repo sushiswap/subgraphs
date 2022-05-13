@@ -58,6 +58,7 @@ type Token @entity {
   symbol: String!
   symbolSuccess: Boolean!
   auctionCount: BigInt!
+  auctions: [Auction!] @derivedFrom(field: "token")
   name: String!
   nameSuccess: Boolean!
   decimals: BigInt!
