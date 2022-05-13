@@ -1,7 +1,6 @@
 enum VestingStatus {
   ACTIVE
   CANCELLED
-  EXPIRED
 }
 
 enum SchedulePeriodType {

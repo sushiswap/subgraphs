@@ -1,7 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
-import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from './constants/index.template'
+import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from './../src/constants'
 import { onCancelStream, onCreateStream, onUpdateStream, onWithdraw } from '../src/mappings/stream'
 import {
   createCancelStreamEvent,

@@ -1,12 +1,11 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
-import { FURO_STREAM } from './constants/index.template'
+import { FURO_STREAM } from './../src/constants'
 import { onCancelStream, onCreateStream, onWithdraw } from '../src/mappings/stream'
 import { createCancelStreamEvent, createStreamEvent, createTokenMock, createWithdrawEvent } from './mocks'
 
 const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
-const WBTC_ADDRESS = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599'
 const SENDER = Address.fromString('0x00000000000000000000000000000000000a71ce')
 const RECIEVER = Address.fromString('0x0000000000000000000000000000000000000b0b')
 const STREAM_ID = BigInt.fromString('1001')
