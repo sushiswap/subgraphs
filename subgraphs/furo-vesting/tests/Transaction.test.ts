@@ -54,6 +54,7 @@ test('Deposit transaction is created on vesting creation event', () => {
   assert.fieldEquals('Transaction', id, 'to', RECIPIENT.toHex())
   assert.fieldEquals('Transaction', id, 'token', WETH_ADDRESS.toHex())
   assert.fieldEquals('Transaction', id, 'toBentoBox', 'true')
+  assert.fieldEquals('Transaction', id, 'txHash', vestingEvent.transaction.hash.toHex())
   assert.fieldEquals('Transaction', id, 'createdAtBlock', vestingEvent.block.number.toString())
   assert.fieldEquals('Transaction', id, 'createdAtTimestamp', vestingEvent.block.timestamp.toString())
 
@@ -76,6 +77,7 @@ test('Disbursement transactions are created when vesting is cancelled', () => {
   assert.fieldEquals('Transaction', id, 'to', RECIPIENT.toHex())
   assert.fieldEquals('Transaction', id, 'token', WETH_ADDRESS.toHex())
   assert.fieldEquals('Transaction', id, 'toBentoBox', 'true')
+  assert.fieldEquals('Transaction', id, 'txHash', vestingEvent.transaction.hash.toHex())
   assert.fieldEquals('Transaction', id, 'createdAtBlock', vestingEvent.block.number.toString())
   assert.fieldEquals('Transaction', id, 'createdAtTimestamp', vestingEvent.block.timestamp.toString())
 
@@ -87,6 +89,7 @@ test('Disbursement transactions are created when vesting is cancelled', () => {
   assert.fieldEquals('Transaction', id2, 'to', SENDER.toHex())
   assert.fieldEquals('Transaction', id2, 'token', WETH_ADDRESS.toHex())
   assert.fieldEquals('Transaction', id2, 'toBentoBox', 'true')
+  assert.fieldEquals('Transaction', id, 'txHash', vestingEvent.transaction.hash.toHex())
   assert.fieldEquals('Transaction', id2, 'createdAtBlock', vestingEvent.block.number.toString())
   assert.fieldEquals('Transaction', id2, 'createdAtTimestamp', vestingEvent.block.timestamp.toString())
 
@@ -108,6 +111,7 @@ test('Withdrawal event creates withdrawal transaction', () => {
   assert.fieldEquals('Transaction', id, 'to', RECIPIENT.toHex())
   assert.fieldEquals('Transaction', id, 'token', WETH_ADDRESS.toHex())
   assert.fieldEquals('Transaction', id, 'toBentoBox', 'true')
+  assert.fieldEquals('Transaction', id, 'txHash', vestingEvent.transaction.hash.toHex())
   assert.fieldEquals('Transaction', id, 'createdAtBlock', vestingEvent.block.number.toString())
   assert.fieldEquals('Transaction', id, 'createdAtTimestamp', vestingEvent.block.timestamp.toString())
 

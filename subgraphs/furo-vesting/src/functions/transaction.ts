@@ -15,6 +15,7 @@ function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction 
     transaction = new Transaction(id)
     transaction.createdAtBlock = event.block.number
     transaction.createdAtTimestamp = event.block.timestamp
+    transaction.txHash = event.transaction.hash.toHex()
     increaseTransactionCount()
     transaction.save()
   }
