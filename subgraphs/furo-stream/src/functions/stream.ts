@@ -32,7 +32,7 @@ export function createStream(event: CreateStreamEvent): Stream {
   let token = getOrCreateToken(event.params.token.toHex(), event)
 
   stream.recipient = recipient.id
-  stream.amount = event.params.amount
+  stream.totalAmount = event.params.amount
   stream.withdrawnAmount = BigInt.fromU32(0)
   stream.token = token.id
   stream.status = ACTIVE
@@ -40,6 +40,7 @@ export function createStream(event: CreateStreamEvent): Stream {
   stream.fromBentoBox = event.params.fromBentoBox
   stream.startedAt = event.params.startTime
   stream.expiresAt = event.params.endTime
+  stream.txHash = event.transaction.hash.toHex()
 
   stream.createdAtBlock = event.block.number
   stream.createdAtTimestamp = event.block.timestamp
@@ -53,7 +54,7 @@ export function createStream(event: CreateStreamEvent): Stream {
 export function updateStream(event: UpdateStreamEvent): Stream {
   let stream = getOrCreateStream(event.params.streamId)
   stream.status = EXTENDED
-  stream.amount = stream.amount.plus(event.params.topUpAmount)
+  stream.totalAmount = stream.totalAmount.plus(event.params.topUpAmount)
   stream.expiresAt = stream.expiresAt.plus(event.params.extendTime)
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
@@ -65,6 +66,7 @@ export function updateStream(event: UpdateStreamEvent): Stream {
 export function cancelStream(event: CancelStreamEvent): Stream {
   let stream = getOrCreateStream(event.params.streamId)
   stream.status = CANCELLED
+  stream.withdrawnAmount = stream.withdrawnAmount.plus(event.params.recipientBalance)
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
   stream.save()
@@ -84,7 +86,7 @@ export function withdrawFromStream(event: WithdrawEvent): Stream {
 
 export function transferStream(event: TransferEvent): void {
   if (!isValidTransfer(event)) {
-    return 
+    return
   }
 
   let recipient = getOrCreateUser(event.params.to, event)
@@ -93,7 +95,6 @@ export function transferStream(event: TransferEvent): void {
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
   stream.save()
-
 }
 
 /**

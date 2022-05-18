@@ -1,5 +1,5 @@
 import { Address } from '@graphprotocol/graph-ts'
-import { ADDRESS_ZERO, MASTER_DEPLOYER_ADDRESS } from '../constants/addresses'
+import { ADDRESS_ZERO, MASTER_DEPLOYER_ADDRESS } from '../constants'
 import { MasterDeployer } from '../../generated/schema'
 import { MasterDeployer as MasterDeployerContract } from '../../generated/MasterDeployer/MasterDeployer'
 

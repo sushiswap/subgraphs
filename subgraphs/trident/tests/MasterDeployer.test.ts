@@ -6,7 +6,7 @@ import {
   CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS,
   MASTER_DEPLOYER_ADDRESS,
   WHITELISTED_TOKEN_ADDRESSES,
-} from '../src/constants/addresses'
+} from '../src/constants'
 import { onAddToWhitelist, onDeployPool, onRemoveFromWhitelist } from '../src/mappings/master-deployer'
 import {
   createAddToWhitelistEvent,

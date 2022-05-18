@@ -330,6 +330,10 @@ type TokenPrice @entity {
   whitelistedPools: [WhitelistedPool!]! @derivedFrom(field: "price")
 }
 
+type TokenPricePool @entity {
+  id: ID!
+}
+
 type WhitelistedToken @entity {
   id: ID!
   price: TokenPrice!

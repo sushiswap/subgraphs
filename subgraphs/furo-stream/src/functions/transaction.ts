@@ -6,7 +6,7 @@ import {
   Withdraw as WithdrawEvent,
 } from '../../generated/FuroStream/FuroStream'
 import { Stream, Transaction } from '../../generated/schema'
-import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from '../constants'
+import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from '../constants/index.template'
 import { increaseTransactionCount } from './furo-stream'
 import { getOrCreateUser } from './user'
 

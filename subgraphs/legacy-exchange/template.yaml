@@ -21,9 +21,9 @@ dataSources:
         - Pair
       abis:
         - name: Factory
-          file: ../../node_modules/@sushiswap/core/build/abi/UniswapV2Factory.json
+          file: ./node_modules/@sushiswap/core/build/abi/UniswapV2Factory.json
         - name: Pair
-          file: ../../node_modules/@sushiswap/core/build/abi/UniswapV2Pair.json
+          file: ./node_modules/@sushiswap/core/build/abi/UniswapV2Pair.json
         - name: ERC20
           file: ./node_modules/abi/ERC20/ERC20.json
         - name: SymbolBytes32
@@ -49,9 +49,9 @@ templates:
         - Token
       abis:
         - name: Pair
-          file: ../../node_modules/@sushiswap/core/build/abi/UniswapV2Pair.json
+          file: ./node_modules/@sushiswap/core/build/abi/UniswapV2Pair.json
         - name: Factory
-          file: ../../node_modules/@sushiswap/core/build/abi/UniswapV2Factory.json
+          file: ./node_modules/@sushiswap/core/build/abi/UniswapV2Factory.json
       eventHandlers:
         - event: Mint(indexed address,uint256,uint256)
           handler: onMint

@@ -19,6 +19,9 @@ module.exports = {
     // base: '',
     startBlock: 229409,
   },
+  kashi: {
+    medium: '0xa010ee0226cd071bebd8919a1f675cae1f1f5d3e',
+  },
   whitelistedTokenAddresses: [
     // WNATIVE - This is actually quite important, though uneeded here anymore since
     // it's now apart of the whitelisted token check in createPair, because the
@@ -51,12 +54,26 @@ module.exports = {
     // FRAX
     FRAX_ADDRESS,
   ],
-  minimumNativeLiquidity: 1,
+  minimumNativeLiquidity: 3,
+  miso: {
+    accessControls: { address: '0x1be211d8da40bc0ae8719c6663307bfc987b1d6c', startBlock: 9930886 },
+    market: { address: '0x351447fc9bd20a917783e159e61e86edda0b0187', startBlock: 9931078 },
+  },
   legacy: {
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
       startBlock: 70,
     },
+  },
+  furo: {
+    stream: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+    vesting: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+  },
+  auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+  staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+  blocks: {
+    address: '0x0000000000000000000000000000000000000000',
+    startBlock: 0,
   },
 }

@@ -1,6 +1,6 @@
 import { BigInt, log } from '@graphprotocol/graph-ts'
 import { NATIVE_ADDRESS, WHITELISTED_TOKEN_ADDRESSES } from '../constants'
-import { Pair, PairAsset, PairKpi, WhitelistedToken } from '../../generated/schema'
+import { Pair, PairAsset, PairKpi, WhitelistedToken, TokenPricePair } from '../../generated/schema'
 
 import { PairCreated__Params } from '../../generated/Factory/Factory'
 import { Pair as PairTemplate } from '../../generated/templates'
@@ -8,6 +8,7 @@ import { createWhitelistedPair } from './whitelisted-pair'
 import { getOrCreateFactory } from './factory'
 import { getOrCreateToken } from './token'
 import { getOrCreateTokenPrice } from './token-price'
+import { createWhitelistedToken } from './whitelisted-token'
 
 export function getPairAsset(id: string): PairAsset {
   return PairAsset.load(id) as PairAsset
@@ -46,9 +47,11 @@ export function createPair(params: PairCreated__Params): Pair {
     asset.token = token.id
     asset.save()
 
-    const whitelistedToken = WhitelistedToken.load(token.id)
-
-    if (WHITELISTED_TOKEN_ADDRESSES.includes(token.id) || whitelistedToken !== null || token.id == NATIVE_ADDRESS) {
+    // if (WHITELISTED_TOKEN_ADDRESSES.includes(token.id) || whitelistedToken !== null || token.id == NATIVE_ADDRESS) {
+    if (
+      token.id == NATIVE_ADDRESS ||
+      (WhitelistedToken.load(token.id) !== null && assets[Math.abs(i - 1) as i32].toHex() != NATIVE_ADDRESS)
+    ) {
       const address = assets[Math.abs(i - 1) as i32].toHex()
       const tokenPrice = getOrCreateTokenPrice(address)
 
@@ -61,6 +64,12 @@ export function createPair(params: PairCreated__Params): Pair {
 
       tokenPrice.whitelistedPairCount = tokenPrice.whitelistedPairCount.plus(BigInt.fromI32(1))
       tokenPrice.save()
+
+      createWhitelistedToken(address)
+
+      // Define relationship so that in "sync" we don't add it again.
+      const tokenPricePair = new TokenPricePair(tokenPrice.token.concat(':').concat(id))
+      tokenPricePair.save()
     }
   }
 

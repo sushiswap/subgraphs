@@ -1,6 +1,6 @@
 // Pricing module...
 import { BigDecimal, log } from '@graphprotocol/graph-ts'
-import { NATIVE_ADDRESS, STABLE_POOL_ADDRESSES, STABLE_TOKEN_ADDRESSES } from '../constants'
+import { NATIVE_ADDRESS, STABLE_POOL_ADDRESSES, STABLE_TOKEN_ADDRESSES, MINIMUM_NATIVE_LIQUIDITY } from '../constants'
 import { PairAsset, Token, TokenPrice } from '../../generated/schema'
 
 import { getPairAsset } from './pair'
@@ -31,9 +31,6 @@ export function getOrCreateTokenPrice(token: string): TokenPrice {
 export function getNativeTokenPrice(): TokenPrice {
   return getOrCreateTokenPrice(NATIVE_ADDRESS)
 }
-
-// Minimum liqudiity threshold in native currency
-const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('100')
 
 export function getNativePriceInUSD(): BigDecimal {
   // 1. Generate list of stable pairs
@@ -116,23 +113,55 @@ export function updateTokenPrice(token: Token): TokenPrice {
     const asset0 = getPairAsset(whitelistedPair.pair.concat(':asset:0'))
     const asset1 = getPairAsset(whitelistedPair.pair.concat(':asset:1'))
 
+    const tokenPrice0 = getTokenPrice(asset0.token)
+    const nativeLiquidity0 = asset0.reserve.times(tokenPrice0.derivedNative)
+    const tokenPrice1 = getTokenPrice(asset1.token)
+    const nativeLiquidity1 = asset1.reserve.times(tokenPrice1.derivedNative)
+
+    // Ensure we never use pools which are grossly unbalanced because this will cause lots of tears and
+    // become a major issue with aggregate totals. 5% seems like a reasonable deviation before forcing
+    // a reset...
+    if (
+      nativeLiquidity1.gt(BigDecimal.fromString('0')) &&
+      nativeLiquidity0.div(nativeLiquidity1).times(BigDecimal.fromString('100')).lt(BigDecimal.fromString('95'))
+    ) {
+      asset0.price = BigDecimal.fromString('0')
+      asset0.save()
+
+      tokenPrice0.derivedNative = BigDecimal.fromString('0')
+      tokenPrice0.derivedUSD = BigDecimal.fromString('0')
+      tokenPrice0.save()
+    }
+
+    if (
+      nativeLiquidity0.gt(BigDecimal.fromString('0')) &&
+      nativeLiquidity1.div(nativeLiquidity0).times(BigDecimal.fromString('100')).lt(BigDecimal.fromString('95'))
+    ) {
+      asset1.price = BigDecimal.fromString('0')
+      asset1.save()
+
+      tokenPrice1.derivedNative = BigDecimal.fromString('0')
+      tokenPrice1.derivedUSD = BigDecimal.fromString('0')
+      tokenPrice1.save()
+    }
+
     if (token.id == asset0.token) {
-      const tokenPrice1 = getTokenPrice(asset1.token)
-      const nativeLiquidity = asset1.reserve.times(tokenPrice1.derivedNative)
+      // const tokenPrice1 = getTokenPrice(asset1.token)
+      // const nativeLiquidity = asset1.reserve.times(tokenPrice1.derivedNative)
 
-      log.debug(
-        'Trying to price asset 0 {} - Opposite reserve: {} derivedNative: {} derivedUSD: {} nativeLiquidity: {}',
-        [
-          token.symbol,
-          asset1.reserve.toString(),
-          tokenPrice1.derivedNative.toString(),
-          tokenPrice1.derivedUSD.toString(),
-          nativeLiquidity.toString(),
-        ]
-      )
+      // log.debug(
+      //   'Trying to price asset 0 {} - Opposite reserve: {} derivedNative: {} derivedUSD: {} nativeLiquidity: {}',
+      //   [
+      //     token.symbol,
+      //     asset1.reserve.toString(),
+      //     tokenPrice1.derivedNative.toString(),
+      //     tokenPrice1.derivedUSD.toString(),
+      //     nativeLiquidity1.toString(),
+      //   ]
+      // )
 
-      if (nativeLiquidity.gt(mostLiquidity) && nativeLiquidity.gt(MINIMUM_NATIVE_LIQUIDITY)) {
-        mostLiquidity = nativeLiquidity
+      if (nativeLiquidity1.gt(mostLiquidity) && nativeLiquidity1.gt(MINIMUM_NATIVE_LIQUIDITY)) {
+        mostLiquidity = nativeLiquidity1
         const derivedNative = asset1.price.times(tokenPrice1.derivedNative)
         const derivedUSD = derivedNative.times(nativeTokenPrice.derivedUSD)
         tokenPriceToUpdate.derivedNative = derivedNative
@@ -147,8 +176,8 @@ export function updateTokenPrice(token: Token): TokenPrice {
     }
 
     if (token.id == asset1.token) {
-      const tokenPrice0 = getTokenPrice(asset0.token)
-      const nativeLiquidity = asset0.reserve.times(tokenPrice0.derivedNative)
+      // const tokenPrice0 = getTokenPrice(asset0.token)
+      // const nativeLiquidity = asset0.reserve.times(tokenPrice0.derivedNative)
 
       log.debug(
         'Trying to price asset 1 {} - Opposite reserve: {} derivedNative: {} derivedUSD: {} nativeLiquidity: {}',
@@ -157,12 +186,12 @@ export function updateTokenPrice(token: Token): TokenPrice {
           asset0.reserve.toString(),
           tokenPrice0.derivedNative.toString(),
           tokenPrice0.derivedUSD.toString(),
-          nativeLiquidity.toString(),
+          nativeLiquidity0.toString(),
         ]
       )
 
-      if (nativeLiquidity.gt(mostLiquidity) && nativeLiquidity.gt(MINIMUM_NATIVE_LIQUIDITY)) {
-        mostLiquidity = nativeLiquidity
+      if (nativeLiquidity0.gt(mostLiquidity) && nativeLiquidity0.gt(MINIMUM_NATIVE_LIQUIDITY)) {
+        mostLiquidity = nativeLiquidity0
         const derivedNative = asset0.price.times(tokenPrice0.derivedNative)
         const derivedUSD = derivedNative.times(nativeTokenPrice.derivedUSD)
         tokenPriceToUpdate.derivedNative = derivedNative

@@ -63,6 +63,7 @@ test('Created vesting contains expected fields', () => {
   assert.fieldEquals('Vesting', id, 'fromBentoBox', 'true')
   assert.fieldEquals('Vesting', id, 'startedAt', START_TIME.toString())
   assert.fieldEquals('Vesting', id, 'expiresAt', END_TIME.toString())
+  assert.fieldEquals('Vesting', id, 'txHash', vestingEvent.transaction.hash.toHex())
   assert.fieldEquals('Vesting', id, 'createdAtBlock', vestingEvent.block.number.toString())
   assert.fieldEquals('Vesting', id, 'createdAtTimestamp', vestingEvent.block.timestamp.toString())
   assert.fieldEquals('Vesting', id, 'modifiedAtBlock', vestingEvent.block.number.toString())
@@ -77,6 +78,7 @@ test('Stop vesting updates the vesting entity', () => {
   let recipientAmount = CLIFF_AMOUNT
   let ownerAmount = TOTAL_AMOUNT.minus(recipientAmount)
   let cancelVestingEvent = createCancelVestingEvent(VESTING_ID, ownerAmount, recipientAmount, WETH_ADDRESS, true)
+  assert.fieldEquals('Vesting', id, 'withdrawnAmount', '0')
 
   onCancelVesting(cancelVestingEvent)
 
@@ -85,6 +87,8 @@ test('Stop vesting updates the vesting entity', () => {
   assert.fieldEquals('Vesting', id, 'cancelledAtTimestamp', cancelVestingEvent.block.timestamp.toString())
   assert.fieldEquals('Vesting', id, 'modifiedAtBlock', cancelVestingEvent.block.number.toString())
   assert.fieldEquals('Vesting', id, 'modifiedAtTimestamp', cancelVestingEvent.block.timestamp.toString())
+  assert.fieldEquals('Vesting', id, 'withdrawnAmount', cancelVestingEvent.params.recipientAmount.toString())
+
 
   cleanup()
 })

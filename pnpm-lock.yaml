@@ -1,4 +1,4 @@
-lockfileVersion: 5.3
+lockfileVersion: 5.4
 
 importers:
 
@@ -143,14 +143,14 @@ importers:
     specifiers:
       '@graphprotocol/graph-cli': ^0.27.0
       '@graphprotocol/graph-ts': ^0.24.1
-      '@sushiswap/miso': 1.0.0-canary.40
+      '@sushiswap/miso': 1.0.0-canary.48
       assemblyscript: ^0.19.20
       matchstick-as: ^0.4.0
       wabt: 1.0.24
     devDependencies:
       '@graphprotocol/graph-cli': 0.27.0
       '@graphprotocol/graph-ts': 0.24.1
-      '@sushiswap/miso': 1.0.0-canary.40
+      '@sushiswap/miso': 1.0.0-canary.48
       assemblyscript: 0.19.23
       matchstick-as: 0.4.2
       wabt: 1.0.24
@@ -189,7 +189,7 @@ importers:
     specifiers:
       '@graphprotocol/graph-cli': ^0.26.0
       '@graphprotocol/graph-ts': ^0.24.1
-      '@sushiswap/trident': 1.0.0-canary.30
+      '@sushiswap/trident': 1.0.0-canary.38
       abi: workspace:*
       assemblyscript: ^0.19.20
       matchstick-as: ^0.3.0
@@ -197,7 +197,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli': 0.26.0
       '@graphprotocol/graph-ts': 0.24.1
-      '@sushiswap/trident': 1.0.0-canary.30
+      '@sushiswap/trident': 1.0.0-canary.38
       abi: link:../../packages/abi
       assemblyscript: 0.19.23
       matchstick-as: 0.3.0
@@ -207,12 +207,14 @@ importers:
     specifiers:
       '@graphprotocol/graph-cli': ^0.27.0
       '@graphprotocol/graph-ts': ^0.24.1
+      abi: workspace:*
       assemblyscript: ^0.19.20
-      matchstick-as: ^0.4.0
+      matchstick-as: ^0.4.2
       wabt: 1.0.24
     devDependencies:
       '@graphprotocol/graph-cli': 0.27.0
       '@graphprotocol/graph-ts': 0.24.1
+      abi: link:../../packages/abi
       assemblyscript: 0.19.23
       matchstick-as: 0.4.2
       wabt: 1.0.24
@@ -489,8 +491,8 @@ packages:
     resolution: {integrity: sha512-Khd2i6Bob9uk7dCgVkhUioEoxRP28m6aj25MegAHvnJyxZPVzZDhxSkeL6wdv5MeAp2DwHkYqUq03KDfVTTP4Q==}
     dev: true
 
-  /@sushiswap/miso/1.0.0-canary.40:
-    resolution: {integrity: sha512-nO+S8TIIP4VkXgC0vdXVAqr+DqOpAe4V1eltCvsIi84fWwFs3f9Kdk2rC6QLxLpMfOGlD/I8/MdQ0mf+DfHFHg==}
+  /@sushiswap/miso/1.0.0-canary.48:
+    resolution: {integrity: sha512-D7qlWtvH2VjXbptb3hVQgrRYTKZCNFQUrsjjhIeUZIiyzJnrLMiUybwKVQdWPHICXLm6f1WXiy988VpqpE0TYQ==}
     dev: true
 
   /@sushiswap/prettier-config/0.1.0_prettier@2.6.2:
@@ -501,8 +503,8 @@ packages:
       prettier: 2.6.2
     dev: true
 
-  /@sushiswap/trident/1.0.0-canary.30:
-    resolution: {integrity: sha512-0AUQbNzjY4V1q/DLeDRGo8AqudjqIgPTjzlPyPTh2oHPlVvO4fI/FO6BdXp2bi7aiNdaGgLwMZYHQFMJoZh74g==}
+  /@sushiswap/trident/1.0.0-canary.38:
+    resolution: {integrity: sha512-TnhOhKGevcMmGfj5rbABmmOmus7j0kHmDu2lNbPvnq+z7RB9mEsLG6DiyzEM9t+5SMm3ckTwt1GXhRgYPmy7mQ==}
     dev: true
 
   /@types/bn.js/5.1.0:
@@ -2890,6 +2892,7 @@ packages:
     resolution: {integrity: sha512-N9iVG+CGJsI4b4ZGazjwLnxErD2d9Pe4DPvvXSxYA9tFNu8ymXME4Qs5HIQ0LMJpNM7zj+m0NlNnNeqFpKzqnA==}
     deprecated: Unmaintained
     dev: true
+    bundledDependencies: []
 
   /protocol-buffers-schema/3.6.0:
     resolution: {integrity: sha512-TdDRD+/QNdrCGCE7v8340QyuXd4kIWIgapsE2+n/SaGiSSbomYl4TjHlvIoCWRpE7wFt02EpB35VVA2ImcBVqw==}

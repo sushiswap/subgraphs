@@ -10,19 +10,28 @@
     "generated"
   ],
   "scripts": {
-    "codegen": "graph codegen",
+    "generate": "mustache ../../config/$NETWORK.js template.yaml > subgraph.yaml && mustache ../../config/$NETWORK.js src/constants/index.template.ts > src/constants/index.ts && graph codegen",
     "build": "graph build",
     "test": "graph test -r",
     "deploy": "graph deploy --node https://api.thegraph.com/deploy/ sushiswap/miso",
     "create-local": "graph create --node http://localhost:8020/ sushiswap/miso",
     "remove-local": "graph remove --node http://localhost:8020/ sushiswap/miso",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/miso",
-    "deploy-kovan": "graph deploy --product hosted-service sushiswap/kovan-miso"
+    "deploy-kovan": "graph deploy --product hosted-service sushiswap/miso-kovan",
+    "deploy-arbitrum": "graph deploy --product hosted-service sushiswap/miso-arbitrum",
+    "deploy-bsc": "graph deploy --product hosted-service sushiswap/miso-bsc",
+    "deploy-avalanche": "graph deploy --product hosted-service sushiswap/miso-avalanche",
+    "deploy-fantom": "graph deploy --product hosted-service sushiswap/miso-fantom",
+    "deploy-moonriver": "graph deploy --product hosted-service sushiswap/miso-moonriver",
+    "deploy-moonbeam": "graph deploy --product hosted-service sushiswap/miso-moonbeam",
+    "deploy-polygon": "graph deploy --product hosted-service sushiswap/miso-polygon",
+    "deploy-harmony": "graph deploy --product hosted-service sushiswap/miso-harmony",
+    "deploy-ethereum": "graph deploy --product hosted-service sushiswap/miso-ethereum"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.27.0",
     "@graphprotocol/graph-ts": "^0.24.1",
-    "@sushiswap/miso": "1.0.0-canary.40",
+    "@sushiswap/miso": "1.0.0-canary.48",
     "matchstick-as": "^0.4.0",
     "assemblyscript": "^0.19.20",
     "wabt": "1.0.24"

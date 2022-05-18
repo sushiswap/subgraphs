@@ -1,14 +1,19 @@
 {
-    "$schema": "https://turborepo.org/schema.json",
-    "pipeline": {
-        "codegen": {
-          "outputs": [".generated/**"]
-        },
-      "build": {
-        "outputs": [".build/**"]
-      },
-      "test": {
-        "outputs": []
-      }
+  "$schema": "https://turborepo.org/schema.json",
+  "pipeline": {
+    "generate": {
+      "outputs": [
+        "generated",
+        "subgraph.yaml",
+        "src/constants/index.ts"
+      ]
+    },
+    "build": {
+      "outputs": ["build/**"],
+      "dependsOn": ["generate", "$NETWORK"]
+    },
+    "test": {
+      "outputs": []
     }
   }
+}

@@ -1,5 +1,5 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { HYBRID_POOL_FACTORY_ADDRESS, MASTER_DEPLOYER_ADDRESS } from '../constants/addresses'
+import { HYBRID_POOL_FACTORY_ADDRESS, MASTER_DEPLOYER_ADDRESS } from '../constants'
 import { HybridPool, HybridPoolFactory } from '../../generated/schema'
 
 import { getOrCreateMasterDeployer } from './master-deployer'

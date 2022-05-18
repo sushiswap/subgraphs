@@ -5,7 +5,7 @@ import {
   NATIVE_ADDRESS,
   STABLE_POOL_ADDRESSES,
   WHITELISTED_TOKEN_ADDRESSES,
-} from '../src/constants/addresses'
+} from '../src/constants'
 import { Address, BigDecimal, BigInt, Bytes, ethereum, log } from '@graphprotocol/graph-ts'
 import { ConstantProductPoolFactory, MasterDeployer } from '../generated/schema'
 import { assert, newMockEvent, test } from 'matchstick-as/assembly/index'

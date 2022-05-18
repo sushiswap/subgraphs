@@ -1,6 +1,6 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 import { Incentive } from '../../generated/schema'
-import { REWARD_PER_LIQUIDITY_MULTIPLIER } from '../../src/constants'
+import { REWARD_PER_LIQUIDITY_MULTIPLIER } from '../constants/index.template'
 
 export function getOrCreateIncentive(id: string): Incentive {
   let incentive = Incentive.load(id)

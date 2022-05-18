@@ -44,6 +44,7 @@ export function createVesting(event: CreateVestingEvent): Vesting {
   vesting.startedAt = event.params.start
   vesting.expiresAt = calculateExpirationDate(vesting)
   vesting.totalAmount = calculateTotalAmount(vesting)
+  vesting.txHash = event.transaction.hash.toHex()
 
   vesting.createdAtBlock = event.block.number
   vesting.createdAtTimestamp = event.block.timestamp
@@ -57,6 +58,7 @@ export function createVesting(event: CreateVestingEvent): Vesting {
 export function cancelVesting(event: CancelVestingEvent): Vesting {
   let vesting = getOrCreateVesting(event.params.vestId)
   vesting.status = CANCELLED
+  vesting.withdrawnAmount = vesting.withdrawnAmount.plus(event.params.recipientAmount)
   vesting.modifiedAtBlock = event.block.number
   vesting.modifiedAtTimestamp = event.block.timestamp
   vesting.cancelledAtTimestamp = event.block.timestamp

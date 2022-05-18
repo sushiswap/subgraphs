@@ -28,7 +28,7 @@ test('Transfer event creates two users', () => {
  
 })
 
-test('Two transfers updates users modifiedAt fields', () => {
+test('A second transaction updates a users modifiedAt fields', () => {
     const sender = Address.fromString('0x00000000000000000000000000000000000a71ce')
     const reciever = Address.fromString('0x0000000000000000000000000000000000000b0b')
     const amount = BigInt.fromString("1337")

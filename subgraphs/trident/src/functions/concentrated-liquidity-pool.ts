@@ -1,5 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { CONCENTRATED_LIQUIDITY_POOL_FACTORY_ADDRESS, MASTER_DEPLOYER_ADDRESS } from '../constants/addresses'
+import { CONCENTRATED_LIQUIDITY_POOL_FACTORY_ADDRESS, MASTER_DEPLOYER_ADDRESS } from '../constants'
 import {
   ConcentratedLiquidityPool,
   ConcentratedLiquidityPoolFactory,
