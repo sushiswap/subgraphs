@@ -47,23 +47,16 @@
     "anonymous": false,
     "inputs": [
       { "indexed": true, "internalType": "uint256", "name": "vestId", "type": "uint256" },
-      {
-        "components": [
-          { "internalType": "address", "name": "owner", "type": "address" },
-          { "internalType": "contract IERC20", "name": "token", "type": "address" },
-          { "internalType": "uint32", "name": "start", "type": "uint32" },
-          { "internalType": "uint32", "name": "cliffDuration", "type": "uint32" },
-          { "internalType": "uint32", "name": "stepDuration", "type": "uint32" },
-          { "internalType": "uint32", "name": "steps", "type": "uint32" },
-          { "internalType": "uint128", "name": "cliffShares", "type": "uint128" },
-          { "internalType": "uint128", "name": "stepShares", "type": "uint128" },
-          { "internalType": "uint128", "name": "claimed", "type": "uint128" }
-        ],
-        "indexed": true,
-        "internalType": "struct IFuroVesting.Vest",
-        "name": "v",
-        "type": "tuple"
-      }
+      { "indexed": false, "internalType": "contract IERC20", "name": "token", "type": "address" },
+      { "indexed": true, "internalType": "address", "name": "owner", "type": "address" },
+      { "indexed": true, "internalType": "address", "name": "recipient", "type": "address" },
+      { "indexed": false, "internalType": "uint32", "name": "start", "type": "uint32" },
+      { "indexed": false, "internalType": "uint32", "name": "cliffDuration", "type": "uint32" },
+      { "indexed": false, "internalType": "uint32", "name": "stepDuration", "type": "uint32" },
+      { "indexed": false, "internalType": "uint32", "name": "steps", "type": "uint32" },
+      { "indexed": false, "internalType": "uint128", "name": "cliffShares", "type": "uint128" },
+      { "indexed": false, "internalType": "uint128", "name": "stepShares", "type": "uint128" },
+      { "indexed": false, "internalType": "bool", "name": "fromBentoBox", "type": "bool" }
     ],
     "name": "CreateVesting",
     "type": "event"
@@ -141,15 +134,22 @@
   },
   {
     "inputs": [
-      { "internalType": "contract IERC20", "name": "token", "type": "address" },
-      { "internalType": "address", "name": "recipient", "type": "address" },
-      { "internalType": "uint32", "name": "start", "type": "uint32" },
-      { "internalType": "uint32", "name": "cliffDuration", "type": "uint32" },
-      { "internalType": "uint32", "name": "stepDuration", "type": "uint32" },
-      { "internalType": "uint32", "name": "steps", "type": "uint32" },
-      { "internalType": "uint128", "name": "stepPercentage", "type": "uint128" },
-      { "internalType": "uint128", "name": "amount", "type": "uint128" },
-      { "internalType": "bool", "name": "fromBentoBox", "type": "bool" }
+      {
+        "components": [
+          { "internalType": "contract IERC20", "name": "token", "type": "address" },
+          { "internalType": "address", "name": "recipient", "type": "address" },
+          { "internalType": "uint32", "name": "start", "type": "uint32" },
+          { "internalType": "uint32", "name": "cliffDuration", "type": "uint32" },
+          { "internalType": "uint32", "name": "stepDuration", "type": "uint32" },
+          { "internalType": "uint32", "name": "steps", "type": "uint32" },
+          { "internalType": "uint128", "name": "stepPercentage", "type": "uint128" },
+          { "internalType": "uint128", "name": "amount", "type": "uint128" },
+          { "internalType": "bool", "name": "fromBentoBox", "type": "bool" }
+        ],
+        "internalType": "struct IFuroVesting.VestParams",
+        "name": "vestParams",
+        "type": "tuple"
+      }
     ],
     "name": "createVesting",
     "outputs": [
