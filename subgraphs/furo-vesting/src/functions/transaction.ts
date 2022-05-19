@@ -32,7 +32,7 @@ export function createDepositTransaction(vesting: Vesting, event: CreateVestingE
   transaction.amount = vesting.totalAmount
   transaction.to = vesting.recipient
   transaction.token = vesting.token
-  transaction.toBentoBox = event.params.fromBentoBox
+  transaction.toBentoBox = true
   transaction.save()
 
   vesting.transactionCount = vesting.transactionCount.plus(BigInt.fromU32(1))

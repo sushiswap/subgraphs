@@ -25,6 +25,7 @@ export function getOrCreateVesting(id: BigInt): Vesting {
 
 export function createVesting(event: CreateVestingEvent): Vesting {
   const vestId = event.params.vestId
+
   let vesting = getOrCreateVesting(vestId)
   let recipient = getOrCreateUser(event.params.recipient, event)
   let owner = getOrCreateUser(event.params.owner, event)
@@ -36,8 +37,8 @@ export function createVesting(event: CreateVestingEvent): Vesting {
   vesting.cliffDuration = event.params.cliffDuration
   vesting.stepDuration = event.params.stepDuration
   vesting.steps = event.params.steps
-  vesting.cliffAmount = event.params.cliffAmount
-  vesting.stepAmount = event.params.stepAmount
+  vesting.cliffAmount = event.params.cliffShares
+  vesting.stepAmount = event.params.stepShares
   vesting.schedule = vestId.toString()
   vesting.status = ACTIVE
   vesting.fromBentoBox = event.params.fromBentoBox
@@ -84,7 +85,7 @@ export function transferVesting(event: TransferEvent): void {
   }
 
   let recipient = getOrCreateUser(event.params.to, event)
-  let vesting = getOrCreateVesting(event.params.tokenId)
+  let vesting = getOrCreateVesting(event.params.id)
   vesting.recipient = recipient.id
   vesting.modifiedAtBlock = event.block.number
   vesting.modifiedAtTimestamp = event.block.timestamp
