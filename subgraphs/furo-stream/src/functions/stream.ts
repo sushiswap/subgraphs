@@ -88,7 +88,7 @@ export function transferStream(event: TransferEvent): void {
   }
 
   let recipient = getOrCreateUser(event.params.to, event)
-  let stream = getOrCreateStream(event.params.tokenId)
+  let stream = getOrCreateStream(event.params.id)
   stream.recipient = recipient.id
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
