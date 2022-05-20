@@ -5,17 +5,19 @@ import {
   Started as CreateAuctionEvent,
 } from '../../generated/AuctionMaker/AuctionMaker'
 import { Auction } from '../../generated/schema'
-import { FINISHED, MAX_TTL, MIN_TTL, ONGOING } from '../constants'
+import { BID_TOKEN_ADDRESS, FINISHED, MAX_TTL, MIN_TTL, ONGOING } from '../constants'
 import { increaseAuctionCount, increaseFinishedAuctionCount } from './auction-maker'
 import { getOrCreateToken } from './token'
 
 export function createAuction(event: CreateAuctionEvent): Auction {
   const token = getOrCreateToken(event.params.token.toHex())
+  const bidToken = getOrCreateToken(BID_TOKEN_ADDRESS.toHex())
   const auctionId = token.id.concat(':').concat(token.auctionCount.toString())
   const auction = new Auction(auctionId)
 
   auction.status = ONGOING
-  auction.token = token.id
+  auction.rewardToken = token.id
+  auction.bidToken = bidToken.id
   auction.leadingBid = event.transaction.hash.toHex()
   auction.bidAmount = event.params.bidAmount
   auction.rewardAmount = event.params.rewardAmount
@@ -73,3 +75,4 @@ function getOrCreateAuction(id: string): Auction {
 
   return auction
 }
+

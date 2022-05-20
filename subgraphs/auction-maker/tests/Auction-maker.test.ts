@@ -1,7 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as/assembly/index'
 import { onAuctionCreated, onAuctionEnded, onBid } from '../src/mappings/auction-maker'
-import { AUCTION_MAKER } from '../src/mappings/constants'
+import { AUCTION_MAKER, BID_TOKEN_ADDRESS } from '../src/constants'
 import { createAuctionCreatedEvent, createAuctionEndedEvent, createBidEvent, createTokenMock } from './mocks'
 
 const ALICE = Address.fromString('0x00000000000000000000000000000000000a71ce')
@@ -14,6 +14,7 @@ const REWARD_AMOUNT = BigInt.fromString('420')
 function setup(): void {
   let event = createAuctionCreatedEvent(WETH, ALICE, AMOUNT, REWARD_AMOUNT)
   createTokenMock(WETH.toHex(), BigInt.fromString('18'), 'Wrapped Ether', 'WETH')
+  createTokenMock(BID_TOKEN_ADDRESS.toHex(), BigInt.fromString('18'), 'Sushi Token', 'SUSHI')
   onAuctionCreated(event)
 }
 
@@ -81,6 +82,16 @@ test('User count increases when new users are participating in an auction', () =
   // And: When the first bidder bids again, the userCount remains
   onBid(bidEvent2)
   assert.fieldEquals('AuctionMaker', AUCTION_MAKER, 'userCount', '2')
+
+  cleanup()
+})
+
+test('When auction maker is created, bidtoken is set', () => {
+  setup()
+
+  createAuctionEndedEvent(WETH, BOB, AMOUNT)
+  
+  assert.fieldEquals('AuctionMaker', AUCTION_MAKER, 'bidToken', BID_TOKEN_ADDRESS.toHex())
 
   cleanup()
 })

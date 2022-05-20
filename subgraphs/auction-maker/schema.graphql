@@ -9,6 +9,7 @@ type AuctionMaker @entity {
   userCount: BigInt!
   bidCount: BigInt!
   finishedAuctionCount: BigInt!
+  bidToken: Token!
 }
 
 type User @entity {
@@ -24,7 +25,8 @@ type User @entity {
 type Auction @entity {
   id: ID! # {token.id}:{token.auctionCount}
   leadingBid: Bid!
-  token: Token!
+  bidToken: Token!
+  rewardToken: Token!
   bidAmount: BigInt!
   rewardAmount: BigInt!
   minTTL: BigInt!
@@ -46,7 +48,8 @@ type UserAuction @entity {
 type Bid @entity {
   id: ID! # tx hash
   user: User!
-  token: Token!
+  bidToken: Token!
+  rewardToken: Token!
   auction: Auction!
   amount: BigInt!
   createdAtBlock: BigInt!
@@ -58,7 +61,7 @@ type Token @entity {
   symbol: String!
   symbolSuccess: Boolean!
   auctionCount: BigInt!
-  auctions: [Auction!] @derivedFrom(field: "token")
+  auctions: [Auction!] @derivedFrom(field: "rewardToken")
   name: String!
   nameSuccess: Boolean!
   decimals: BigInt!

@@ -5,7 +5,8 @@ import { increaseBidCount } from './auction-maker'
 export function createInitialBid(auction: Auction, event: AuctionCreatedEvent): Bid {
   const bid = new Bid(event.transaction.hash.toHex())
   bid.auction = auction.id
-  bid.token = auction.token
+  bid.bidToken = auction.bidToken
+  bid.rewardToken = auction.rewardToken
   bid.user = event.params.bidder.toHex()
   bid.amount = event.params.bidAmount
   bid.createdAtBlock = event.block.number
@@ -20,7 +21,8 @@ export function createInitialBid(auction: Auction, event: AuctionCreatedEvent): 
 export function createBid(auction: Auction, event: BidEvent): Bid {
   const bid = new Bid(event.transaction.hash.toHex())
   bid.auction = auction.id
-  bid.token = auction.token
+  bid.bidToken = auction.bidToken
+  bid.rewardToken = auction.rewardToken
   bid.user = event.params.bidder.toHex()
   bid.amount = event.params.bidAmount
   bid.createdAtBlock = event.block.number

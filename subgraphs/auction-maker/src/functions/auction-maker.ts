@@ -1,6 +1,7 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 import { AuctionMaker } from '../../generated/schema'
-import { AUCTION_MAKER } from '../constants'
+import { AUCTION_MAKER, BID_TOKEN_ADDRESS } from '../constants'
+import { getOrCreateToken } from './token'
 
 export function increaseUserCount(): void {
   const auctionMaker = getOrCreateAuctionMaker()
@@ -43,6 +44,9 @@ function getOrCreateAuctionMaker(): AuctionMaker {
 
 function createAuctionMaker(): AuctionMaker {
   const auctionMaker = new AuctionMaker(AUCTION_MAKER)
+
+  const bidToken = getOrCreateToken(BID_TOKEN_ADDRESS.toHex())
+  auctionMaker.bidToken = bidToken.id
   auctionMaker.save()
   return auctionMaker
 }
