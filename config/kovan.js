@@ -56,6 +56,8 @@ module.exports = {
     address: '0x5300C2194EAe4c5765a39b3c0877A40Ce66C5539',
     startBlock: 31669403,
     bidToken: '0x4f96fe3b7a6cf9725f59d353f723c1bdb64ca6aa',
+    minTTL: 600,
+    maxTTL: 1200,
   },
   staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   blocks: {
