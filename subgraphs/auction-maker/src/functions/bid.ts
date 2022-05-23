@@ -9,6 +9,7 @@ export function createInitialBid(auction: Auction, event: AuctionCreatedEvent): 
   bid.rewardToken = auction.rewardToken
   bid.user = event.params.bidder.toHex()
   bid.amount = event.params.bidAmount
+  bid.txHash = event.transaction.hash.toHex()
   bid.createdAtBlock = event.block.number
   bid.createdAtTimestamp = event.block.timestamp
   bid.save()
@@ -25,6 +26,7 @@ export function createBid(auction: Auction, event: BidEvent): Bid {
   bid.rewardToken = auction.rewardToken
   bid.user = event.params.bidder.toHex()
   bid.amount = event.params.bidAmount
+  bid.txHash = event.transaction.hash.toHex()
   bid.createdAtBlock = event.block.number
   bid.createdAtTimestamp = event.block.timestamp
   bid.save()

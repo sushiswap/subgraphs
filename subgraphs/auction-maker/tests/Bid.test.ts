@@ -35,6 +35,7 @@ test('Bid is created on auction creation event', () => {
   assert.fieldEquals('Bid', bidId, 'amount', AMOUNT.toString())
   assert.fieldEquals('Bid', bidId, 'rewardToken', REWARD_TOKEN.toHex())
   assert.fieldEquals('Bid', bidId, 'bidToken', BID_TOKEN_ADDRESS.toHex())
+  assert.fieldEquals('Bid', bidId, 'txHash', auctionCreationEvent.transaction.hash.toHex())
   assert.fieldEquals('Bid', bidId, 'createdAtBlock', auctionCreationEvent.block.number.toString())
   assert.fieldEquals('Bid', bidId, 'createdAtTimestamp', auctionCreationEvent.block.timestamp.toString())
   cleanup()
@@ -56,6 +57,7 @@ test('Bid is created on bid event', () => {
   assert.fieldEquals('Bid', bidId, 'auction', AUCTION_ID)
   assert.fieldEquals('Bid', bidId, 'rewardToken', REWARD_TOKEN.toHex())
   assert.fieldEquals('Bid', bidId, 'bidToken', BID_TOKEN_ADDRESS.toHex())
+  assert.fieldEquals('Bid', bidId, 'txHash', bidEvent.transaction.hash.toHex())
   assert.fieldEquals('Bid', bidId, 'createdAtBlock', bidEvent.block.number.toString())
   assert.fieldEquals('Bid', bidId, 'createdAtTimestamp', bidEvent.block.timestamp.toString())
 

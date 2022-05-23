@@ -33,6 +33,7 @@ type Auction @entity {
   maxTTL: BigInt!
   status: AuctionStatus!
   bids: [Bid!]! @derivedFrom(field: "auction")
+  txHash: String!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
   modifiedAtBlock: BigInt!
@@ -52,6 +53,7 @@ type Bid @entity {
   rewardToken: Token!
   auction: Auction!
   amount: BigInt!
+  txHash: String!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
 }

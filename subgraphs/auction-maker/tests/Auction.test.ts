@@ -35,6 +35,7 @@ test('Auction is created', () => {
   assert.fieldEquals('Auction', id, 'rewardAmount', REWARD_AMOUNT.toString())
   assert.fieldEquals('Auction', id, 'minTTL', event.block.timestamp.plus(MIN_TTL).toString())
   assert.fieldEquals('Auction', id, 'maxTTL', event.block.timestamp.plus(MAX_TTL).toString())
+  assert.fieldEquals('Auction', id, 'txHash', event.transaction.hash.toHex())
   assert.fieldEquals('Auction', id, 'createdAtBlock', event.block.number.toString())
   assert.fieldEquals('Auction', id, 'createdAtTimestamp', event.block.timestamp.toString())
   assert.fieldEquals('Auction', id, 'modifiedAtTimestamp', event.block.number.toString())

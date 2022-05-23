@@ -23,6 +23,7 @@ export function createAuction(event: CreateAuctionEvent): Auction {
   auction.rewardAmount = event.params.rewardAmount
   auction.maxTTL = event.block.timestamp.plus(MAX_TTL)
   auction.minTTL = event.block.timestamp.plus(MIN_TTL)
+  auction.txHash = event.transaction.hash.toHex()
   auction.createdAtBlock = event.block.number
   auction.createdAtTimestamp = event.block.timestamp
   auction.modifiedAtBlock = event.block.number
