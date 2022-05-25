@@ -3,13 +3,6 @@ enum VestingStatus {
   CANCELLED
 }
 
-enum SchedulePeriodType {
-  START
-  CLIFF
-  STEP
-  END
-}
-
 enum TransactionType {
   DEPOSIT
   WITHDRAWAL
@@ -34,7 +27,6 @@ type Vesting @entity {
   totalAmount: BigInt!
   withdrawnAmount: BigInt!
   token: Token!
-  schedule: Schedule!
   status: VestingStatus!
   createdBy: User!
   fromBentoBox: Boolean!
@@ -48,20 +40,6 @@ type Vesting @entity {
   modifiedAtTimestamp: BigInt!
   cancelledAtBlock: BigInt!
   cancelledAtTimestamp: BigInt!
-}
-
-type Schedule @entity {
-  id: ID!
-  vesting: Vesting!
-  periods: [SchedulePeriod!]! @derivedFrom(field: "schedule")
-}
-
-type SchedulePeriod @entity {
-  id: ID!
-  schedule: Schedule!
-  time: BigInt!
-  type: SchedulePeriodType!
-  amount: BigInt!
 }
 
 type Transaction @entity {

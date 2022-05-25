@@ -39,7 +39,6 @@ export function createVesting(event: CreateVestingEvent): Vesting {
   vesting.steps = event.params.steps
   vesting.cliffAmount = event.params.cliffShares
   vesting.stepAmount = event.params.stepShares
-  vesting.schedule = vestId.toString()
   vesting.status = ACTIVE
   vesting.fromBentoBox = event.params.fromBentoBox
   vesting.startedAt = event.params.start
