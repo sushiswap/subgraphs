@@ -55,6 +55,8 @@ test('Create incentive', () => {
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'createdAtBlock', incentiveCreatedEvent.block.number.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'createdAtTimestamp', incentiveCreatedEvent.block.timestamp.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'modifiedAtBlock', incentiveCreatedEvent.block.number.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'modifiedAtTimestamp', incentiveCreatedEvent.block.timestamp.toString())
 
   cleanup()
 })
@@ -79,6 +81,8 @@ test('Updating incentive with positive amount increases rewardRemaining', () => 
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'endTime', newEndTime.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', newStartTime.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'modifiedAtBlock', incentiveUpdatedEvent.block.number.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'modifiedAtTimestamp', incentiveUpdatedEvent.block.timestamp.toString())
 
   cleanup()
 })

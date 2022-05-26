@@ -41,6 +41,8 @@ type Incentive @entity {
   createdBy: User!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
+  modifiedAtBlock: BigInt!
+  modifiedAtTimestamp: BigInt!
 }
 
 type _Subscription @entity {

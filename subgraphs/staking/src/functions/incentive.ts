@@ -1,12 +1,13 @@
-import { BigInt } from '@graphprotocol/graph-ts'
+import { BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { Incentive } from '../../generated/schema'
-import { REWARD_PER_LIQUIDITY_MULTIPLIER } from '../constants/index.template'
 
-export function getOrCreateIncentive(id: string): Incentive {
+export function getOrCreateIncentive(id: string, event: ethereum.Event): Incentive {
   let incentive = Incentive.load(id)
 
   if (incentive === null) {
     incentive = new Incentive(id)
+    incentive.modifiedAtBlock = event.block.number
+    incentive.modifiedAtTimestamp = event.block.timestamp
     incentive.save()
   }
 
