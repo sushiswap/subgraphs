@@ -46,7 +46,7 @@ test('Create incentive', () => {
   onIncentiveCreated(incentiveCreatedEvent)
 
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'id', INCENTIVE_ID.toString())
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'creator', ALICE.toHex())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'createdBy', ALICE.toHex())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'stakeToken', TOKEN.toHex())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardToken', REWARD_TOKEN.toHex())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', INITIAL_AMOUNT.toString())
@@ -72,7 +72,7 @@ test('Updating incentive with positive amount increases rewardRemaining', () => 
 
   let expectedRewardRemaining = INITIAL_AMOUNT.plus(amount).toString()
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'id', INCENTIVE_ID.toString())
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'creator', ALICE.toHex())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'createdBy', ALICE.toHex())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'stakeToken', TOKEN.toHex())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardToken', REWARD_TOKEN.toHex())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', expectedRewardRemaining)

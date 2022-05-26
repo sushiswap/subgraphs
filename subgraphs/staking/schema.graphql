@@ -31,7 +31,6 @@ type Stake @entity {
 
 type Incentive @entity {
   id: ID!
-  creator: User!
   stakeToken: Token!
   rewardToken: Token!
   rewardRemaining: BigInt!
@@ -39,6 +38,7 @@ type Incentive @entity {
   lastRewardTime: BigInt!
   liquidityStaked: BigInt!
   subscriptions: [_Subscription!] @derivedFrom(field: "incentive")
+  createdBy: User!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
 }

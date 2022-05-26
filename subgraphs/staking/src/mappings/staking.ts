@@ -27,7 +27,7 @@ export function onIncentiveCreated(event: IncentiveCreated): void {
   let token = getOrCreateToken(event.params.token.toHex())
 
   let incentive = getOrCreateIncentive(event.params.id.toString())
-  incentive.creator = creator.id
+  incentive.createdBy = creator.id
   incentive.stakeToken = token.id
   incentive.rewardToken = rewardToken.id
   incentive.lastRewardTime = event.params.startTime
