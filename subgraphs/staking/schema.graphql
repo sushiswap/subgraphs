@@ -24,8 +24,8 @@ type Stake @entity {
   user: User!
   token: Token!
   liquidity: BigInt!
-  block: BigInt!
-  timestamp: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
 }
 
 
@@ -39,8 +39,8 @@ type Incentive @entity {
   lastRewardTime: BigInt!
   liquidityStaked: BigInt!
   subscriptions: [_Subscription!] @derivedFrom(field: "incentive")
-  block: BigInt!
-  timestamp: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
 }
 
 type _Subscription @entity {
@@ -48,8 +48,8 @@ type _Subscription @entity {
   user: User!
   incentive: Incentive!
   token: Token!
-  block: BigInt!
-  timestamp: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
 }
 
 type RewardClaim @entity {

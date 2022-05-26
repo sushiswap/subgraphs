@@ -53,8 +53,8 @@ test('Create incentive', () => {
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'endTime', END_TIME.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', START_TIME.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'block', incentiveCreatedEvent.block.number.toString())
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'timestamp', incentiveCreatedEvent.block.timestamp.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'createdAtBlock', incentiveCreatedEvent.block.number.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'createdAtTimestamp', incentiveCreatedEvent.block.timestamp.toString())
 
   cleanup()
 })
@@ -313,7 +313,7 @@ test('Unstake affects incentives accrue rewards', () => {
   unstakeEvent.block.timestamp = timestamp2
   onUnstake(unstakeEvent)
 
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '1000000')
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '0')
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', endTime.toString())
 
   cleanup()
@@ -323,6 +323,8 @@ test('Subscribe affects incentives accrue rewards', () => {
   let startTime = BigInt.fromU32(1646143287) // Tue Mar 01 2022 14:01:27 GMT+0000
   let endTime = BigInt.fromU32(1646316087) // Thu Mar 03 2022 14:01:27 GMT+0000
   let timestamp = BigInt.fromU32(1646352000) // Fri Mar 04 2022 00:00:00 GMT+0000
+  let timestamp2 = BigInt.fromU32(1646352001) // Fri Mar 04 2022 00:00:01 GMT+0000
+  let timestamp3 = BigInt.fromU32(1646352002) // Fri Mar 04 2022 00:00:02 GMT+0000
   let incentiveCreatedEvent = createIncentiveCreatedEvent(
     TOKEN,
     REWARD_TOKEN,
@@ -342,12 +344,14 @@ test('Subscribe affects incentives accrue rewards', () => {
   onStake(stakeEvent)
 
   let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
+  subscribeEvent.block.timestamp = timestamp2
   onSubscribe(subscribeEvent)
 
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '1000000')
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', endTime.toString())
 
   let unsubscribeEvent = createUnsubscribeEvent(INCENTIVE_ID, ALICE)
+  unsubscribeEvent.block.timestamp = timestamp3
   onUnsubscribe(unsubscribeEvent)
 
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '1000000')

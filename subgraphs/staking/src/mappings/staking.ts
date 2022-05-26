@@ -33,8 +33,8 @@ export function onIncentiveCreated(event: IncentiveCreated): void {
   incentive.lastRewardTime = event.params.startTime
   incentive.endTime = event.params.endTime
   incentive.rewardRemaining = event.params.amount
-  incentive.block = event.block.number
-  incentive.timestamp = event.block.timestamp
+  incentive.createdAtBlock = event.block.number
+  incentive.createdAtTimestamp = event.block.timestamp
 
   incentive.save()
 }
@@ -84,8 +84,8 @@ export function onStake(event: Stake): void {
   stake.liquidity = stake.liquidity.plus(event.params.amount)
   stake.user = user.id
   stake.token = token.id
-  stake.block = event.block.number
-  stake.timestamp = event.block.timestamp
+  stake.createdAtBlock = event.block.number
+  stake.createdAtTimestamp = event.block.timestamp
   stake.save()
 
   for (let i = 1; i <= user.totalSubscriptionCount.toI32(); i++) {
@@ -108,8 +108,8 @@ export function onUnstake(event: Unstake): void {
   let stake = getOrCreateStake(user.id, token.id)
   stake.liquidity = stake.liquidity.minus(event.params.amount)
   stake.user = user.id
-  stake.block = event.block.number
-  stake.timestamp = event.block.timestamp
+  stake.createdAtBlock = event.block.number
+  stake.createdAtTimestamp = event.block.timestamp
   stake.save()
 
   for (let i = 1; i <= user.totalSubscriptionCount.toI32(); i++) {
@@ -143,8 +143,8 @@ export function onSubscribe(event: Subscribe): void {
 
   subscription.user = user.id
   subscription.incentive = event.params.id.toString()
-  subscription.block = event.block.number
-  subscription.timestamp = event.block.timestamp
+  subscription.createdAtBlock = event.block.number
+  subscription.createdAtTimestamp = event.block.timestamp
   subscription.token = incentive.token
   subscription.save()
 }

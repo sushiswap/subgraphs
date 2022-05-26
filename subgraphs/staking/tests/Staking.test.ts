@@ -27,8 +27,8 @@ test('Stake', () => {
   assert.fieldEquals('Stake', stakeId, 'user', ALICE.toHex())
   assert.fieldEquals('Stake', stakeId, 'token', TOKEN.toHex())
   assert.fieldEquals('Stake', stakeId, 'liquidity', amount.toString())
-  assert.fieldEquals('Stake', stakeId, 'block', stakeEvent.block.number.toString())
-  assert.fieldEquals('Stake', stakeId, 'timestamp', stakeEvent.block.timestamp.toString())
+  assert.fieldEquals('Stake', stakeId, 'createdAtBlock', stakeEvent.block.number.toString())
+  assert.fieldEquals('Stake', stakeId, 'createdAtTimestamp', stakeEvent.block.timestamp.toString())
 
   // When: Alice stakes another time
   onStake(stakeEvent)
