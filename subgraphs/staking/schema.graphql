@@ -32,7 +32,7 @@ type Stake @entity {
 type Incentive @entity {
   id: ID!
   creator: User!
-  token: Token!
+  stakeToken: Token!
   rewardToken: Token!
   rewardRemaining: BigInt!
   endTime: BigInt!
