@@ -53,7 +53,6 @@ module.exports = {
     vesting: { address: '0x24B159BF6fC4588438098323AE4c852ad37584a6', startBlock: 31095825 },
   },
   auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
-  staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   blocks: {
     address: '0x0000000000000000000000000000000000000000',
     startBlock: 0,
