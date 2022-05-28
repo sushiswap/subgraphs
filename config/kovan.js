@@ -49,8 +49,8 @@ module.exports = {
     },
   },
   furo: {
-    stream: { address: '0x2a214DF929fba60509Dc2a236376ac53453cf443', startBlock: 31095812 },
-    vesting: { address: '0x24B159BF6fC4588438098323AE4c852ad37584a6', startBlock: 31095825 },
+    stream: { address: '0xa60f90530E9412Fe1a19ff91F1491f1738953B7C', startBlock: 31685113 },
+    vesting: { address: '0x359E322451EaF32e793C557Fc2A31B5fb45FF2dd', startBlock: 31809076 },
   },
   auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },

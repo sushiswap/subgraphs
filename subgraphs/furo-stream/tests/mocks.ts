@@ -163,7 +163,7 @@ export function createUpdateStreamEvent(
 export function createTransferEvent(
   from: Address,
   to: Address,
-  tokenId: BigInt
+  id: BigInt
 ): TransferEvent {
   let mockEvent = newMockEvent()
 
@@ -180,11 +180,11 @@ export function createTransferEvent(
   event.parameters = new Array()
   let fromParam = new ethereum.EventParam('from', ethereum.Value.fromAddress(from))
   let toParam = new ethereum.EventParam('to', ethereum.Value.fromAddress(to))
-  let tokenIdParam = new ethereum.EventParam('tokenId', ethereum.Value.fromUnsignedBigInt(tokenId))
+  let idParam = new ethereum.EventParam('id', ethereum.Value.fromUnsignedBigInt(id))
 
   event.parameters.push(fromParam)
   event.parameters.push(toParam)
-  event.parameters.push(tokenIdParam)
+  event.parameters.push(idParam)
 
   return event
 }

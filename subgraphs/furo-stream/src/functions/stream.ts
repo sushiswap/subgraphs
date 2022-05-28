@@ -1,5 +1,4 @@
 import { BigInt } from '@graphprotocol/graph-ts'
-import { log } from 'matchstick-as'
 import {
   CancelStream as CancelStreamEvent,
   CreateStream as CreateStreamEvent,
@@ -8,7 +7,7 @@ import {
   Withdraw as WithdrawEvent,
 } from '../../generated/FuroStream/FuroStream'
 import { Stream } from '../../generated/schema'
-import { ACTIVE, CANCELLED, EXTENDED, ZERO_ADDRESS } from '../constants'
+import { ACTIVE, CANCELLED, ZERO_ADDRESS } from '../constants'
 import { increaseStreamCount } from './furo-stream'
 import { getOrCreateToken } from './token'
 import { getOrCreateUser } from './user'
@@ -53,7 +52,6 @@ export function createStream(event: CreateStreamEvent): Stream {
 
 export function updateStream(event: UpdateStreamEvent): Stream {
   let stream = getOrCreateStream(event.params.streamId)
-  stream.status = EXTENDED
   stream.totalAmount = stream.totalAmount.plus(event.params.topUpAmount)
   stream.expiresAt = stream.expiresAt.plus(event.params.extendTime)
   stream.modifiedAtBlock = event.block.number
@@ -90,7 +88,7 @@ export function transferStream(event: TransferEvent): void {
   }
 
   let recipient = getOrCreateUser(event.params.to, event)
-  let stream = getOrCreateStream(event.params.tokenId)
+  let stream = getOrCreateStream(event.params.id)
   stream.recipient = recipient.id
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp

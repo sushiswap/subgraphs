@@ -15,6 +15,7 @@ function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction 
     transaction = new Transaction(id)
     transaction.createdAtBlock = event.block.number
     transaction.createdAtTimestamp = event.block.timestamp
+    transaction.txHash = event.transaction.hash.toHex()
     increaseTransactionCount()
     transaction.save()
   }
@@ -31,7 +32,7 @@ export function createDepositTransaction(vesting: Vesting, event: CreateVestingE
   transaction.amount = vesting.totalAmount
   transaction.to = vesting.recipient
   transaction.token = vesting.token
-  transaction.toBentoBox = event.params.fromBentoBox
+  transaction.toBentoBox = true
   transaction.save()
 
   vesting.transactionCount = vesting.transactionCount.plus(BigInt.fromU32(1))
