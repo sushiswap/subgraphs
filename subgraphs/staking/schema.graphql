@@ -11,6 +11,7 @@ type User @entity {
 
 type Token @entity {
   id: ID!
+  type: String!
   symbol: String!
   symbolSuccess: Boolean!
   name: String!

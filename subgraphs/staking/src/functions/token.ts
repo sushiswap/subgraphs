@@ -3,7 +3,7 @@ import { Token } from '../../generated/schema'
 import { ERC20 } from '../../generated/Staking/ERC20'
 import { NameBytes32 } from '../../generated/Staking/NameBytes32'
 import { SymbolBytes32 } from '../../generated/Staking/SymbolBytes32'
-import { getPairSymbol } from './token-type'
+import { getPairSymbol, getTokenType } from './token-type'
 
 export function getOrCreateToken(id: string): Token {
   let token = Token.load(id)
@@ -15,7 +15,9 @@ export function getOrCreateToken(id: string): Token {
     const decimals = getTokenDecimals(contract)
     const name = getTokenName(contract)
     let symbol = getTokenSymbol(contract)
+    
     if (name.success) {
+      token.type = getTokenType(name.value)
       const pairSymbol = getPairSymbol(name, Address.fromString(id))
       if (pairSymbol.success) {
         symbol = pairSymbol

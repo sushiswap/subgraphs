@@ -3,16 +3,32 @@ import { KashiPair } from '../../generated/Staking/KashiPair'
 import { ConstantProductPool } from '../../generated/Staking/ConstantProductPool'
 import { ERC20 } from '../../generated/Staking/ERC20'
 import { Pair } from '../../generated/Staking/Pair'
-import { ADDRESS_ZERO, KASHI_MEDIUM_RISK, SUSHISWAP_LP_TOKEN, SUSHI_LP_TOKEN } from '../constants/index'
+import {
+  ADDRESS_ZERO,
+  KASHI,
+  KASHI_MEDIUM_RISK,
+  LEGACY,
+  SUSHISWAP_LP_TOKEN,
+  SUSHI_LP_TOKEN,
+  TOKEN,
+  TRIDENT,
+} from '../constants/index'
 import { getTokenSymbol, Name, Symbol } from './token'
 
+export function getTokenType(name: string): string {
+  if (name == SUSHI_LP_TOKEN) return TRIDENT
+  else if (name == SUSHISWAP_LP_TOKEN) return LEGACY
+  else if (name.startsWith(KASHI_MEDIUM_RISK)) return KASHI
+  else return TOKEN
+}
+
 export function getPairSymbol(name: Name, tokenAddress: Address): Symbol {
-  const farmType = getTokenType(name.value)
-  if (farmType === TokenType.LEGACY) {
+  const tokenType = getTokenType(name.value)
+  if (tokenType === TRIDENT) {
     return createLegacyPairSymbol(tokenAddress)
-  } else if (farmType === TokenType.TRIDENT) {
+  } else if (tokenType === LEGACY) {
     return createTridentPairSymbol(tokenAddress)
-  } else if (farmType === TokenType.KASHI) {
+  } else if (tokenType === KASHI) {
     return createKashiPairSymbol(tokenAddress)
   } else {
     return { success: false, value: '???' }
@@ -66,18 +82,4 @@ function getTokensSymbol(token0Address: Address, token1Address: Address): Symbol
   return token0Symbol.success && token1Symbol.success
     ? { success: true, value: token0Symbol.value.concat('/').concat(token1Symbol.value) }
     : { success: false, value: '???' }
-}
-
-export function getTokenType(name: string): TokenType {
-  if (name == SUSHI_LP_TOKEN) return TokenType.TRIDENT
-  else if (name == SUSHISWAP_LP_TOKEN) return TokenType.LEGACY
-  else if (name.startsWith(KASHI_MEDIUM_RISK)) return TokenType.KASHI
-  else return TokenType.TOKEN
-}
-
-export enum TokenType {
-  TRIDENT,
-  LEGACY,
-  KASHI,
-  TOKEN,
 }
