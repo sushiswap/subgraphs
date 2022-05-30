@@ -42,7 +42,7 @@ function setup(): void {
     endTime
   )
   createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString('18'), 'SushiToken', 'SUSHI')
-  createTokenMock(TOKEN.toHex(), BigInt.fromString('18'), 'SushiSwap LP Token', 'SLP')
+  createTokenMock(TOKEN.toHex(), BigInt.fromString('18'), 'Some LP Token', 'SLP')
   createTokenMock(TOKEN2.toHex(), BigInt.fromString('18'), 'Alice LP Token', 'ALP')
   onIncentiveCreated(incentiveCreatedEvent)
   onIncentiveCreated(incentiveCreatedEvent2)
