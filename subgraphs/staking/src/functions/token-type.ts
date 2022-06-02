@@ -15,6 +15,11 @@ import {
 } from '../constants/index'
 import { getTokenSymbol, Name, Symbol } from './token'
 
+export class PairInfo {
+  symbol: Symbol
+  assets: string[]
+}
+
 export function getTokenType(name: string): string {
   if (name == SUSHI_LP_TOKEN) return TRIDENT
   else if (name == SUSHISWAP_LP_TOKEN) return LEGACY
@@ -22,7 +27,7 @@ export function getTokenType(name: string): string {
   else return TOKEN
 }
 
-export function getPairSymbol(name: Name, tokenAddress: Address): Symbol {
+export function getPairInfo(name: Name, tokenAddress: Address): PairInfo {
   const tokenType = getTokenType(name.value)
   if (tokenType === TRIDENT) {
     return createLegacyPairSymbol(tokenAddress)
@@ -31,33 +36,39 @@ export function getPairSymbol(name: Name, tokenAddress: Address): Symbol {
   } else if (tokenType === KASHI) {
     return createKashiPairSymbol(tokenAddress)
   } else {
-    return { success: false, value: '???' }
+    return { symbol: { success: false, value: '???' }, assets: [] }
   }
 }
 
-function createLegacyPairSymbol(tokenAddress: Address): Symbol {
+function createLegacyPairSymbol(tokenAddress: Address): PairInfo {
   const contract = Pair.bind(tokenAddress)
   const token0Address = contract.try_token0()
   const token1Address = contract.try_token1()
   if (!token0Address.reverted && !token1Address.reverted) {
-    return getTokensSymbol(token0Address.value, token1Address.value)
+    return {
+      symbol: getTokensSymbol(token0Address.value, token1Address.value),
+      assets: [token0Address.value.toHex(), token1Address.value.toHex()],
+    }
   } else {
-    return { success: false, value: '???' }
+    return { symbol: { success: false, value: '???' }, assets: [] }
   }
 }
 
-function createTridentPairSymbol(tokenAddress: Address): Symbol {
+function createTridentPairSymbol(tokenAddress: Address): PairInfo {
   const contract = ConstantProductPool.bind(tokenAddress)
   const token0Address = contract.try_token0()
   const token1Address = contract.try_token1()
   if (!token0Address.reverted && !token1Address.reverted) {
-    return getTokensSymbol(token0Address.value, token1Address.value)
+    return {
+      symbol: getTokensSymbol(token0Address.value, token1Address.value),
+      assets: [token0Address.value.toHex(), token1Address.value.toHex()],
+    }
   } else {
-    return { success: false, value: '???' }
+    return { symbol: { success: false, value: '???' }, assets: [] }
   }
 }
 
-function createKashiPairSymbol(tokenAddress: Address): Symbol {
+function createKashiPairSymbol(tokenAddress: Address): PairInfo {
   const contract = KashiPair.bind(tokenAddress)
   const token0Address = contract.try_asset()
   const token1Address = contract.try_collateral()
@@ -67,9 +78,12 @@ function createKashiPairSymbol(tokenAddress: Address): Symbol {
     !token1Address.reverted &&
     token1Address.value != ADDRESS_ZERO
   ) {
-    return getTokensSymbol(token0Address.value, token1Address.value)
+    return {
+      symbol: getTokensSymbol(token0Address.value, token1Address.value),
+      assets: [token0Address.value.toHex(), token1Address.value.toHex()],
+    }
   } else {
-    return { success: false, value: '???' }
+    return { symbol: { success: false, value: '???' }, assets: [] }
   }
 }
 
