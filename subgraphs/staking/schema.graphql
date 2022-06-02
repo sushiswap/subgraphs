@@ -31,9 +31,18 @@ type Stake @entity {
   createdAtTimestamp: BigInt!
 }
 
+type Farm @entity {
+  id: ID!
+  stakeToken: Token!
+  incentives: [Incentive!]! @derivedFrom(field: "farm")
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
 
 type Incentive @entity {
   id: ID!
+  farm: Farm!
   stakeToken: Token!
   rewardToken: Token!
   rewardRemaining: BigInt!

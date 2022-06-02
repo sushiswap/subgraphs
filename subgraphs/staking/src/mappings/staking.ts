@@ -12,6 +12,7 @@ import {
 import {
   accrueRewards,
   getOrCreateIncentive,
+  getOrCreateFarm,
   getOrCreateRewardClaim,
   getOrCreateStake,
   getOrCreateSubscription,
@@ -25,8 +26,10 @@ export function onIncentiveCreated(event: IncentiveCreated): void {
   let creator = getOrCreateUser(event.params.creator.toHex())
   let rewardToken = getOrCreateToken(event.params.rewardToken.toHex())
   let token = getOrCreateToken(event.params.token.toHex())
+  let farm = getOrCreateFarm(event.params.token.toHex(), event)
 
   let incentive = getOrCreateIncentive(event.params.id.toString(), event)
+  incentive.farm = farm.id
   incentive.createdBy = creator.id
   incentive.stakeToken = token.id
   incentive.rewardToken = rewardToken.id

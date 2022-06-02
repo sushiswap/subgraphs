@@ -1,4 +1,5 @@
 export * from './incentive'
+export * from './farm'
 export * from './staking'
 export * from './subscription'
 export * from './token'
