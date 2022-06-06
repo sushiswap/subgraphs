@@ -46,8 +46,6 @@ module.exports = {
   stablePoolAddresses: [
     // USDC/WETH/30/FALSE
     '0x1e31a2c6e6614273d740358affb46bef180efb7b',
-    // DAI/WETH/30/FALSE
-    // '0xf1f284621a698d900cec56f5a9c2a14fd8119609',
   ],
   minimumNativeLiquidity: '0.01',
 
