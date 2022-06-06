@@ -50,7 +50,7 @@ test('Create incentive', () => {
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'createdBy', ALICE.toHex())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'stakeToken', TOKEN.toHex())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardToken', REWARD_TOKEN.toHex())
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', INITIAL_AMOUNT.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardAmount', INITIAL_AMOUNT.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'endTime', END_TIME.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', START_TIME.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
@@ -62,7 +62,7 @@ test('Create incentive', () => {
   cleanup()
 })
 
-test('Updating incentive with positive amount increases rewardRemaining', () => {
+test('Updating incentive with positive amount increases rewardAmount', () => {
   let amount = BigInt.fromString('1337')
   let newStartTime = BigInt.fromU32(1646143533)
   let newEndTime = BigInt.fromU32(1646170000)
@@ -73,12 +73,12 @@ test('Updating incentive with positive amount increases rewardRemaining', () => 
   let incentiveUpdatedEvent = createIncentiveUpdatedEvent(INCENTIVE_ID, amount, newStartTime, newEndTime)
   onIncentiveUpdated(incentiveUpdatedEvent)
 
-  let expectedRewardRemaining = INITIAL_AMOUNT.plus(amount).toString()
+  let expectedRewardAmount = INITIAL_AMOUNT.plus(amount).toString()
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'id', INCENTIVE_ID.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'createdBy', ALICE.toHex())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'stakeToken', TOKEN.toHex())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardToken', REWARD_TOKEN.toHex())
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', expectedRewardRemaining)
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardAmount', expectedRewardAmount)
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'endTime', newEndTime.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', newStartTime.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
@@ -88,7 +88,7 @@ test('Updating incentive with positive amount increases rewardRemaining', () => 
   cleanup()
 })
 
-test('Updating incentive with negative amount decreases rewardRemaining', () => {
+test('Updating incentive with negative amount decreases rewardAmount', () => {
   let amount = BigInt.fromString('-600000')
   let newStartTime = BigInt.fromU32(1646143533)
   let newEndTime = BigInt.fromU32(1646170000)
@@ -101,14 +101,14 @@ test('Updating incentive with negative amount decreases rewardRemaining', () => 
   onIncentiveUpdated(incentiveUpdatedEvent)
 
   // Then: The reward remaining is decreased
-  let expectedRewardRemaining = INITIAL_AMOUNT.minus(amount.abs()).toString()
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', expectedRewardRemaining)
+  let expectedRewardAmount = INITIAL_AMOUNT.minus(amount.abs()).toString()
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardAmount', expectedRewardAmount)
 
   // When: The amount is less than the remaining reward
   onIncentiveUpdated(incentiveUpdatedEvent)
 
   // Then: the remaining reward is 0
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '0')
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardAmount', '0')
 
   cleanup()
 })
@@ -251,116 +251,4 @@ test('Unstake decreases the incentives liquidity', () => {
   onUnstake(unstakeEvent)
 
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
-})
-
-test('Stake affects incentives accrue rewards', () => {
-  let startTime = BigInt.fromU32(1646143287) // Tue Mar 01 2022 14:01:27 GMT+0000
-  let endTime = BigInt.fromU32(1646316087) // Thu Mar 03 2022 14:01:27 GMT+0000
-  let timestamp = BigInt.fromU32(1646352000) // Fri Mar 04 2022 00:00:00 GMT+0000
-  let timestamp2 = BigInt.fromU32(1646438400) // Sat Mar 05 2022 00:00:00 GMT+0000
-  let incentiveCreatedEvent = createIncentiveCreatedEvent(
-    TOKEN,
-    REWARD_TOKEN,
-    ALICE,
-    INCENTIVE_ID,
-    INITIAL_AMOUNT,
-    startTime,
-    endTime
-  )
-  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString('18'), 'SushiToken', 'SUSHI')
-  createTokenMock(TOKEN.toHex(), BigInt.fromString('18'), 'Some LP Token', 'SLP')
-  onIncentiveCreated(incentiveCreatedEvent)
-
-  const amount = BigInt.fromString('10000000')
-  let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
-  stakeEvent.block.timestamp = timestamp
-  onStake(stakeEvent)
-
-  let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
-  onSubscribe(subscribeEvent)
-
-  stakeEvent.block.timestamp = timestamp2
-  onStake(stakeEvent)
-
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '1000000')
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', endTime.toString())
-
-  cleanup()
-})
-
-test('Unstake affects incentives accrue rewards', () => {
-  let startTime = BigInt.fromU32(1646143287) // Tue Mar 01 2022 14:01:27 GMT+0000
-  let endTime = BigInt.fromU32(1646316087) // Thu Mar 03 2022 14:01:27 GMT+0000
-  let timestamp = BigInt.fromU32(1646352000) // Fri Mar 04 2022 00:00:00 GMT+0000
-  let timestamp2 = BigInt.fromU32(1646438400) // Sat Mar 05 2022 00:00:00 GMT+0000
-  let incentiveCreatedEvent = createIncentiveCreatedEvent(
-    TOKEN,
-    REWARD_TOKEN,
-    ALICE,
-    INCENTIVE_ID,
-    INITIAL_AMOUNT,
-    startTime,
-    endTime
-  )
-  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString('18'), 'SushiToken', 'SUSHI')
-  createTokenMock(TOKEN.toHex(), BigInt.fromString('18'), 'Some LP Token', 'SLP')
-  onIncentiveCreated(incentiveCreatedEvent)
-
-  const amount = BigInt.fromString('10000000')
-  let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
-  stakeEvent.block.timestamp = timestamp
-  onStake(stakeEvent)
-
-  let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
-  onSubscribe(subscribeEvent)
-
-  let unstakeEvent = createUnstakeEvent(TOKEN, ALICE, amount)
-  unstakeEvent.block.timestamp = timestamp2
-  onUnstake(unstakeEvent)
-
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '0')
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', endTime.toString())
-
-  cleanup()
-})
-
-test('Subscribe affects incentives accrue rewards', () => {
-  let startTime = BigInt.fromU32(1646143287) // Tue Mar 01 2022 14:01:27 GMT+0000
-  let endTime = BigInt.fromU32(1646316087) // Thu Mar 03 2022 14:01:27 GMT+0000
-  let timestamp = BigInt.fromU32(1646352000) // Fri Mar 04 2022 00:00:00 GMT+0000
-  let timestamp2 = BigInt.fromU32(1646352001) // Fri Mar 04 2022 00:00:01 GMT+0000
-  let timestamp3 = BigInt.fromU32(1646352002) // Fri Mar 04 2022 00:00:02 GMT+0000
-  let incentiveCreatedEvent = createIncentiveCreatedEvent(
-    TOKEN,
-    REWARD_TOKEN,
-    ALICE,
-    INCENTIVE_ID,
-    INITIAL_AMOUNT,
-    startTime,
-    endTime
-  )
-  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString('18'), 'SushiToken', 'SUSHI')
-  createTokenMock(TOKEN.toHex(), BigInt.fromString('18'), 'Some LP Token', 'SLP')
-  onIncentiveCreated(incentiveCreatedEvent)
-
-  const amount = BigInt.fromString('10000000')
-  let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
-  stakeEvent.block.timestamp = timestamp
-  onStake(stakeEvent)
-
-  let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
-  subscribeEvent.block.timestamp = timestamp2
-  onSubscribe(subscribeEvent)
-
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '1000000')
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', endTime.toString())
-
-  let unsubscribeEvent = createUnsubscribeEvent(INCENTIVE_ID, ALICE)
-  unsubscribeEvent.block.timestamp = timestamp3
-  onUnsubscribe(unsubscribeEvent)
-
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardRemaining', '1000000')
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', endTime.toString())
-
-  cleanup()
 })

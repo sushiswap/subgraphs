@@ -45,7 +45,7 @@ type Incentive @entity {
   farm: Farm!
   stakeToken: Token!
   rewardToken: Token!
-  rewardRemaining: BigInt!
+  rewardAmount: BigInt!
   endTime: BigInt!
   lastRewardTime: BigInt!
   liquidityStaked: BigInt!
@@ -57,7 +57,7 @@ type Incentive @entity {
   modifiedAtTimestamp: BigInt!
 }
 
-type _Subscription @entity { # Needs underscore prefix, Subscription is default keyword in graphql
+type _Subscription @entity { # requires underscore prefix, Subscription is default keyword in graphql
   id: ID!
   user: User!
   incentive: Incentive!
