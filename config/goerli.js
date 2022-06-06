@@ -6,10 +6,6 @@ module.exports = {
       startBlock: 4345820,
     },
   },
-  furo: {
-    stream: { address: '0x3C4bc596C4946d812D0eA77940038576f228faC7', startBlock: 6929553 },
-    vesting: { address: '0x344b7c97f1142d6743d9e5C38E81eCe46eAb68BA', startBlock: 6947498 },
-  },
   auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   blocks: {
@@ -17,7 +13,11 @@ module.exports = {
     startBlock: 0,
   },
   furo: {
-    stream: { address: '0x4f74b61f78179da88c9507955d0d97cf3b486ca5', startBlock: 6954808 },
-    vesting: { address: '0x593453768ba2163eae6d0fa1f3d292c02672a2ba', startBlock: 6954838 },
+    stream: { address: '0x4ab2fc6e258a0ca7175d05ff10c5cf798a672cae', startBlock: 6960694 },
+    vesting: { address: '0x0689640d190b10765f09310fcfe9c670ede4e25b', startBlock: 6960703 },
+  },
+  bentobox: {
+    address: '0xf5bce5077908a1b7370b9ae04adc565ebd643966',
+    startBlock: 4489937,
   },
 }
