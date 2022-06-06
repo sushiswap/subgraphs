@@ -15,5 +15,6 @@
     "test": {
       "outputs": []
     }
-  }
+  },
+  "globalDependencies": ["$NETWORK"]
 }
