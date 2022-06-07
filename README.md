@@ -18,7 +18,7 @@ This repository contains multiple subgraphs:
 ## Build
 
 ```sh
-NETWORK=polygon pnpm exec turbo run build --scope=<subgraph>
+NETWORK=polygon pnpm exec turbo run build --scope=<subgraph> --force
 ```
 
 ## Testing
