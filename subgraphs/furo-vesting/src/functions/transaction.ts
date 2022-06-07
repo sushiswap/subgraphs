@@ -20,7 +20,6 @@ function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction 
     transaction.save()
   }
 
-
   return transaction as Transaction
 }
 
@@ -48,7 +47,7 @@ export function createDisbursementTransactions(vesting: Vesting, event: CancelVe
   senderTransaction.vesting = vesting.id
   senderTransaction.amount = event.params.recipientAmount
   senderTransaction.to = vesting.recipient
-  senderTransaction.token = event.params.token.toHex()
+  senderTransaction.token = vesting.token
   senderTransaction.toBentoBox = event.params.toBentoBox
   senderTransaction.save()
 
@@ -60,7 +59,7 @@ export function createDisbursementTransactions(vesting: Vesting, event: CancelVe
   recipientTransaction.vesting = vesting.id
   recipientTransaction.amount = event.params.ownerAmount
   recipientTransaction.to = vesting.createdBy
-  recipientTransaction.token = event.params.token.toHex()
+  recipientTransaction.token = vesting.token
   recipientTransaction.toBentoBox = event.params.toBentoBox
   recipientTransaction.save()
 
@@ -75,7 +74,7 @@ export function createWithdrawalTransaction(vesting: Vesting, event: WithdrawEve
   transaction.vesting = vesting.id
   transaction.amount = event.params.amount
   transaction.to = vesting.recipient
-  transaction.token = event.params.token.toHex()
+  transaction.token = vesting.token
   transaction.toBentoBox = event.params.toBentoBox
   transaction.save()
 
