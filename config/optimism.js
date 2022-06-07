@@ -50,8 +50,8 @@ module.exports = {
   minimumNativeLiquidity: '0.01',
 
   furo: {
-    stream: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
-    vesting: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+    stream: { address: '0x4ab2fc6e258a0ca7175d05ff10c5cf798a672cae', startBlock: 10835062 },
+    vesting: { address: '0x0689640d190b10765f09310fcfe9c670ede4e25b', startBlock: 10835089 },
   },
   auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
