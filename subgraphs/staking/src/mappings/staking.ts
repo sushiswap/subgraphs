@@ -70,13 +70,11 @@ export function onIncentiveUpdated(event: IncentiveUpdated): void {
   }
 
   let zero = BigInt.fromU32(0)
-  // calculate what to extract from rewardsRemaining
   if (changeAmount > zero) {
     incentive.rewardsRemaining = incentive.rewardsRemaining.plus(event.params.changeAmount)
   } else if (changeAmount < zero) {
     let amount = changeAmount.abs()
     if (amount > incentive.rewardsRemaining) {
-      // if it's drained to 0, this block should set totalAmount to whatever has been paid out at this point, and rewardsRemaining goes to 0 
       incentive.rewardsRemaining = zero
     } else {
       incentive.rewardsRemaining = incentive.rewardsRemaining.minus(amount)
@@ -105,7 +103,6 @@ export function onStake(event: Stake): void {
 
     if (subscription !== null) {
       let incentive = getOrCreateIncentive(subscription.incentive)
-
       incentive.liquidityStaked = incentive.liquidityStaked.plus(event.params.amount)
       incentive.modifiedAtBlock = event.block.number
       incentive.modifiedAtTimestamp = event.block.timestamp
@@ -142,13 +139,7 @@ export function onUnstake(event: Unstake): void {
 export function onSubscribe(event: Subscribe): void {
   let incentive = getOrCreateIncentive(event.params.id.toString())
   let user = getOrCreateUser(event.params.user.toHex())
-
   let stake = getOrCreateStake(user.id, incentive.stakeToken)
-
-  incentive.liquidityStaked = incentive.liquidityStaked.plus(stake.liquidity)
-  incentive.modifiedAtBlock = event.block.number
-  incentive.modifiedAtTimestamp = event.block.timestamp
-  incentive.save()
 
   user.totalSubscriptionCount = user.totalSubscriptionCount.plus(BigInt.fromU32(1))
   user.activeSubscriptionCount = user.activeSubscriptionCount.plus(BigInt.fromU32(1))
@@ -162,6 +153,19 @@ export function onSubscribe(event: Subscribe): void {
   subscription.createdAtTimestamp = event.block.timestamp
   subscription.token = incentive.stakeToken
   subscription.save()
+
+  for (let i = 1; i <= user.totalSubscriptionCount.toI32(); i++) {
+    let subscription = getSubscription(user.id, i.toString())
+
+    if (subscription !== null) {
+      let incentive = getOrCreateIncentive(subscription.incentive)
+
+      incentive.liquidityStaked = incentive.liquidityStaked.plus(stake.liquidity)
+      incentive.modifiedAtBlock = event.block.number
+      incentive.modifiedAtTimestamp = event.block.timestamp
+      incentive.save()
+    }
+  }
 }
 
 export function onUnsubscribe(event: Unsubscribe): void {
@@ -171,10 +175,19 @@ export function onUnsubscribe(event: Unsubscribe): void {
   user.save()
   let stake = getOrCreateStake(user.id, incentive.stakeToken)
 
-  incentive.liquidityStaked = incentive.liquidityStaked.minus(stake.liquidity)
-  incentive.modifiedAtBlock = event.block.number
-  incentive.modifiedAtTimestamp = event.block.timestamp
-  incentive.save()
+  for (let i = 1; i <= user.totalSubscriptionCount.toI32(); i++) {
+    let subscription = getSubscription(user.id, i.toString())
+
+    if (subscription !== null) {
+      let incentive = getOrCreateIncentive(subscription.incentive)
+
+      incentive.liquidityStaked = incentive.liquidityStaked.minus(stake.liquidity)
+      incentive.modifiedAtBlock = event.block.number
+      incentive.modifiedAtTimestamp = event.block.timestamp
+      incentive.save()
+    }
+  }
+
   let subscription = getSubscriptionByIncentiveId(user, event.params.id.toString())
   if (subscription !== null) {
     store.remove('_Subscription', subscription.id)

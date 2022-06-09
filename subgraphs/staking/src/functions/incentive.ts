@@ -1,5 +1,4 @@
 import { BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { log } from 'matchstick-as'
 import { Incentive } from '../../generated/schema'
 
 export function getOrCreateIncentive(id: string): Incentive {
@@ -20,7 +19,7 @@ export function updateRewards(incentive: Incentive, event: ethereum.Event): Ince
     let reward = incentive.rewardsRemaining.times(passedTime).div(totalTime)
 
     incentive.rewardsRemaining = incentive.rewardsRemaining.minus(reward)
-    incentive.rewardsPaidOut = incentive.rewardsPaidOut.plus(reward)
+    incentive.rewardsAccured = incentive.rewardsAccured.plus(reward)
     incentive.rewardsUpdatedAtTimestamp = event.block.timestamp
     incentive.rewardsUpdatedAtBlock = event.block.number
   } 

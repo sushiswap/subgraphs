@@ -1,5 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { assert, clearStore, test, log} from 'matchstick-as/assembly/index'
+import { assert, clearStore, test } from 'matchstick-as/assembly/index'
 import {
   onIncentiveCreated,
   onIncentiveUpdated,
@@ -85,7 +85,7 @@ test('Updating incentive with positive amount increases rewardsRemaining', () =>
   let rewardsPaidOut = '200000'
   let expectedRewardAmount = '1800000' // 1000000 initial, 2000000 after update, -200000 after 1 of 5 days has passed
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsRemaining', expectedRewardAmount)
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsPaidOut', rewardsPaidOut)
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsAccured', rewardsPaidOut)
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'endTime', END_TIME.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'startTime', START_TIME.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', amount.toString())
@@ -302,4 +302,5 @@ test('Unstake decreases the incentives liquidity', () => {
   onUnstake(unstakeEvent)
 
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
+  cleanup()
 })
