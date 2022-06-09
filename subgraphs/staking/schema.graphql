@@ -45,7 +45,9 @@ type Incentive @entity {
   farm: Farm!
   stakeToken: Token!
   rewardToken: Token!
-  rewardAmount: BigInt!
+  rewardsPaidOut: BigInt! 
+  rewardsRemaining: BigInt! # This will only update on update event, frontend can calculate remaining rewards with modifiedAtTimestamp as starting point
+  startTime: BigInt!
   endTime: BigInt!
   lastRewardTime: BigInt!
   liquidityStaked: BigInt!
@@ -55,6 +57,8 @@ type Incentive @entity {
   createdAtTimestamp: BigInt!
   modifiedAtBlock: BigInt!
   modifiedAtTimestamp: BigInt!
+  rewardsUpdatedAtBlock: BigInt!
+  rewardsUpdatedAtTimestamp: BigInt!
 }
 
 type _Subscription @entity { # requires underscore prefix, Subscription is default keyword in graphql

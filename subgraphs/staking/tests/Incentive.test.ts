@@ -1,5 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { assert, clearStore, test } from 'matchstick-as/assembly/index'
+import { assert, clearStore, test, log} from 'matchstick-as/assembly/index'
 import {
   onIncentiveCreated,
   onIncentiveUpdated,
@@ -23,8 +23,8 @@ const TOKEN = Address.fromString('0x0000000000000000000000000000000000000001')
 const REWARD_TOKEN = Address.fromString('0x0000000000000000000000000000000000000002')
 const INCENTIVE_ID = BigInt.fromString('1')
 const INITIAL_AMOUNT = BigInt.fromString('1000000')
-const START_TIME = BigInt.fromString('1646068510')
-const END_TIME = BigInt.fromString('1646075000')
+const START_TIME = BigInt.fromString('1654765057') // Thu Jun 09 2022 10:57:37 GMT+0200 (Central European Summer Time)
+const END_TIME = BigInt.fromString('1655197057') // 5 days later,	Tue Jun 14 2022 10:57:37 GMT+0200 (Central European Summer Time)
 let incentiveCreatedEvent = createIncentiveCreatedEvent(
   TOKEN,
   REWARD_TOKEN,
@@ -34,6 +34,7 @@ let incentiveCreatedEvent = createIncentiveCreatedEvent(
   START_TIME,
   END_TIME
 )
+incentiveCreatedEvent.block.timestamp = START_TIME
 
 function cleanup(): void {
   clearStore()
@@ -50,7 +51,7 @@ test('Create incentive', () => {
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'createdBy', ALICE.toHex())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'stakeToken', TOKEN.toHex())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardToken', REWARD_TOKEN.toHex())
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardAmount', INITIAL_AMOUNT.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsRemaining', INITIAL_AMOUNT.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'endTime', END_TIME.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', START_TIME.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
@@ -58,57 +59,100 @@ test('Create incentive', () => {
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'createdAtTimestamp', incentiveCreatedEvent.block.timestamp.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'modifiedAtBlock', incentiveCreatedEvent.block.number.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'modifiedAtTimestamp', incentiveCreatedEvent.block.timestamp.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsUpdatedAtBlock', incentiveCreatedEvent.block.number.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsUpdatedAtTimestamp', incentiveCreatedEvent.block.timestamp.toString())
 
   cleanup()
 })
 
-test('Updating incentive with positive amount increases rewardAmount', () => {
+test('Updating incentive with positive amount increases rewardsRemaining', () => {
+  let amount = BigInt.fromString('1000000')
+  let newStartTime = BigInt.fromU32(0)
+  let newEndTime = BigInt.fromU32(0)
+  let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
+  let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
+  createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString('18'), 'SushiToken', 'SUSHI')
+  createTokenMock(TOKEN.toHex(), BigInt.fromString('18'), 'Some LP Token', 'SLP')
+  onIncentiveCreated(incentiveCreatedEvent)
+  onStake(stakeEvent)
+  onSubscribe(subscribeEvent) // stake and subscribe is required for rewardsRemaining to update
+
+  let incentiveUpdatedEvent = createIncentiveUpdatedEvent(INCENTIVE_ID, amount, newStartTime, newEndTime)
+  incentiveUpdatedEvent.block.number = BigInt.fromString('123321')
+  incentiveUpdatedEvent.block.timestamp = BigInt.fromString('1654851457')
+  onIncentiveUpdated(incentiveUpdatedEvent)
+
+  let rewardsPaidOut = '200000'
+  let expectedRewardAmount = '1800000' // 1000000 initial, 2000000 after update, -200000 after 1 of 5 days has passed
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsRemaining', expectedRewardAmount)
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsPaidOut', rewardsPaidOut)
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'endTime', END_TIME.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'startTime', START_TIME.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', amount.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'modifiedAtBlock', incentiveUpdatedEvent.block.number.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'modifiedAtTimestamp', incentiveUpdatedEvent.block.timestamp.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsUpdatedAtBlock', incentiveUpdatedEvent.block.number.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsUpdatedAtTimestamp', incentiveUpdatedEvent.block.timestamp.toString())
+
+  cleanup()
+})
+
+
+test('Updating incentive with positive amount when no liquidity is staked does not affect rewardsRemaining', () => {
   let amount = BigInt.fromString('1337')
-  let newStartTime = BigInt.fromU32(1646143533)
-  let newEndTime = BigInt.fromU32(1646170000)
+  let newStartTime = BigInt.fromU32(0)
+  let newEndTime = BigInt.fromU32(0)
   createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString('18'), 'SushiToken', 'SUSHI')
   createTokenMock(TOKEN.toHex(), BigInt.fromString('18'), 'Some LP Token', 'SLP')
   onIncentiveCreated(incentiveCreatedEvent)
 
+  // When: updating the incentive
   let incentiveUpdatedEvent = createIncentiveUpdatedEvent(INCENTIVE_ID, amount, newStartTime, newEndTime)
+  incentiveUpdatedEvent.block.number = BigInt.fromU32(123321)
+  incentiveUpdatedEvent.block.timestamp = BigInt.fromU32(1654851457) // a day later
   onIncentiveUpdated(incentiveUpdatedEvent)
 
+  // Then: after a day has passed, incentives rewardsRemaining is unaffected due to no liquidity
   let expectedRewardAmount = INITIAL_AMOUNT.plus(amount).toString()
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'id', INCENTIVE_ID.toString())
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'createdBy', ALICE.toHex())
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'stakeToken', TOKEN.toHex())
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardToken', REWARD_TOKEN.toHex())
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardAmount', expectedRewardAmount)
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'endTime', newEndTime.toString())
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', newStartTime.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsRemaining', expectedRewardAmount)
+
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'endTime', END_TIME.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'startTime', START_TIME.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'modifiedAtBlock', incentiveUpdatedEvent.block.number.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'modifiedAtTimestamp', incentiveUpdatedEvent.block.timestamp.toString())
 
+  // And: rewardsUpdated fields are not updated
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsUpdatedAtBlock', incentiveCreatedEvent.block.number.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsUpdatedAtTimestamp', incentiveCreatedEvent.block.timestamp.toString())
+
   cleanup()
 })
 
-test('Updating incentive with negative amount decreases rewardAmount', () => {
-  let amount = BigInt.fromString('-600000')
-  let newStartTime = BigInt.fromU32(1646143533)
-  let newEndTime = BigInt.fromU32(1646170000)
+test('Updating incentive with negative amount decreases rewardsRemaining', () => {
+  let amount = BigInt.fromString('-1000001')
+  let newStartTime = BigInt.fromU32(0)
+  let newEndTime = BigInt.fromU32(0)
+  let stakeAmount = BigInt.fromString('10000')
+  let stakeEvent = createStakeEvent(TOKEN, ALICE, stakeAmount)
+  let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
   createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString('18'), 'SushiToken', 'SUSHI')
   createTokenMock(TOKEN.toHex(), BigInt.fromString('18'), 'Some LP Token', 'SLP')
   onIncentiveCreated(incentiveCreatedEvent)
+  onStake(stakeEvent)
+  onSubscribe(subscribeEvent) // stake and subscribe is required for rewardsRemaining to update
 
   // When: Incentive is updated
   let incentiveUpdatedEvent = createIncentiveUpdatedEvent(INCENTIVE_ID, amount, newStartTime, newEndTime)
-  onIncentiveUpdated(incentiveUpdatedEvent)
-
-  // Then: The reward remaining is decreased
-  let expectedRewardAmount = INITIAL_AMOUNT.minus(amount.abs()).toString()
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardAmount', expectedRewardAmount)
-
-  // When: The amount is less than the remaining reward
+  incentiveUpdatedEvent.block.number = BigInt.fromU32(1337)
+  incentiveUpdatedEvent.block.timestamp = BigInt.fromU32(1654851457) // a day later
   onIncentiveUpdated(incentiveUpdatedEvent)
 
   // Then: the remaining reward is 0
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardAmount', '0')
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsRemaining', '0')
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsUpdatedAtBlock', incentiveUpdatedEvent.block.number.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsUpdatedAtTimestamp', incentiveUpdatedEvent.block.timestamp.toString())
+
 
   cleanup()
 })
@@ -118,9 +162,14 @@ test('Updating incentive with timestamps before the block timestamp results in u
   let newStartTime = BigInt.fromU32(1646143287) // Tue Mar 01 2022 14:01:27 GMT+0000
   let newEndTime = BigInt.fromU32(1646316087) // Thu Mar 03 2022 14:01:27 GMT+0000
   let timestamp = BigInt.fromU32(1646352000) // Fri Mar 04 2022 00:00:00 GMT+0000, Next
+  let stakeAmount = BigInt.fromString('10000')
+  let stakeEvent = createStakeEvent(TOKEN, ALICE, stakeAmount)
+  let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
   createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString('18'), 'SushiToken', 'SUSHI')
   createTokenMock(TOKEN.toHex(), BigInt.fromString('18'), 'Some LP Token', 'SLP')
   onIncentiveCreated(incentiveCreatedEvent)
+  onStake(stakeEvent)
+  onSubscribe(subscribeEvent) // stake and subscribe is required for rewardsRemaining to update
 
   // When: Incentive is updated
   let incentiveUpdatedEvent = createIncentiveUpdatedEvent(INCENTIVE_ID, amount, newStartTime, newEndTime)
@@ -130,6 +179,8 @@ test('Updating incentive with timestamps before the block timestamp results in u
   // Then: The block timestamp is used instead of newStartTime/newEndTime
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'endTime', timestamp.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', timestamp.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsUpdatedAtBlock', incentiveUpdatedEvent.block.number.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsUpdatedAtTimestamp', incentiveUpdatedEvent.block.timestamp.toString())
 
   cleanup()
 })

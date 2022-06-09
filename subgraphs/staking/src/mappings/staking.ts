@@ -19,6 +19,7 @@ import {
   getOrCreateUser,
   getSubscription,
   getSubscriptionByIncentiveId,
+  updateRewards,
 } from '../../src/functions'
 
 export function onIncentiveCreated(event: IncentiveCreated): void {
@@ -27,25 +28,27 @@ export function onIncentiveCreated(event: IncentiveCreated): void {
   let token = getOrCreateToken(event.params.token.toHex())
   let farm = getOrCreateFarm(event.params.token.toHex(), event)
 
-  let incentive = getOrCreateIncentive(event.params.id.toString(), event)
+  let incentive = getOrCreateIncentive(event.params.id.toString())
   incentive.farm = farm.id
   incentive.createdBy = creator.id
   incentive.stakeToken = token.id
   incentive.rewardToken = rewardToken.id
   incentive.lastRewardTime = event.params.startTime
   incentive.endTime = event.params.endTime
-  incentive.rewardAmount = event.params.amount
+  incentive.startTime = event.params.startTime
+  incentive.rewardsRemaining = event.params.amount
   incentive.createdAtBlock = event.block.number
   incentive.createdAtTimestamp = event.block.timestamp
   incentive.modifiedAtBlock = event.block.number
   incentive.modifiedAtTimestamp = event.block.timestamp
-
+  incentive.rewardsUpdatedAtBlock = event.block.number
+  incentive.rewardsUpdatedAtTimestamp = event.block.timestamp
   incentive.save()
 }
 
 export function onIncentiveUpdated(event: IncentiveUpdated): void {
-  let incentive = getOrCreateIncentive(event.params.id.toString(), event)
-  // incentive = accrueRewards(incentive, event.block.timestamp)
+  let incentive = getOrCreateIncentive(event.params.id.toString())
+  updateRewards(incentive, event)
 
   let newStartTime = event.params.newStartTime.toI32()
   let newEndTime = event.params.newEndTime.toI32()
@@ -67,14 +70,16 @@ export function onIncentiveUpdated(event: IncentiveUpdated): void {
   }
 
   let zero = BigInt.fromU32(0)
+  // calculate what to extract from rewardsRemaining
   if (changeAmount > zero) {
-    incentive.rewardAmount = incentive.rewardAmount.plus(event.params.changeAmount)
+    incentive.rewardsRemaining = incentive.rewardsRemaining.plus(event.params.changeAmount)
   } else if (changeAmount < zero) {
     let amount = changeAmount.abs()
-    if (amount > incentive.rewardAmount) {
-      incentive.rewardAmount = zero
+    if (amount > incentive.rewardsRemaining) {
+      // if it's drained to 0, this block should set totalAmount to whatever has been paid out at this point, and rewardsRemaining goes to 0 
+      incentive.rewardsRemaining = zero
     } else {
-      incentive.rewardAmount = incentive.rewardAmount.minus(amount)
+      incentive.rewardsRemaining = incentive.rewardsRemaining.minus(amount)
     }
   }
 
@@ -99,7 +104,7 @@ export function onStake(event: Stake): void {
     let subscription = getSubscription(user.id, i.toString())
 
     if (subscription !== null) {
-      let incentive = getOrCreateIncentive(subscription.incentive, event)
+      let incentive = getOrCreateIncentive(subscription.incentive)
 
       incentive.liquidityStaked = incentive.liquidityStaked.plus(event.params.amount)
       incentive.modifiedAtBlock = event.block.number
@@ -124,7 +129,7 @@ export function onUnstake(event: Unstake): void {
     let subscription = getSubscription(user.id, i.toString())
 
     if (subscription !== null) {
-      let incentive = getOrCreateIncentive(subscription.incentive, event)
+      let incentive = getOrCreateIncentive(subscription.incentive)
 
       incentive.liquidityStaked = incentive.liquidityStaked.minus(event.params.amount)
       incentive.modifiedAtBlock = event.block.number
@@ -135,7 +140,7 @@ export function onUnstake(event: Unstake): void {
 }
 
 export function onSubscribe(event: Subscribe): void {
-  let incentive = getOrCreateIncentive(event.params.id.toString(), event)
+  let incentive = getOrCreateIncentive(event.params.id.toString())
   let user = getOrCreateUser(event.params.user.toHex())
 
   let stake = getOrCreateStake(user.id, incentive.stakeToken)
@@ -160,7 +165,7 @@ export function onSubscribe(event: Subscribe): void {
 }
 
 export function onUnsubscribe(event: Unsubscribe): void {
-  let incentive = getOrCreateIncentive(event.params.id.toString(), event)
+  let incentive = getOrCreateIncentive(event.params.id.toString())
   let user = getOrCreateUser(event.params.user.toHex())
   user.activeSubscriptionCount = user.activeSubscriptionCount.minus(BigInt.fromU32(1))
   user.save()
@@ -180,7 +185,7 @@ export function onUnsubscribe(event: Unsubscribe): void {
 
 export function onClaim(event: Claim): void {
   let user = getOrCreateUser(event.params.user.toHex())
-  let incentive = getOrCreateIncentive(event.params.id.toString(), event)
+  let incentive = getOrCreateIncentive(event.params.id.toString())
   incentive.modifiedAtBlock = event.block.number
   incentive.modifiedAtTimestamp = event.block.timestamp
   incentive.save()
