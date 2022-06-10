@@ -82,10 +82,10 @@ test('Updating incentive with positive amount increases rewardsRemaining', () =>
   incentiveUpdatedEvent.block.timestamp = BigInt.fromString('1654851457')
   onIncentiveUpdated(incentiveUpdatedEvent)
 
-  let rewardsPaidOut = '200000'
+  let rewardsAccrued = '200000'
   let expectedRewardAmount = '1800000' // 1000000 initial, 2000000 after update, -200000 after 1 of 5 days has passed
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsRemaining', expectedRewardAmount)
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsAccured', rewardsPaidOut)
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsAccrued', rewardsAccrued)
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'endTime', END_TIME.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'startTime', START_TIME.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', amount.toString())

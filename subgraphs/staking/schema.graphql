@@ -45,7 +45,7 @@ type Incentive @entity {
   farm: Farm!
   stakeToken: Token!
   rewardToken: Token!
-  rewardsAccured: BigInt! 
+  rewardsAccrued: BigInt! 
   rewardsRemaining: BigInt! # This will only update on update event, frontend can calculate remaining rewards with modifiedAtTimestamp as starting point
   startTime: BigInt!
   endTime: BigInt!

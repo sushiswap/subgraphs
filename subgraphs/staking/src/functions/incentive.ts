@@ -19,7 +19,7 @@ export function updateRewards(incentive: Incentive, event: ethereum.Event): Ince
     let reward = incentive.rewardsRemaining.times(passedTime).div(totalTime)
 
     incentive.rewardsRemaining = incentive.rewardsRemaining.minus(reward)
-    incentive.rewardsAccured = incentive.rewardsAccured.plus(reward)
+    incentive.rewardsAccrued = incentive.rewardsAccrued.plus(reward)
     incentive.rewardsUpdatedAtTimestamp = event.block.timestamp
     incentive.rewardsUpdatedAtBlock = event.block.number
   } 
