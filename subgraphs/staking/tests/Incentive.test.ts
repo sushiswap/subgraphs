@@ -53,7 +53,7 @@ test('Create incentive', () => {
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardToken', REWARD_TOKEN.toHex())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsRemaining', INITIAL_AMOUNT.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'endTime', END_TIME.toString())
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', START_TIME.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'startTime', START_TIME.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'liquidityStaked', '0')
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'createdAtBlock', incentiveCreatedEvent.block.number.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'createdAtTimestamp', incentiveCreatedEvent.block.timestamp.toString())
@@ -178,7 +178,7 @@ test('Updating incentive with timestamps before the block timestamp results in u
 
   // Then: The block timestamp is used instead of newStartTime/newEndTime
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'endTime', timestamp.toString())
-  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'lastRewardTime', timestamp.toString())
+  assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'startTime', timestamp.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsUpdatedAtBlock', incentiveUpdatedEvent.block.number.toString())
   assert.fieldEquals('Incentive', INCENTIVE_ID.toString(), 'rewardsUpdatedAtTimestamp', incentiveUpdatedEvent.block.timestamp.toString())
 

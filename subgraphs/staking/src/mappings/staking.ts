@@ -33,7 +33,6 @@ export function onIncentiveCreated(event: IncentiveCreated): void {
   incentive.createdBy = creator.id
   incentive.stakeToken = token.id
   incentive.rewardToken = rewardToken.id
-  incentive.lastRewardTime = event.params.startTime
   incentive.endTime = event.params.endTime
   incentive.startTime = event.params.startTime
   incentive.rewardsRemaining = event.params.amount
@@ -59,7 +58,7 @@ export function onIncentiveUpdated(event: IncentiveUpdated): void {
     if (newStartTime < timestamp) {
       newStartTime = timestamp
     }
-    incentive.lastRewardTime = BigInt.fromI32(newStartTime)
+    incentive.startTime = BigInt.fromI32(newStartTime)
   }
 
   if (newEndTime != 0) {
