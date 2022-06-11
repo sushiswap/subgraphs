@@ -222,35 +222,13 @@ export function onSync(event: SyncEvent): void {
   asset0.save()
   asset1.save()
 
-  let nativePrice: TokenPrice
-  let token0Price: TokenPrice
-  let token1Price: TokenPrice
-
-  // If the pool is one in which we want to update the native price
-  if (STABLE_POOL_ADDRESSES.includes(pairAddress)) {
-    if (token0.id == NATIVE_ADDRESS) {
-      token0Price = updateTokenPrice(token0)
-      token1Price = updateTokenPrice(token1)
-      nativePrice = token0Price
-    } else {
-      token1Price = updateTokenPrice(token1)
-      token0Price = updateTokenPrice(token0)
-      nativePrice = token1Price
-    }
-  } else {
-    // Avoid making this call unless neccasary
-    nativePrice = getOrCreateTokenPrice(NATIVE_ADDRESS)
-    token0Price = updateTokenPrice(token0)
-    token1Price = updateTokenPrice(token1)
-  }
-
-  const assets = [asset0, asset1]
+  const assets = [asset0.token, asset1.token]
 
   for (let i = 0; i < assets.length; i++) {
-    const whitelisted = WhitelistedToken.load(assets[i].token)
+    const whitelisted = WhitelistedToken.load(assets[i])
 
-    if (whitelisted && assets[Math.abs(i - 1) as i32].token != NATIVE_ADDRESS) {
-      const address = assets[Math.abs(i - 1) as i32].token
+    if (whitelisted && assets[Math.abs(i - 1) as i32] != NATIVE_ADDRESS) {
+      const address = assets[Math.abs(i - 1) as i32]
 
       // Check if a relation is already defined between the token to price and pool
       if (TokenPricePair.load(address.concat(':').concat(pairAddress)) !== null) {
@@ -275,6 +253,28 @@ export function onSync(event: SyncEvent): void {
       const tokenPricePair = new TokenPricePair(tokenPrice.token.concat(':').concat(pairAddress))
       tokenPricePair.save()
     }
+  }
+
+  let nativePrice: TokenPrice
+  let token0Price: TokenPrice
+  let token1Price: TokenPrice
+
+  // If the pool is one in which we want to update the native price
+  if (STABLE_POOL_ADDRESSES.includes(pairAddress)) {
+    if (token0.id == NATIVE_ADDRESS) {
+      token0Price = updateTokenPrice(token0)
+      token1Price = updateTokenPrice(token1)
+      nativePrice = token0Price
+    } else {
+      token1Price = updateTokenPrice(token1)
+      token0Price = updateTokenPrice(token0)
+      nativePrice = token1Price
+    }
+  } else {
+    // Avoid making this call unless neccasary
+    nativePrice = getOrCreateTokenPrice(NATIVE_ADDRESS)
+    token0Price = updateTokenPrice(token0)
+    token1Price = updateTokenPrice(token1)
   }
 
   const liquidityNative = asset0.reserve
