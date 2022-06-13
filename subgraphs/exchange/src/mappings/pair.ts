@@ -246,7 +246,7 @@ export function onTransfer(event: TransferEvent): void {
     if (mints.length != 0 && !isCompleteMint(mints[mints.length - 1])) {
       const mint = Mint.load(mints[mints.length - 1])
       if (mint === null) {
-        return // FIXME: fix hack
+        return 
       }
 
       burn.feeTo = mint.to
@@ -377,7 +377,7 @@ export function onMint(event: MintEvent): void {
   const transaction = Transaction.load(event.transaction.hash.toHex())
 
   if (transaction === null) {
-    return // FIXME: temp hack
+    return
   }
 
   const mints = transaction.mints
@@ -423,7 +423,6 @@ export function onMint(event: MintEvent): void {
   factory.save()
 
   if (mint !== null) {
-    // FIXME: hack, this should have a getOrCreateMint?
     mint.sender = event.params.sender
     mint.amount0 = token0Amount as BigDecimal
     mint.amount1 = token1Amount as BigDecimal
