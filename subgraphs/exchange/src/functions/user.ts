@@ -1,10 +1,10 @@
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
-import { User } from '../../generated/schema'
-import { getFactory } from './factory'
+import { User } from '../schema'
+import { getOrCreateFactory } from './factory'
 
 export function createUser(address: Address): User {
   // Update user count on factory
-  const factory = getFactory()
+  const factory = getOrCreateFactory()
   factory.userCount = factory.userCount.plus(BigInt.fromI32(1))
   factory.save()
 

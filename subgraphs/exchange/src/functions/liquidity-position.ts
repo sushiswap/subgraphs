@@ -1,5 +1,5 @@
 import { Address, ethereum } from '@graphprotocol/graph-ts'
-import { LiquidityPosition } from '../../generated/schema'
+import { LiquidityPosition } from '../schema'
 import { BIG_DECIMAL_ZERO } from '../constants'
 
 export function createLiquidityPosition(user: Address, pair: Address, block: ethereum.Block): LiquidityPosition {

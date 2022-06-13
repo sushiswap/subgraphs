@@ -1,7 +1,7 @@
 import { BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { PairHourData } from '../../generated/schema'
-import { BIG_DECIMAL_ZERO } from '../constants'
-import { getOrCreatePair } from './pair'
+import { PairHourData } from '../../schema'
+import { BIG_DECIMAL_ZERO } from '../../constants'
+import { getOrCreatePair } from '../pair'
 
 export function updatePairHourData(event: ethereum.Event): PairHourData {
   const timestamp = event.block.timestamp.toI32()

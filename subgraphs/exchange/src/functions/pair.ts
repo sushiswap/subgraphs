@@ -1,7 +1,7 @@
 import { Address, ethereum } from '@graphprotocol/graph-ts'
 import { getToken } from '.'
-import { Pair } from '../../generated/schema'
-import { Pair as PairContract } from '../../generated/templates/Pair/Pair'
+import { Pair } from '../schema'
+import { Pair as PairContract } from '../templates/Pair/Pair'
 import { BIG_DECIMAL_ZERO, BIG_INT_ZERO, FACTORY_ADDRESS, WHITELISTED_TOKEN_ADDRESSES } from '../constants'
 
 export function getOrCreatePair(address: Address, block: ethereum.Block = null): Pair {

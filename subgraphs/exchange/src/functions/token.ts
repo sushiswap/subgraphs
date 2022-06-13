@@ -1,16 +1,16 @@
 import { Address, BigInt, dataSource } from '@graphprotocol/graph-ts'
-import { ERC20 } from '../../generated/Factory/ERC20'
-import { ERC20NameBytes } from '../../generated/Factory/ERC20NameBytes'
-import { ERC20SymbolBytes } from '../../generated/Factory/ERC20SymbolBytes'
-import { Token } from '../../generated/schema'
+import { ERC20 } from '../Factory/ERC20'
+import { ERC20NameBytes } from '../Factory/ERC20NameBytes'
+import { ERC20SymbolBytes } from '../Factory/ERC20SymbolBytes'
+import { Token } from '../schema'
 import { BIG_DECIMAL_ZERO, BIG_INT_ZERO, NULL_CALL_RESULT_VALUE } from '../constants'
-import { getFactory } from './factory'
+import { getOrCreateFactory } from './factory'
 
 export function getToken(address: Address): Token {
   let token = Token.load(address.toHex())
 
   if (token === null) {
-    const factory = getFactory()
+    const factory = getOrCreateFactory()
     factory.tokenCount = factory.tokenCount.plus(BigInt.fromI32(1))
     factory.save()
 

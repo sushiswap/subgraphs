@@ -10,7 +10,7 @@ import {
   STABLE_POOL_ADDRESSES,
   STABLE_TOKEN_ADDRESSES,
 } from './constants'
-import { getToken } from './enitites'
+import { getToken } from './functions'
 
 // export const uniswapFactoryContract = FactoryContract.bind(Address.fromString("0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"))
 

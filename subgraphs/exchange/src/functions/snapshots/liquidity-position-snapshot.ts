@@ -1,13 +1,13 @@
 import { Address, ethereum } from '@graphprotocol/graph-ts'
-import { getBundle, getOrCreatePair, getToken } from '.'
-import { LiquidityPosition, LiquidityPositionSnapshot } from '../../generated/schema'
+import { LiquidityPosition, LiquidityPositionSnapshot } from 'generated/schema'
+import { getOrCreateBundle, getOrCreatePair, getToken } from '../'
 
 export function createLiquidityPositionSnapshot(position: LiquidityPosition, block: ethereum.Block): void {
   const timestamp = block.timestamp.toI32()
 
   const id = position.id.concat('-').concat(timestamp.toString())
 
-  const bundle = getBundle()
+  const bundle = getOrCreateBundle()
 
   const pair = getOrCreatePair(Address.fromString(position.pair), block)
 

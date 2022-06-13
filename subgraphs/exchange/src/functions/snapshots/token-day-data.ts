@@ -1,10 +1,10 @@
 import { BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { getBundle } from '.'
-import { Token, TokenDayData } from '../../generated/schema'
-import { BIG_DECIMAL_ZERO } from '../constants'
+import { getOrCreateBundle } from '../'
+import { Token, TokenDayData } from '../../schema'
+import { BIG_DECIMAL_ZERO } from '../../constants'
 
 export function getTokenDayData(token: Token, event: ethereum.Event): TokenDayData {
-  const bundle = getBundle()
+  const bundle = getOrCreateBundle()
 
   const day = event.block.timestamp.toI32() / 86400
 
@@ -30,7 +30,7 @@ export function getTokenDayData(token: Token, event: ethereum.Event): TokenDayDa
 }
 
 export function updateTokenDayData(token: Token, event: ethereum.Event): TokenDayData {
-  const bundle = getBundle()
+  const bundle = getOrCreateBundle()
 
   const tokenDayData = getTokenDayData(token, event)
 

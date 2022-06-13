@@ -16,8 +16,8 @@ import {
 import {
   createLiquidityPosition,
   createLiquidityPositionSnapshot,
-  getBundle,
-  getFactory,
+  getOrCreateBundle,
+  getOrCreateFactory,
   getOrCreatePair,
   getToken,
   getUser,
@@ -25,7 +25,7 @@ import {
   updatePairDayData,
   updatePairHourData,
   updateTokenDayData,
-} from '../enitites'
+} from '../functions'
 import { findEthPerToken, getNativePriceInUSD } from '../pricing'
 
 const BLACKLIST_EXCHANGE_VOLUME: string[] = [
@@ -45,7 +45,7 @@ export function getTrackedVolumeUSD(
   token1: Token,
   pair: Pair
 ): BigDecimal {
-  const bundle = getBundle()
+  const bundle = getOrCreateBundle()
   const price0 = token0.derivedETH.times(bundle.ethPrice)
   const price1 = token1.derivedETH.times(bundle.ethPrice)
 
@@ -103,7 +103,7 @@ export function getTrackedLiquidityUSD(
   tokenAmount1: BigDecimal,
   token1: Token
 ): BigDecimal {
-  const bundle = getBundle()
+  const bundle = getOrCreateBundle()
   const price0 = token0.derivedETH.times(bundle.ethPrice)
   const price1 = token1.derivedETH.times(bundle.ethPrice)
 
@@ -154,7 +154,7 @@ export function onTransfer(event: TransferEvent): void {
     return
   }
 
-  const factory = getFactory()
+  const factory = getOrCreateFactory()
   const transactionHash = event.transaction.hash.toHex()
 
   // Force creation of users if not already known will be lazily created
@@ -307,7 +307,7 @@ export function onSync(event: SyncEvent): void {
   const token0 = getToken(Address.fromString(pair.token0))
   const token1 = getToken(Address.fromString(pair.token1))
 
-  const factory = getFactory()
+  const factory = getOrCreateFactory()
 
   // reset factory liquidity by subtracting only tracked liquidity
   factory.liquidityETH = factory.liquidityETH.minus(pair.trackedReserveETH as BigDecimal)
@@ -334,7 +334,7 @@ export function onSync(event: SyncEvent): void {
   pair.save()
 
   // update ETH price now that reserves could have changed
-  const bundle = getBundle()
+  const bundle = getOrCreateBundle()
   // Pass the block so we can get accurate price data before migration
   bundle.ethPrice = getNativePriceInUSD()
   bundle.save()
@@ -394,7 +394,7 @@ export function onMint(event: MintEvent): void {
 
   const pair = getOrCreatePair(event.address, event.block)
 
-  const factory = getFactory()
+  const factory = getOrCreateFactory()
 
   const token0 = getToken(Address.fromString(pair.token0))
   const token1 = getToken(Address.fromString(pair.token1))
@@ -408,7 +408,7 @@ export function onMint(event: MintEvent): void {
   token1.txCount = token1.txCount.plus(BigInt.fromI32(1))
 
   // get new amounts of USD and ETH for tracking
-  const bundle = getBundle()
+  const bundle = getOrCreateBundle()
   const amountTotalUSD = token1.derivedETH
     .times(token1Amount)
     .plus(token0.derivedETH.times(token0Amount))
@@ -489,7 +489,7 @@ export function onBurn(event: BurnEvent): void {
     burn.timestamp = transaction.timestamp
   }
 
-  const factory = getFactory()
+  const factory = getOrCreateFactory()
 
   //update token info
   const token0 = getToken(Address.fromString(pair.token0))
@@ -503,7 +503,7 @@ export function onBurn(event: BurnEvent): void {
   token1.txCount = token1.txCount.plus(BigInt.fromI32(1))
 
   // get new amounts of USD and ETH for tracking
-  const bundle = getBundle()
+  const bundle = getOrCreateBundle()
   const amountTotalUSD = token1.derivedETH
     .times(token1Amount)
     .plus(token0.derivedETH.times(token0Amount))
@@ -570,7 +570,7 @@ export function onSwap(event: SwapEvent): void {
   const amount1Total = amount1Out.plus(amount1In)
 
   // ETH/USD prices
-  const bundle = getBundle()
+  const bundle = getOrCreateBundle()
 
   // get total amounts of derived USD and ETH for tracking
   const derivedAmountETH = token1.derivedETH
@@ -621,7 +621,7 @@ export function onSwap(event: SwapEvent): void {
   // Don't track volume for these tokens in total exchange volume
   if (!BLACKLIST_EXCHANGE_VOLUME.includes(token0.id) && !BLACKLIST_EXCHANGE_VOLUME.includes(token1.id)) {
     // update global values, only used tracked amounts for volume
-    const factory = getFactory()
+    const factory = getOrCreateFactory()
     factory.volumeUSD = factory.volumeUSD.plus(trackedAmountUSD)
     factory.volumeETH = factory.volumeETH.plus(trackedAmountETH)
     factory.untrackedVolumeUSD = factory.untrackedVolumeUSD.plus(derivedAmountUSD)
