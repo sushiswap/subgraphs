@@ -5,26 +5,23 @@ import {
   Mint as MintEvent,
   Swap as SwapEvent,
   Sync as SyncEvent,
-  Transfer as TransferEvent,
+  Transfer as TransferEvent
 } from '../../generated/templates/Pair/Pair'
 import {
   ADDRESS_ZERO,
   BIG_DECIMAL_ZERO,
   MINIMUM_USD_THRESHOLD_NEW_PAIRS,
-  WHITELISTED_TOKEN_ADDRESSES,
+  WHITELISTED_TOKEN_ADDRESSES
 } from '../constants'
 import {
-  createLiquidityPosition,
-  createLiquidityPositionSnapshot,
-  getOrCreateBundle,
+  getOrCreateLiquidityPosition, createLiquidityPositionSnapshot, getOrCreateBundle,
   getOrCreateFactory,
   getOrCreatePair,
-  getToken,
-  getUser,
-  updateDayData,
-  updatePairDayData,
-  updatePairHourData,
-  updateTokenDayData,
+  getOrCreateToken,
+  getOrCreateUser, updateDayData,
+  getOrCreatePairDayData,
+  getOrCreatePairHourData,
+  updateTokenDayData
 } from '../functions'
 import { findEthPerToken, getNativePriceInUSD } from '../pricing'
 
@@ -158,8 +155,8 @@ export function onTransfer(event: TransferEvent): void {
   const transactionHash = event.transaction.hash.toHex()
 
   // Force creation of users if not already known will be lazily created
-  getUser(event.params.from)
-  getUser(event.params.to)
+  getOrCreateUser(event.params.from)
+  getOrCreateUser(event.params.to)
 
   const pair = getOrCreatePair(event.address, event.block)
 
@@ -278,7 +275,7 @@ export function onTransfer(event: TransferEvent): void {
 
   // BURN
   if (event.params.from != ADDRESS_ZERO && event.params.from.toHex() != pair.id) {
-    const fromUserLiquidityPosition = createLiquidityPosition(event.params.from, event.address, event.block)
+    const fromUserLiquidityPosition = getOrCreateLiquidityPosition(event.params.from, event.address, event.block)
 
     fromUserLiquidityPosition.liquidityTokenBalance = fromUserLiquidityPosition.liquidityTokenBalance.minus(value)
 
@@ -289,7 +286,7 @@ export function onTransfer(event: TransferEvent): void {
 
   // MINT
   if (event.params.to != ADDRESS_ZERO && event.params.to.toHex() != pair.id) {
-    const toUserLiquidityPosition = createLiquidityPosition(event.params.to, event.address, event.block)
+    const toUserLiquidityPosition = getOrCreateLiquidityPosition(event.params.to, event.address, event.block)
 
     toUserLiquidityPosition.liquidityTokenBalance = toUserLiquidityPosition.liquidityTokenBalance.plus(value)
 
@@ -304,8 +301,8 @@ export function onTransfer(event: TransferEvent): void {
 export function onSync(event: SyncEvent): void {
   const pair = getOrCreatePair(event.address, event.block)
 
-  const token0 = getToken(Address.fromString(pair.token0))
-  const token1 = getToken(Address.fromString(pair.token1))
+  const token0 = getOrCreateToken(pair.token0)
+  const token1 = getOrCreateToken(pair.token1)
 
   const factory = getOrCreateFactory()
 
@@ -396,8 +393,8 @@ export function onMint(event: MintEvent): void {
 
   const factory = getOrCreateFactory()
 
-  const token0 = getToken(Address.fromString(pair.token0))
-  const token1 = getToken(Address.fromString(pair.token1))
+  const token0 = getOrCreateToken(pair.token0)
+  const token1 = getOrCreateToken(pair.token1)
 
   // update exchange info (except balances, sync will cover that)
   const token0Amount = convertTokenToDecimal(event.params.amount0, token0.decimals)
@@ -435,7 +432,7 @@ export function onMint(event: MintEvent): void {
     mint.save()
 
     // create liquidity position
-    const liquidityPosition = createLiquidityPosition(Address.fromString(mint.to), event.address, event.block)
+    const liquidityPosition = getOrCreateLiquidityPosition(Address.fromString(mint.to), event.address, event.block)
 
     // create liquidity position snapshot
     createLiquidityPositionSnapshot(liquidityPosition, event.block)
@@ -444,10 +441,10 @@ export function onMint(event: MintEvent): void {
   updateDayData(event)
 
   // update pair day data
-  updatePairDayData(event)
+  getOrCreatePairDayData(event)
 
   // update pair hour data
-  updatePairHourData(event)
+  getOrCreatePairHourData(event)
 
   // update token0 day data
   updateTokenDayData(token0 as Token, event)
@@ -492,8 +489,8 @@ export function onBurn(event: BurnEvent): void {
   const factory = getOrCreateFactory()
 
   //update token info
-  const token0 = getToken(Address.fromString(pair.token0))
-  const token1 = getToken(Address.fromString(pair.token1))
+  const token0 = getOrCreateToken(pair.token0)
+  const token1 = getOrCreateToken(pair.token1)
 
   const token0Amount = convertTokenToDecimal(event.params.amount0, token0.decimals)
   const token1Amount = convertTokenToDecimal(event.params.amount1, token1.decimals)
@@ -531,7 +528,7 @@ export function onBurn(event: BurnEvent): void {
 
   // update the LP position
   if (burn.sender) {
-    const liquidityPosition = createLiquidityPosition(
+    const liquidityPosition = getOrCreateLiquidityPosition(
       Address.fromString(burn.sender as string),
       event.address,
       event.block
@@ -543,10 +540,10 @@ export function onBurn(event: BurnEvent): void {
   updateDayData(event)
 
   // update pair day data
-  updatePairDayData(event)
+  getOrCreatePairDayData(event)
 
   // update pair hour data
-  updatePairHourData(event)
+  getOrCreatePairHourData(event)
 
   // update token0 day data
   updateTokenDayData(token0 as Token, event)
@@ -558,8 +555,8 @@ export function onBurn(event: BurnEvent): void {
 export function onSwap(event: SwapEvent): void {
   log.info('onSwap', [])
   const pair = getOrCreatePair(event.address, event.block)
-  const token0 = getToken(Address.fromString(pair.token0))
-  const token1 = getToken(Address.fromString(pair.token1))
+  const token0 = getOrCreateToken(pair.token0)
+  const token1 = getOrCreateToken(pair.token1)
   const amount0In = convertTokenToDecimal(event.params.amount0In, token0.decimals)
   const amount1In = convertTokenToDecimal(event.params.amount1In, token1.decimals)
   const amount0Out = convertTokenToDecimal(event.params.amount0Out, token0.decimals)
@@ -671,8 +668,8 @@ export function onSwap(event: SwapEvent): void {
 
   const dayData = updateDayData(event)
 
-  const pairDayData = updatePairDayData(event)
-  const pairHourData = updatePairHourData(event)
+  const pairDayData = getOrCreatePairDayData(event)
+  const pairHourData = getOrCreatePairHourData(event)
 
   const token0DayData = updateTokenDayData(token0 as Token, event)
   const token1DayData = updateTokenDayData(token1 as Token, event)

@@ -1,8 +1,7 @@
 import { Address, ethereum } from '@graphprotocol/graph-ts'
-import { LiquidityPosition } from '../schema'
-import { BIG_DECIMAL_ZERO } from '../constants'
+import { LiquidityPosition } from '../../generated/schema'
 
-export function createLiquidityPosition(user: Address, pair: Address, block: ethereum.Block): LiquidityPosition {
+export function getOrCreateLiquidityPosition(user: Address, pair: Address, block: ethereum.Block): LiquidityPosition {
   const pairAddress = pair.toHex()
 
   const userAddress = user.toHex()
@@ -15,7 +14,6 @@ export function createLiquidityPosition(user: Address, pair: Address, block: eth
     const timestamp = block.timestamp.toI32()
 
     liquidityPosition = new LiquidityPosition(id)
-    liquidityPosition.liquidityTokenBalance = BIG_DECIMAL_ZERO
 
     liquidityPosition.user = userAddress
     liquidityPosition.pair = pairAddress

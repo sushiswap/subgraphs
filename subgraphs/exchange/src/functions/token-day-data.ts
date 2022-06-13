@@ -1,7 +1,6 @@
 import { BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { getOrCreateBundle } from '../'
-import { Token, TokenDayData } from '../../schema'
-import { BIG_DECIMAL_ZERO } from '../../constants'
+import { Token, TokenDayData } from '../../generated/schema'
+import { getOrCreateBundle } from './bundle'
 
 export function getTokenDayData(token: Token, event: ethereum.Event): TokenDayData {
   const bundle = getOrCreateBundle()
@@ -19,11 +18,6 @@ export function getTokenDayData(token: Token, event: ethereum.Event): TokenDayDa
     tokenDayData.date = date
     tokenDayData.token = token.id
     tokenDayData.priceUSD = token.derivedETH.times(bundle.ethPrice)
-    tokenDayData.volume = BIG_DECIMAL_ZERO
-    tokenDayData.volumeETH = BIG_DECIMAL_ZERO
-    tokenDayData.volumeUSD = BIG_DECIMAL_ZERO
-    tokenDayData.liquidityUSD = BIG_DECIMAL_ZERO
-    tokenDayData.txCount = BigInt.fromI32(0)
   }
 
   return tokenDayData as TokenDayData

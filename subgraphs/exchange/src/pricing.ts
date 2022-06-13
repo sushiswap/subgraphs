@@ -10,7 +10,7 @@ import {
   STABLE_POOL_ADDRESSES,
   STABLE_TOKEN_ADDRESSES,
 } from './constants'
-import { getToken } from './functions'
+import { getOrCreateToken } from './functions'
 
 // export const uniswapFactoryContract = FactoryContract.bind(Address.fromString("0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"))
 
@@ -92,13 +92,13 @@ export function findEthPerToken(token: Token): BigDecimal {
       continue // Not created yet
     }
     if (pair.token0 == token.id && pair.reserveETH.gt(MINIMUM_NATIVE_LIQUIDITY)) {
-      const token1 = getToken(Address.fromString(pair.token1))
+      const token1 = getOrCreateToken(pair.token1)
 
       return pair.token1Price.times(token1.derivedETH as BigDecimal) // return token1 per our token * Eth per token 1
     }
 
     if (pair.token1 == token.id && pair.reserveETH.gt(MINIMUM_NATIVE_LIQUIDITY)) {
-      const token0 = getToken(Address.fromString(pair.token0))
+      const token0 = getOrCreateToken(pair.token0)
       return pair.token0Price.times(token0.derivedETH as BigDecimal) // return token0 per our token * ETH per token 0
     }
   }

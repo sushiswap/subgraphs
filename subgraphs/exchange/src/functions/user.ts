@@ -1,9 +1,8 @@
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
-import { User } from '../schema'
+import { User } from '../../generated/schema'
 import { getOrCreateFactory } from './factory'
 
 export function createUser(address: Address): User {
-  // Update user count on factory
   const factory = getOrCreateFactory()
   factory.userCount = factory.userCount.plus(BigInt.fromI32(1))
   factory.save()
@@ -14,10 +13,8 @@ export function createUser(address: Address): User {
   return user as User
 }
 
-export function getUser(address: Address): User {
+export function getOrCreateUser(address: Address): User {
   let user = User.load(address.toHex())
-
-  // If no user, create one
   if (user === null) {
     user = createUser(address)
   }
@@ -26,14 +23,12 @@ export function getUser(address: Address): User {
 }
 
 export function updateUser(address: Address): User {
-  // log.info('Update user {}', [address.toHex()])
-  const user = getUser(address)
+  const user = getOrCreateUser(address)
 
   return user as User
 }
 
-export function updateUsers(addresses: Address[]): void {
-  log.info('Update users', [])
+export function createUserIfNotExists(addresses: Address[]): void {
   for (let i = 0; i < addresses.length; i++) {
     updateUser(addresses[i])
   }

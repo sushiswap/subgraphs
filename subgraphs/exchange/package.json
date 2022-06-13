@@ -23,12 +23,10 @@
     },
     "devDependencies": {
         "abi": "workspace:*",
-        "@sushiswap/core": "^1.4.2",
         "@graphprotocol/graph-cli": "^0.27.0",
         "@graphprotocol/graph-ts": "^0.24.1",
         "matchstick-as": "^0.4.2",
-        "assemblyscript": "^0.19.20",
-        "wabt": "1.0.24"
+        "assemblyscript": "^0.19.20"
     }
   }
   

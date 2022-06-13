@@ -81,19 +81,15 @@ importers:
     specifiers:
       '@graphprotocol/graph-cli': ^0.27.0
       '@graphprotocol/graph-ts': ^0.24.1
-      '@sushiswap/core': ^1.4.2
       abi: workspace:*
       assemblyscript: ^0.19.20
       matchstick-as: ^0.4.2
-      wabt: 1.0.24
     devDependencies:
       '@graphprotocol/graph-cli': 0.27.0
       '@graphprotocol/graph-ts': 0.24.1
-      '@sushiswap/core': 1.4.2
       abi: link:../../packages/abi
       assemblyscript: 0.19.23
       matchstick-as: 0.4.2
-      wabt: 1.0.24
 
   subgraphs/furo-stream:
     specifiers:
@@ -3679,7 +3675,7 @@ packages:
     dev: true
 
   /wcwidth/1.0.1:
-    resolution: {integrity: sha1-8LDc+RW8X/FSivrbLA4XtTLaL+g=}
+    resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
     dependencies:
       defaults: 1.0.3
     dev: true

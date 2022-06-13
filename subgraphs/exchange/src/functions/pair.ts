@@ -1,8 +1,8 @@
 import { Address, ethereum } from '@graphprotocol/graph-ts'
-import { getToken } from '.'
-import { Pair } from '../schema'
-import { Pair as PairContract } from '../templates/Pair/Pair'
-import { BIG_DECIMAL_ZERO, BIG_INT_ZERO, FACTORY_ADDRESS, WHITELISTED_TOKEN_ADDRESSES } from '../constants'
+import { getOrCreateToken } from '.'
+import { Pair } from '../../generated/schema'
+import { Pair as PairContract } from '../../generated/templates/Pair/Pair'
+import { FACTORY_ADDRESS, WHITELISTED_TOKEN_ADDRESSES } from '../constants/index'
 
 export function getOrCreatePair(address: Address, block: ethereum.Block = null): Pair {
   let pair = Pair.load(address.toHex())
@@ -11,9 +11,9 @@ export function getOrCreatePair(address: Address, block: ethereum.Block = null):
     const pairContract = PairContract.bind(address)
 
     const token0Address = pairContract.token0()
-    const token0 = getToken(token0Address)
+    const token0 = getOrCreateToken(token0Address.toHex())
     const token1Address = pairContract.token1()
-    const token1 = getToken(token1Address)
+    const token1 = getOrCreateToken(token1Address.toHex())
 
     pair = new Pair(address.toHex())
 
@@ -37,21 +37,6 @@ export function getOrCreatePair(address: Address, block: ethereum.Block = null):
 
     pair.token0 = token0.id
     pair.token1 = token1.id
-    pair.liquidityProviderCount = BIG_INT_ZERO
-
-    pair.txCount = BIG_INT_ZERO
-    pair.reserve0 = BIG_DECIMAL_ZERO
-    pair.reserve1 = BIG_DECIMAL_ZERO
-    pair.trackedReserveETH = BIG_DECIMAL_ZERO
-    pair.reserveETH = BIG_DECIMAL_ZERO
-    pair.reserveUSD = BIG_DECIMAL_ZERO
-    pair.totalSupply = BIG_DECIMAL_ZERO
-    pair.volumeToken0 = BIG_DECIMAL_ZERO
-    pair.volumeToken1 = BIG_DECIMAL_ZERO
-    pair.volumeUSD = BIG_DECIMAL_ZERO
-    pair.untrackedVolumeUSD = BIG_DECIMAL_ZERO
-    pair.token0Price = BIG_DECIMAL_ZERO
-    pair.token1Price = BIG_DECIMAL_ZERO
 
     pair.timestamp = block.timestamp
     pair.block = block.number

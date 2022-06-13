@@ -135,8 +135,11 @@ type Token @entity {
 
   # mirrored from the smart contract
   symbol: String!
+  symbolSuccess: Boolean!
   name: String!
+  nameSuccess: Boolean!
   decimals: BigInt!
+  decimalsSuccess: Boolean!
 
   # used for other stats like marketcap
   totalSupply: BigInt!

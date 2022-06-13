@@ -1,9 +1,8 @@
 import { BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { PairHourData } from '../../schema'
-import { BIG_DECIMAL_ZERO } from '../../constants'
-import { getOrCreatePair } from '../pair'
+import { PairHourData } from '../../generated/schema'
+import { getOrCreatePair } from './pair'
 
-export function updatePairHourData(event: ethereum.Event): PairHourData {
+export function getOrCreatePairHourData(event: ethereum.Event): PairHourData {
   const timestamp = event.block.timestamp.toI32()
 
   const hour = timestamp / 3600
@@ -20,10 +19,6 @@ export function updatePairHourData(event: ethereum.Event): PairHourData {
     pairHourData = new PairHourData(id)
     pairHourData.date = date
     pairHourData.pair = pair.id
-    pairHourData.volumeToken0 = BIG_DECIMAL_ZERO
-    pairHourData.volumeToken1 = BIG_DECIMAL_ZERO
-    pairHourData.volumeUSD = BIG_DECIMAL_ZERO
-    pairHourData.txCount = BigInt.fromI32(0)
   }
 
   pairHourData.reserve0 = pair.reserve0

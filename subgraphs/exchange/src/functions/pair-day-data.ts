@@ -1,9 +1,8 @@
 import { BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { PairDayData } from '../../schema'
-import { BIG_DECIMAL_ZERO } from '../../constants'
-import { getOrCreatePair } from '../pair'
+import { PairDayData } from '../../generated/schema'
+import { getOrCreatePair } from './pair'
 
-export function updatePairDayData(event: ethereum.Event): PairDayData {
+export function getOrCreatePairDayData(event: ethereum.Event): PairDayData {
   const timestamp = event.block.timestamp.toI32()
 
   const day = timestamp / 86400
@@ -22,10 +21,6 @@ export function updatePairDayData(event: ethereum.Event): PairDayData {
     pairDayData.token0 = pair.token0
     pairDayData.token1 = pair.token1
     pairDayData.pair = pair.id
-    pairDayData.volumeToken0 = BIG_DECIMAL_ZERO
-    pairDayData.volumeToken1 = BIG_DECIMAL_ZERO
-    pairDayData.volumeUSD = BIG_DECIMAL_ZERO
-    pairDayData.txCount = BigInt.fromI32(0)
   }
 
   pairDayData.totalSupply = pair.totalSupply

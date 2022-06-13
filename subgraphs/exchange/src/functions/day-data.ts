@@ -1,7 +1,6 @@
 import { ethereum } from "@graphprotocol/graph-ts"
-import { DayData } from "generated/schema"
-import { BIG_DECIMAL_ZERO } from "src/constants"
-import { getOrCreateFactory } from "../factory"
+import { DayData } from "../../generated/schema"
+import { getOrCreateFactory } from "./factory"
 
 export function getOrCreateDayData(event: ethereum.Event): DayData {
     const id = event.block.timestamp.toI32() / 86400
@@ -13,9 +12,6 @@ export function getOrCreateDayData(event: ethereum.Event): DayData {
       dayData = new DayData(id.toString())
       dayData.factory = factory.id
       dayData.date = id * 86400
-      dayData.volumeUSD = BIG_DECIMAL_ZERO
-      dayData.volumeETH = BIG_DECIMAL_ZERO
-      dayData.untrackedVolume = BIG_DECIMAL_ZERO
       dayData.liquidityUSD = factory.liquidityUSD
       dayData.liquidityETH = factory.liquidityETH
       dayData.txCount = factory.txCount
