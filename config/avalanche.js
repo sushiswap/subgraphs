@@ -9,6 +9,7 @@ module.exports = {
     market: { address: '0x7603a35af5cf10b113f167d424eb75bb7062c8ce', startBlock: 13510645 },
   },
   legacy: {
+    minimum_usd_threshold_new_pairs: "3000",
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
       startBlock: 506190,

@@ -1,0 +1,34 @@
+{
+    "name": "exchange",
+    "license": "MIT",
+    "repository": {
+      "url": "sushiswap/subgraphs",
+      "directory": "subgraphs/exchange"
+    },
+    "files": [
+      "generated"
+    ],
+    "scripts": {
+      "generate": "mustache ../../config/$NETWORK.js template.yaml > subgraph.yaml && mustache ../../config/$NETWORK.js src/constants/index.template.ts > src/constants/index.ts && graph codegen",
+      "build": "graph build",
+      "create-local": "graph create --node http://localhost:8020/ sushiswap/legacy-exchange",
+      "remove-local": "graph remove --node http://localhost:8020/ sushiswap/legacy-exchange",
+      "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/legacy-exchange",
+      "deploy-ethereum": "graph deploy --product hosted-service sushiswap/legacy-exchange-ethereum",
+      "deploy-kovan": "graph deploy --product hosted-service sushiswap/legacy-exchange-kovan",
+      "deploy-polygon": "graph deploy --product hosted-service sushiswap/legacy-exchange-polygon",
+      "deploy-avalanche": "graph deploy --product hosted-service sushiswap/legacy-exchange-avalanche",
+      "deploy-arbitrum": "graph deploy --product hosted-service matthewlilley/legacy-exchange-arbitrum",
+      "deploy-moonbeam": "graph deploy --product hosted-service matthewlilley/legacy-exchange-moonbeam"
+    },
+    "devDependencies": {
+        "abi": "workspace:*",
+        "@sushiswap/core": "^1.4.2",
+        "@graphprotocol/graph-cli": "^0.27.0",
+        "@graphprotocol/graph-ts": "^0.24.1",
+        "matchstick-as": "^0.4.2",
+        "assemblyscript": "^0.19.20",
+        "wabt": "1.0.24"
+    }
+  }
+  
