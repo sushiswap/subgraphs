@@ -2,7 +2,6 @@ import { Address, ethereum } from '@graphprotocol/graph-ts'
 import { LiquidityPosition } from '../../generated/schema'
 import { BIG_DECIMAL_ZERO } from '../constants'
 
-
 export function createLiquidityPosition(user: Address, pair: Address, block: ethereum.Block): LiquidityPosition {
   const pairAddress = pair.toHex()
 
@@ -13,7 +12,6 @@ export function createLiquidityPosition(user: Address, pair: Address, block: eth
   let liquidityPosition = LiquidityPosition.load(id)
 
   if (liquidityPosition === null) {
-
     const timestamp = block.timestamp.toI32()
 
     liquidityPosition = new LiquidityPosition(id)

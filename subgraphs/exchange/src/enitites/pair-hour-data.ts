@@ -1,6 +1,5 @@
-import { BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { Pair, PairHourData } from '../../generated/schema'
-
+import { BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { PairHourData } from '../../generated/schema'
 import { BIG_DECIMAL_ZERO } from '../constants'
 import { getOrCreatePair } from './pair'
 

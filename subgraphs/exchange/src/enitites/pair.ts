@@ -4,11 +4,7 @@ import { Pair } from '../../generated/schema'
 import { Pair as PairContract } from '../../generated/templates/Pair/Pair'
 import { BIG_DECIMAL_ZERO, BIG_INT_ZERO, FACTORY_ADDRESS, WHITELISTED_TOKEN_ADDRESSES } from '../constants'
 
-
-export function getOrCreatePair(
-  address: Address,
-  block: ethereum.Block = null,
-): Pair {
+export function getOrCreatePair(address: Address, block: ethereum.Block = null): Pair {
   let pair = Pair.load(address.toHex())
 
   if (pair === null) {

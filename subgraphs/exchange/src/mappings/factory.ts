@@ -1,8 +1,7 @@
-import { getFactory, getOrCreatePair } from '../enitites'
-
-import { BIG_INT_ONE } from '../constants'
 import { PairCreated } from '../../generated/Factory/Factory'
 import { Pair as PairTemplate } from '../../generated/templates'
+import { BIG_INT_ONE } from '../constants'
+import { getFactory, getOrCreatePair } from '../enitites'
 
 export function onPairCreated(event: PairCreated): void {
   const factory = getFactory()

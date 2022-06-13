@@ -1,10 +1,9 @@
-import { Address, BigInt, dataSource, log } from '@graphprotocol/graph-ts'
-import { BIG_DECIMAL_ZERO, BIG_INT_ZERO, NULL_CALL_RESULT_VALUE } from '../constants'
-
+import { Address, BigInt, dataSource } from '@graphprotocol/graph-ts'
 import { ERC20 } from '../../generated/Factory/ERC20'
 import { ERC20NameBytes } from '../../generated/Factory/ERC20NameBytes'
 import { ERC20SymbolBytes } from '../../generated/Factory/ERC20SymbolBytes'
 import { Token } from '../../generated/schema'
+import { BIG_DECIMAL_ZERO, BIG_INT_ZERO, NULL_CALL_RESULT_VALUE } from '../constants'
 import { getFactory } from './factory'
 
 export function getToken(address: Address): Token {

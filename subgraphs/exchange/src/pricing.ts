@@ -3,9 +3,12 @@ import { Pair, Token } from '../generated/schema'
 import { Factory as FactoryContract } from '../generated/templates/Pair/Factory'
 import {
   BIG_DECIMAL_ONE,
-  BIG_DECIMAL_ZERO, FACTORY_ADDRESS, MINIMUM_NATIVE_LIQUIDITY, NATIVE_ADDRESS,
+  BIG_DECIMAL_ZERO,
+  FACTORY_ADDRESS,
+  MINIMUM_NATIVE_LIQUIDITY,
+  NATIVE_ADDRESS,
   STABLE_POOL_ADDRESSES,
-  STABLE_TOKEN_ADDRESSES
+  STABLE_TOKEN_ADDRESSES,
 } from './constants'
 import { getToken } from './enitites'
 
@@ -75,7 +78,6 @@ export function getNativePriceInUSD(): BigDecimal {
   return weightdPrice
 }
 
-
 export function findEthPerToken(token: Token): BigDecimal {
   if (token.id == NATIVE_ADDRESS) {
     return BIG_DECIMAL_ONE
@@ -85,7 +87,7 @@ export function findEthPerToken(token: Token): BigDecimal {
 
   for (let i = 0; i < whitelist.length; ++i) {
     const pairAddress = whitelist[i]
-    const pair = Pair.load(pairAddress) 
+    const pair = Pair.load(pairAddress)
     if (pair === null) {
       continue // Not created yet
     }

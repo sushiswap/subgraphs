@@ -1,5 +1,4 @@
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
-
 import { User } from '../../generated/schema'
 import { getFactory } from './factory'
 

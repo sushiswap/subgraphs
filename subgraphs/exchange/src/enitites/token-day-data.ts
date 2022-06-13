@@ -3,7 +3,6 @@ import { getBundle } from '.'
 import { Token, TokenDayData } from '../../generated/schema'
 import { BIG_DECIMAL_ZERO } from '../constants'
 
-
 export function getTokenDayData(token: Token, event: ethereum.Event): TokenDayData {
   const bundle = getBundle()
 
