@@ -1,6 +1,7 @@
 module.exports = {
   network: 'goerli',
   legacy: {
+    minimum_usd_threshold_new_pairs: "3000",
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
       startBlock: 4345820,
