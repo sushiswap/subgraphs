@@ -85,23 +85,32 @@ export function findEthPerToken(token: Token): BigDecimal {
 
   const whitelist = token.whitelistPairs
 
+  let mostReseveEth = BIG_DECIMAL_ZERO
+  let currentPrice = BIG_DECIMAL_ZERO
+
   for (let i = 0; i < whitelist.length; ++i) {
     const pairAddress = whitelist[i]
     const pair = Pair.load(pairAddress)
     if (pair === null) {
       continue // Not created yet
     }
-    if (pair.token0 == token.id && pair.reserveETH.gt(MINIMUM_NATIVE_LIQUIDITY)) {
-      const token1 = getOrCreateToken(pair.token1)
 
-      return pair.token1Price.times(token1.derivedETH as BigDecimal) // return token1 per our token * Eth per token 1
+    if (pair.token0 == token.id && pair.reserveETH.gt(MINIMUM_NATIVE_LIQUIDITY) && pair.reserveETH.gt(mostReseveEth)) {
+      const token1 = getOrCreateToken(pair.token1)
+      if (token1.decimalsSuccess) {
+        mostReseveEth = pair.reserveETH
+        currentPrice = pair.token1Price.times(token1.derivedETH as BigDecimal)
+      }
     }
 
-    if (pair.token1 == token.id && pair.reserveETH.gt(MINIMUM_NATIVE_LIQUIDITY)) {
+    if (pair.token1 == token.id && pair.reserveETH.gt(MINIMUM_NATIVE_LIQUIDITY) && pair.reserveETH.gt(mostReseveEth)) {
       const token0 = getOrCreateToken(pair.token0)
-      return pair.token0Price.times(token0.derivedETH as BigDecimal) // return token0 per our token * ETH per token 0
+      if (token0.decimalsSuccess) {
+        mostReseveEth = pair.reserveETH
+        currentPrice = pair.token0Price.times(token0.derivedETH as BigDecimal)
+      }
     }
   }
 
-  return BIG_DECIMAL_ZERO // nothing was found return 0
+  return currentPrice
 }
