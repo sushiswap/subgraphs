@@ -66,7 +66,7 @@ module.exports = {
       ,
     ]
   },
-  bridgeSwapWhitelistBlock: 10523407,
+  bridgeSwapBlock: 10447464,
   minimumNativeLiquidity: 3,
   legacy: {
     minimum_usd_threshold_new_pairs: "3000",

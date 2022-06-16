@@ -38,7 +38,7 @@ export const POST_BRIDGE_WHITELISTED_TOKEN_ADDRESSES: string[] = '{{ whitelisted
 
 export const POST_BRIDGE_STABLE_TOKEN_ADDRESSES: string[] = '{{ stableTokenAddresses.postBridge }}'.split(',')
 
-export const BRIDGE_SWAP_BLOCK = BigInt.fromString('{{ bridgeSwapWhitelistBlock }}')
+export const BRIDGE_SWAP_BLOCK = BigInt.fromString('{{ bridgeSwapBlock }}')
 
 export const PRE_BRIDGE_STABLE_POOL_ADDRESSES: string[] = PRE_BRIDGE_STABLE_TOKEN_ADDRESSES.map<string>((address: string) => {
   const tokens: string[] = [address, NATIVE_ADDRESS].sort()
