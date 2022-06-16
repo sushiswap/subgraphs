@@ -1,9 +1,36 @@
 module.exports = {
-  network: 'goerli',
+  network: 'goerli',  
+  native: { address: '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6' },
+  whitelistedTokenAddresses: [
+    // WNATIVE - This is actually quite important, though uneeded here anymore since
+    // it's now apart of the whitelisted token check in createPair, because the
+    // base should always be whitelisted or pricing never begins.
+    '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6',
+    // USDC
+    '0x2f3a40a3db8a7e3d09b0adfefbce4f6f81927557',
+    // USDT
+    '0x509ee0d083ddf8ac028f2a56731412edd63223b9',
+    // DAI
+    '0x73967c6a0904aa032c103b4104747e88c566b1a2',
+    // MIM
+    '0x5b25737e8c976111e3e9ff3d7d4c095c34d36d16'
+  ],
+  stableTokenAddresses: [
+    // USDC
+    '0x2f3a40a3db8a7e3d09b0adfefbce4f6f81927557',
+    // USDT
+    '0x509ee0d083ddf8ac028f2a56731412edd63223b9',
+    // DAI
+    '0x73967c6a0904aa032c103b4104747e88c566b1a2',
+    // MIM
+    '0x5b25737e8c976111e3e9ff3d7d4c095c34d36d16'
+  ],
+  minimumNativeLiquidity: 0.001,
   legacy: {
-    minimum_usd_threshold_new_pairs: "3000",
+    minimum_usd_threshold_new_pairs: "10",
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
       startBlock: 4345820,
     },
   },
