@@ -1,4 +1,4 @@
-import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 import { Pair, Token } from '../generated/schema'
 import { Factory as FactoryContract } from '../generated/templates/Pair/Factory'
 import {
@@ -7,9 +7,12 @@ import {
   BRIDGE_SWAP_BLOCK,
   FACTORY_ADDRESS,
   MINIMUM_NATIVE_LIQUIDITY,
-  NATIVE_ADDRESS,
+  POST_BRIDGE_NATIVE_ADDRESS,
   POST_BRIDGE_STABLE_POOL_ADDRESSES,
+  POST_BRIDGE_STABLE_TOKEN_ADDRESSES,
+  PRE_BRIDGE_NATIVE_ADDRESS,
   PRE_BRIDGE_STABLE_POOL_ADDRESSES,
+  PRE_BRIDGE_STABLE_TOKEN_ADDRESSES,
 } from './constants'
 import { getOrCreateToken } from './functions'
 
@@ -45,6 +48,12 @@ export function getNativePriceInUSD(blockNumber: BigInt): BigDecimal {
   let stablePoolAddresses = blockNumber.lt(BRIDGE_SWAP_BLOCK)
     ? PRE_BRIDGE_STABLE_POOL_ADDRESSES
     : POST_BRIDGE_STABLE_POOL_ADDRESSES
+  let stableTokenAddresses = blockNumber.lt(BRIDGE_SWAP_BLOCK)
+  ? PRE_BRIDGE_STABLE_TOKEN_ADDRESSES
+  : POST_BRIDGE_STABLE_TOKEN_ADDRESSES
+  let nativeAddress = blockNumber.lt(BRIDGE_SWAP_BLOCK)
+  ? PRE_BRIDGE_NATIVE_ADDRESS
+  : POST_BRIDGE_NATIVE_ADDRESS
 
   for (let i = 0; i < stablePoolAddresses.length; i++) {
     const address = stablePoolAddresses[i]
@@ -55,13 +64,13 @@ export function getNativePriceInUSD(blockNumber: BigInt): BigDecimal {
     }
 
     if (
-      (stablePool.token0 == NATIVE_ADDRESS && stablePool.reserve0.lt(MINIMUM_NATIVE_LIQUIDITY)) ||
-      (stablePool.token1 == NATIVE_ADDRESS && stablePool.reserve1.lt(MINIMUM_NATIVE_LIQUIDITY))
+      (stablePool.token0 == nativeAddress && stablePool.reserve0.lt(MINIMUM_NATIVE_LIQUIDITY)) ||
+      (stablePool.token1 == nativeAddress && stablePool.reserve1.lt(MINIMUM_NATIVE_LIQUIDITY))
     ) {
       continue
     }
 
-    const stableFirst = stablePoolAddresses.includes(stablePool.token0)
+    const stableFirst = stableTokenAddresses.includes(stablePool.token0)
 
     nativeReserve = nativeReserve.plus(!stableFirst ? stablePool.reserve0 : stablePool.reserve1)
 
@@ -83,8 +92,11 @@ export function getNativePriceInUSD(blockNumber: BigInt): BigDecimal {
   return weightdPrice
 }
 
-export function findEthPerToken(token: Token): BigDecimal {
-  if (token.id == NATIVE_ADDRESS) {
+export function findEthPerToken(token: Token, blockNumber: BigInt): BigDecimal {
+  let nativeAddress = blockNumber.lt(BRIDGE_SWAP_BLOCK)
+  ? PRE_BRIDGE_NATIVE_ADDRESS
+  : POST_BRIDGE_NATIVE_ADDRESS
+  if (token.id == nativeAddress) {
     return BIG_DECIMAL_ONE
   }
 

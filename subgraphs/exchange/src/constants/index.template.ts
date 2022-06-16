@@ -28,7 +28,8 @@ export const ADDRESS_ZERO = Address.fromString('0x000000000000000000000000000000
 
 export const FACTORY_ADDRESS = Address.fromString('{{ legacy.factory.address }}')
 
-export const NATIVE_ADDRESS = '{{ native.address }}'
+export const PRE_BRIDGE_NATIVE_ADDRESS = '{{ native.preBridge.address }}'
+export const POST_BRIDGE_NATIVE_ADDRESS = '{{ native.postBridge.address }}'
 
 export const PRE_BRIDGE_WHITELISTED_TOKEN_ADDRESSES: string[] = '{{ whitelistedTokenAddresses.preBridge }}'.split(',')
 
@@ -41,7 +42,7 @@ export const POST_BRIDGE_STABLE_TOKEN_ADDRESSES: string[] = '{{ stableTokenAddre
 export const BRIDGE_SWAP_BLOCK = BigInt.fromString('{{ bridgeSwapBlock }}')
 
 export const PRE_BRIDGE_STABLE_POOL_ADDRESSES: string[] = PRE_BRIDGE_STABLE_TOKEN_ADDRESSES.map<string>((address: string) => {
-  const tokens: string[] = [address, NATIVE_ADDRESS].sort()
+  const tokens: string[] = [address, PRE_BRIDGE_NATIVE_ADDRESS].sort()
   return getCreate2Address(
     Bytes.fromByteArray(Bytes.fromHexString('{{ legacy.factory.address }}')),
     Bytes.fromByteArray(crypto.keccak256(ByteArray.fromHexString('0x' + tokens[0].slice(2) + tokens[1].slice(2)))),
@@ -50,7 +51,7 @@ export const PRE_BRIDGE_STABLE_POOL_ADDRESSES: string[] = PRE_BRIDGE_STABLE_TOKE
 })
 
 export const POST_BRIDGE_STABLE_POOL_ADDRESSES: string[] = POST_BRIDGE_STABLE_TOKEN_ADDRESSES.map<string>((address: string) => {
-  const tokens: string[] = [address, NATIVE_ADDRESS].sort()
+  const tokens: string[] = [address, POST_BRIDGE_NATIVE_ADDRESS].sort()
   return getCreate2Address(
     Bytes.fromByteArray(Bytes.fromHexString('{{ legacy.factory.address }}')),
     Bytes.fromByteArray(crypto.keccak256(ByteArray.fromHexString('0x' + tokens[0].slice(2) + tokens[1].slice(2)))),
