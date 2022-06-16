@@ -5,23 +5,28 @@ import {
   Mint as MintEvent,
   Swap as SwapEvent,
   Sync as SyncEvent,
-  Transfer as TransferEvent
+  Transfer as TransferEvent,
 } from '../../generated/templates/Pair/Pair'
 import {
   ADDRESS_ZERO,
   BIG_DECIMAL_ZERO,
+  BRIDGE_SWAP_BLOCK,
   MINIMUM_USD_THRESHOLD_NEW_PAIRS,
-  WHITELISTED_TOKEN_ADDRESSES
+  POST_BRIDGE_WHITELISTED_TOKEN_ADDRESSES,
+  PRE_BRIDGE_WHITELISTED_TOKEN_ADDRESSES,
 } from '../constants'
 import {
-  getOrCreateLiquidityPosition, createLiquidityPositionSnapshot, getOrCreateBundle,
+  getOrCreateLiquidityPosition,
+  createLiquidityPositionSnapshot,
+  getOrCreateBundle,
   getOrCreateFactory,
   getOrCreatePair,
   getOrCreateToken,
-  getOrCreateUser, updateDayData,
+  getOrCreateUser,
+  updateDayData,
   getOrCreatePairDayData,
   getOrCreatePairHourData,
-  updateTokenDayData
+  updateTokenDayData,
 } from '../functions'
 import { findEthPerToken, getNativePriceInUSD } from '../pricing'
 
@@ -40,7 +45,8 @@ export function getTrackedVolumeUSD(
   token0: Token,
   tokenAmount1: BigDecimal,
   token1: Token,
-  pair: Pair
+  pair: Pair,
+  blockNumber: BigInt
 ): BigDecimal {
   const bundle = getOrCreateBundle()
   const price0 = token0.derivedETH.times(bundle.ethPrice)
@@ -48,21 +54,25 @@ export function getTrackedVolumeUSD(
 
   const network = dataSource.network()
 
+  let whitelistedTokenAddresses = blockNumber.lt(BRIDGE_SWAP_BLOCK)
+    ? PRE_BRIDGE_WHITELISTED_TOKEN_ADDRESSES
+    : POST_BRIDGE_WHITELISTED_TOKEN_ADDRESSES
+
   // if less than 5 LPs, require high minimum reserve amount amount or return 0
   if (pair.liquidityProviderCount.lt(BigInt.fromI32(5))) {
     const reserve0USD = pair.reserve0.times(price0)
     const reserve1USD = pair.reserve1.times(price1)
-    if (WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
+    if (whitelistedTokenAddresses.includes(token0.id) && whitelistedTokenAddresses.includes(token1.id)) {
       if (reserve0USD.plus(reserve1USD).lt(MINIMUM_USD_THRESHOLD_NEW_PAIRS)) {
         return BIG_DECIMAL_ZERO
       }
     }
-    if (WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && !WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
+    if (whitelistedTokenAddresses.includes(token0.id) && !whitelistedTokenAddresses.includes(token1.id)) {
       if (reserve0USD.times(BigDecimal.fromString('2')).lt(MINIMUM_USD_THRESHOLD_NEW_PAIRS)) {
         return BIG_DECIMAL_ZERO
       }
     }
-    if (!WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
+    if (!whitelistedTokenAddresses.includes(token0.id) && whitelistedTokenAddresses.includes(token1.id)) {
       if (reserve1USD.times(BigDecimal.fromString('2')).lt(MINIMUM_USD_THRESHOLD_NEW_PAIRS)) {
         return BIG_DECIMAL_ZERO
       }
@@ -70,17 +80,17 @@ export function getTrackedVolumeUSD(
   }
 
   // both are whitelist tokens, take average of both amounts
-  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
+  if (whitelistedTokenAddresses.includes(token0.id) && whitelistedTokenAddresses.includes(token1.id)) {
     return tokenAmount0.times(price0).plus(tokenAmount1.times(price1)).div(BigDecimal.fromString('2'))
   }
 
   // take full value of the whitelisted token amount
-  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && !WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
+  if (whitelistedTokenAddresses.includes(token0.id) && !whitelistedTokenAddresses.includes(token1.id)) {
     return tokenAmount0.times(price0)
   }
 
   // take full value of the whitelisted token amount
-  if (!WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
+  if (!whitelistedTokenAddresses.includes(token0.id) && whitelistedTokenAddresses.includes(token1.id)) {
     return tokenAmount1.times(price1)
   }
 
@@ -98,7 +108,8 @@ export function getTrackedLiquidityUSD(
   tokenAmount0: BigDecimal,
   token0: Token,
   tokenAmount1: BigDecimal,
-  token1: Token
+  token1: Token,
+  blockNumber: BigInt
 ): BigDecimal {
   const bundle = getOrCreateBundle()
   const price0 = token0.derivedETH.times(bundle.ethPrice)
@@ -106,18 +117,22 @@ export function getTrackedLiquidityUSD(
 
   const network = dataSource.network()
 
+  let whitelistedTokenAddresses = blockNumber.lt(BRIDGE_SWAP_BLOCK)
+    ? PRE_BRIDGE_WHITELISTED_TOKEN_ADDRESSES
+    : POST_BRIDGE_WHITELISTED_TOKEN_ADDRESSES
+
   // both are whitelist tokens, take average of both amounts
-  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
+  if (whitelistedTokenAddresses.includes(token0.id) && whitelistedTokenAddresses.includes(token1.id)) {
     return tokenAmount0.times(price0).plus(tokenAmount1.times(price1))
   }
 
   // take double value of the whitelisted token amount
-  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && !WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
+  if (whitelistedTokenAddresses.includes(token0.id) && !whitelistedTokenAddresses.includes(token1.id)) {
     return tokenAmount0.times(price0).times(BigDecimal.fromString('2'))
   }
 
   // take double value of the whitelisted token amount
-  if (!WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
+  if (!whitelistedTokenAddresses.includes(token0.id) && whitelistedTokenAddresses.includes(token1.id)) {
     return tokenAmount1.times(price1).times(BigDecimal.fromString('2'))
   }
 
@@ -246,7 +261,7 @@ export function onTransfer(event: TransferEvent): void {
     if (mints.length != 0 && !isCompleteMint(mints[mints.length - 1])) {
       const mint = Mint.load(mints[mints.length - 1])
       if (mint === null) {
-        return 
+        return
       }
 
       burn.feeTo = mint.to
@@ -333,7 +348,7 @@ export function onSync(event: SyncEvent): void {
   // update ETH price now that reserves could have changed
   const bundle = getOrCreateBundle()
   // Pass the block so we can get accurate price data before migration
-  bundle.ethPrice = getNativePriceInUSD()
+  bundle.ethPrice = getNativePriceInUSD(event.block.number)
   bundle.save()
 
   token0.derivedETH = findEthPerToken(token0 as Token)
@@ -344,9 +359,13 @@ export function onSync(event: SyncEvent): void {
   // get tracked liquidity - will be 0 if neither is in whitelist
   let trackedLiquidityETH: BigDecimal
   if (bundle.ethPrice.notEqual(BIG_DECIMAL_ZERO)) {
-    trackedLiquidityETH = getTrackedLiquidityUSD(pair.reserve0, token0 as Token, pair.reserve1, token1 as Token).div(
-      bundle.ethPrice
-    )
+    trackedLiquidityETH = getTrackedLiquidityUSD(
+      pair.reserve0,
+      token0 as Token,
+      pair.reserve1,
+      token1 as Token,
+      event.block.number
+    ).div(bundle.ethPrice)
   } else {
     trackedLiquidityETH = BIG_DECIMAL_ZERO
   }
@@ -581,7 +600,8 @@ export function onSwap(event: SwapEvent): void {
     token0 as Token,
     amount1Total,
     token1 as Token,
-    pair as Pair
+    pair as Pair,
+    event.block.number
   )
 
   let trackedAmountETH: BigDecimal

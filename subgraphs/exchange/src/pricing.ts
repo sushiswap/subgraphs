@@ -1,14 +1,15 @@
-import { Address, BigDecimal } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { Pair, Token } from '../generated/schema'
 import { Factory as FactoryContract } from '../generated/templates/Pair/Factory'
 import {
   BIG_DECIMAL_ONE,
   BIG_DECIMAL_ZERO,
+  BRIDGE_SWAP_BLOCK,
   FACTORY_ADDRESS,
   MINIMUM_NATIVE_LIQUIDITY,
   NATIVE_ADDRESS,
-  STABLE_POOL_ADDRESSES,
-  STABLE_TOKEN_ADDRESSES,
+  POST_BRIDGE_STABLE_POOL_ADDRESSES,
+  PRE_BRIDGE_STABLE_POOL_ADDRESSES,
 } from './constants'
 import { getOrCreateToken } from './functions'
 
@@ -21,7 +22,7 @@ export const factoryContract = FactoryContract.bind(FACTORY_ADDRESS)
 //   return getOrCreateTokenPrice(NATIVE_ADDRESS)
 // }
 
-export function getNativePriceInUSD(): BigDecimal {
+export function getNativePriceInUSD(blockNumber: BigInt): BigDecimal {
   // 1. Generate list of stable pairs
   // Cont. until getCreate2Address is available we'll just have to use a configured stable pool list instead
   // 2. Loop over the stable pool addresses
@@ -41,8 +42,12 @@ export function getNativePriceInUSD(): BigDecimal {
 
   let nativeReserves: BigDecimal[] = []
 
-  for (let i = 0; i < STABLE_POOL_ADDRESSES.length; i++) {
-    const address = STABLE_POOL_ADDRESSES[i]
+  let stablePoolAddresses = blockNumber.lt(BRIDGE_SWAP_BLOCK)
+    ? PRE_BRIDGE_STABLE_POOL_ADDRESSES
+    : POST_BRIDGE_STABLE_POOL_ADDRESSES
+
+  for (let i = 0; i < stablePoolAddresses.length; i++) {
+    const address = stablePoolAddresses[i]
 
     const stablePool = Pair.load(address)
     if (stablePool === null) {
@@ -56,7 +61,7 @@ export function getNativePriceInUSD(): BigDecimal {
       continue
     }
 
-    const stableFirst = STABLE_TOKEN_ADDRESSES.includes(stablePool.token0)
+    const stableFirst = stablePoolAddresses.includes(stablePool.token0)
 
     nativeReserve = nativeReserve.plus(!stableFirst ? stablePool.reserve0 : stablePool.reserve1)
 

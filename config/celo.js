@@ -43,7 +43,7 @@ module.exports = {
     // WBTC
     '0xbaab46e28388d2779e6e31fd00cf0e5ad95e327b',
     // DAI
-    '0xE4fE50cdD716522A56204352f00AA110F731932d',
+    '0xe4fe50cdd716522a56204352f00aa110f731932d',
     // DAI2
     '0x90ca507a5d4458a4c6c6249d186b6dcb02a5bccd',
   ]
@@ -66,7 +66,6 @@ module.exports = {
       ,
     ]
   },
-  bridgeSwapEthBlock: 10447464,
   bridgeSwapWhitelistBlock: 10523407,
   minimumNativeLiquidity: 3,
   legacy: {
