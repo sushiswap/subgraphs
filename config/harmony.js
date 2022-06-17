@@ -24,6 +24,7 @@ module.exports = {
     startBlock: 0,
   },
   legacy: {
+    // IMPORTANT! The native address must be included for pricing to start
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [
       NATIVE_ADDRESS,

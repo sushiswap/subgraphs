@@ -33,9 +33,7 @@ module.exports = {
   legacy: {
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [
-      // WNATIVE - This is actually quite important, though uneeded here anymore since
-      // it's now apart of the whitelisted token check in createPair, because the
-      // base should always be whitelisted or pricing never begins.
+      // IMPORTANT! The native address must be included for pricing to start
       NATIVE_ADDRESS,
       WBTC_ADDRESS,
       ARBY_ADDRESS,

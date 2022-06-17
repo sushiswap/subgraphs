@@ -22,6 +22,7 @@ module.exports = {
   legacy: {
     native: { address: '0xf50225a84382c74cbdea10b0c176f71fc3de0c4d' },
     whitelistedTokenAddresses: [
+      // IMPORTANT! The native address must be included for pricing to start
       NATIVE_ADDRESS,
       WETH_ADDRESS,
       USDC_ADDRESS,

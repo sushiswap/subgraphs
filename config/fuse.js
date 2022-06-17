@@ -13,6 +13,7 @@ module.exports = {
   },
   legacy: {
     whitelistedTokenAddresses: [
+      // IMPORTANT! The native address must be included for pricing to start
       NATIVE_ADDRESS,
       WETH_ADDRESS,
       WBTC_ADDRESS,
