@@ -37,42 +37,6 @@ module.exports = {
   sushi: { address: '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2' },
   weth: { address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' },
   wbtc: { address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599' },
-  // whitelistedTokenAddresses: [
-  //   // WETH
-  //   '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-  //   // USDC
-  //   '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-  //   // USDT
-  //   '0xdac17f958d2ee523a2206206994597c13d831ec7',
-  //   // DAI
-  //   '0x6b175474e89094c44da98b954eedeac495271d0f',
-  //   // SUSHI
-  //   '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2',
-  // ],
-  native: { address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' },
-  stableTokenAddresses: [
-    // USDC
-    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-    // USDT
-    '0xdac17f958d2ee523a2206206994597c13d831ec7',
-    // DAI
-    '0x6b175474e89094c44da98b954eedeac495271d0f',
-    // MIM
-    '0x99d8a9c45b2eca8864373a26d1459e3dff1e17f3',
-    // FRAX
-    '0x853d955acef822db058eb8505911ed77f175b99e',
-    // UST
-    '0xa47c8bf37f92abed4a126bda807a7b7498661acd',
-  ],
-  // List of STABLE/NATIVE pools to use to price NATIVE in USD
-  // stablePoolAddresses: [
-  //   // DAI/WETH
-  //   '0xc3d03e4f041fd4cd388c549ee2a29a9e5075882f',
-  //   // USDT/WETH
-  //   '0x06da0fd433c1a5d7a4faa01111c044910a184553',
-  //   // USDC/WETH
-  //   '0x397ff1542f962076d0bfe58ea045ffa2d347aca0',
-  // ],
   bentobox: {
     address: '0xf5bce5077908a1b7370b9ae04adc565ebd643966',
     startBlock: 12094175,
