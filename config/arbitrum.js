@@ -7,6 +7,10 @@ const USDT_ADDRESS = '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9'
 const DAI_ADDRESS = '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1'
 const MIM_ADDRESS = '0xfea7a6a0b346362bf88a9e4a88416b77a57d6c2a'
 const FRAX_ADDRESS = '0x17fc002b466eec40dae837fc4be5c67993ddbd6f'
+const ARBY_ADDRESS = '0x09ad12552ec45f82be90b38dfe7b06332a680864'
+const DPX_ADDRESS = '0x6c2c06790b3e3e3c38e12ee22f8183b37a13ee55'
+const GOHM_ADDRESS = '0x8d9ba570d6cb60c7e3e0f31343efe75ab8e65fb1'
+const MAGIC_ADDRESS = '0x539bde0d7dbd336b79148aa742883198bbf60342'
 
 module.exports = {
   network: 'arbitrum-one',
@@ -33,35 +37,20 @@ module.exports = {
       // it's now apart of the whitelisted token check in createPair, because the
       // base should always be whitelisted or pricing never begins.
       NATIVE_ADDRESS,
-      // WETH
-      // WETH_ADDRESS,
-      // WBTC
       WBTC_ADDRESS,
-      // USDC
+      ARBY_ADDRESS,
       USDC_ADDRESS,
-      // USDT
       USDT_ADDRESS,
-      // DAI
+      GOHM_ADDRESS,
+      DPX_ADDRESS,
+      MAGIC_ADDRESS,
       DAI_ADDRESS,
-      // MIM
       MIM_ADDRESS,
-      // FRAX
       FRAX_ADDRESS,
     ],
-    stableTokenAddresses: [
-      // USDC
-      USDC_ADDRESS,
-      // USDT
-      USDT_ADDRESS,
-      // DAI
-      DAI_ADDRESS,
-      // MIM
-      MIM_ADDRESS,
-      // FRAX
-      FRAX_ADDRESS,
-    ],
+    stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, MIM_ADDRESS, FRAX_ADDRESS],
     minimumNativeLiquidity: 3,
-    minimum_usd_threshold_new_pairs: "3000",
+    minimum_usd_threshold_new_pairs: '3000',
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
