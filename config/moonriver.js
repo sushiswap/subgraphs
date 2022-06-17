@@ -1,7 +1,9 @@
 module.exports = {
   network: 'moonriver',
-  native: { address: '0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c' },
+  native: { address: '0xf50225a84382c74cbdea10b0c176f71fc3de0c4d' },
   whitelistedTokenAddresses: [
+    // NATIVE
+    '0xf50225a84382c74cbdea10b0c176f71fc3de0c4d',
     // WETH
     '0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c',
     // USDC
@@ -26,6 +28,9 @@ module.exports = {
     '0xb44a9b6905af7c801311e8f4e76932ee959c663c',
     // DAI
     '0x80a16016cc4a2e6a2caca8a4a498b1699ff0f844',
+    // FRAX
+    '0x1a93b23281cc1cde4c4741353f3064709a16197d',
+
   ],
   minimumNativeLiquidity: 5,
   bentobox: {
