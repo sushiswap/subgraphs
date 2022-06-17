@@ -28,7 +28,7 @@ module.exports = {
       USDP_ADDRESS,
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, USDP_ADDRESS],
-    minimumNativeLiquidity: 2500, // TODO: Figure out why this is 2500 while the normal value is 3?
+    minimumNativeLiquidity: 2500,
     minimum_usd_threshold_new_pairs: '3000',
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
