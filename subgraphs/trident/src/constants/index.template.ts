@@ -48,13 +48,13 @@ export const CONCENTRATED_LIQUIDITY_POOL_FACTORY_ADDRESS = Address.fromString(
   '{{ concentratedLiquidityPoolFactory.address }}'
 )
 
-export const NATIVE_ADDRESS = '{{ native.address }}'
+export const NATIVE_ADDRESS = '{{ trident.native.address }}'
 
-export const WHITELISTED_TOKEN_ADDRESSES: string[] = '{{ whitelistedTokenAddresses }}'.split(',')
+export const WHITELISTED_TOKEN_ADDRESSES: string[] = '{{ trident.whitelistedTokenAddresses }}'.split(',')
 
-export const STABLE_TOKEN_ADDRESSES: string[] = '{{ stableTokenAddresses }}'.split(',')
+export const STABLE_TOKEN_ADDRESSES: string[] = '{{ trident.stableTokenAddresses }}'.split(',')
 
-export const STABLE_POOL_ADDRESSES: string[] = '{{ stablePoolAddresses }}'.split(',')
+export const STABLE_POOL_ADDRESSES: string[] = '{{ trident.stablePoolAddresses }}'.split(',')
 
 const STABLE_POOL_PERMUTATIONS = combinate(STABLE_TOKEN_ADDRESSES, NATIVE_ADDRESS, [true, false], [1, 5, 10, 30, 100])
 
@@ -77,7 +77,7 @@ const STABLE_POOL_PERMUTATIONS = combinate(STABLE_TOKEN_ADDRESSES, NATIVE_ADDRES
 // })
 
 // Minimum liqudiity threshold in native currency
-export const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('{{ minimumNativeLiquidity }}')
+export const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('{{ trident.minimumNativeLiquidity }}')
 
 export * from './id'
 export * from './time'
