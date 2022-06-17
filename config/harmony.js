@@ -5,6 +5,7 @@ const USDC_ADDRESS = '0x985458e523db3d53125813ed68c274899e9dfab4'
 const USDT_ADDRESS = '0x3c2b8be99c50593081eaa2a724f0b8285f5aba8f'
 const BUSD_ADDRESS = '0xe176ebe47d621b984a73036b9da5d834411ef734'
 const DAI_ADDRESS = '0xef977d2f931c1978db5f6747666fa1eacb0d0339'
+const FRAX_ADDRESS = '0xfa7191d292d5633f702b0bd7e3e3bccc0e633200'
 
 module.exports = {
   network: 'harmony',
@@ -32,8 +33,9 @@ module.exports = {
       USDT_ADDRESS,
       BUSD_ADDRESS,
       DAI_ADDRESS,
+      FRAX_ADDRESS
     ],
-    stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, BUSD_ADDRESS, DAI_ADDRESS],
+    stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, BUSD_ADDRESS, DAI_ADDRESS, FRAX_ADDRESS],
     minimumNativeLiquidity: 50000,
     minimum_usd_threshold_new_pairs: '1000',
     factory: {
