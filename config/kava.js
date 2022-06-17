@@ -7,7 +7,6 @@ const WETH_ADDRESS = '0xe3f5a90f9cb311505cd691a46596599aa1a0ad7d'
 
 module.exports = {
   network: 'kava-evm',
-  native: { address: NATIVE_ADDRESS },
   bentobox: {
     address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
     base: 'QmXtBjEnPnD5pwxj4yYLQyWpaE38ioprpKJ3rXSZQh4xHS',
@@ -21,37 +20,39 @@ module.exports = {
   },
   hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
   indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
-  whitelistedTokenAddresses: [
-    // WNATIVE - This is actually quite important, though uneeded here anymore since
-    // it's now apart of the whitelisted token check in createPair, because the
-    // base should always be whitelisted or pricing never begins.
-    NATIVE_ADDRESS,
-    // WETH
-    WETH_ADDRESS,
-    // WBTC
-    WBTC_ADDRESS,
-    // USDC
-    USDC_ADDRESS,
-    // USDT
-    USDT_ADDRESS,
-    // DAI
-    DAI_ADDRESS,
-  ],
-  stableTokenAddresses: [
-    // USDC
-    USDC_ADDRESS,
-    // USDT
-    USDT_ADDRESS,
-    // DAI
-    DAI_ADDRESS,
-  ],
-  // List of STABLE/NATIVE pools to use to price NATIVE in USD
-  stablePoolAddresses: [
-    // USDC/WKAVA/30/FALSE
-    '0x88395b86cf9787e131d2fb5462a22b44056bf574',
-  ],
   minimumNativeLiquidity: '0.01',
-
+  trident: {
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // WNATIVE - This is actually quite important, though uneeded here anymore since
+      // it's now apart of the whitelisted token check in createPair, because the
+      // base should always be whitelisted or pricing never begins.
+      NATIVE_ADDRESS,
+      // WETH
+      WETH_ADDRESS,
+      // WBTC
+      WBTC_ADDRESS,
+      // USDC
+      USDC_ADDRESS,
+      // USDT
+      USDT_ADDRESS,
+      // DAI
+      DAI_ADDRESS,
+    ],
+    stableTokenAddresses: [
+      // USDC
+      USDC_ADDRESS,
+      // USDT
+      USDT_ADDRESS,
+      // DAI
+      DAI_ADDRESS,
+    ],
+    // List of STABLE/NATIVE pools to use to price NATIVE in USD
+    stablePoolAddresses: [
+      // USDC/WKAVA/30/FALSE
+      '0x88395b86cf9787e131d2fb5462a22b44056bf574',
+    ],
+  },
   furo: {
     stream: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
     vesting: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },

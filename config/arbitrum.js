@@ -10,7 +10,6 @@ const FRAX_ADDRESS = '0x17fc002b466eec40dae837fc4be5c67993ddbd6f'
 
 module.exports = {
   network: 'arbitrum-one',
-  native: { address: NATIVE_ADDRESS },
   sushi: { address: SUSHI_ADDRESS },
   weth: { address: WETH_ADDRESS },
   wbtc: { address: WBTC_ADDRESS },
@@ -22,44 +21,46 @@ module.exports = {
   kashi: {
     medium: '0xa010ee0226cd071bebd8919a1f675cae1f1f5d3e',
   },
-  whitelistedTokenAddresses: [
-    // WNATIVE - This is actually quite important, though uneeded here anymore since
-    // it's now apart of the whitelisted token check in createPair, because the
-    // base should always be whitelisted or pricing never begins.
-    NATIVE_ADDRESS,
-    // WETH
-    // WETH_ADDRESS,
-    // WBTC
-    WBTC_ADDRESS,
-    // USDC
-    USDC_ADDRESS,
-    // USDT
-    USDT_ADDRESS,
-    // DAI
-    DAI_ADDRESS,
-    // MIM
-    MIM_ADDRESS,
-    // FRAX
-    FRAX_ADDRESS,
-  ],
-  stableTokenAddresses: [
-    // USDC
-    USDC_ADDRESS,
-    // USDT
-    USDT_ADDRESS,
-    // DAI
-    DAI_ADDRESS,
-    // MIM
-    MIM_ADDRESS,
-    // FRAX
-    FRAX_ADDRESS,
-  ],
-  minimumNativeLiquidity: 3,
+
   miso: {
     accessControls: { address: '0x1be211d8da40bc0ae8719c6663307bfc987b1d6c', startBlock: 9930886 },
     market: { address: '0x351447fc9bd20a917783e159e61e86edda0b0187', startBlock: 9931078 },
   },
   legacy: {
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // WNATIVE - This is actually quite important, though uneeded here anymore since
+      // it's now apart of the whitelisted token check in createPair, because the
+      // base should always be whitelisted or pricing never begins.
+      NATIVE_ADDRESS,
+      // WETH
+      // WETH_ADDRESS,
+      // WBTC
+      WBTC_ADDRESS,
+      // USDC
+      USDC_ADDRESS,
+      // USDT
+      USDT_ADDRESS,
+      // DAI
+      DAI_ADDRESS,
+      // MIM
+      MIM_ADDRESS,
+      // FRAX
+      FRAX_ADDRESS,
+    ],
+    stableTokenAddresses: [
+      // USDC
+      USDC_ADDRESS,
+      // USDT
+      USDT_ADDRESS,
+      // DAI
+      DAI_ADDRESS,
+      // MIM
+      MIM_ADDRESS,
+      // FRAX
+      FRAX_ADDRESS,
+    ],
+    minimumNativeLiquidity: 3,
     minimum_usd_threshold_new_pairs: "3000",
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
