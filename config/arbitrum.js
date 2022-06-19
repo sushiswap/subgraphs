@@ -27,8 +27,6 @@ module.exports = {
     // it's now apart of the whitelisted token check in createPair, because the
     // base should always be whitelisted or pricing never begins.
     NATIVE_ADDRESS,
-    // WETH
-    // WETH_ADDRESS,
     // WBTC
     WBTC_ADDRESS,
     // USDC
@@ -60,7 +58,7 @@ module.exports = {
     market: { address: '0x351447fc9bd20a917783e159e61e86edda0b0187', startBlock: 9931078 },
   },
   legacy: {
-    minimum_usd_threshold_new_pairs: "3000",
+    minimumUsdThresholdNewPairs: '3000',
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',

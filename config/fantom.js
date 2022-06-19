@@ -15,7 +15,7 @@ module.exports = {
     },
   },
   minimumNativeLiquidity: '15000',
-  minimum_usd_threshold_new_pairs: "1000",
+  minimumUsdThresholdNewPairs: '1000',
   furo: {
     stream: { address: '0x4ab2fc6e258a0ca7175d05ff10c5cf798a672cae', startBlock: 39984551 },
     vesting: { address: '0x0689640d190b10765f09310fcfe9c670ede4e25b', startBlock: 39984585 },

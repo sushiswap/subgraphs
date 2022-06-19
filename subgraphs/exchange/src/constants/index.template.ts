@@ -50,6 +50,6 @@ export const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('{{ minimumNativeL
 
 // minimum liquidity required to count towards tracked volume for pairs with small # of Lps
 export const MINIMUM_USD_THRESHOLD_NEW_PAIRS = BigDecimal.fromString(
-  '{{ minimum_usd_threshold_new_pairs }}{{^minimum_usd_threshold_new_pairs}}3000{{/minimum_usd_threshold_new_pairs}}'
+  '{{ minimumUsdThresholdNewPairs }}{{^minimumUsdThresholdNewPairs}}3000{{/minimumUsdThresholdNewPairs}}'
 )
 export * from './time'
