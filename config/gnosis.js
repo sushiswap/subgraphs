@@ -1,11 +1,11 @@
 module.exports = {
   network: 'xdai',
   bentobox: {
-    address: '0xf5bce5077908a1b7370b9ae04adc565ebd643966',
-    startBlock: 15157559,
+    address: '0xe2d7f5dd869fc7c126d21b13a9080e75a4bdb324',
+    startBlock: 17002491,
   },
   legacy: {
-    minimum_usd_threshold_new_pairs: "3000",
+    minimum_usd_threshold_new_pairs: '3000',
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
       startBlock: 14735904,
