@@ -73,10 +73,9 @@ module.exports = {
   minimumNativeLiquidity: 1000,
   },
   legacy: {
-    native: { address: NATIVE_ADDRESS },
+    native: { address: WETH_ADDRESS },
     whitelistedTokenAddresses: [
       // IMPORTANT! The native address must be included for pricing to start
-      NATIVE_ADDRESS,
       WETH_ADDRESS,
       USDC_ADDRESS,
       DAI_ADDRESS,
