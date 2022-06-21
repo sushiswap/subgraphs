@@ -24,9 +24,9 @@ module.exports = {
     UNI_ADDRESS,
   ],
   stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, MIM_ADDRESS],
-  minimumNativeLiquidity: 0.001,
+  minimumNativeLiquidity: 10,
   legacy: {
-    minimum_usd_threshold_new_pairs: '10',
+    minimum_usd_threshold_new_pairs: '1000',
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
