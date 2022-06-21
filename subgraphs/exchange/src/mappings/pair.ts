@@ -315,7 +315,6 @@ export function onSync(event: SyncEvent): void {
 
   pair.reserve0 = convertTokenToDecimal(event.params.reserve0, token0.decimals)
   pair.reserve1 = convertTokenToDecimal(event.params.reserve1, token1.decimals)
-
   if (pair.reserve1.notEqual(BIG_DECIMAL_ZERO)) {
     pair.token0Price = pair.reserve0.div(pair.reserve1)
   } else {

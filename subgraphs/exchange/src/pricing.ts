@@ -1,4 +1,4 @@
-import { Address, BigDecimal } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal, log } from '@graphprotocol/graph-ts'
 import { Pair, Token } from '../generated/schema'
 import { Factory as FactoryContract } from '../generated/templates/Pair/Factory'
 import {
@@ -70,8 +70,10 @@ export function getNativePriceInUSD(): BigDecimal {
   if (count > 0) {
     for (let j = 0; j < count; j++) {
       const price = stablePrices[j]
-      const weight = nativeReserves[j].div(nativeReserve)
-      weightdPrice = weightdPrice.plus(price.times(weight))
+      if (nativeReserves[j].gt(BigDecimal.fromString('0')) && nativeReserve.gt(BigDecimal.fromString('0'))) {
+        const weight = nativeReserves[j].div(nativeReserve)
+        weightdPrice = weightdPrice.plus(price.times(weight))
+      }
     }
   }
 
