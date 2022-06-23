@@ -26,6 +26,7 @@ type Stake @entity {
   id: ID!
   user: User!
   token: Token!
+  farm: Farm!
   liquidity: BigInt!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!

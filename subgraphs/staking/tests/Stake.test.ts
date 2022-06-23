@@ -24,6 +24,7 @@ test('Stake', () => {
   // Then: A stake entity is created
   const stakeId = getStakeId(ALICE.toHex(), TOKEN.toHex())
   assert.fieldEquals('Stake', stakeId, 'id', stakeId)
+  assert.fieldEquals('Stake', stakeId, 'farm', TOKEN.toHex())
   assert.fieldEquals('Stake', stakeId, 'user', ALICE.toHex())
   assert.fieldEquals('Stake', stakeId, 'token', TOKEN.toHex())
   assert.fieldEquals('Stake', stakeId, 'liquidity', amount.toString())

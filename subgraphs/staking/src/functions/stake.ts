@@ -6,6 +6,7 @@ export function getOrCreateStake(userId: string, tokenId: string): Stake {
 
   if (stake === null) {
     stake = new Stake(id)
+    stake.farm = tokenId
     stake.save()
   }
 

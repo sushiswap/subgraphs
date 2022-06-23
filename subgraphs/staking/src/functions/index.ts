@@ -1,6 +1,6 @@
 export * from './incentive'
 export * from './farm'
-export * from './staking'
+export * from './stake'
 export * from './subscription'
 export * from './token'
 export * from './user'
