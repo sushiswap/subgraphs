@@ -97,6 +97,10 @@ export function findEthPerToken(token: Token): BigDecimal {
     }
 
     // If the token is a stable, we price it from the pair with native
+    // However, if there isn't enough liquidity to mass minimum native liquidity check, continue and use the pair
+    // with most liqudidity
+    // NOTE: the idea behind this is that most stables will be priced off native, and the rest could be 
+    // priced off those stables, avoiding circular price dependency
     if (isStable) {
       if (pair.token0 == token.id && pair.token1 == NATIVE_ADDRESS && pair.reserveETH.gt(MINIMUM_NATIVE_LIQUIDITY)) {
         const token1 = getOrCreateToken(pair.token1)
@@ -109,29 +113,21 @@ export function findEthPerToken(token: Token): BigDecimal {
         const token0 = getOrCreateToken(pair.token0)
         return pair.token0Price.times(token0.derivedETH as BigDecimal)
       }
-    } else {
-      if (
-        pair.token0 == token.id &&
-        pair.reserveETH.gt(MINIMUM_NATIVE_LIQUIDITY) &&
-        pair.reserveETH.gt(mostReseveEth)
-      ) {
-        const token1 = getOrCreateToken(pair.token1)
-        if (token1.decimalsSuccess) {
-          mostReseveEth = pair.reserveETH
-          currentPrice = pair.token1Price.times(token1.derivedETH as BigDecimal)
-        }
+    }
+    
+    if (pair.token0 == token.id && pair.reserveETH.gt(MINIMUM_NATIVE_LIQUIDITY) && pair.reserveETH.gt(mostReseveEth)) {
+      const token1 = getOrCreateToken(pair.token1)
+      if (token1.decimalsSuccess) {
+        mostReseveEth = pair.reserveETH
+        currentPrice = pair.token1Price.times(token1.derivedETH as BigDecimal)
       }
+    }
 
-      if (
-        pair.token1 == token.id &&
-        pair.reserveETH.gt(MINIMUM_NATIVE_LIQUIDITY) &&
-        pair.reserveETH.gt(mostReseveEth)
-      ) {
-        const token0 = getOrCreateToken(pair.token0)
-        if (token0.decimalsSuccess) {
-          mostReseveEth = pair.reserveETH
-          currentPrice = pair.token0Price.times(token0.derivedETH as BigDecimal)
-        }
+    if (pair.token1 == token.id && pair.reserveETH.gt(MINIMUM_NATIVE_LIQUIDITY) && pair.reserveETH.gt(mostReseveEth)) {
+      const token0 = getOrCreateToken(pair.token0)
+      if (token0.decimalsSuccess) {
+        mostReseveEth = pair.reserveETH
+        currentPrice = pair.token0Price.times(token0.derivedETH as BigDecimal)
       }
     }
   }
