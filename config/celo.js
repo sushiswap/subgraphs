@@ -14,11 +14,11 @@ module.exports = {
     address: '0x0711b6026068f736bae6b213031fce978d48e026',
     startBlock: 9451612,
   },
-  native: {
-    address: '0x471ece3750da237f93b8e339c536989b8978a438',
-  },
 
   legacy: {
+    native: {
+      address: NATIVE_ADDRESS,
+    },
     whitelistedTokenAddresses: [
       // IMPORTANT! The native address must be included for pricing to start
       NATIVE_ADDRESS,
