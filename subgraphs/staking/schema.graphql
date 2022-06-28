@@ -1,6 +1,6 @@
 type User @entity {
   id: ID!
-  stakes: [Stake!] @derivedFrom(field: "user")
+  stakePositions: [StakePosition!] @derivedFrom(field: "user")
   subscriptions: [_Subscription!] @derivedFrom(field: "user")
   totalSubscriptionCount: BigInt!
   activeSubscriptionCount: BigInt!
@@ -22,7 +22,7 @@ type Token @entity {
   incentives: [Incentive!] @derivedFrom(field: "stakeToken")
 }
 
-type Stake @entity {
+type StakePosition @entity {
   id: ID!
   user: User!
   token: Token!
@@ -30,6 +30,8 @@ type Stake @entity {
   liquidity: BigInt!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
+  modifiedAtBlock: BigInt!
+  modifiedAtTimestamp: BigInt!
 }
 
 type Farm @entity {
@@ -40,14 +42,13 @@ type Farm @entity {
   createdAtTimestamp: BigInt!
 }
 
-
 type Incentive @entity {
   id: ID!
   farm: Farm!
   stakeToken: Token!
   rewardToken: Token!
   rewardsAccrued: BigInt! 
-  rewardsRemaining: BigInt! # This will only update on update event, frontend can calculate remaining rewards with modifiedAtTimestamp as starting point
+  rewardsRemaining: BigInt! # Updates on every event, frontend can calculate remaining rewards with modifiedAtTimestamp as starting point
   startTime: BigInt!
   endTime: BigInt!
   liquidityStaked: BigInt!

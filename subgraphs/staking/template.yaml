@@ -18,7 +18,7 @@ dataSources:
       file: ./src/mappings/staking.ts
       entities:
         - User
-        - Stake
+        - StakePosition
         - Incentive
         - Token
         - Subscription

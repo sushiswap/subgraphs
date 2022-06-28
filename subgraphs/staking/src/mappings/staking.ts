@@ -13,7 +13,7 @@ import {
   getOrCreateFarm,
   getOrCreateIncentive,
   getOrCreateRewardClaim,
-  getOrCreateStake,
+  getOrCreateStakePosition,
   getOrCreateSubscription,
   getOrCreateToken,
   getOrCreateUser,
@@ -89,13 +89,15 @@ export function onStake(event: Stake): void {
   let token = getOrCreateToken(event.params.token.toHex())
   let user = getOrCreateUser(event.params.user.toHex())
 
-  let stake = getOrCreateStake(user.id, token.id)
-  stake.liquidity = stake.liquidity.plus(event.params.amount)
-  stake.user = user.id
-  stake.token = token.id
-  stake.createdAtBlock = event.block.number
-  stake.createdAtTimestamp = event.block.timestamp
-  stake.save()
+  let stakePosition = getOrCreateStakePosition(user.id, token.id)
+  stakePosition.liquidity = stakePosition.liquidity.plus(event.params.amount)
+  stakePosition.user = user.id
+  stakePosition.token = token.id
+  stakePosition.createdAtBlock = event.block.number
+  stakePosition.createdAtTimestamp = event.block.timestamp
+  stakePosition.modifiedAtBlock = event.block.number
+  stakePosition.modifiedAtTimestamp = event.block.timestamp
+  stakePosition.save()
 
   for (let i = 1; i <= user.totalSubscriptionCount.toI32(); i++) {
     let subscription = getSubscription(user.id, i.toString())
@@ -115,12 +117,14 @@ export function onUnstake(event: Unstake): void {
   let token = getOrCreateToken(event.params.token.toHex())
   let user = getOrCreateUser(event.params.user.toHex())
 
-  let stake = getOrCreateStake(user.id, token.id)
-  stake.liquidity = stake.liquidity.minus(event.params.amount)
-  stake.user = user.id
-  stake.createdAtBlock = event.block.number
-  stake.createdAtTimestamp = event.block.timestamp
-  stake.save()
+  let stakePosition = getOrCreateStakePosition(user.id, token.id)
+  stakePosition.liquidity = stakePosition.liquidity.minus(event.params.amount)
+  stakePosition.user = user.id
+  stakePosition.createdAtBlock = event.block.number
+  stakePosition.createdAtTimestamp = event.block.timestamp
+  stakePosition.modifiedAtBlock = event.block.number
+  stakePosition.modifiedAtTimestamp = event.block.timestamp
+  stakePosition.save()
 
   for (let i = 1; i <= user.totalSubscriptionCount.toI32(); i++) {
     let subscription = getSubscription(user.id, i.toString())
@@ -140,7 +144,7 @@ export function onSubscribe(event: Subscribe): void {
   let incentive = getOrCreateIncentive(event.params.id.toString())
   updateRewards(incentive, event)
   let user = getOrCreateUser(event.params.user.toHex())
-  let stake = getOrCreateStake(user.id, incentive.stakeToken)
+  let stakePosition = getOrCreateStakePosition(user.id, incentive.stakeToken)
 
   user.totalSubscriptionCount = user.totalSubscriptionCount.plus(BigInt.fromU32(1))
   user.activeSubscriptionCount = user.activeSubscriptionCount.plus(BigInt.fromU32(1))
@@ -155,7 +159,7 @@ export function onSubscribe(event: Subscribe): void {
   subscription.token = incentive.stakeToken
   subscription.save()
 
-  incentive.liquidityStaked = incentive.liquidityStaked.plus(stake.liquidity)
+  incentive.liquidityStaked = incentive.liquidityStaked.plus(stakePosition.liquidity)
   incentive.modifiedAtBlock = event.block.number
   incentive.modifiedAtTimestamp = event.block.timestamp
   incentive.save()
@@ -167,9 +171,9 @@ export function onUnsubscribe(event: Unsubscribe): void {
   let user = getOrCreateUser(event.params.user.toHex())
   user.activeSubscriptionCount = user.activeSubscriptionCount.minus(BigInt.fromU32(1))
   user.save()
-  let stake = getOrCreateStake(user.id, incentive.stakeToken)
+  let stakePosition = getOrCreateStakePosition(user.id, incentive.stakeToken)
 
-  incentive.liquidityStaked = incentive.liquidityStaked.minus(stake.liquidity)
+  incentive.liquidityStaked = incentive.liquidityStaked.minus(stakePosition.liquidity)
   incentive.modifiedAtBlock = event.block.number
   incentive.modifiedAtTimestamp = event.block.timestamp
   incentive.save()
