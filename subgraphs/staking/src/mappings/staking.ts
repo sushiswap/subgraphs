@@ -1,6 +1,5 @@
 import { BigDecimal, BigInt, store } from '@graphprotocol/graph-ts'
 import { log } from 'matchstick-as'
-
 import {
   Claim,
   IncentiveCreated,
@@ -13,8 +12,8 @@ import {
 import {
   getOrCreateFarm,
   getOrCreateIncentive,
-  getOrCreateRewardClaim,
   getOrCreateReward,
+  getOrCreateRewardClaim,
   getOrCreateStakePosition,
   getOrCreateSubscription,
   getOrCreateToken,
@@ -22,7 +21,6 @@ import {
   getSubscription,
   getSubscriptionByIncentiveId,
   updateRewards,
-  getReward,
 } from '../../src/functions'
 
 export function onIncentiveCreated(event: IncentiveCreated): void {
@@ -162,11 +160,10 @@ export function onSubscribe(event: Subscribe): void {
   reward.modifiedAtBlock = event.block.number
   reward.modifiedAtTimestamp = event.block.timestamp
   reward.save()
-  
+
   const rewards = incentive.rewards
   rewards.push(reward.id)
   incentive.rewards = rewards
-  
 
   let subscription = getOrCreateSubscription(user.id, user.totalSubscriptionCount.toString())
 
@@ -191,6 +188,17 @@ export function onUnsubscribe(event: Unsubscribe): void {
   user.save()
   let stakePosition = getOrCreateStakePosition(user.id, incentive.stakeToken)
 
+  let reward = getOrCreateReward(user.id, incentive.id)
+  const rewards = incentive.rewards
+
+  for (var i = 0; i < rewards.length; i++) {
+    if (rewards[i] == reward.id) {
+      rewards.splice(i, 1)
+      incentive.rewards = rewards
+      break
+    }
+  }
+
   incentive.liquidityStaked = incentive.liquidityStaked.minus(stakePosition.liquidity)
   incentive.modifiedAtBlock = event.block.number
   incentive.modifiedAtTimestamp = event.block.timestamp
@@ -207,9 +215,7 @@ export function onUnsubscribe(event: Unsubscribe): void {
 export function onClaim(event: Claim): void {
   let user = getOrCreateUser(event.params.user.toHex())
   let incentive = getOrCreateIncentive(event.params.id.toString())
-  log.debug("running updateRewards",[])
   updateRewards(incentive, event)
-  log.debug("done updateRewards",[])
   incentive.modifiedAtBlock = event.block.number
   incentive.modifiedAtTimestamp = event.block.timestamp
   incentive.save()
@@ -218,7 +224,7 @@ export function onClaim(event: Claim): void {
   user.save()
 
   let reward = getOrCreateReward(user.id, incentive.id)
-  reward.claimableAmount = BigDecimal.fromString("0")
+  reward.claimableAmount = BigDecimal.fromString('0')
   reward.claimedAmount = reward.claimedAmount.plus(event.params.amount)
   reward.modifiedAtBlock = event.block.number
   reward.modifiedAtTimestamp = event.block.timestamp
