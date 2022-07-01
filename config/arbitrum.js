@@ -31,6 +31,8 @@ module.exports = {
     market: { address: '0x351447fc9bd20a917783e159e61e86edda0b0187', startBlock: 9931078 },
   },
   legacy: {
+    base: 'QmfKgxN71Bc7TKzQi8yccRunpiWupFdWA4638yZRxve3q1',
+    startBlock: 16548328,
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [
       // IMPORTANT! The native address must be included for pricing to start
