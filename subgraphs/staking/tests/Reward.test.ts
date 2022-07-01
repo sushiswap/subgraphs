@@ -67,7 +67,7 @@ test('Reward is created on subscription', () => {
   cleanup()
 })
 
-test('Two user stakes, after half of the incentives duration has passed, claimableAmount are updated to expected amount', () => {
+test('Two user stakes, after half of the incentives duration has passed a third user subscribed, which updates the claimableAmount', () => {
   setup()
 
   const aliceAmount = BigInt.fromString('1000')
@@ -109,12 +109,12 @@ test('Two user stakes, after half of the incentives duration has passed, claimab
 
   // Then: rewards are updated
   assert.fieldEquals('Reward', aliceRewardId, 'claimedAmount', "0")
-  assert.fieldEquals('Reward', aliceRewardId, 'claimableAmount', "0.3333333333333333333333333333333334")
+  assert.fieldEquals('Reward', aliceRewardId, 'claimableAmount', "0.0000000000000003333333333333333333333333333333334")
   assert.fieldEquals('Reward', aliceRewardId, 'modifiedAtTimestamp', charlieSubscribeEvent.block.timestamp.toString())
 
 
   assert.fieldEquals('Reward', bobRewardId, 'claimedAmount', "0")
-  assert.fieldEquals('Reward', bobRewardId, 'claimableAmount', "0.1666666666666666666666666666666667")
+  assert.fieldEquals('Reward', bobRewardId, 'claimableAmount', "0.0000000000000001666666666666666666666666666666667")
   assert.fieldEquals('Reward', bobRewardId, 'modifiedAtTimestamp', charlieSubscribeEvent.block.timestamp.toString())
 
   cleanup()
