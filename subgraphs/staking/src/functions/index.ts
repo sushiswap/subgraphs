@@ -4,4 +4,7 @@ export * from './stake-position'
 export * from './subscription'
 export * from './token'
 export * from './user'
+export * from './reward'
 export * from './reward-claim'
+export * from './number-converter'
+

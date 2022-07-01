@@ -34,6 +34,19 @@ type StakePosition @entity {
   modifiedAtTimestamp: BigInt!
 }
 
+type Reward @entity {
+  id: ID!
+  user: User!
+  token: Token!
+  incentive: Incentive!
+  claimedAmount: BigInt!
+  claimableAmount: BigDecimal!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+  modifiedAtBlock: BigInt!
+  modifiedAtTimestamp: BigInt!
+}
+
 type Farm @entity {
   id: ID!
   stakeToken: Token!
@@ -53,6 +66,7 @@ type Incentive @entity {
   endTime: BigInt!
   liquidityStaked: BigInt!
   subscriptions: [_Subscription!] @derivedFrom(field: "incentive")
+  rewards: [Reward!]!
   createdBy: User!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
@@ -66,6 +80,7 @@ type _Subscription @entity { # requires underscore prefix, Subscription is defau
   id: ID!
   user: User!
   incentive: Incentive!
+  reward: Reward!
   token: Token!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!

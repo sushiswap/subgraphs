@@ -1,5 +1,6 @@
-import { BigInt, store } from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt, store } from '@graphprotocol/graph-ts'
 import { log } from 'matchstick-as'
+
 import {
   Claim,
   IncentiveCreated,
@@ -13,6 +14,7 @@ import {
   getOrCreateFarm,
   getOrCreateIncentive,
   getOrCreateRewardClaim,
+  getOrCreateReward,
   getOrCreateStakePosition,
   getOrCreateSubscription,
   getOrCreateToken,
@@ -20,6 +22,7 @@ import {
   getSubscription,
   getSubscriptionByIncentiveId,
   updateRewards,
+  getReward,
 } from '../../src/functions'
 
 export function onIncentiveCreated(event: IncentiveCreated): void {
@@ -150,6 +153,21 @@ export function onSubscribe(event: Subscribe): void {
   user.activeSubscriptionCount = user.activeSubscriptionCount.plus(BigInt.fromU32(1))
   user.save()
 
+  let reward = getOrCreateReward(user.id, incentive.id)
+  reward.user = user.id
+  reward.token = incentive.rewardToken
+  reward.incentive = incentive.id
+  reward.createdAtBlock = event.block.number
+  reward.createdAtTimestamp = event.block.timestamp
+  reward.modifiedAtBlock = event.block.number
+  reward.modifiedAtTimestamp = event.block.timestamp
+  reward.save()
+  
+  const rewards = incentive.rewards
+  rewards.push(reward.id)
+  incentive.rewards = rewards
+  
+
   let subscription = getOrCreateSubscription(user.id, user.totalSubscriptionCount.toString())
 
   subscription.user = user.id
@@ -196,6 +214,13 @@ export function onClaim(event: Claim): void {
 
   user.rewardClaimCount = user.rewardClaimCount.plus(BigInt.fromI32(1))
   user.save()
+
+  let reward = getOrCreateReward(user.id, incentive.id)
+  reward.claimableAmount = BigDecimal.fromString("0")
+  reward.claimedAmount = reward.claimedAmount.plus(event.params.amount)
+  reward.modifiedAtBlock = event.block.number
+  reward.modifiedAtTimestamp = event.block.timestamp
+  reward.save()
 
   let rewardClaim = getOrCreateRewardClaim(user.id, user.rewardClaimCount.toString())
   rewardClaim.token = incentive.rewardToken

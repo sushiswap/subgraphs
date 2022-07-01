@@ -15,7 +15,7 @@ pnpm exec turbo run test --scope=staking
 Single test
 
 ```bash
-pnpm exec turbo run test -- <TEST> --scope=staking
+pnpm exec turbo run test --scope=staking -- <TEST>
 ```
 
 NOTE:  
