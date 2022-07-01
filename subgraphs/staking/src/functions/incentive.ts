@@ -23,13 +23,6 @@ export function updateRewards(incentive: Incentive, event: ethereum.Event): Ince
     let passedTime = event.block.timestamp.minus(incentive.rewardsUpdatedAtTimestamp)
     let reward = incentive.rewardsRemaining.times(passedTime).div(totalTime)
     
-    log.debug('reward {} event.block.timestamp {}  incentive.rewardsUpdatedAtTimestamp {} passedTime {} totalTime {}', [
-      reward.toString(),
-      event.block.timestamp.toString(),
-      incentive.rewardsUpdatedAtTimestamp.toString(),
-      passedTime.toString(),
-      totalTime.toString()
-    ])
     if (incentive.rewardsRemaining.gt(reward)) {
       incentive.rewardsRemaining = incentive.rewardsRemaining.minus(reward)
     } else {
@@ -47,42 +40,9 @@ export function updateRewards(incentive: Incentive, event: ethereum.Event): Ince
       let stakePosition = getOrCreateStakePosition(reward.user, incentive.stakeToken)
       const passedTime = event.block.timestamp.minus(reward.modifiedAtTimestamp)
       if (stakePosition.liquidity.gt(BigInt.fromU32(0)) && passedTime.gt(BigInt.fromU32(0))) {
-        // TODO:, convert to decimals?
-        log.debug('user {} incentive.liquidityStaked {} stakePosition.liquidity {} ', [
-          reward.user.toString(),
-          incentive.liquidityStaked.toString(),
-          stakePosition.liquidity.toString(),
-        ])
-        log.debug('before incentive.liquidityStaked {} stakePosition.liquidity {} ', [
-          incentive.liquidityStaked.toString(),
-          stakePosition.liquidity.toString()
-        ])
         const share = toDecimal(stakePosition.liquidity, stakeToken.decimals)
         .div(toDecimal(incentive.liquidityStaked, stakeToken.decimals))
-        
-        // convert to decimal
-        const rewardsRemainingDec = toDecimal(incentive.rewardsRemaining, rewardToken.decimals)
-        const rewardsAvailable = rewardsRemainingDec
-        
-        log.debug('remaining {} passedTime {} rewardsRemainingDec {} rewardsAvailable {} ', [
-          incentive.rewardsRemaining.toString(),
-          passedTime.toString(),
-          rewardsRemainingDec.toString(),
-          rewardsAvailable.toString(),
-          // something.toString(),
-        ])
-        // const shares = share.times(totalSupply)
-        /// 0.33 * reward
-        // rewardsAvailable
-
-        const claimableAmount = rewardsAvailable.times(share)
-
-        log.debug('share {}  claimableAmount {}', [
-          share.toString(),
-          claimableAmount.toString()
-          // shares.toString()
-          // something.toString(),
-        ])
+        const claimableAmount = toDecimal(incentive.rewardsRemaining, rewardToken.decimals).times(share)
 
         reward.claimableAmount = reward.claimableAmount.plus(claimableAmount)
         reward.modifiedAtBlock = event.block.number

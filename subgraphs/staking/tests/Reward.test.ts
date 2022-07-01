@@ -92,7 +92,6 @@ test('Two user stakes, after half of the incentives duration has passed a third 
   onSubscribe(aliceSubscribeEvent)
   onSubscribe(bobSubscribeEvent)
 
-  // assert.fieldEquals('Reward', id, 'id', id)
   assert.fieldEquals('Reward', aliceRewardId, 'claimedAmount', "0")
   assert.fieldEquals('Reward', aliceRewardId, 'claimableAmount', "0")
   assert.fieldEquals('Reward', aliceRewardId, 'modifiedAtTimestamp', aliceSubscribeEvent.block.timestamp.toString())
