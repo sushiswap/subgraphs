@@ -19,18 +19,24 @@ export function getOrCreateIncentive(id: string): Incentive {
 
 export function updateRewards(incentive: Incentive, event: ethereum.Event): Incentive {
   if (incentive.liquidityStaked.gt(BigInt.fromI32(0))) {
-    let totalTime = incentive.endTime.minus(incentive.startTime)
-    let passedTime = event.block.timestamp.minus(incentive.rewardsUpdatedAtTimestamp)
-    let reward = incentive.rewardsRemaining.times(passedTime).div(totalTime)
-    
-    if (incentive.rewardsRemaining.gt(reward)) {
-      incentive.rewardsRemaining = incentive.rewardsRemaining.minus(reward)
-    } else {
+    if (event.block.timestamp.le(incentive.endTime)) {
+      let totalTime = incentive.endTime.minus(incentive.startTime)
+      let passedTime = event.block.timestamp.minus(incentive.rewardsUpdatedAtTimestamp)
+      let rewardsAccrued = incentive.rewardsRemaining.times(passedTime).div(totalTime)
+
+      if (incentive.rewardsRemaining.ge(rewardsAccrued)) {
+        incentive.rewardsAccrued = incentive.rewardsAccrued.plus(rewardsAccrued)
+        incentive.rewardsRemaining = incentive.rewardsRemaining.minus(rewardsAccrued)
+        incentive.rewardsUpdatedAtTimestamp = event.block.timestamp
+        incentive.rewardsUpdatedAtBlock = event.block.number
+      }
+    } else if (incentive.rewardsRemaining.gt(BigInt.fromI32(0))) {
+      incentive.rewardsAccrued = incentive.rewardsAccrued.plus(incentive.rewardsRemaining)
       incentive.rewardsRemaining = BigInt.fromI32(0)
+      incentive.rewardsUpdatedAtTimestamp = event.block.timestamp
+      incentive.rewardsUpdatedAtBlock = event.block.number
     }
-    incentive.rewardsAccrued = incentive.rewardsAccrued.plus(reward)
-    incentive.rewardsUpdatedAtTimestamp = event.block.timestamp
-    incentive.rewardsUpdatedAtBlock = event.block.number
+
     let stakeToken = getOrCreateToken(incentive.stakeToken)
     let rewardToken = getOrCreateToken(incentive.rewardToken)
 
@@ -38,11 +44,18 @@ export function updateRewards(incentive: Incentive, event: ethereum.Event): Ince
     for (let i = 0; i < rewardCount; i++) {
       let reward = getReward(incentive.rewards[i])
       let stakePosition = getOrCreateStakePosition(reward.user, incentive.stakeToken)
-      const passedTime = event.block.timestamp.minus(reward.modifiedAtTimestamp)
+      const isActive = event.block.timestamp.le(incentive.endTime)
+
+      const passedTime = isActive
+        ? event.block.timestamp.minus(reward.modifiedAtTimestamp)
+        : incentive.endTime.minus(reward.modifiedAtTimestamp)
+
       if (stakePosition.liquidity.gt(BigInt.fromU32(0)) && passedTime.gt(BigInt.fromU32(0))) {
-        const share = toDecimal(stakePosition.liquidity, stakeToken.decimals)
-        .div(toDecimal(incentive.liquidityStaked, stakeToken.decimals))
-        const claimableAmount = toDecimal(incentive.rewardsRemaining, rewardToken.decimals).times(share)
+        const share = toDecimal(stakePosition.liquidity, stakeToken.decimals).div(
+          toDecimal(incentive.liquidityStaked, stakeToken.decimals)
+        )
+        let rewards = isActive ? incentive.rewardsRemaining : incentive.rewardsAccrued
+        const claimableAmount = toDecimal(rewards, rewardToken.decimals).times(share)
 
         reward.claimableAmount = reward.claimableAmount.plus(claimableAmount)
         reward.modifiedAtBlock = event.block.number

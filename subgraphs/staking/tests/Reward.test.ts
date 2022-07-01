@@ -118,3 +118,58 @@ test('Two user stakes, after half of the incentives duration has passed a third 
 
   cleanup()
 })
+
+
+
+test('When the incentive has ended and user claims, the rewards are updated as expected', () => {
+  setup()
+
+  const aliceAmount = BigInt.fromString('1000')
+  const bobAmount = BigInt.fromString('500')
+
+  let aliceStakeEvent = createStakeEvent(TOKEN, ALICE, aliceAmount)
+  let bobStakeEvent = createStakeEvent(TOKEN, BOB, bobAmount)
+
+
+  let aliceSubscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
+  let bobSubscribeEvent = createSubscribeEvent(INCENTIVE_ID, BOB)
+  aliceSubscribeEvent.block.timestamp = START_TIME
+  bobSubscribeEvent.block.timestamp = START_TIME
+  const aliceRewardId = getRewardId(ALICE.toHex(), INCENTIVE_ID.toString())
+  const bobRewardId = getRewardId(BOB.toHex(), INCENTIVE_ID.toString())
+
+  let bobClaimEvent = createClaimEvent(INCENTIVE_ID, BOB, BigInt.fromString('333'))
+  let aliceClaimEvent = createClaimEvent(INCENTIVE_ID, ALICE, BigInt.fromString('667'))
+
+  onStake(aliceStakeEvent)
+  onStake(bobStakeEvent)
+  onSubscribe(aliceSubscribeEvent)
+  onSubscribe(bobSubscribeEvent)
+
+
+  // When: bob claims his shares
+  bobClaimEvent.block.timestamp = BigInt.fromString("1641945661") // 1641945661, a day after end time
+  onClaim(bobClaimEvent)
+
+
+  // Then: the rewards are updated
+  assert.fieldEquals('Reward', bobRewardId, 'claimedAmount', "333")
+  assert.fieldEquals('Reward', bobRewardId, 'claimableAmount', "0")
+  assert.fieldEquals('Reward', bobRewardId, 'modifiedAtTimestamp', bobClaimEvent.block.timestamp.toString())
+
+  assert.fieldEquals('Reward', aliceRewardId, 'claimedAmount', "0")
+  assert.fieldEquals('Reward', aliceRewardId, 'claimableAmount', "0.0000000000000006666666666666666666666666666666667")
+  assert.fieldEquals('Reward', aliceRewardId, 'modifiedAtTimestamp', bobClaimEvent.block.timestamp.toString())
+
+  // And: When alice claims her reward, it's updated as expected
+  aliceClaimEvent.block.timestamp = BigInt.fromString("1642032061") // 1641945661, a day after bobs claim
+  onClaim(aliceClaimEvent)
+  assert.fieldEquals('Reward', bobRewardId, 'claimedAmount', "333")
+  assert.fieldEquals('Reward', bobRewardId, 'claimableAmount', "0")
+  assert.fieldEquals('Reward', bobRewardId, 'modifiedAtTimestamp', bobClaimEvent.block.timestamp.toString())
+
+  assert.fieldEquals('Reward', aliceRewardId, 'claimedAmount', "667")
+  assert.fieldEquals('Reward', aliceRewardId, 'claimableAmount', "0")
+  assert.fieldEquals('Reward', aliceRewardId, 'modifiedAtTimestamp', aliceClaimEvent.block.timestamp.toString())
+  cleanup()
+})

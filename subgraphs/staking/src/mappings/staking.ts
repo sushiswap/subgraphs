@@ -207,7 +207,9 @@ export function onUnsubscribe(event: Unsubscribe): void {
 export function onClaim(event: Claim): void {
   let user = getOrCreateUser(event.params.user.toHex())
   let incentive = getOrCreateIncentive(event.params.id.toString())
+  log.debug("running updateRewards",[])
   updateRewards(incentive, event)
+  log.debug("done updateRewards",[])
   incentive.modifiedAtBlock = event.block.number
   incentive.modifiedAtTimestamp = event.block.timestamp
   incentive.save()
