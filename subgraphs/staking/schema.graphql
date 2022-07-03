@@ -1,3 +1,9 @@
+
+type Global @entity {
+  id: ID! # Hardcoded to 'Global'
+  transactionCount: BigInt!
+}
+
 type User @entity {
   id: ID!
   stakePositions: [StakePosition!] @derivedFrom(field: "user")
@@ -82,6 +88,26 @@ type _Subscription @entity { # requires underscore prefix, Subscription is defau
   incentive: Incentive!
   reward: Reward!
   token: Token!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+enum TransactionType {
+  STAKE
+  UNSTAKE
+  CLAIM
+}
+
+type Transaction @entity {
+  id: ID!
+  type: TransactionType!
+  farm: Farm!
+  incentive: Incentive
+  amount: BigInt!
+  user: User!
+  to: User!
+  token: Token!
+  txHash: String!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
 }

@@ -10,6 +10,9 @@ import {
   Unsubscribe,
 } from '../../generated/Staking/Staking'
 import {
+  createClaimTransaction,
+  createStakeTransaction,
+  createUnstakeTransaction,
   getOrCreateFarm,
   getOrCreateIncentive,
   getOrCreateReward,
@@ -89,6 +92,7 @@ export function onIncentiveUpdated(event: IncentiveUpdated): void {
 export function onStake(event: Stake): void {
   let token = getOrCreateToken(event.params.token.toHex())
   let user = getOrCreateUser(event.params.user.toHex())
+  createStakeTransaction(event)
 
   let stakePosition = getOrCreateStakePosition(user.id, token.id)
   stakePosition.liquidity = stakePosition.liquidity.plus(event.params.amount)
@@ -117,6 +121,7 @@ export function onStake(event: Stake): void {
 export function onUnstake(event: Unstake): void {
   let token = getOrCreateToken(event.params.token.toHex())
   let user = getOrCreateUser(event.params.user.toHex())
+  createUnstakeTransaction(event.params.token.toHex(), event)
 
   let stakePosition = getOrCreateStakePosition(user.id, token.id)
   stakePosition.liquidity = stakePosition.liquidity.minus(event.params.amount)
@@ -215,6 +220,8 @@ export function onUnsubscribe(event: Unsubscribe): void {
 export function onClaim(event: Claim): void {
   let user = getOrCreateUser(event.params.user.toHex())
   let incentive = getOrCreateIncentive(event.params.id.toString())
+  createClaimTransaction(incentive, event)
+  
   updateRewards(incentive, event)
   incentive.modifiedAtBlock = event.block.number
   incentive.modifiedAtTimestamp = event.block.timestamp

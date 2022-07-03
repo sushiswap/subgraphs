@@ -7,4 +7,6 @@ export * from './user'
 export * from './reward'
 export * from './reward-claim'
 export * from './number-converter'
+export * from './transaction'
+export * from './global'
 

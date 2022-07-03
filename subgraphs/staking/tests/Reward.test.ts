@@ -147,12 +147,10 @@ test('When the incentive has ended and user claims, the rewards are updated as e
   onClaim(bobClaimEvent)
 
   // Then: the rewards are updated
-  log.debug("bob", [])
   assert.fieldEquals('Reward', bobRewardId, 'claimedAmount', '333')
   assert.fieldEquals('Reward', bobRewardId, 'claimableAmount', '0')
   assert.fieldEquals('Reward', bobRewardId, 'modifiedAtTimestamp', bobClaimEvent.block.timestamp.toString())
 
-  log.debug("alice", [])
   assert.fieldEquals('Reward', aliceRewardId, 'claimedAmount', '0')
   assert.fieldEquals('Reward', aliceRewardId, 'claimableAmount', '0.0000000000000006666666666666666666666666666666667')
   assert.fieldEquals('Reward', aliceRewardId, 'modifiedAtTimestamp', bobClaimEvent.block.timestamp.toString())
@@ -160,12 +158,10 @@ test('When the incentive has ended and user claims, the rewards are updated as e
   // And: When alice claims her reward, it's updated as expected
   aliceClaimEvent.block.timestamp = BigInt.fromString('1642032061') // 1641945661, a day after bobs claim
   onClaim(aliceClaimEvent)
-  log.debug("bob", [])
   assert.fieldEquals('Reward', bobRewardId, 'claimedAmount', '333')
   assert.fieldEquals('Reward', bobRewardId, 'claimableAmount', '0')
   assert.fieldEquals('Reward', bobRewardId, 'modifiedAtTimestamp', bobClaimEvent.block.timestamp.toString())
 
-  log.debug("alice", [])
   assert.fieldEquals('Reward', aliceRewardId, 'claimedAmount', '667')
   assert.fieldEquals('Reward', aliceRewardId, 'claimableAmount', '0')
   assert.fieldEquals('Reward', aliceRewardId, 'modifiedAtTimestamp', aliceClaimEvent.block.timestamp.toString())
