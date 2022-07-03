@@ -16,7 +16,6 @@ import {
   getOrCreateFarm,
   getOrCreateIncentive,
   getOrCreateReward,
-  getOrCreateRewardClaim,
   getOrCreateStakePosition,
   getOrCreateSubscription,
   getOrCreateToken,
@@ -236,11 +235,4 @@ export function onClaim(event: Claim): void {
   reward.modifiedAtBlock = event.block.number
   reward.modifiedAtTimestamp = event.block.timestamp
   reward.save()
-
-  let rewardClaim = getOrCreateRewardClaim(user.id, user.rewardClaimCount.toString())
-  rewardClaim.token = incentive.rewardToken
-  rewardClaim.user = user.id
-  rewardClaim.incentive = incentive.id
-  rewardClaim.amount = event.params.amount
-  rewardClaim.save()
 }
