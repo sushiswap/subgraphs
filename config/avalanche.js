@@ -1,7 +1,8 @@
 const NATIVE_ADDRESS = "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
 const WETH_ADDRESS = "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab"
 const USDC_ADDRESS = "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
-const USDT_ADDRESS = "0xc7198437980c041c805a1edcba50c1ce5db95118"
+const USDTE_ADDRESS = "0xc7198437980c041c805a1edcba50c1ce5db95118"
+const USDT_ADDRESS = "0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7"
 const DAI_ADDRESS = "0xd586e7f844cea2f87f50152665bcbc2c279d8d70"
 const WBTC_ADDRESS = "0x50b7545627a5162f82a992c33b87adc75187b218"
 const MIM_ADDRESS = "0x130966628846bfd36ff31a822705796e8cb8c18d"
@@ -28,6 +29,7 @@ module.exports = {
       WETH_ADDRESS,
       USDC_ADDRESS,
       USDT_ADDRESS,
+      USDTE_ADDRESS,
       DAI_ADDRESS,
       WBTC_ADDRESS,
       MIM_ADDRESS,
@@ -39,6 +41,7 @@ module.exports = {
     stableTokenAddresses: [
       USDC_ADDRESS,
       USDT_ADDRESS,
+      USDTE_ADDRESS,
       DAI_ADDRESS,
       MIM_ADDRESS
     ],
