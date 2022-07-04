@@ -9,6 +9,7 @@ type User @entity {
   stakePositions: [StakePosition!] @derivedFrom(field: "user")
   rewards: [Reward!] @derivedFrom(field: "user")
   subscriptions: [_Subscription!] @derivedFrom(field: "user")
+  transactions: [Transaction!] @derivedFrom(field: "user")
   totalSubscriptionCount: BigInt!
   activeSubscriptionCount: BigInt!
 }
