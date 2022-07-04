@@ -218,6 +218,7 @@ export function onUnsubscribe(event: Unsubscribe): void {
 
 export function onClaim(event: Claim): void {
   let user = getOrCreateUser(event.params.user.toHex())
+  user.save()
   let incentive = getOrCreateIncentive(event.params.id.toString())
   createClaimTransaction(incentive, event)
   
@@ -226,8 +227,6 @@ export function onClaim(event: Claim): void {
   incentive.modifiedAtTimestamp = event.block.timestamp
   incentive.save()
 
-  user.rewardClaimCount = user.rewardClaimCount.plus(BigInt.fromI32(1))
-  user.save()
 
   let reward = getOrCreateReward(user.id, incentive.id)
   reward.claimableAmount = BigDecimal.fromString('0')

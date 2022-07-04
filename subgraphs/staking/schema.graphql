@@ -10,8 +10,6 @@ type User @entity {
   subscriptions: [_Subscription!] @derivedFrom(field: "user")
   totalSubscriptionCount: BigInt!
   activeSubscriptionCount: BigInt!
-  rewardClaimCount: BigInt!
-  rewardClaims: [RewardClaim!] @derivedFrom(field: "user")
 }
 
 

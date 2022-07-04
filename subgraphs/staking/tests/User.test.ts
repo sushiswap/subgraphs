@@ -83,20 +83,3 @@ test('Users subscription counts increment/decrement as expected', () => {
 
   cleanup()
 })
-
-test('Claiming reward increases the rewardClaimCount', () => {
-  setup()
-  let amount = BigInt.fromString('100000000')
-  let amount2 = BigInt.fromString('10000')
-  let stakeEvent = createStakeEvent(TOKEN, ALICE, amount)
-  let subscribeEvent = createSubscribeEvent(INCENTIVE_ID, ALICE)
-  let claimEvent = createClaimEvent(INCENTIVE_ID, ALICE, amount2)
-
-  onStake(stakeEvent)
-  onSubscribe(subscribeEvent)
-
-  onClaim(claimEvent)
-  assert.fieldEquals('User', ALICE.toHex(), 'rewardClaimCount', '1')
-
-  cleanup()
-})
