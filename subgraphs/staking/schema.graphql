@@ -7,6 +7,7 @@ type Global @entity {
 type User @entity {
   id: ID!
   stakePositions: [StakePosition!] @derivedFrom(field: "user")
+  rewards: [Reward!] @derivedFrom(field: "user")
   subscriptions: [_Subscription!] @derivedFrom(field: "user")
   totalSubscriptionCount: BigInt!
   activeSubscriptionCount: BigInt!
