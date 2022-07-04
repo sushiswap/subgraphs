@@ -108,11 +108,13 @@ export function onStake(event: Stake): void {
 
     if (subscription !== null) {
       let incentive = getOrCreateIncentive(subscription.incentive)
-      updateRewards(incentive, event)
-      incentive.liquidityStaked = incentive.liquidityStaked.plus(event.params.amount)
-      incentive.modifiedAtBlock = event.block.number
-      incentive.modifiedAtTimestamp = event.block.timestamp
-      incentive.save()
+      if (incentive.stakeToken == stakePosition.token) {
+        updateRewards(incentive, event)
+        incentive.liquidityStaked = incentive.liquidityStaked.plus(event.params.amount)
+        incentive.modifiedAtBlock = event.block.number
+        incentive.modifiedAtTimestamp = event.block.timestamp
+        incentive.save()
+      }
     }
   }
 }
@@ -136,11 +138,13 @@ export function onUnstake(event: Unstake): void {
 
     if (subscription !== null) {
       let incentive = getOrCreateIncentive(subscription.incentive)
+      if (incentive.stakeToken == stakePosition.token) {
       updateRewards(incentive, event)
       incentive.liquidityStaked = incentive.liquidityStaked.minus(event.params.amount)
       incentive.modifiedAtBlock = event.block.number
       incentive.modifiedAtTimestamp = event.block.timestamp
       incentive.save()
+      }
     }
   }
 }
