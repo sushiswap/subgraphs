@@ -3,6 +3,7 @@ import { Claim as ClaimEvent, Stake as StakeEvent, Unstake as UnstakeEvent } fro
 import { CLAIM, STAKE, STAKING_CONTRACT_ADDRESS, UNSTAKE } from '../constants'
 import { Incentive, Transaction } from '../../generated/schema'
 import { increaseTransactionCount } from './global'
+import { getOrCreateUser } from './user'
 
 function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction {
   let transaction = Transaction.load(id)
@@ -19,13 +20,15 @@ function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction 
 
 export function createStakeTransaction(event: StakeEvent): Transaction {
   const count = increaseTransactionCount()
+  const user = getOrCreateUser(event.params.user.toHex())
+  const to = getOrCreateUser(STAKING_CONTRACT_ADDRESS.toHex())
   const transactionId = 'tx:'.concat(count.toString())
   let transaction = getOrCreateTransaction(transactionId, event)
   transaction.type = STAKE
   transaction.farm = event.params.token.toHex()
   transaction.amount = event.params.amount
-  transaction.user = event.params.user.toHex()
-  transaction.to = STAKING_CONTRACT_ADDRESS.toHex()
+  transaction.user = user.id
+  transaction.to = to.id
   transaction.token = event.params.token.toHex()
   transaction.save()
 
@@ -34,13 +37,15 @@ export function createStakeTransaction(event: StakeEvent): Transaction {
 
 export function createUnstakeTransaction(farmId: string, event: UnstakeEvent): Transaction {
   const count = increaseTransactionCount()
+  const user = getOrCreateUser(event.params.user.toHex())
+  const to = getOrCreateUser(STAKING_CONTRACT_ADDRESS.toHex())
   const transactionId = 'tx:'.concat(count.toString())
   let transaction = getOrCreateTransaction(transactionId, event)
   transaction.type = UNSTAKE
   transaction.farm = farmId
   transaction.amount = event.params.amount
-  transaction.user = event.params.user.toHex()
-  transaction.to = STAKING_CONTRACT_ADDRESS.toHex()
+  transaction.user = user.id
+  transaction.to = to.id
   transaction.token = event.params.token.toHex()
   transaction.save()
 
@@ -49,14 +54,15 @@ export function createUnstakeTransaction(farmId: string, event: UnstakeEvent): T
 
 export function createClaimTransaction(incentive: Incentive, event: ClaimEvent): Transaction {
   const count = increaseTransactionCount()
+  const user = getOrCreateUser(event.params.user.toHex())
   const transactionId = 'tx:'.concat(count.toString())
   let transaction = getOrCreateTransaction(transactionId, event)
   transaction.type = CLAIM
   transaction.farm = incentive.farm
   transaction.incentive = incentive.id
   transaction.amount = event.params.amount
-  transaction.user = event.params.user.toHex()
-  transaction.to = event.params.user.toHex()
+  transaction.user = user.id
+  transaction.to = user.id
   transaction.token = incentive.rewardToken
   transaction.save()
 
