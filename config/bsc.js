@@ -1,3 +1,11 @@
+const NATIVE_ADDRESS = '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c'
+const WETH_ADDRESS = '0x2170ed0880ac9a755fd29b2688956bd959f933f8'
+const WBTC_ADDRESS = '0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c'
+const USDT_ADDRESS = '0x55d398326f99059ff775485246999027b3197955'
+const BUSD_ADDRESS = '0xe9e7cea3dedca5984780bafc599bd69add087d56'
+const DAI_ADDRESS = '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3'
+const ICE_ADDRESS = '0xf16e81dce15b08f326220742020379b855b87df9'
+
 module.exports = {
   network: 'bsc',
   bentobox: {
@@ -9,9 +17,23 @@ module.exports = {
     market: { address: '0x7603a35af5cf10b113f167d424eb75bb7062c8ce', startBlock: 16168070 },
   },
   legacy: {
-    minimumUsdThresholdNewPairs: '3000',
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! The native address must be included for pricing to start
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      WBTC_ADDRESS,
+      USDT_ADDRESS,
+      BUSD_ADDRESS,
+      DAI_ADDRESS,
+      ICE_ADDRESS,
+    ],
+    stableTokenAddresses: [USDT_ADDRESS, BUSD_ADDRESS, DAI_ADDRESS],
+    minimumNativeLiquidity: 5,
+    minimum_usd_threshold_new_pairs: '3000',
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
       startBlock: 5205069,
     },
   },

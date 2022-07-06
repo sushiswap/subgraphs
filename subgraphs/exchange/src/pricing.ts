@@ -83,6 +83,7 @@ export function findEthPerToken(token: Token): BigDecimal {
     return BIG_DECIMAL_ONE
   }
 
+  const isStable = STABLE_TOKEN_ADDRESSES.includes(token.id)
   const whitelist = token.whitelistPairs
 
   let mostReseveEth = BIG_DECIMAL_ZERO
@@ -95,6 +96,25 @@ export function findEthPerToken(token: Token): BigDecimal {
       continue // Not created yet
     }
 
+    // If the token is a stable, we price it from the pair with native
+    // However, if there isn't enough liquidity to mass minimum native liquidity check, continue and use the pair
+    // with most liqudidity
+    // NOTE: the idea behind this is that most stables will be priced off native, and the rest could be 
+    // priced off those stables, avoiding circular price dependency
+    if (isStable) {
+      if (pair.token0 == token.id && pair.token1 == NATIVE_ADDRESS && pair.reserveETH.gt(MINIMUM_NATIVE_LIQUIDITY)) {
+        const token1 = getOrCreateToken(pair.token1)
+        return pair.token1Price.times(token1.derivedETH as BigDecimal)
+      } else if (
+        pair.token1 == token.id &&
+        pair.token0 == NATIVE_ADDRESS &&
+        pair.reserveETH.gt(MINIMUM_NATIVE_LIQUIDITY)
+      ) {
+        const token0 = getOrCreateToken(pair.token0)
+        return pair.token0Price.times(token0.derivedETH as BigDecimal)
+      }
+    }
+    
     if (pair.token0 == token.id && pair.reserveETH.gt(MINIMUM_NATIVE_LIQUIDITY) && pair.reserveETH.gt(mostReseveEth)) {
       const token1 = getOrCreateToken(pair.token1)
       if (token1.decimalsSuccess) {

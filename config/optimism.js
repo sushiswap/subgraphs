@@ -6,7 +6,6 @@ const DAI_ADDRESS = '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1'
 
 module.exports = {
   network: 'optimism',
-  native: { address: NATIVE_ADDRESS },
   bentobox: {
     address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
     base: 'QmYJh2tYmFv9yGxeyRHDTKKCFgyHAv7wgczpWojF5B4BqN',
@@ -20,34 +19,37 @@ module.exports = {
   },
   hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
   indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
-  whitelistedTokenAddresses: [
-    // WNATIVE - This is actually quite important, though uneeded here anymore since
-    // it's now apart of the whitelisted token check in createPair, because the
-    // base should always be whitelisted or pricing never begins.
-    NATIVE_ADDRESS,
-    // WBTC
-    WBTC_ADDRESS,
-    // USDC
-    USDC_ADDRESS,
-    // USDT
-    USDT_ADDRESS,
-    // DAI
-    DAI_ADDRESS,
-  ],
-  stableTokenAddresses: [
-    // USDC
-    USDC_ADDRESS,
-    // USDT
-    USDT_ADDRESS,
-    // DAI
-    DAI_ADDRESS,
-  ],
-  // List of STABLE/NATIVE pools to use to price NATIVE in USD
-  stablePoolAddresses: [
-    // USDC/WETH/30/FALSE
-    '0x1e31a2c6e6614273d740358affb46bef180efb7b',
-  ],
-  minimumNativeLiquidity: '0.01',
+  trident: {
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // WNATIVE - This is actually quite important, though uneeded here anymore since
+      // it's now apart of the whitelisted token check in createPair, because the
+      // base should always be whitelisted or pricing never begins.
+      NATIVE_ADDRESS,
+      // WBTC
+      WBTC_ADDRESS,
+      // USDC
+      USDC_ADDRESS,
+      // USDT
+      USDT_ADDRESS,
+      // DAI
+      DAI_ADDRESS,
+    ],
+    stableTokenAddresses: [
+      // USDC
+      USDC_ADDRESS,
+      // USDT
+      USDT_ADDRESS,
+      // DAI
+      DAI_ADDRESS,
+    ],
+    // List of STABLE/NATIVE pools to use to price NATIVE in USD
+    stablePoolAddresses: [
+      // USDC/WETH/30/FALSE
+      '0x1e31a2c6e6614273d740358affb46bef180efb7b',
+    ],
+    minimumNativeLiquidity: '0.01',
+  },
 
   furo: {
     stream: { address: '0x4ab2fc6e258a0ca7175d05ff10c5cf798a672cae', startBlock: 10835062 },

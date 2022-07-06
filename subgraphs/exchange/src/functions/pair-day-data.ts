@@ -1,6 +1,6 @@
 import { BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { PairDayData } from '../../generated/schema'
-import { getOrCreatePair } from './pair'
+import { getPair } from './pair'
 
 export function getOrCreatePairDayData(event: ethereum.Event): PairDayData {
   const timestamp = event.block.timestamp.toI32()
@@ -11,7 +11,7 @@ export function getOrCreatePairDayData(event: ethereum.Event): PairDayData {
 
   const id = event.address.toHex().concat('-').concat(BigInt.fromI32(day).toString())
 
-  const pair = getOrCreatePair(event.address, event.block)
+  const pair = getPair(event.address)
 
   let pairDayData = PairDayData.load(id)
 

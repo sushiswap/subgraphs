@@ -28,11 +28,11 @@ export const ADDRESS_ZERO = Address.fromString('0x000000000000000000000000000000
 
 export const FACTORY_ADDRESS = Address.fromString('{{ legacy.factory.address }}')
 
-export const NATIVE_ADDRESS = '{{ native.address }}'
+export const NATIVE_ADDRESS = '{{ legacy.native.address }}'
 
-export const WHITELISTED_TOKEN_ADDRESSES: string[] = '{{ whitelistedTokenAddresses }}'.split(',')
+export const WHITELISTED_TOKEN_ADDRESSES: string[] = '{{ legacy.whitelistedTokenAddresses }}'.split(',')
 
-export const STABLE_TOKEN_ADDRESSES: string[] = '{{ stableTokenAddresses }}'.split(',')
+export const STABLE_TOKEN_ADDRESSES: string[] = '{{ legacy.stableTokenAddresses }}'.split(',')
 
 export const STABLE_POOL_ADDRESSES: string[] = STABLE_TOKEN_ADDRESSES.map<string>((address: string) => {
   const tokens: string[] = [address, NATIVE_ADDRESS].sort()
@@ -44,12 +44,12 @@ export const STABLE_POOL_ADDRESSES: string[] = STABLE_TOKEN_ADDRESSES.map<string
 })
 
 // Minimum liqudiity threshold in native currency
-export const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('{{ minimumNativeLiquidity }}')
+export const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('{{ legacy.minimumNativeLiquidity }}')
 
 // export const STABLE_POOL_ADDRESSES: string[] = '{{ stablePoolAddresses }}'.split(',')
 
 // minimum liquidity required to count towards tracked volume for pairs with small # of Lps
 export const MINIMUM_USD_THRESHOLD_NEW_PAIRS = BigDecimal.fromString(
-  '{{ minimumUsdThresholdNewPairs }}{{^minimumUsdThresholdNewPairs}}3000{{/minimumUsdThresholdNewPairs}}'
+  '{{ legacy.minimum_usd_threshold_new_pairs }}{{^legacy.minimum_usd_threshold_new_pairs}}3000{{/legacy.minimum_usd_threshold_new_pairs}}'
 )
 export * from './time'

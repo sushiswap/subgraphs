@@ -5,23 +5,26 @@ import {
   Mint as MintEvent,
   Swap as SwapEvent,
   Sync as SyncEvent,
-  Transfer as TransferEvent
+  Transfer as TransferEvent,
 } from '../../generated/templates/Pair/Pair'
 import {
   ADDRESS_ZERO,
   BIG_DECIMAL_ZERO,
   MINIMUM_USD_THRESHOLD_NEW_PAIRS,
-  WHITELISTED_TOKEN_ADDRESSES
+  WHITELISTED_TOKEN_ADDRESSES,
 } from '../constants'
 import {
-  getOrCreateLiquidityPosition, createLiquidityPositionSnapshot, getOrCreateBundle,
+  getOrCreateLiquidityPosition,
+  createLiquidityPositionSnapshot,
+  getOrCreateBundle,
   getOrCreateFactory,
-  getOrCreatePair,
+  getPair,
   getOrCreateToken,
-  getOrCreateUser, updateDayData,
+  getOrCreateUser,
+  updateDayData,
   getOrCreatePairDayData,
   getOrCreatePairHourData,
-  updateTokenDayData
+  updateTokenDayData,
 } from '../functions'
 import { findEthPerToken, getNativePriceInUSD } from '../pricing'
 
@@ -158,7 +161,7 @@ export function onTransfer(event: TransferEvent): void {
   getOrCreateUser(event.params.from)
   getOrCreateUser(event.params.to)
 
-  const pair = getOrCreatePair(event.address, event.block)
+  const pair = getPair(event.address)
 
   // liquidity token amount being transfered
   const value = event.params.value.divDecimal(BigDecimal.fromString('1e18'))
@@ -246,7 +249,7 @@ export function onTransfer(event: TransferEvent): void {
     if (mints.length != 0 && !isCompleteMint(mints[mints.length - 1])) {
       const mint = Mint.load(mints[mints.length - 1])
       if (mint === null) {
-        return 
+        return
       }
 
       burn.feeTo = mint.to
@@ -299,7 +302,7 @@ export function onTransfer(event: TransferEvent): void {
 }
 
 export function onSync(event: SyncEvent): void {
-  const pair = getOrCreatePair(event.address, event.block)
+  const pair = getPair(event.address)
 
   const token0 = getOrCreateToken(pair.token0)
   const token1 = getOrCreateToken(pair.token1)
@@ -389,7 +392,7 @@ export function onMint(event: MintEvent): void {
 
   const mint = Mint.load(mints[mints.length - 1])
 
-  const pair = getOrCreatePair(event.address, event.block)
+  const pair = getPair(event.address)
 
   const factory = getOrCreateFactory()
 
@@ -455,7 +458,7 @@ export function onMint(event: MintEvent): void {
 export function onBurn(event: BurnEvent): void {
   const transactionHash = event.transaction.hash.toHex()
   let transaction = Transaction.load(transactionHash)
-  const pair = getOrCreatePair(event.address, event.block)
+  const pair = getPair(event.address)
 
   if (transaction === null) {
     transaction = new Transaction(transactionHash)
@@ -553,7 +556,7 @@ export function onBurn(event: BurnEvent): void {
 
 export function onSwap(event: SwapEvent): void {
   log.info('onSwap', [])
-  const pair = getOrCreatePair(event.address, event.block)
+  const pair = getPair(event.address)
   const token0 = getOrCreateToken(pair.token0)
   const token1 = getOrCreateToken(pair.token1)
   const amount0In = convertTokenToDecimal(event.params.amount0In, token0.decimals)
