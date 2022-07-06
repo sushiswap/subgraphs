@@ -1,11 +1,7 @@
-import {
-  Mint as MintEvent
-} from '../templates/ConstantProductPool/ConstantProductPool'
-import {
-  getOrCreateConstantProductPoolFactory
-} from '../functions/constant-product-pool'
+import { DeployPool } from "../../generated/MasterDeployer/MasterDeployer";
 
 
-export function onMint(event: MintEvent): void {
-  getOrCreateConstantProductPoolFactory()
+export function onDeployPool(event: DeployPool): void {
+  // getOrCreateConstantProductPoolFactory()
+  
 }

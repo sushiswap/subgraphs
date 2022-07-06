@@ -6,26 +6,32 @@ graft:
   block: {{ masterDeployer.startBlock }}
 schema:
   file: ./schema.graphql
-templates:
+dataSources:
   - kind: ethereum/contract
-    name: ConstantProductPool
+    name: MasterDeployer
     network: {{ network }}
     source:
-      abi: ConstantProductPool
+      address: '{{ masterDeployer.address }}'
+      startBlock: {{ masterDeployer.startBlock }}
+      abi: MasterDeployer
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
-      language: wasm/assemblyscript
       file: ./src/mappings/constant-product-pool.ts
+      language: wasm/assemblyscript
       entities:
-        - User
-        - Mint
-        - Burn
-        - Swap
-        - Transaction
+        - MasterDeployer
+        - ConstantProductPoolFactory
+        - ConstantProductPool
+        - ConcentratedLiquidityPoolFactory
+        - ConcentratedLiquidityPool
+        - HybridPoolFactory
+        - HybridPool
+        - IndexPoolFactory
+        - IndexPool
       abis:
-        - name: ConstantProductPoolFactory
-          file: ./abis/ConstantProductPoolFactory.json
+        - name: MasterDeployer
+          file: ./abis/MasterDeployer.json
       eventHandlers:
-        - event: Mint(indexed address,uint256,uint256,indexed address)
-          handler: onMint
+        - event: DeployPool(indexed address,indexed address,bytes)
+          handler: onDeployPool

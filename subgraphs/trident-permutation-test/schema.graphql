@@ -1,4 +1,4 @@
 
-interface Factory {
+interface PoolDeploy {
   id: ID!
 }
