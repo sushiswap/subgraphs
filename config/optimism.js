@@ -42,7 +42,7 @@ module.exports = {
       // USDT_ADDRESS,
       // // DAI
       // DAI_ADDRESS,
-      "0x4200000000000000000000000000000000000042"
+      "0x7f5c764cbc14f9669b88837ca1490cca17c31607"
     ],
     // List of STABLE/NATIVE pools to use to price NATIVE in USD
     stablePoolAddresses: [
