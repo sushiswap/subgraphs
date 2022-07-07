@@ -36,13 +36,12 @@ module.exports = {
       DAI_ADDRESS,
     ],
     stableTokenAddresses: [
-      // // USDC
-      // USDC_ADDRESS,
-      // // USDT
-      // USDT_ADDRESS,
-      // // DAI
-      // DAI_ADDRESS,
-      "0x7f5c764cbc14f9669b88837ca1490cca17c31607"
+      // USDC
+      USDC_ADDRESS,
+      // USDT
+      USDT_ADDRESS,
+      // DAI
+      DAI_ADDRESS,
     ],
     // List of STABLE/NATIVE pools to use to price NATIVE in USD
     stablePoolAddresses: [
