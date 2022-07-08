@@ -1,116 +1,316 @@
-type BentoBox @entity {
+type BentoBox @entity(immutable: true) {
+  " BentoBox address "
   id: ID!
+  " Protocols that belong to this bento box "
   protocols: [Protocol!] @derivedFrom(field: "bentoBox")
+  " Users that belong to this bento box "
   users: [User!] @derivedFrom(field: "bentoBox")
+  " Tokens that belong to this bento box "
   tokens: [Token!] @derivedFrom(field: "bentoBox")
+  " Master contracts that belong to this bento box "
   masterContracts: [MasterContract!]! @derivedFrom(field: "bentoBox")
+  " Clones that belong to this bento box "
   clones: [Clone!] @derivedFrom(field: "bentoBox")
+  " Flash loans that belong to this bento box "
   flashloans: [FlashLoan!] @derivedFrom(field: "bentoBox")
+  " Transactions that belong to this bento box "
   transactions: [Transaction!] @derivedFrom(field: "bentoBox")
+  " Totals that belong to this bento box "
+  totals: [Rebase!] @derivedFrom(field: "bentoBox")
+}
+
+type BentoBoxKpi @entity {
+  " BentoBox address "
+  id: ID!
+  " Deposit count "
+  depositCount: BigInt!
+  " Withdraw count "
+  withdrawCount: BigInt!
+  " Transfer count "
+  transferCount: BigInt!
+  " Protocol count "
   protocolCount: BigInt!
+  " User count "
   userCount: BigInt!
+  " Token count "
   tokenCount: BigInt!
+  " Master contract count "
   masterContractCount: BigInt!
+  " Clone count "
   cloneCount: BigInt!
+  " Flash loan count "
   flashloanCount: BigInt!
+  " Transaction count "
   transactionCount: BigInt!
+  " Strategy count "
+  strategyCount: BigInt!
+  " Active strategy count "
+  activeStrategyCount: BigInt!
+  " Pending strategy count "
+  pendingStrategyCount: BigInt!  
+
 }
 
-type Token @entity {
+type MasterContract @entity(immutable: true) {
+  " MasterContract address "
   id: ID!
+  " BentoBox this master contract belongs to "
   bentoBox: BentoBox!
-  rebase: Rebase!
-  symbol: String!
-  symbolSuccess: Boolean!
-  name: String!
-  nameSuccess: Boolean!
-  decimals: BigInt!
-  decimalsSuccess: Boolean!
-  strategy: Strategy
-  strategyTargetPercentage: BigInt!
-  block: BigInt!
-  timestamp: BigInt!
-}
-
-type Strategy @entity {
-  id: ID!
-  token: Token!
-  balance: BigInt!
-  totalProfit: BigInt!
-  harvests: [StrategyHarvest!] @derivedFrom(field: "strategy")
-  timestamp: BigInt!
-  block: BigInt!
-}
-
-type StrategyHarvest @entity {
-  id: ID!
-  strategy: Strategy!
-  profit: BigDecimal!
-  tokenElastic: BigDecimal!
-  timestamp: BigInt!
-  block: BigInt!
-}
-
-type Rebase @entity {
-  id: ID!
-  token: Token!
-  base: BigDecimal!
-  elastic: BigDecimal!
-}
-
-type FlashLoan @entity {
-  id: ID!
-  bentoBox: BentoBox!
-  borrower: Bytes!
-  receiver: Bytes!
-  token: Token!
-  amount: BigDecimal!
-  feeAmount: BigDecimal!
-  block: BigInt!
-  timestamp: BigInt!
-}
-
-type MasterContract @entity {
-  id: ID!
-  bentoBox: BentoBox!
+  " Clones that belong to this master contract "
   clones: [Clone!] @derivedFrom(field: "masterContract")
+  " MasterContractApprovals that belong to this master contract "
   masterContractApprovals: [MasterContractApproval!] @derivedFrom(field: "masterContract")
-}
-
-type Clone @entity {
-  id: ID!
-  bentoBox: BentoBox!
-  masterContract: MasterContract!
-  data: Bytes!
-  block: BigInt!
-  timestamp: BigInt!
-}
-
-type MasterContractApproval @entity {
-  id: ID!
-  masterContract: MasterContract!
-  user: User!
+  " MasterContract is whitelisted by Sushi Operations"
   approved: Boolean!
 }
 
-type Protocol @entity {
+type Clone @entity(immutable: true) {
+  " Clone address "
   id: ID!
+  " BentoBox this clone belongs to "
   bentoBox: BentoBox!
-}
-
-type User @entity {
-  id: ID!
-  bentoBox: BentoBox!
-  masterContractApprovals: [MasterContractApproval!] @derivedFrom(field: "user")
+  " Master contract this clone belongs to "
+  masterContract: MasterContract!
+  " Clone data "
+  data: Bytes!
+  " Block number of this clone "
   block: BigInt!
+  " Timestamp of this clone "
   timestamp: BigInt!
 }
 
-type UserToken @entity {
+type Token @entity(immutable: true) {
+  " Token address "
+  id: ID!
+  " The BentoBox this token belongs to "
+  bentoBox: BentoBox!
+  " The Rebase that belongs to this token "
+  rebase: Rebase!
+  " Strategies, past and present, which belong to this token "
+  strategies: [Strategy!] @derivedFrom(field: "token")
+  " Token symbol, if fetched successfully, else default to ??? "
+  symbol: String!
+  " If the symbol was succesfully fetched "
+  symbolSuccess: Boolean!
+  " Token name, if fetched successfully, else default to ??? "
+  name: String!
+  " If the name was succesfully fetched "
+  nameSuccess: Boolean!
+  " Token decimals, if fetched successfully, else default to 18 "
+  decimals: BigInt!
+  " If the decimals was succesfully fetched "
+  decimalsSuccess: Boolean!
+}
+
+
+type TokenKpi @entity {
+  " Token address "
+  id: ID!
+  " Liquidity "
+  liquidity: BigInt!
+  " Strategy count "
+  strategyCount: BigInt!
+}
+
+type TokenStrategy @entity {
+  " Token address "  
+  id: ID!
+  " The Token this strategy belongs to "
+  token: Token!
+  " Strategy address "
+  strategy: Strategy
+  " Pending strategy address "
+  pendingStrategy: Strategy
+  " The Strategy data "
+  data: StrategyData!
+  " The block number of this strategy "
+  block: BigInt!
+  " The timestamp of this strategy "
+  timestamp: BigInt!
+}
+
+type Strategy @entity(immutable: true) {
+  " Strategy address "
+  id: ID!
+  " StrategyKpi of this strategy "
+  kpi: StrategyKpi!
+  " Harvests which belong to this strategy "
+  harvests: [Harvest!] @derivedFrom(field: "strategy")
+  " The Token this strategy belongs to "
+  token: Token!
+  " Block number of this strategy "
+  block: BigInt!
+  " Timestamp of this strategy "
+  timestamp: BigInt!
+}
+
+type StrategyData @entity {
+  " Token address "
+  id: ID!
+  " Strategy start date "
+  strategyStartDate: BigInt!
+  " Target percentage "
+  targetPercentage: BigInt!
+  " BentoBox's understanding of the balance "
+  balance: BigInt!
+}
+
+type StrategyKpi @entity {
+  " Strategy address "
+  id: ID!
+  " Harvest count "
+  harvestCount: BigInt!
+  " Invest or divest count "
+  investOrDivestCount: BigInt!
+  " Invest count "
+  investCount: BigInt!
+  " Invested "
+  invested: BigInt!
+  " Divest count "
+  divestCount: BigInt!
+  " Divested"
+  divested: BigInt!
+  " Profit or loss count "
+  profitOrLossCount: BigInt!
+  " Profit count "
+  profitCount: BigInt!
+  " Loss count "
+  lossCount: BigInt!
+  " Profit & Loss"
+  profitAndLoss: BigInt!
+  " APR "
+  apr: BigDecimal
+  " Utilization "
+  utilization: BigDecimal
+}
+
+type Harvest @entity {
+  " Concatenation of strategy and block number "
+  id: ID!
+  " The Token this harvest belongs to "
+  token: Token!
+  " The Strategy this harvest belongs to "
+  strategy: Strategy!
+  " The ProfitOrLoss of this harvest "
+  profitOrLoss: ProfitOrLoss
+  " The InvestOrDivest of this harvest "
+  investOrDivest: InvestOrDivest
+  " Block number of this harvest "
+  block: BigInt!
+  " Timestamp of this harvest "
+  timestamp: BigInt!
+}
+
+type ProfitOrLoss @entity(immutable: true) {
+  " Concatenation of strategy and profit or loss count "
+  id: ID!
+  " The Harvest this profit or loss belongs to "
+  harvest: Harvest!
+  " The cached token elastic at time of profit or loss"
+  elastic: BigInt!
+  " The cached token base at time of profit or loss"
+  base: BigInt!
+  " Amount of profit or loss "
+  amount: BigInt!
+  " Block number of this profit or loss "
+  block: BigInt!
+  " Timestamp of this profit or loss "
+  timestamp: BigInt!
+}
+
+type InvestOrDivest @entity(immutable: true) {
+  " Concatenation of strategy and invest or divest count "
+  id: ID!
+  " The Harvest this invest or divest belongs to "
+  harvest: Harvest!
+  " The cached token elastic at time of invest or divest"
+  elastic: BigInt!
+  " The cached token base at time of invest or divest"
+  base: BigInt!
+  " Amount of invest or divest "
+  amount: BigInt!
+  " Block number of this invest or divest "
+  block: BigInt!
+  " Timestamp of this invest or divest "
+  timestamp: BigInt!
+}
+
+
+type Rebase @entity {
+  " Token address "
+  id: ID!
+  " BentoBox this rebase belongs to "
+  bentoBox: BentoBox!
+  " Token this rebase belongs to "
+  token: Token!
+  " Base (Share) "
+  base: BigInt!
+  " Elastic (Amount) "
+  elastic: BigInt!
+}
+
+type FlashLoan @entity(immutable: true) {
+  " Concatenation of transaction and log index "
+  id: ID!
+  " BentoBox this flash loan belongs to "
+  bentoBox: BentoBox!
+  " Borrower address "
+  borrower: Bytes!
+  " Receiver address "
+  receiver: Bytes!
+  " Token this flash loan belongs to "
+  token: Token!
+  " Amount of this flash loan "
+  amount: BigInt!
+  " Fee amount of this flash loan "
+  feeAmount: BigInt!
+  " Block number of this flash loan "
+  block: BigInt!
+  " Timestamp of this flash loan "
+  timestamp: BigInt!
+}
+
+
+
+type MasterContractApproval @entity {
+  "Concatenation of user adddress and master contract address"
+  id: ID!
+  " MasterContract this master contract approval belongs to "
+  masterContract: MasterContract!
+  " User this master contract approval belongs to "
+  user: User!
+  " If user has approved this master contract "
+  approved: Boolean!
+}
+
+type Protocol @entity(immutable: true) {
+  " Protocol address "
+  id: ID!
+  " BentoBox this protocol belongs to "
+  bentoBox: BentoBox!
+}
+
+type User @entity(immutable: true) {
+  " User address "
+  id: ID!
+  " BentoBox this user belongs to "
+  bentoBox: BentoBox!
+  " MasterContractApprovals that belong to this user "
+  masterContractApprovals: [MasterContractApproval!] @derivedFrom(field: "user")
+  " Balances that belong to this user "
+  balances: [Balance!] @derivedFrom(field: "user")
+  " Block number of this user "
+  block: BigInt!
+  " Timestamp of this user "
+  timestamp: BigInt!
+}
+
+type Balance @entity {
   id: ID!
   token: Token!
   user: User!
-  share: BigDecimal!
+  # amount: BigInt!
+  share: BigInt!
 }
 
 enum TransactionType {
@@ -119,15 +319,25 @@ enum TransactionType {
   withdraw
 }
 
-type Transaction @entity {
+type Transaction @entity(immutable: true) {
+  " Concatenation of transaction hash and log index "
   id: ID!
+  " BentoBox this transaction belongs to "
   bentoBox: BentoBox!
+  " Transaction type "
   type: TransactionType!
+  " User from whom this transaction is made "
   from: User!
+  " User to whom the transaction is sent "
   to: User!
+  " Token this transaction belongs to "
   token: Token!
+  " Amount of this transaction "
   amount: BigInt
+  " Share of this transaction "
   share: BigInt!
+  " Block number of this transaction "
   block: BigInt!
+  " Timestamp of this transaction "
   timestamp: BigInt!
 }

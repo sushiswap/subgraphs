@@ -59,7 +59,7 @@ node . prepare miso kovan && pnpm exec turbo run codegen --scope=miso && pnpm ex
 ## Check status
 
 ```sh
-curl -X POST -d '{ "query": "{indexingStatusForCurrentVersion(subgraphName: \"sushiswap/kovan-miso\") { chains { latestBlock { hash number }}}}"}' https://api.thegraph.com/index-node/graphql
+curl -X POST -d '{ "query": "{indexingStatusForCurrentVersion(subgraphName: \"sushiswap/bentobox-polygon\") { chains { latestBlock { hash number }}}}"}' https://api.thegraph.com/index-node/graphql
 ```
 
 ## CLI

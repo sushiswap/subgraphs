@@ -13,34 +13,35 @@
     "generate": "mustache ../../config/$NETWORK.js template.yaml > subgraph.yaml && mustache ../../config/$NETWORK.js src/constants/index.template.ts > src/constants/index.ts && graph codegen",
     "build": "graph build",
     "test": "graph test -r",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ sushiswap/bentobox",
-    "create-local": "graph create --node http://localhost:8020/ sushiswap/bentobox",
-    "remove-local": "graph remove --node http://localhost:8020/ sushiswap/bentobox",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/bentobox",
-    "deploy-ethereum": "graph deploy --product hosted-service matthewlilley/bentobox-ethereum",
+    "create-local": "graph create --node http://localhost:8020/ sushiswap/bentobox-local",
+    "remove-local": "graph remove --node http://localhost:8020/ sushiswap/bentobox-local",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/bentobox-local",
+
+
+    "deploy-ethereum": "graph deploy --product hosted-service sushiswap/bentobox-ethereum",
     "deploy-ropsten": "graph deploy --product hosted-service sushiswap/bentobox-ropsten",
     "deploy-rinkeby": "graph deploy --product hosted-service sushiswap/bentobox-rinkeby",
-    "deploy-goerli": "graph deploy --product hosted-service matthewlilley/bentobox-goerli",
+    "deploy-goerli": "graph deploy --product hosted-service sushiswap/bentobox-goerli",
     "deploy-kovan": "graph deploy --product hosted-service sushiswap/bentobox-kovan",
-    "deploy-polygon": "graph deploy --product hosted-service matthewlilley/bentobox-polygon",
-    "deploy-avalanche": "graph deploy --product hosted-service matthewlilley/bentobox-avalanche",
-    "deploy-bsc": "graph deploy --product hosted-service matthewlilley/bentobox-bsc",
-    "deploy-fantom": "graph deploy --product hosted-service matthewlilley/bentobox-fantom",
-    "deploy-gnosis": "graph deploy --product hosted-service matthewlilley/bentobox-gnosis",
-    "deploy-arbitrum": "graph deploy --product hosted-service matthewlilley/bentobox-arbitrum",
-    "deploy-celo": "graph deploy --product hosted-service matthewlilley/bentobox-celo",
-    "deploy-moonriver": "graph deploy --product hosted-service matthewlilley/bentobox-moonriver",
-    "deploy-moonbeam": "graph deploy --product hosted-service matthewlilley/bentobox-moonbeam",
-    "deploy-optimism": "graph deploy --product hosted-service matthewlilley/bentobox-optimism",
-    "deploy-harmony": "graph deploy --product hosted-service matthewlilley/bentobox-harmony",
-    "deploy-kava": "graph deploy --node https://the-graph-admin.kava.io sushiswap/bentobox-kava"
+    "deploy-polygon": "graph deploy --product hosted-service sushiswap/bentobox-polygon",
+    "deploy-avalanche": "graph deploy --product hosted-service sushiswap/bentobox-avalanche",
+    "deploy-bsc": "graph deploy --product hosted-service sushiswap/bentobox-bsc",
+    "deploy-fantom": "graph deploy --product hosted-service sushiswap/bentobox-fantom",
+    "deploy-gnosis": "graph deploy --product hosted-service sushiswap/bentobox-gnosis",
+    "deploy-arbitrum": "graph deploy --product hosted-service sushiswap/bentobox-arbitrum",
+    "deploy-celo": "graph deploy --product hosted-service sushiswap/bentobox-celo",
+    "deploy-moonriver": "graph deploy --product hosted-service sushiswap/bentobox-moonriver",
+    "deploy-moonbeam": "graph deploy --product hosted-service sushiswap/bentobox-moonbeam",
+    "deploy-optimism": "graph deploy --product hosted-service sushiswap/bentobox-optimism",
+    "deploy-harmony": "graph deploy --product hosted-service sushiswap/bentobox-harmony",
+    "deploy-kava": "graph deploy --node https://pvt-admin.graph.kava.io sushiswap/bentobox-kava"
+
   },
   "devDependencies": {
     "abi": "workspace:*",
-    "@graphprotocol/graph-cli": "^0.27.0",
-    "@graphprotocol/graph-ts": "^0.24.1",
-    "matchstick-as": "^0.4.0",
-    "assemblyscript": "^0.19.20",
-    "wabt": "1.0.24"
+    "math": "workspace:*",
+    "@graphprotocol/graph-cli": "^0.32.0",
+    "@graphprotocol/graph-ts": "^0.27.0",
+    "matchstick-as": "^0.5.0"
   }
 }

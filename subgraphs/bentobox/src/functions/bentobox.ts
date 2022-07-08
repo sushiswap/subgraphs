@@ -1,6 +1,7 @@
 import { Address } from '@graphprotocol/graph-ts'
 import { BENTOBOX_ADDRESS } from '../constants'
 import { BentoBox } from '../../generated/schema'
+import { createBentoBoxKpi } from './bentobox-kpi'
 
 export function createBentoBox(id: Address = BENTOBOX_ADDRESS): BentoBox {
   const bentoBox = new BentoBox(id.toHex())
@@ -16,7 +17,8 @@ export function getOrCreateBentoBox(id: Address = BENTOBOX_ADDRESS): BentoBox {
   let bentoBox = BentoBox.load(id.toHex())
 
   if (bentoBox === null) {
-    bentoBox = createBentoBox(id)
+    bentoBox = createBentoBox()
+    createBentoBoxKpi()
   }
 
   return bentoBox
