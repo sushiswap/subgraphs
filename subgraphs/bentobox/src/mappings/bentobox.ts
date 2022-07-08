@@ -26,7 +26,6 @@ import {
   getOrCreateRebase,
   getOrCreateStrategyData,
   getOrCreateToken,
-  getOrCreateTokenKpi,
   getOrCreateUser,
   getRebase,
   getStrategyData,
@@ -45,6 +44,7 @@ import {
 } from '../functions'
 import { getOrCreateHarvest } from '../functions/harvest'
 import { getOrCreateMasterContract } from '../functions/master-contract'
+import { decreaseTokenKpiLiquidity, getOrCreateTokenKpi, increaseTokenKpiLiquidity, increaseTokenKpiStrategyCount } from '../functions/token-kpi'
 import { getTokenStrategy } from '../functions/token-strategy'
 import { createTransaction } from '../functions/transaction'
 
@@ -54,9 +54,8 @@ export function onLogDeposit(event: LogDeposit): void {
   const tokenAddress = event.params.token.toHex()
   const token = getOrCreateToken(tokenAddress, event)
 
-  const tokenKpi = getOrCreateTokenKpi(tokenAddress)
-  tokenKpi.liquidity = tokenKpi.liquidity.plus(event.params.amount)
-  tokenKpi.save()
+
+  increaseTokenKpiLiquidity(tokenAddress, event.params.amount, event.block.timestamp)
 
   const rebase = getOrCreateRebase(tokenAddress)
   rebase.base = rebase.base.plus(event.params.share)
@@ -77,9 +76,7 @@ export function onLogWithdraw(event: LogWithdraw): void {
   const tokenAddress = event.params.token.toHex()
   const token = getOrCreateToken(tokenAddress, event)
 
-  const tokenKpi = getOrCreateTokenKpi(tokenAddress)
-  tokenKpi.liquidity = tokenKpi.liquidity.minus(event.params.amount)
-  tokenKpi.save()
+  decreaseTokenKpiLiquidity(tokenAddress, event.params.amount, event.block.timestamp)
 
   const rebase = getOrCreateRebase(tokenAddress)
   rebase.base = rebase.base.minus(event.params.share)
@@ -191,7 +188,7 @@ export function onLogStrategyQueued(event: LogStrategyQueued): void {
     tokenStrategy.save()
   }
 
-
+  increaseTokenKpiStrategyCount(tokenAddress, event.block.timestamp)
   increaseStrategyCount(event.block.timestamp)
   increasePendingStrategyCount(event.block.timestamp)
 }

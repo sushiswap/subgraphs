@@ -1,28 +1,12 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
-
 import { ERC20 } from '../../generated/BentoBox/ERC20'
 import { NameBytes32 } from '../../generated/BentoBox/NameBytes32'
 import { SymbolBytes32 } from '../../generated/BentoBox/SymbolBytes32'
-import { Token, TokenKpi } from '../../generated/schema'
-import { createRebase } from './rebase'
+import { Token } from '../../generated/schema'
 import { getOrCreateBentoBox } from './bentobox'
-import { getBentoBoxKpi, increaseTokenCount } from './bentobox-kpi'
-
-function createTokenKpi(id: string): TokenKpi {
-  const kpi = new TokenKpi(id)
-  kpi.strategyCount = BigInt.fromU32(0)
-  kpi.liquidity = BigInt.fromU32(0)
-  kpi.save()
-  return kpi as TokenKpi
-}
-
-export function getOrCreateTokenKpi(id: string): TokenKpi {
-  const kpi = TokenKpi.load(id)
-  if (kpi === null) {
-    return createTokenKpi(id)
-  }
-  return kpi
-}
+import { increaseTokenCount } from './bentobox-kpi'
+import { createRebase } from './rebase'
+import { getOrCreateTokenKpi } from './token-kpi'
 
 export function getToken(id: string): Token {
   return Token.load(id) as Token
@@ -34,7 +18,7 @@ export function getOrCreateToken(id: string, event: ethereum.Event): Token {
   if (token === null) {
     token = new Token(id)
 
-    createTokenKpi(id)
+    getOrCreateTokenKpi(id)
 
     const contract = ERC20.bind(Address.fromString(id))
 

@@ -88,6 +88,8 @@ type Token @entity(immutable: true) {
   rebase: Rebase!
   " Strategies, past and present, which belong to this token "
   strategies: [Strategy!] @derivedFrom(field: "token")
+  " The Kpi which belong to this token "
+  kpi: TokenKpi!
   " Token symbol, if fetched successfully, else default to ??? "
   symbol: String!
   " If the symbol was succesfully fetched "
@@ -403,7 +405,7 @@ type BentoBoxHourlyKpi @entity {
 }
 
 type BentoBoxDailyKpi @entity {
-  " created by a prefix 'bentobox-daily-' and unix timestamp, e.g. 'bentobox-daily-1657270000'"
+  " created by id, infix '-day-' and unix timestamp, e.g. '0x00..00-day-1657270000'"
   id: ID!
   " Start date "
   date: Int!
@@ -464,7 +466,7 @@ type BentoBoxDailyKpi @entity {
 
 
 type StrategyDailyKpi @entity {
-  " created by a prefix 'strategy-daily-' and unix timestamp, e.g. 'strategy-daily-1657270000'"
+  " created by id, infix '-day-' and unix timestamp, e.g. '0x00..00-day-1657270000'"
   id: ID!
   " The Strategy this KPI belongs to "
   strategy: Strategy!
@@ -520,8 +522,8 @@ type StrategyDailyKpi @entity {
   newUtilization: BigDecimal
 }
 
-type StrategyHourlyKpi @entity {
-  " created by a prefix 'strategy-hourly-' and unix timestamp, e.g. 'strategy-hourly-1657270000'"
+type StrategyHourlyKpi @entity {  
+  " created by id, infix '-hour-' and unix timestamp, e.g. '0x00..00-hour-1657270000'"
   id: ID!
   " The Strategy this KPI belongs to "
   strategy: Strategy!
@@ -575,4 +577,36 @@ type StrategyHourlyKpi @entity {
   newApr: BigDecimal
   " Utilization for the given timeframe "
   newUtilization: BigDecimal
+}
+
+
+
+type TokenHourlyKpi @entity {
+  " created by id, infix '-hour-' and unix timestamp, e.g. '0x00..00-hour-1657270000'"
+  id: ID!
+  " Token this KPI belongs to "
+  token: Token!
+  " Liquidity "
+  liquidity: BigInt!
+  " Liquidity for the given timeframe "
+  newLiquidity: BigInt!
+  " Strategy count "
+  strategyCount: BigInt!
+  " Strategy count for the given timeframe "
+  newStrategyCount: BigInt!
+}
+
+type TokenDailyKpi @entity {
+  " created by id, infix '-day-' and unix timestamp, e.g. '0x00..00-day-1657270000'"
+  id: ID!
+  " Token this KPI belongs to "
+  token: Token!
+  " Liquidity "
+  liquidity: BigInt!
+  " Liquidity for the given timeframe "
+  newLiquidity: BigInt!
+  " Strategy count "
+  strategyCount: BigInt!
+  " Strategy count for the given timeframe "
+  newStrategyCount: BigInt!
 }
