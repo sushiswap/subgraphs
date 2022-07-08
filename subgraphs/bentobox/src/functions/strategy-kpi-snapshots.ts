@@ -1,6 +1,6 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 import { StrategyDailyKpi, StrategyHourlyKpi } from '../../generated/schema'
-import { DAY_INFIX, HOUR_INFIX } from '../constants/index.template'
+import { DAY_INFIX, HOUR_INFIX } from '../constants/index'
 import { DAY_IN_SECONDS, HOUR_IN_SECONDS } from '../constants/time'
 import { getStrategyKpi } from './strategy-kpi'
 
