@@ -14,12 +14,13 @@ import {
   LogStrategyTargetPercentage,
   LogTransfer,
   LogWhiteListMasterContract,
-  LogWithdraw
+  LogWithdraw,
 } from '../../generated/BentoBox/BentoBox'
 import { Clone, InvestOrDivest, ProfitOrLoss, Protocol, TokenStrategy } from '../../generated/schema'
 import {
   createFlashLoan,
-  createStrategy, decreasePendingStrategyCount,
+  createStrategy,
+  decreasePendingStrategyCount,
   getOrCreateBalance,
   getOrCreateBentoBoxKpi,
   getOrCreateMasterContractApproval,
@@ -40,11 +41,16 @@ import {
   increasePendingStrategyCount,
   increaseProfitKpi,
   increaseProtocolCount,
-  increaseStrategyCount
+  increaseStrategyCount,
 } from '../functions'
 import { getOrCreateHarvest } from '../functions/harvest'
 import { getOrCreateMasterContract } from '../functions/master-contract'
-import { decreaseTokenKpiLiquidity, getOrCreateTokenKpi, increaseTokenKpiLiquidity, increaseTokenKpiStrategyCount } from '../functions/token-kpi'
+import {
+  decreaseTokenKpiLiquidity,
+  getOrCreateTokenKpi,
+  increaseTokenKpiLiquidity,
+  increaseTokenKpiStrategyCount,
+} from '../functions/token-kpi'
 import { getTokenStrategy } from '../functions/token-strategy'
 import { createTransaction } from '../functions/transaction'
 
@@ -53,7 +59,6 @@ import { createTransaction } from '../functions/transaction'
 export function onLogDeposit(event: LogDeposit): void {
   const tokenAddress = event.params.token.toHex()
   const token = getOrCreateToken(tokenAddress, event)
-
 
   increaseTokenKpiLiquidity(tokenAddress, event.params.amount, event.block.timestamp)
 
@@ -327,21 +332,17 @@ export function onLogStrategyProfit(event: LogStrategyProfit): void {
 
   // If more than one profit or loss for this strategy
   if (strategyKpi.profitOrLossCount.gt(BigInt.fromU32(0))) {
-    // TODO: Calculate APR by getting previous profit or loss and store on strategy kpi
-    const lastProfit = ProfitOrLoss.load(
+    const lastProfitOrLoss = ProfitOrLoss.load(
       tokenStrategy.strategy!.concat('-').concat(strategyKpi.profitOrLossCount.minus(BigInt.fromU32(1)).toString())
     )
 
-    const timestampDifference = profit.timestamp.minus(lastProfit!.timestamp)
+    const timestampDifference = profit.timestamp.minus(lastProfitOrLoss!.timestamp)
 
     // It's possible that difference can be zero, so ensure it's not before calculating APR
     if (timestampDifference.gt(BigInt.fromU32(0))) {
       const multiplier = BigDecimal.fromString('31536000').div(timestampDifference.toBigDecimal())
 
-      const ratio = rebase.elastic.toBigDecimal().div(rebase.base.toBigDecimal())
-      const lastRatio = lastProfit!.elastic.toBigDecimal().div(lastProfit!.base.toBigDecimal())
-
-      strategyKpi.apr = ratio.div(lastRatio).minus(BigDecimal.fromString('1')).times(multiplier)
+      strategyKpi.apr = event.params.amount.toBigDecimal().div(rebase.elastic.toBigDecimal()).times(multiplier)
     }
 
     strategyKpi.utilization = strategyData.balance.toBigDecimal().div(rebase.elastic.toBigDecimal())
@@ -385,6 +386,28 @@ export function onLogStrategyLoss(event: LogStrategyLoss): void {
 
   harvest.profitOrLoss = loss.id
   harvest.save()
+
+  // If more than one profit or loss for this strategy
+  if (strategyKpi.profitOrLossCount.gt(BigInt.fromU32(0))) {
+    const lastProfitOrLoss = ProfitOrLoss.load(
+      tokenStrategy.strategy!.concat('-').concat(strategyKpi.profitOrLossCount.minus(BigInt.fromU32(1)).toString())
+    )
+
+    const timestampDifference = loss.timestamp.minus(lastProfitOrLoss!.timestamp)
+
+    // It's possible that difference can be zero, so ensure it's not before calculating APR
+    if (timestampDifference.gt(BigInt.fromU32(0))) {
+      const multiplier = BigDecimal.fromString('31536000').div(timestampDifference.toBigDecimal())
+
+      strategyKpi.apr = BigInt.fromI32(0)
+        .minus(event.params.amount)
+        .toBigDecimal()
+        .div(rebase.elastic.toBigDecimal())
+        .times(multiplier)
+    }
+
+    strategyKpi.utilization = strategyData.balance.toBigDecimal().div(rebase.elastic.toBigDecimal())
+  }
 
   increaseLossKpi(strategyKpi.id, event.params.amount, event.block.timestamp)
 }
