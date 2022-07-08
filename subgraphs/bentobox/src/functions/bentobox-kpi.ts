@@ -35,3 +35,8 @@ export function getOrCreateBentoBoxKpi(id: Address = BENTOBOX_ADDRESS): BentoBox
 
   return kpi
 }
+
+
+// export function increaseDepositCount(id: Address = BENTOBOX_ADDRESS): void {
+
+// }

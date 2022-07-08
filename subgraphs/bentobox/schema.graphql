@@ -341,3 +341,122 @@ type Transaction @entity(immutable: true) {
   " Timestamp of this transaction "
   timestamp: BigInt!
 }
+
+
+type BentoBoxHourlyKpi @entity {
+  " created by a prefix 'bentobox-hour-' and unix timestamp, e.g. 'bentobox-hour-1657270000'"
+  id: ID!
+  " Start date "
+  date: Int!
+  " Deposit count "
+  depositCount: BigInt!
+  " Deposit count for the given timeframe "
+  newDepositCount: BigInt!
+  " Withdraw count "
+  withdrawCount: BigInt!
+  " Withdraw count for the given timeframe "
+  newWithdrawCount: BigInt!
+  " Transfer count "
+  transferCount: BigInt!
+  " Transfer count for the given timeframe "
+  newTransferCount: BigInt!
+  " Protocol count "
+  protocolCount: BigInt!
+  " Protocol count for the given timeframe "
+  newProtocolCount: BigInt!
+  " User count "
+  userCount: BigInt!
+  " User count for the given timeframe "
+  newUserCount: BigInt!
+  " Token count "
+  tokenCount: BigInt!
+  " Token count for the given timeframe "
+  newTokenCount: BigInt!
+  " Master contract count "
+  masterContractCount: BigInt!
+  " Master contract count for the given timeframe "
+  newMasterContractCount: BigInt!
+  " Clone count "
+  cloneCount: BigInt!
+  " Clone count for the given timeframe "
+  newCloneCount: BigInt!
+  " Flash loan count "
+  flashloanCount: BigInt!
+  " Flash loan count for the given timeframe "
+  newFlashloanCount: BigInt!
+  " Transaction count "
+  transactionCount: BigInt!
+  " Transaction count for the given timeframe "
+  newTransactionCount: BigInt!
+  " Strategy count "
+  strategyCount: BigInt!
+  " Strategy for the given timeframe "
+  newStrategyCount: BigInt!
+  " Active strategy count "
+  activeStrategyCount: BigInt!
+  " Active strategy count given timeframe "
+  newActiveStrategyCount: BigInt!
+  " Pending strategy count "
+  pendingStrategyCount: BigInt!  
+  " Pending strategy count given timeframe "
+  newPendingStrategyCount: BigInt!  
+}
+
+type BentoBoxDailyKpi @entity {
+  " created by a prefix 'bentobox-daily-' and unix timestamp, e.g. 'bentobox-daily-1657270000'"
+  id: ID!
+  " Start date "
+  date: Int!
+  " Deposit count "
+  depositCount: BigInt!
+  " Deposit count for the given timeframe "
+  newDepositCount: BigInt!
+  " Withdraw count "
+  withdrawCount: BigInt!
+  " Withdraw count for the given timeframe "
+  newWithdrawCount: BigInt!
+  " Transfer count "
+  transferCount: BigInt!
+  " Transfer count for the given timeframe "
+  newTransferCount: BigInt!
+  " Protocol count "
+  protocolCount: BigInt!
+  " Protocol count for the given timeframe "
+  newProtocolCount: BigInt!
+  " User count "
+  userCount: BigInt!
+  " User count for the given timeframe "
+  newUserCount: BigInt!
+  " Token count "
+  tokenCount: BigInt!
+  " Token count for the given timeframe "
+  newTokenCount: BigInt!
+  " Master contract count "
+  masterContractCount: BigInt!
+  " Master contract count for the given timeframe "
+  newMasterContractCount: BigInt!
+  " Clone count "
+  cloneCount: BigInt!
+  " Clone count for the given timeframe "
+  newCloneCount: BigInt!
+  " Flash loan count "
+  flashloanCount: BigInt!
+  " Flash loan count for the given timeframe "
+  newFlashloanCount: BigInt!
+  " Transaction count "
+  transactionCount: BigInt!
+  " Transaction count for the given timeframe "
+  newTransactionCount: BigInt!
+  " Strategy count "
+  strategyCount: BigInt!
+  " Strategy for the given timeframe "
+  newStrategyCount: BigInt!
+  " Active strategy count "
+  activeStrategyCount: BigInt!
+  " Active strategy count given timeframe "
+  newActiveStrategyCount: BigInt!
+  " Pending strategy count "
+  pendingStrategyCount: BigInt!  
+  " Pending strategy count given timeframe "
+  newPendingStrategyCount: BigInt!  
+}
