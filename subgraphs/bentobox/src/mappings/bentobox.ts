@@ -1,5 +1,4 @@
-import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
-import { Clone, InvestOrDivest, ProfitOrLoss, Protocol, TokenStrategy } from '../../generated/schema'
+import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import {
   LogDeploy,
   LogDeposit,
@@ -15,12 +14,12 @@ import {
   LogStrategyTargetPercentage,
   LogTransfer,
   LogWhiteListMasterContract,
-  LogWithdraw,
+  LogWithdraw
 } from '../../generated/BentoBox/BentoBox'
-import { createTransaction } from '../functions/transaction'
+import { Clone, InvestOrDivest, ProfitOrLoss, Protocol, TokenStrategy } from '../../generated/schema'
 import {
   createFlashLoan,
-  createStrategy,
+  createStrategy, decreasePendingStrategyCount,
   getOrCreateBalance,
   getOrCreateBentoBoxKpi,
   getOrCreateMasterContractApproval,
@@ -33,11 +32,18 @@ import {
   getStrategyData,
   getStrategyKpi,
   getToken,
+  increaseActiveStrategyCount,
+  increaseCloneContractCount,
+  increaseFlashLoanCount,
+  increasePendingStrategyCount,
+  increaseProtocolCount,
+  increaseStrategyCount
 } from '../functions'
-
-import { getOrCreateMasterContract } from '../functions/master-contract'
 import { getOrCreateHarvest } from '../functions/harvest'
+import { getOrCreateMasterContract } from '../functions/master-contract'
 import { getTokenStrategy } from '../functions/token-strategy'
+import { createTransaction } from '../functions/transaction'
+
 // import { SECONDS_IN_A_YEAR } from 'math'
 
 export function onLogDeposit(event: LogDeposit): void {
@@ -110,9 +116,7 @@ export function onLogFlashLoan(event: LogFlashLoan): void {
 
   createFlashLoan(event)
 
-  const kpi = getOrCreateBentoBoxKpi()
-  kpi.flashloanCount = kpi.flashloanCount.plus(BigInt.fromU32(1))
-  kpi.save()
+  increaseFlashLoanCount()
 }
 
 export function onLogWhiteListMasterContract(event: LogWhiteListMasterContract): void {
@@ -134,9 +138,7 @@ export function onLogRegisterProtocol(event: LogRegisterProtocol): void {
   registeredProtocol.bentoBox = event.address.toHex()
   registeredProtocol.save()
 
-  const kpi = getOrCreateBentoBoxKpi()
-  kpi.protocolCount = kpi.protocolCount.plus(BigInt.fromI32(1))
-  kpi.save()
+  increaseProtocolCount()
 }
 
 export function onLogDeploy(event: LogDeploy): void {
@@ -148,9 +150,7 @@ export function onLogDeploy(event: LogDeploy): void {
   clone.timestamp = event.block.timestamp
   clone.save()
 
-  const kpi = getOrCreateBentoBoxKpi()
-  kpi.cloneCount = kpi.cloneCount.plus(BigInt.fromU32(1))
-  kpi.save()
+  increaseCloneContractCount()
 }
 
 export function onLogStrategyTargetPercentage(event: LogStrategyTargetPercentage): void {
@@ -187,10 +187,9 @@ export function onLogStrategyQueued(event: LogStrategyQueued): void {
     tokenStrategy.save()
   }
 
-  const kpi = getOrCreateBentoBoxKpi()
-  kpi.strategyCount = kpi.strategyCount.plus(BigInt.fromU32(1))
-  kpi.pendingStrategyCount = kpi.pendingStrategyCount.plus(BigInt.fromU32(1))
-  kpi.save()
+
+  increaseStrategyCount()
+  increasePendingStrategyCount()
 }
 
 export function onLogStrategySet(event: LogStrategySet): void {
@@ -209,10 +208,8 @@ export function onLogStrategySet(event: LogStrategySet): void {
   data.strategyStartDate = BigInt.fromI32(0)
   data.save()
 
-  const kpi = getOrCreateBentoBoxKpi()
-  kpi.activeStrategyCount = kpi.activeStrategyCount.plus(BigInt.fromU32(1))
-  kpi.pendingStrategyCount = kpi.pendingStrategyCount.minus(BigInt.fromU32(1))
-  kpi.save()
+  increaseActiveStrategyCount()
+  decreasePendingStrategyCount()
 }
 
 export function onLogStrategyInvest(event: LogStrategyInvest): void {

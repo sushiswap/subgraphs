@@ -6,7 +6,7 @@ import { SymbolBytes32 } from '../../generated/BentoBox/SymbolBytes32'
 import { Token, TokenKpi } from '../../generated/schema'
 import { createRebase } from './rebase'
 import { getOrCreateBentoBox } from './bentobox'
-import { getBentoBoxKpi } from './bentobox-kpi'
+import { getBentoBoxKpi, increaseTokenCount } from './bentobox-kpi'
 
 function createTokenKpi(id: string): TokenKpi {
   const kpi = new TokenKpi(id)
@@ -44,9 +44,7 @@ export function getOrCreateToken(id: string): Token {
 
     const bentoBox = getOrCreateBentoBox()
 
-    const bentoBoxKpi = getBentoBoxKpi()
-    bentoBoxKpi.tokenCount = bentoBoxKpi.tokenCount.plus(BigInt.fromU32(1))
-    bentoBoxKpi.save()
+    increaseTokenCount()
 
     token.bentoBox = bentoBox.id
     token.name = name.value

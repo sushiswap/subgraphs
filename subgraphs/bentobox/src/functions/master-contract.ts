@@ -1,7 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { MasterContract } from '../../generated/schema'
 import { getOrCreateBentoBox } from './bentobox'
-import { getBentoBoxKpi } from './bentobox-kpi'
+import { getBentoBoxKpi, increaseMasterContractCount } from './bentobox-kpi'
 
 export function getOrCreateMasterContract(id: Address): MasterContract {
   const bentoBox = getOrCreateBentoBox()
@@ -14,9 +14,7 @@ export function getOrCreateMasterContract(id: Address): MasterContract {
     masterContract.approved = false
     masterContract.save()
 
-    const kpi = getBentoBoxKpi()
-    kpi.masterContractCount = kpi.masterContractCount.plus(BigInt.fromU32(1))
-    kpi.save()
+    increaseMasterContractCount()
   }
 
   return masterContract as MasterContract
