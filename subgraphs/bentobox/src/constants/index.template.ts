@@ -6,5 +6,7 @@ export const DEPOSIT = 'deposit'
 export const TRANSFER = 'transfer'
 export const WITHDRAW = 'withdraw'
 
-export const BENTOBOX_HOURLY_KPI_PREFIX = 'bentobox-hour-'
-export const BENTOBOX_DAY_KPI_PREFIX = 'bentobox-day-'
+export const HOUR_INFIX = '-hour-'
+export const DAY_INFIX = '-day-'
+export const BENTOBOX_HOURLY_KPI_PREFIX = 'bentobox'.concat(HOUR_INFIX)
+export const BENTOBOX_DAY_KPI_PREFIX = 'bentobox'.concat(DAY_INFIX)

@@ -1,5 +1,12 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 import { StrategyKpi } from '../../generated/schema'
+import {
+  increaseStrategySnapshotDivestKpi,
+  increaseStrategySnapshotHarvestCount,
+  increaseStrategySnapshotInvestKpi,
+  increaseStrategySnapshotLossKpi,
+  increaseStrategySnapshotProfitKpi
+} from './strategy-kpi-snapshots'
 
 export function getStrategyKpi(strategyAddress: string): StrategyKpi {
   return StrategyKpi.load(strategyAddress) as StrategyKpi
@@ -35,6 +42,7 @@ export function increaseHarvestCount(strategyAddress: string, timestamp: BigInt)
   const strategyKpi = getOrCreateStrategyKpi(strategyAddress)
   strategyKpi.harvestCount = strategyKpi.harvestCount.plus(BigInt.fromU32(1))
   strategyKpi.save()
+  increaseStrategySnapshotHarvestCount(strategyAddress, timestamp)
 }
 
 export function increaseInvestKpi(strategyAddress: string, amount: BigInt, timestamp: BigInt): void {
@@ -43,6 +51,7 @@ export function increaseInvestKpi(strategyAddress: string, amount: BigInt, times
   strategyKpi.investCount = strategyKpi.investCount.plus(BigInt.fromU32(1))
   strategyKpi.invested = strategyKpi.invested.plus(amount)
   strategyKpi.save()
+  increaseStrategySnapshotInvestKpi(strategyAddress, amount, timestamp)
 }
 
 export function increaseDivestKpi(strategyAddress: string, amount: BigInt, timestamp: BigInt): void {
@@ -51,6 +60,7 @@ export function increaseDivestKpi(strategyAddress: string, amount: BigInt, times
   strategyKpi.divestCount = strategyKpi.divestCount.plus(BigInt.fromU32(1))
   strategyKpi.divested = strategyKpi.divested.plus(amount)
   strategyKpi.save()
+  increaseStrategySnapshotDivestKpi(strategyAddress, amount, timestamp)
 }
 
 export function increaseProfitKpi(strategyAddress: string, amount: BigInt, timestamp: BigInt): void {
@@ -59,6 +69,7 @@ export function increaseProfitKpi(strategyAddress: string, amount: BigInt, times
   strategyKpi.profitCount = strategyKpi.profitCount.plus(BigInt.fromU32(1))
   strategyKpi.profitAndLoss = strategyKpi.profitAndLoss.plus(amount)
   strategyKpi.save()
+  increaseStrategySnapshotProfitKpi(strategyAddress, amount, timestamp)
 }
 
 export function increaseLossKpi(strategyAddress: string, amount: BigInt, timestamp: BigInt): void {
@@ -67,4 +78,5 @@ export function increaseLossKpi(strategyAddress: string, amount: BigInt, timesta
   strategyKpi.lossCount = strategyKpi.lossCount.plus(BigInt.fromU32(1))
   strategyKpi.profitAndLoss = strategyKpi.profitAndLoss.minus(amount)
   strategyKpi.save()
+  increaseStrategySnapshotLossKpi(strategyAddress, amount, timestamp)
 }
