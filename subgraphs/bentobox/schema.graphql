@@ -51,7 +51,7 @@ type BentoBoxKpi @entity {
 
 }
 
-type MasterContract @entity(immutable: true) {
+type MasterContract @entity {
   " MasterContract address "
   id: ID!
   " BentoBox this master contract belongs to "
