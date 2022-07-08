@@ -466,6 +466,8 @@ type BentoBoxDailyKpi @entity {
 type StrategyDailyKpi @entity {
   " created by a prefix 'strategy-daily-' and unix timestamp, e.g. 'strategy-daily-1657270000'"
   id: ID!
+  " The Strategy this KPI belongs to "
+  strategy: Strategy!
   " Start date "
   date: Int!
   " Harvest count "
@@ -521,6 +523,8 @@ type StrategyDailyKpi @entity {
 type StrategyHourlyKpi @entity {
   " created by a prefix 'strategy-hourly-' and unix timestamp, e.g. 'strategy-hourly-1657270000'"
   id: ID!
+  " The Strategy this KPI belongs to "
+  strategy: Strategy!
   " Start date "
   date: Int!
   " Harvest count "

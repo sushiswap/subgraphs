@@ -11,6 +11,7 @@ function getOrCreateStrategyHourlyKpi(strategyId: string, timestamp: BigInt): St
 
   if (hourlyKpi === null) {
     hourlyKpi = new StrategyHourlyKpi(id)
+    hourlyKpi.strategy = strategyId
     hourlyKpi.date = getHourStartDate(timestamp)
     const kpi = getStrategyKpi(strategyId)
     hourlyKpi.harvestCount = kpi.harvestCount
@@ -45,6 +46,7 @@ function getOrCreateStrategyDailyKpi(strategyId: string, timestamp: BigInt): Str
 
   if (dailyKpi === null) {
     dailyKpi = new StrategyDailyKpi(id)
+    dailyKpi.strategy = strategyId
     dailyKpi.date = getHourStartDate(timestamp)
     const kpi = getStrategyKpi(strategyId)
     dailyKpi.harvestCount = kpi.harvestCount
