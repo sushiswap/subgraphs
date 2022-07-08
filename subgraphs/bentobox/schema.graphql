@@ -453,10 +453,118 @@ type BentoBoxDailyKpi @entity {
   newStrategyCount: BigInt!
   " Active strategy count "
   activeStrategyCount: BigInt!
-  " Active strategy count given timeframe "
+  " Active strategy count for the given timeframe "
   newActiveStrategyCount: BigInt!
   " Pending strategy count "
   pendingStrategyCount: BigInt!  
-  " Pending strategy count given timeframe "
+  " Pending strategy count for the given timeframe "
   newPendingStrategyCount: BigInt!  
+}
+
+
+
+type StrategyDailyKpi @entity {
+  " created by a prefix 'strategy-daily-' and unix timestamp, e.g. 'strategy-daily-1657270000'"
+  id: ID!
+  " Harvest count "
+  harvestCount: BigInt!
+  " Invest or divest count "
+  investOrDivestCount: BigInt!
+  " Invest count "
+  investCount: BigInt!
+  " Invested "
+  invested: BigInt!
+  " Divest count "
+  divestCount: BigInt!
+  " Divested"
+  divested: BigInt!
+  " Profit or loss count "
+  profitOrLossCount: BigInt!
+  " Profit count "
+  profitCount: BigInt!
+  " Loss count "
+  lossCount: BigInt!
+  " Profit & Loss"
+  profitAndLoss: BigInt!
+  " APR "
+  apr: BigDecimal
+  " Utilization "
+  utilization: BigDecimal
+  " Harvest count for the given timeframe "
+  newHarvestCount: BigInt!
+  " Invest or divest count for the given timeframe "
+  newInvestOrDivestCount: BigInt!
+  " Invest count for the given timeframe "
+  newInvestCount: BigInt!
+  " Invested for the given timeframe "
+  newInvested: BigInt!
+  " Divest count for the given timeframe "
+  newDivestCount: BigInt!
+  " Divested for the given timeframe "
+  newDivested: BigInt!
+  " Profit or loss count for the given timeframe "
+  newProfitOrLossCount: BigInt!
+  " Profit count for the given timeframe "
+  newProfitCount: BigInt!
+  " Loss count for the given timeframe "
+  newLossCount: BigInt!
+  " Profit & Los for the given timeframe "
+  newProfitAndLoss: BigInt!
+  " APR for the given timeframe "
+  newApr: BigDecimal
+  " Utilization for the given timeframe "
+  newUtilization: BigDecimal
+}
+
+type StrategyHourlyKpi @entity {
+  " created by a prefix 'strategy-hourly-' and unix timestamp, e.g. 'strategy-hourly-1657270000'"
+  id: ID!
+  " Harvest count "
+  harvestCount: BigInt!
+  " Invest or divest count "
+  investOrDivestCount: BigInt!
+  " Invest count "
+  investCount: BigInt!
+  " Invested "
+  invested: BigInt!
+  " Divest count "
+  divestCount: BigInt!
+  " Divested"
+  divested: BigInt!
+  " Profit or loss count "
+  profitOrLossCount: BigInt!
+  " Profit count "
+  profitCount: BigInt!
+  " Loss count "
+  lossCount: BigInt!
+  " Profit & Loss"
+  profitAndLoss: BigInt!
+  " APR "
+  apr: BigDecimal
+  " Utilization "
+  utilization: BigDecimal
+  " Harvest count for the given timeframe "
+  newHarvestCount: BigInt!
+  " Invest or divest count for the given timeframe "
+  newInvestOrDivestCount: BigInt!
+  " Invest count for the given timeframe "
+  newInvestCount: BigInt!
+  " Invested for the given timeframe "
+  newInvested: BigInt!
+  " Divest count for the given timeframe "
+  newDivestCount: BigInt!
+  " Divested for the given timeframe "
+  newDivested: BigInt!
+  " Profit or loss count for the given timeframe "
+  newProfitOrLossCount: BigInt!
+  " Profit count for the given timeframe "
+  newProfitCount: BigInt!
+  " Loss count for the given timeframe "
+  newLossCount: BigInt!
+  " Profit & Los for the given timeframe "
+  newProfitAndLoss: BigInt!
+  " APR for the given timeframe "
+  newApr: BigDecimal
+  " Utilization for the given timeframe "
+  newUtilization: BigDecimal
 }
