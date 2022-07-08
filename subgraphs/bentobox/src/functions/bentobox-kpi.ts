@@ -1,7 +1,22 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { BENTOBOX_ADDRESS } from '../constants'
 import { BentoBoxKpi } from '../../generated/schema'
-import { decreaseSnapshotPendingStrategyCounts, increaseSnapshotActiveStrategyCounts, increaseSnapshotCloneContractCounts, increaseSnapshotDepositCounts, increaseSnapshotFloashLoanCounts, increaseSnapshotMasterContractCounts, increaseSnapshotPendingStrategyCounts, increaseSnapshotProtocolCounts, increaseSnapshotStrategyCounts, increaseSnapshotTokenCounts, increaseSnapshotTransactionCounts, increaseSnapshotTransferCounts, increaseSnapshotUserCounts, increaseSnapshotWithdrawCounts, updateBentoBoxDailyKpi } from './bentobox-kpi-snapshot'
+import { BENTOBOX_ADDRESS } from '../constants'
+import {
+  decreaseSnapshotPendingStrategyCounts,
+  increaseSnapshotActiveStrategyCounts,
+  increaseSnapshotCloneContractCounts,
+  increaseSnapshotDepositCounts,
+  increaseSnapshotFloashLoanCounts,
+  increaseSnapshotMasterContractCounts,
+  increaseSnapshotPendingStrategyCounts,
+  increaseSnapshotProtocolCounts,
+  increaseSnapshotStrategyCounts,
+  increaseSnapshotTokenCounts,
+  increaseSnapshotTransactionCounts,
+  increaseSnapshotTransferCounts,
+  increaseSnapshotUserCounts,
+  increaseSnapshotWithdrawCounts,
+} from './bentobox-kpi-snapshot'
 
 export function createBentoBoxKpi(id: Address = BENTOBOX_ADDRESS): BentoBoxKpi {
   const kpi = new BentoBoxKpi(id.toHex())
@@ -35,7 +50,6 @@ export function getOrCreateBentoBoxKpi(id: Address = BENTOBOX_ADDRESS): BentoBox
 
   return kpi
 }
-
 
 export function increaseDepositCount(timestamp: BigInt): void {
   const kpi = getBentoBoxKpi()
@@ -84,7 +98,6 @@ export function increaseMasterContractCount(timestamp: BigInt): void {
   kpi.masterContractCount = kpi.masterContractCount.plus(BigInt.fromU32(1))
   kpi.save()
   increaseSnapshotMasterContractCounts(timestamp)
-  
 }
 
 export function increaseCloneContractCount(timestamp: BigInt): void {

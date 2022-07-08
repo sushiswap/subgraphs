@@ -15,7 +15,7 @@ export function getOrCreateUser(id: Address, event: ethereum.Event): User {
     user.timestamp = event.block.timestamp
     user.save()
 
-    increaseUserCount()
+    increaseUserCount(event.block.timestamp)
   }
 
   return user as User

@@ -1,8 +1,7 @@
-import { DAY_IN_SECONDS, HOUR_IN_SECONDS } from '../constants/time'
-
 import { BigInt } from '@graphprotocol/graph-ts'
-import { BentoBoxDailyKpi, BentoBoxHourlyKpi, BentoBoxKpi } from '../../generated/schema'
+import { BentoBoxDailyKpi, BentoBoxHourlyKpi } from '../../generated/schema'
 import { BENTOBOX_DAY_KPI_PREFIX, BENTOBOX_HOURLY_KPI_PREFIX } from '../constants'
+import { DAY_IN_SECONDS, HOUR_IN_SECONDS } from '../constants/time'
 import { getBentoBoxKpi } from './bentobox-kpi'
 
 function getOrCreateBentoBoxHourlyKpi(timestamp: BigInt): BentoBoxHourlyKpi {
@@ -153,7 +152,6 @@ export function increaseSnapshotProtocolCounts(timestamp: BigInt): void {
   dailyKpi.newProtocolCount = dailyKpi.newProtocolCount.plus(BigInt.fromU32(1))
   dailyKpi.save()
 }
-
 
 export function increaseSnapshotUserCounts(timestamp: BigInt): void {
   const hourlyKpi = getOrCreateBentoBoxHourlyKpi(timestamp)

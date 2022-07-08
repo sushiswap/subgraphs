@@ -48,7 +48,7 @@ import { createTransaction } from '../functions/transaction'
 
 export function onLogDeposit(event: LogDeposit): void {
   const tokenAddress = event.params.token.toHex()
-  const token = getOrCreateToken(tokenAddress)
+  const token = getOrCreateToken(tokenAddress, event)
 
   const tokenKpi = getOrCreateTokenKpi(tokenAddress)
   tokenKpi.liquidity = tokenKpi.liquidity.plus(event.params.amount)
@@ -71,7 +71,7 @@ export function onLogDeposit(event: LogDeposit): void {
 
 export function onLogWithdraw(event: LogWithdraw): void {
   const tokenAddress = event.params.token.toHex()
-  const token = getOrCreateToken(tokenAddress)
+  const token = getOrCreateToken(tokenAddress, event)
 
   const tokenKpi = getOrCreateTokenKpi(tokenAddress)
   tokenKpi.liquidity = tokenKpi.liquidity.minus(event.params.amount)
@@ -95,7 +95,7 @@ export function onLogWithdraw(event: LogWithdraw): void {
 export function onLogTransfer(event: LogTransfer): void {
   const from = getOrCreateUser(event.params.from, event)
   const to = getOrCreateUser(event.params.to, event)
-  const token = getOrCreateToken(event.params.token.toHex())
+  const token = getOrCreateToken(event.params.token.toHex(), event)
 
   const sender = getOrCreateBalance(from.id, token.id)
   sender.share = sender.share.minus(event.params.share)
@@ -116,11 +116,11 @@ export function onLogFlashLoan(event: LogFlashLoan): void {
 
   createFlashLoan(event)
 
-  increaseFlashLoanCount()
+  increaseFlashLoanCount(event.block.timestamp)
 }
 
 export function onLogWhiteListMasterContract(event: LogWhiteListMasterContract): void {
-  const masterContract = getOrCreateMasterContract(event.params.masterContract)
+  const masterContract = getOrCreateMasterContract(event.params.masterContract, event)
   masterContract.approved = event.params.approved
   masterContract.save()
 }
@@ -138,7 +138,7 @@ export function onLogRegisterProtocol(event: LogRegisterProtocol): void {
   registeredProtocol.bentoBox = event.address.toHex()
   registeredProtocol.save()
 
-  increaseProtocolCount()
+  increaseProtocolCount(event.block.timestamp)
 }
 
 export function onLogDeploy(event: LogDeploy): void {
@@ -150,7 +150,7 @@ export function onLogDeploy(event: LogDeploy): void {
   clone.timestamp = event.block.timestamp
   clone.save()
 
-  increaseCloneContractCount()
+  increaseCloneContractCount(event.block.timestamp)
 }
 
 export function onLogStrategyTargetPercentage(event: LogStrategyTargetPercentage): void {
@@ -188,8 +188,8 @@ export function onLogStrategyQueued(event: LogStrategyQueued): void {
   }
 
 
-  increaseStrategyCount()
-  increasePendingStrategyCount()
+  increaseStrategyCount(event.block.timestamp)
+  increasePendingStrategyCount(event.block.timestamp)
 }
 
 export function onLogStrategySet(event: LogStrategySet): void {
@@ -208,8 +208,8 @@ export function onLogStrategySet(event: LogStrategySet): void {
   data.strategyStartDate = BigInt.fromI32(0)
   data.save()
 
-  increaseActiveStrategyCount()
-  decreasePendingStrategyCount()
+  increaseActiveStrategyCount(event.block.timestamp)
+  decreasePendingStrategyCount(event.block.timestamp)
 }
 
 export function onLogStrategyInvest(event: LogStrategyInvest): void {

@@ -21,7 +21,7 @@ export function createTransaction<T extends ethereum.Event>(event: T): Transacti
     transaction.token = event.params.token.toHex()
     transaction.share = event.params.share
     transaction.amount = event.params.amount
-    increaseDepositCount()
+    increaseDepositCount(event.block.timestamp)
   } else if (event instanceof LogWithdraw) {
     transaction.type = WITHDRAW
     transaction.from = event.params.from.toHex()
@@ -29,7 +29,7 @@ export function createTransaction<T extends ethereum.Event>(event: T): Transacti
     transaction.token = event.params.token.toHex()
     transaction.share = event.params.share
     transaction.amount = event.params.amount
-    increaseWithdrawCount()
+    increaseWithdrawCount(event.block.timestamp)
   } else if (event instanceof LogTransfer) {
     transaction.type = TRANSFER
     transaction.from = event.params.from.toHex()
@@ -37,14 +37,14 @@ export function createTransaction<T extends ethereum.Event>(event: T): Transacti
     transaction.token = event.params.token.toHex()
     transaction.share = event.params.share
     transaction.amount = BigInt.fromU32(0)
-    increaseTransferCount()
+    increaseTransferCount(event.block.timestamp)
   }
 
   transaction.block = event.block.number
   transaction.timestamp = event.block.timestamp
   transaction.save()
 
-  increaseTransactionCount()
+  increaseTransactionCount(event.block.timestamp)
 
   return transaction
 }

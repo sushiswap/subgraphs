@@ -1,4 +1,4 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 
 import { ERC20 } from '../../generated/BentoBox/ERC20'
 import { NameBytes32 } from '../../generated/BentoBox/NameBytes32'
@@ -28,7 +28,7 @@ export function getToken(id: string): Token {
   return Token.load(id) as Token
 }
 
-export function getOrCreateToken(id: string): Token {
+export function getOrCreateToken(id: string, event: ethereum.Event): Token {
   let token = Token.load(id)
 
   if (token === null) {
@@ -44,7 +44,7 @@ export function getOrCreateToken(id: string): Token {
 
     const bentoBox = getOrCreateBentoBox()
 
-    increaseTokenCount()
+    increaseTokenCount(event.block.timestamp)
 
     token.bentoBox = bentoBox.id
     token.name = name.value
