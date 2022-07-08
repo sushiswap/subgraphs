@@ -1,6 +1,6 @@
 import { BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { Harvest } from '../../generated/schema'
-import { getOrCreateStrategyKpi } from './strategy-kpi'
+import { getOrCreateStrategyKpi, increaseHarvestCount } from './strategy-kpi'
 
 export function createHarvest(
   id: string,
@@ -15,9 +15,7 @@ export function createHarvest(
   harvest.timestamp = event.block.timestamp
   harvest.save()
 
-  const strategyKpi = getOrCreateStrategyKpi(strategyAddress)
-  strategyKpi.harvestCount = strategyKpi.harvestCount.plus(BigInt.fromU32(1))
-  strategyKpi.save()
+  increaseHarvestCount(strategyAddress, event.block.timestamp)
 
   return harvest
 }

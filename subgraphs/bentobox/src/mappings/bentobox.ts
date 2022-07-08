@@ -34,8 +34,12 @@ import {
   getToken,
   increaseActiveStrategyCount,
   increaseCloneContractCount,
+  increaseDivestKpi,
   increaseFlashLoanCount,
+  increaseInvestKpi,
+  increaseLossKpi,
   increasePendingStrategyCount,
+  increaseProfitKpi,
   increaseProtocolCount,
   increaseStrategyCount
 } from '../functions'
@@ -248,10 +252,7 @@ export function onLogStrategyInvest(event: LogStrategyInvest): void {
   harvest.investOrDivest = invest.id
   harvest.save()
 
-  strategyKpi.investOrDivestCount = strategyKpi.investOrDivestCount.plus(BigInt.fromU32(1))
-  strategyKpi.investCount = strategyKpi.investCount.plus(BigInt.fromU32(1))
-  strategyKpi.invested = strategyKpi.invested.plus(event.params.amount)
-  strategyKpi.save()
+  increaseInvestKpi(strategyKpi.id, event.params.amount, event.block.timestamp)
 }
 
 export function onLogStrategyDivest(event: LogStrategyDivest): void {
@@ -290,10 +291,7 @@ export function onLogStrategyDivest(event: LogStrategyDivest): void {
   harvest.investOrDivest = divest.id
   harvest.save()
 
-  strategyKpi.investOrDivestCount = strategyKpi.investOrDivestCount.plus(BigInt.fromU32(1))
-  strategyKpi.divestCount = strategyKpi.divestCount.plus(BigInt.fromU32(1))
-  strategyKpi.divested = strategyKpi.divested.plus(event.params.amount)
-  strategyKpi.save()
+  increaseDivestKpi(strategyKpi.id, event.params.amount, event.block.timestamp)
 }
 
 export function onLogStrategyProfit(event: LogStrategyProfit): void {
@@ -352,10 +350,7 @@ export function onLogStrategyProfit(event: LogStrategyProfit): void {
     strategyKpi.utilization = strategyData.balance.toBigDecimal().div(rebase.elastic.toBigDecimal())
   }
 
-  strategyKpi.profitOrLossCount = strategyKpi.profitOrLossCount.plus(BigInt.fromU32(1))
-  strategyKpi.profitCount = strategyKpi.profitCount.plus(BigInt.fromU32(1))
-  strategyKpi.profitAndLoss = strategyKpi.profitAndLoss.plus(event.params.amount)
-  strategyKpi.save()
+  increaseProfitKpi(strategyKpi.id, event.params.amount, event.block.timestamp)
 }
 
 export function onLogStrategyLoss(event: LogStrategyLoss): void {
@@ -394,8 +389,5 @@ export function onLogStrategyLoss(event: LogStrategyLoss): void {
   harvest.profitOrLoss = loss.id
   harvest.save()
 
-  strategyKpi.profitOrLossCount = strategyKpi.profitOrLossCount.plus(BigInt.fromU32(1))
-  strategyKpi.lossCount = strategyKpi.lossCount.plus(BigInt.fromU32(1))
-  strategyKpi.profitAndLoss = strategyKpi.profitAndLoss.minus(event.params.amount)
-  strategyKpi.save()
+  increaseLossKpi(strategyKpi.id, event.params.amount, event.block.timestamp)
 }

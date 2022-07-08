@@ -30,3 +30,41 @@ export function getOrCreateStrategyKpi(strategyAddress: string): StrategyKpi {
 
   return kpi
 }
+
+export function increaseHarvestCount(strategyAddress: string, timestamp: BigInt): void {
+  const strategyKpi = getOrCreateStrategyKpi(strategyAddress)
+  strategyKpi.harvestCount = strategyKpi.harvestCount.plus(BigInt.fromU32(1))
+  strategyKpi.save()
+}
+
+export function increaseInvestKpi(strategyAddress: string, amount: BigInt, timestamp: BigInt): void {
+  const strategyKpi = getOrCreateStrategyKpi(strategyAddress)
+  strategyKpi.investOrDivestCount = strategyKpi.investOrDivestCount.plus(BigInt.fromU32(1))
+  strategyKpi.investCount = strategyKpi.investCount.plus(BigInt.fromU32(1))
+  strategyKpi.invested = strategyKpi.invested.plus(amount)
+  strategyKpi.save()
+}
+
+export function increaseDivestKpi(strategyAddress: string, amount: BigInt, timestamp: BigInt): void {
+  const strategyKpi = getOrCreateStrategyKpi(strategyAddress)
+  strategyKpi.investOrDivestCount = strategyKpi.investOrDivestCount.plus(BigInt.fromU32(1))
+  strategyKpi.divestCount = strategyKpi.divestCount.plus(BigInt.fromU32(1))
+  strategyKpi.divested = strategyKpi.divested.plus(amount)
+  strategyKpi.save()
+}
+
+export function increaseProfitKpi(strategyAddress: string, amount: BigInt, timestamp: BigInt): void {
+  const strategyKpi = getOrCreateStrategyKpi(strategyAddress)
+  strategyKpi.profitOrLossCount = strategyKpi.profitOrLossCount.plus(BigInt.fromU32(1))
+  strategyKpi.profitCount = strategyKpi.profitCount.plus(BigInt.fromU32(1))
+  strategyKpi.profitAndLoss = strategyKpi.profitAndLoss.plus(amount)
+  strategyKpi.save()
+}
+
+export function increaseLossKpi(strategyAddress: string, amount: BigInt, timestamp: BigInt): void {
+  const strategyKpi = getOrCreateStrategyKpi(strategyAddress)
+  strategyKpi.profitOrLossCount = strategyKpi.profitOrLossCount.plus(BigInt.fromU32(1))
+  strategyKpi.lossCount = strategyKpi.lossCount.plus(BigInt.fromU32(1))
+  strategyKpi.profitAndLoss = strategyKpi.profitAndLoss.minus(amount)
+  strategyKpi.save()
+}
