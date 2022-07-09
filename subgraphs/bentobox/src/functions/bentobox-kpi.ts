@@ -52,98 +52,98 @@ export function getOrCreateBentoBoxKpi(id: Address = BENTOBOX_ADDRESS): BentoBox
 }
 
 export function increaseDepositCount(timestamp: BigInt): void {
-  const kpi = getBentoBoxKpi()
+  const kpi = getOrCreateBentoBoxKpi()
   kpi.depositCount = kpi.depositCount.plus(BigInt.fromU32(1))
   kpi.save()
   increaseSnapshotDepositCounts(timestamp)
 }
 
 export function increaseWithdrawCount(timestamp: BigInt): void {
-  const kpi = getBentoBoxKpi()
+  const kpi = getOrCreateBentoBoxKpi()
   kpi.withdrawCount = kpi.withdrawCount.plus(BigInt.fromU32(1))
   kpi.save()
   increaseSnapshotWithdrawCounts(timestamp)
 }
 
 export function increaseTransferCount(timestamp: BigInt): void {
-  const kpi = getBentoBoxKpi()
+  const kpi = getOrCreateBentoBoxKpi()
   kpi.transferCount = kpi.transferCount.plus(BigInt.fromU32(1))
   kpi.save()
   increaseSnapshotTransferCounts(timestamp)
 }
 
 export function increaseProtocolCount(timestamp: BigInt): void {
-  const kpi = getBentoBoxKpi()
+  const kpi = getOrCreateBentoBoxKpi()
   kpi.protocolCount = kpi.protocolCount.plus(BigInt.fromU32(1))
   kpi.save()
   increaseSnapshotProtocolCounts(timestamp)
 }
 
 export function increaseUserCount(timestamp: BigInt): void {
-  const kpi = getBentoBoxKpi()
+  const kpi = getOrCreateBentoBoxKpi()
   kpi.userCount = kpi.userCount.plus(BigInt.fromU32(1))
   kpi.save()
   increaseSnapshotUserCounts(timestamp)
 }
 
 export function increaseTokenCount(timestamp: BigInt): void {
-  const kpi = getBentoBoxKpi()
+  const kpi = getOrCreateBentoBoxKpi()
   kpi.tokenCount = kpi.tokenCount.plus(BigInt.fromU32(1))
   kpi.save()
   increaseSnapshotTokenCounts(timestamp)
 }
 
 export function increaseMasterContractCount(timestamp: BigInt): void {
-  const kpi = getBentoBoxKpi()
+  const kpi = getOrCreateBentoBoxKpi()
   kpi.masterContractCount = kpi.masterContractCount.plus(BigInt.fromU32(1))
   kpi.save()
   increaseSnapshotMasterContractCounts(timestamp)
 }
 
 export function increaseCloneContractCount(timestamp: BigInt): void {
-  const kpi = getBentoBoxKpi()
+  const kpi = getOrCreateBentoBoxKpi()
   kpi.cloneCount = kpi.cloneCount.plus(BigInt.fromU32(1))
   kpi.save()
   increaseSnapshotCloneContractCounts(timestamp)
 }
 
 export function increaseFlashLoanCount(timestamp: BigInt): void {
-  const kpi = getBentoBoxKpi()
+  const kpi = getOrCreateBentoBoxKpi()
   kpi.flashloanCount = kpi.flashloanCount.plus(BigInt.fromU32(1))
   kpi.save()
   increaseSnapshotFloashLoanCounts(timestamp)
 }
 
 export function increaseTransactionCount(timestamp: BigInt): void {
-  const kpi = getBentoBoxKpi()
+  const kpi = getOrCreateBentoBoxKpi()
   kpi.transactionCount = kpi.transactionCount.plus(BigInt.fromU32(1))
   kpi.save()
   increaseSnapshotTransactionCounts(timestamp)
 }
 
 export function increaseStrategyCount(timestamp: BigInt): void {
-  const kpi = getBentoBoxKpi()
+  const kpi = getOrCreateBentoBoxKpi()
   kpi.strategyCount = kpi.strategyCount.plus(BigInt.fromU32(1))
   kpi.save()
   increaseSnapshotStrategyCounts(timestamp)
 }
 
 export function increasePendingStrategyCount(timestamp: BigInt): void {
-  const kpi = getBentoBoxKpi()
+  const kpi = getOrCreateBentoBoxKpi()
   kpi.pendingStrategyCount = kpi.pendingStrategyCount.plus(BigInt.fromU32(1))
   kpi.save()
   increaseSnapshotPendingStrategyCounts(timestamp)
 }
 
 export function decreasePendingStrategyCount(timestamp: BigInt): void {
-  const kpi = getBentoBoxKpi()
+  const kpi = getOrCreateBentoBoxKpi()
   kpi.pendingStrategyCount = kpi.pendingStrategyCount.minus(BigInt.fromU32(1))
   kpi.save()
   decreaseSnapshotPendingStrategyCounts(timestamp)
 }
 
 export function increaseActiveStrategyCount(timestamp: BigInt): void {
-  const kpi = getBentoBoxKpi()
+  const kpi = getOrCreateBentoBoxKpi()
   kpi.activeStrategyCount = kpi.activeStrategyCount.plus(BigInt.fromU32(1))
   kpi.save()
   increaseSnapshotActiveStrategyCounts(timestamp)
