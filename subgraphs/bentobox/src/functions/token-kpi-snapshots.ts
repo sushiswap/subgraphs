@@ -12,6 +12,7 @@ function getOrCreateTokenHourlyKpi(tokenId: string, timestamp: BigInt): TokenHou
   if (hourlyKpi === null) {
     hourlyKpi = new TokenHourlyKpi(id)
     let tokenKpi = getOrCreateTokenKpi(tokenId)
+    hourlyKpi.token = tokenId
     hourlyKpi.strategyCount = tokenKpi.strategyCount
     hourlyKpi.liquidity = tokenKpi.liquidity
     hourlyKpi.newStrategyCount = BigInt.fromU32(0)
@@ -30,6 +31,7 @@ function getOrCreateTokenDailyKpi(tokenId: string, timestamp: BigInt): TokenDail
     dailyKpi = new TokenDailyKpi(id)
 
     let tokenKpi = getOrCreateTokenKpi(tokenId)
+    dailyKpi.token = tokenId
     dailyKpi.strategyCount = tokenKpi.strategyCount
     dailyKpi.liquidity = tokenKpi.liquidity
     dailyKpi.newStrategyCount = BigInt.fromU32(0)
