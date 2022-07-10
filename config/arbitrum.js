@@ -24,6 +24,8 @@ module.exports = {
   },
   kashi: {
     medium: '0xa010ee0226cd071bebd8919a1f675cae1f1f5d3e',
+
+    mediumRiskMasterContractAddresses: ['0xa010ee0226cd071bebd8919a1f675cae1f1f5d3e'],
   },
   miso: {
     accessControls: { address: '0x1be211d8da40bc0ae8719c6663307bfc987b1d6c', startBlock: 9930886 },

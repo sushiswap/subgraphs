@@ -1,28 +1,9 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-
 import { ERC20 } from '../../generated/BentoBox/ERC20'
 import { NameBytes32 } from '../../generated/BentoBox/NameBytes32'
 import { SymbolBytes32 } from '../../generated/BentoBox/SymbolBytes32'
-import { Token, TokenKpi } from '../../generated/schema'
+import { Token } from '../../generated/schema'
 import { createRebase } from './rebase'
-import { getOrCreateBentoBox } from './bentobox'
-import { getBentoBoxKpi } from './bentobox-kpi'
-
-function createTokenKpi(id: string): TokenKpi {
-  const kpi = new TokenKpi(id)
-  kpi.strategyCount = BigInt.fromU32(0)
-  kpi.liquidity = BigInt.fromU32(0)
-  kpi.save()
-  return kpi as TokenKpi
-}
-
-export function getOrCreateTokenKpi(id: string): TokenKpi {
-  const kpi = TokenKpi.load(id)
-  if (kpi === null) {
-    return createTokenKpi(id)
-  }
-  return kpi
-}
 
 export function getToken(id: string): Token {
   return Token.load(id) as Token
@@ -34,21 +15,12 @@ export function getOrCreateToken(id: string): Token {
   if (token === null) {
     token = new Token(id)
 
-    createTokenKpi(id)
-
     const contract = ERC20.bind(Address.fromString(id))
 
     const decimals = getTokenDecimals(contract)
     const name = getTokenName(contract)
     const symbol = getTokenSymbol(contract)
 
-    const bentoBox = getOrCreateBentoBox()
-
-    const bentoBoxKpi = getBentoBoxKpi()
-    bentoBoxKpi.tokenCount = bentoBoxKpi.tokenCount.plus(BigInt.fromU32(1))
-    bentoBoxKpi.save()
-
-    token.bentoBox = bentoBox.id
     token.name = name.value
     token.nameSuccess = name.success
     token.symbol = symbol.value
