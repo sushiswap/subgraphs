@@ -1,47 +1,56 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 
-import { STARTING_INTEREST_PER_YEAR } from '../constants/kashi-constants'
 import { KashiPair } from '../../generated/schema'
 import { KashiPair as KashiPairContract } from '../../generated/BentoBox/KashiPair'
-import { getBentoBox } from './bentobox'
+import { getOrCreateBentoBox } from './bentobox'
 import { getOrCreateMasterContract } from './master-contract'
+import { createKashiPairKpi } from './kashi-pair-kpi'
+import { createKashiPairAccrueInfo } from './kashi-pair-accrue-info'
+import { getOrCreateToken } from './token'
+import { LogDeploy } from '../../generated/BentoBox/BentoBox'
+import { createRebase } from './rebase'
 
-export function createKashiPair(address: Address, block: ethereum.Block, type: string): KashiPair {
-  const pairContract = KashiPairContract.bind(address)
-  const masterContract = KashiPairContract.bind(pairContract.masterContract())
+// TODO: should add props for specific kashi pair types (collateralization rates, etc.)
 
-  const bentoBox = getBentoBox()
-  const master = getOrCreateMasterContract(pairContract.masterContract())
-  const asset = pairContract.asset()
-  const collateral = pairContract.collateral()
-  const accrueInfo = pairContract.accrueInfo()
+export function createKashiPair(event: LogDeploy): KashiPair {
+  const pairContract = KashiPairContract.bind(event.params.cloneAddress)
 
-  const pair = new KashiPair(address.toHex())
+  const bentoBox = getOrCreateBentoBox()
 
-  // TODO: should add props for specific kashi pair types (collateralization rates, etc.)
+  const master = getOrCreateMasterContract(event.params.masterContract)
 
+  const asset = getOrCreateToken(pairContract.asset().toHex())
+  const collateral = getOrCreateToken(pairContract.collateral().toHex())
+
+  const kpi = createKashiPairKpi(event.params.cloneAddress)
+  const accrueInfo = createKashiPairAccrueInfo(event.params.cloneAddress)
+
+  const totalAsset = createRebase(event.params.cloneAddress.toHex().concat('-').concat('asset'))
+  const totalBorrow = createRebase(event.params.cloneAddress.toHex().concat('-').concat('borrow'))
+
+  const pair = new KashiPair(event.params.cloneAddress.toHex())
   pair.bentoBox = bentoBox.id
-  pair.type = type
   pair.masterContract = master.id
-  pair.owner = masterContract.owner()
-  pair.feeTo = masterContract.feeTo()
+  pair.feeTo = pairContract.feeTo()
+  pair.collateral = collateral.id
+  pair.asset = asset.id
+  pair.oracle = pairContract.oracle()
+  pair.oracleData = pairContract.oracleData()
+  pair.totalCollateralShare = pairContract.totalCollateralShare()
+  pair.totalAsset = totalAsset.id
+  pair.totalBorrow = totalBorrow.id
+  pair.exchangeRate = pairContract.exchangeRate()
+  pair.accrueInfo = accrueInfo.id
   pair.name = pairContract.name()
   pair.symbol = pairContract.symbol()
-  pair.oracle = pairContract.oracle()
-  pair.asset = asset
-  pair.collateral = collateral
-  pair.exchangeRate = pairContract.exchangeRate()
-  pair.interestPerSecond = accrueInfo.value0
-  pair.feesEarnedFraction = accrueInfo.value2
-  pair.lastAccrued = accrueInfo.value1
-  pair.borrowAPR = STARTING_INTEREST_PER_YEAR
-  pair.block = block.number
-  pair.timestamp = block.timestamp
+  pair.decimals = BigInt.fromU32(pairContract.decimals())
+  pair.totalSupply = pairContract.totalSupply()
 
+  pair.kpi = kpi.id
+
+  pair.block = event.block.number
+  pair.timestamp = event.block.timestamp
   pair.save()
-
-  bentoBox.kashiPairCount = bentoBox.kashiPairCount.plus(BigInt.fromI32(1))
-  bentoBox.save()
 
   return pair as KashiPair
 }

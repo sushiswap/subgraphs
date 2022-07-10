@@ -1,4 +1,4 @@
-import { BigInt } from '@graphprotocol/graph-ts'
+import { BigInt, log } from '@graphprotocol/graph-ts'
 import { BENTOBOX_ADDRESS } from '../constants'
 import { Rebase } from '../../generated/schema'
 
@@ -26,7 +26,7 @@ export function getOrCreateRebase(token: string): Rebase {
   return rebase
 }
 
-export function toBase(total: Rebase, elastic: BigInt, roundUp: Boolean = false): BigInt {
+export function toBase(total: Rebase, elastic: BigInt, roundUp: boolean): BigInt {
   if (total.elastic.equals(BigInt.fromU32(0))) {
     return elastic
   }
@@ -37,10 +37,10 @@ export function toBase(total: Rebase, elastic: BigInt, roundUp: Boolean = false)
     return base.plus(BigInt.fromU32(1))
   }
 
-  return BigInt.fromU32(0)
+  return base
 }
 
-export function toElastic(total: Rebase, base: BigInt, roundUp: Boolean = false): BigInt {
+export function toElastic(total: Rebase, base: BigInt, roundUp: boolean): BigInt {
   if (total.base.equals(BigInt.fromU32(0))) {
     return base
   }
@@ -51,5 +51,5 @@ export function toElastic(total: Rebase, base: BigInt, roundUp: Boolean = false)
     return base.plus(BigInt.fromU32(1))
   }
 
-  return BigInt.fromU32(0)
+  return elastic
 }

@@ -143,6 +143,20 @@ importers:
       matchstick-as: 0.4.2
       wabt: 1.0.24
 
+  subgraphs/kashi-2:
+    specifiers:
+      '@graphprotocol/graph-cli': ^0.32.0
+      '@graphprotocol/graph-ts': ^0.27.0
+      abi: workspace:*
+      matchstick-as: ^0.5.0
+      math: workspace:*
+    devDependencies:
+      '@graphprotocol/graph-cli': 0.32.0
+      '@graphprotocol/graph-ts': 0.27.0
+      abi: link:../../packages/abi
+      matchstick-as: 0.5.0
+      math: link:../../packages/math
+
   subgraphs/legacy-exchange:
     specifiers:
       '@graphprotocol/graph-cli': 0.26.0
@@ -842,7 +856,7 @@ packages:
   /axios/0.21.4_debug@4.3.4:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
-      follow-redirects: 1.14.9_debug@4.3.4
+      follow-redirects: 1.14.9_debug@4.1.1
     transitivePeerDependencies:
       - debug
     dev: true
@@ -1645,18 +1659,6 @@ packages:
         optional: true
     dependencies:
       debug: 4.3.1
-    dev: true
-
-  /follow-redirects/1.14.9_debug@4.3.4:
-    resolution: {integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w==}
-    engines: {node: '>=4.0'}
-    peerDependencies:
-      debug: '*'
-    peerDependenciesMeta:
-      debug:
-        optional: true
-    dependencies:
-      debug: 4.3.4
     dev: true
 
   /forever-agent/0.6.1:

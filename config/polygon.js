@@ -26,6 +26,9 @@ module.exports = {
       startBlock: 19962216,
     },
   },
+  kashi: {
+    mediumRiskMasterContractAddresses: ['0xb527c5295c4bc348cbb3a2e96b2494fd292075a7'],
+  },
   masterDeployer: { address: '0x351447fc9bd20a917783e159e61e86edda0b0187', startBlock: 25840876 },
   concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
   constantProductPoolFactory: { address: '0x05689fcfee31fce4a67fbc7cab13e74f80a4e288' },

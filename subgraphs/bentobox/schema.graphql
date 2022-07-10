@@ -64,6 +64,17 @@ type MasterContract @entity {
   approved: Boolean!
 }
 
+type MasterContractApproval @entity {
+  "Concatenation of user adddress and master contract address"
+  id: ID!
+  " MasterContract this master contract approval belongs to "
+  masterContract: MasterContract!
+  " User this master contract approval belongs to "
+  user: User!
+  " If user has approved this master contract "
+  approved: Boolean!
+}
+
 type Clone @entity(immutable: true) {
   " Clone address "
   id: ID!
@@ -235,7 +246,6 @@ type InvestOrDivest @entity(immutable: true) {
   timestamp: BigInt!
 }
 
-
 type Rebase @entity {
   " Token address "
   id: ID!
@@ -268,19 +278,6 @@ type FlashLoan @entity(immutable: true) {
   block: BigInt!
   " Timestamp of this flash loan "
   timestamp: BigInt!
-}
-
-
-
-type MasterContractApproval @entity {
-  "Concatenation of user adddress and master contract address"
-  id: ID!
-  " MasterContract this master contract approval belongs to "
-  masterContract: MasterContract!
-  " User this master contract approval belongs to "
-  user: User!
-  " If user has approved this master contract "
-  approved: Boolean!
 }
 
 type Protocol @entity(immutable: true) {
