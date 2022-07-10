@@ -47,8 +47,7 @@ type BentoBoxKpi @entity {
   " Active strategy count "
   activeStrategyCount: BigInt!
   " Pending strategy count "
-  pendingStrategyCount: BigInt!  
-
+  pendingStrategyCount: BigInt!
 }
 
 type MasterContract @entity(immutable: true) {
@@ -104,7 +103,6 @@ type Token @entity(immutable: true) {
   decimalsSuccess: Boolean!
 }
 
-
 type TokenKpi @entity {
   " Token address "
   id: ID!
@@ -112,10 +110,12 @@ type TokenKpi @entity {
   liquidity: BigInt!
   " Strategy count "
   strategyCount: BigInt!
+  " Token Strategy APR "
+  apr: BigDecimal
 }
 
 type TokenStrategy @entity {
-  " Token address "  
+  " Token address "
   id: ID!
   " The Token this strategy belongs to "
   token: Token!
@@ -180,7 +180,7 @@ type StrategyKpi @entity {
   lossCount: BigInt!
   " Profit & Loss"
   profitAndLoss: BigInt!
-  " APR "
+  " Isolated Strategy APR "
   apr: BigDecimal
   " Utilization "
   utilization: BigDecimal
@@ -237,7 +237,6 @@ type InvestOrDivest @entity(immutable: true) {
   timestamp: BigInt!
 }
 
-
 type Rebase @entity {
   " Token address "
   id: ID!
@@ -271,8 +270,6 @@ type FlashLoan @entity(immutable: true) {
   " Timestamp of this flash loan "
   timestamp: BigInt!
 }
-
-
 
 type MasterContractApproval @entity {
   "Concatenation of user adddress and master contract address"
@@ -344,7 +341,6 @@ type Transaction @entity(immutable: true) {
   timestamp: BigInt!
 }
 
-
 type BentoBoxHourlyKpi @entity {
   " created by a prefix 'bentobox-hour-' and unix timestamp, e.g. 'bentobox-hour-1657270000'"
   id: ID!
@@ -399,9 +395,9 @@ type BentoBoxHourlyKpi @entity {
   " Active strategy count given timeframe "
   newActiveStrategyCount: BigInt!
   " Pending strategy count "
-  pendingStrategyCount: BigInt!  
+  pendingStrategyCount: BigInt!
   " Pending strategy count given timeframe "
-  newPendingStrategyCount: BigInt!  
+  newPendingStrategyCount: BigInt!
 }
 
 type BentoBoxDailyKpi @entity {
@@ -458,12 +454,10 @@ type BentoBoxDailyKpi @entity {
   " Active strategy count for the given timeframe "
   newActiveStrategyCount: BigInt!
   " Pending strategy count "
-  pendingStrategyCount: BigInt!  
+  pendingStrategyCount: BigInt!
   " Pending strategy count for the given timeframe "
-  newPendingStrategyCount: BigInt!  
+  newPendingStrategyCount: BigInt!
 }
-
-
 
 type StrategyDailyKpi @entity {
   " created by id, infix '-day-' and unix timestamp, e.g. '0x00..00-day-1657270000'"
@@ -522,7 +516,7 @@ type StrategyDailyKpi @entity {
   newUtilization: BigDecimal
 }
 
-type StrategyHourlyKpi @entity {  
+type StrategyHourlyKpi @entity {
   " created by id, infix '-hour-' and unix timestamp, e.g. '0x00..00-hour-1657270000'"
   id: ID!
   " The Strategy this KPI belongs to "
@@ -578,8 +572,6 @@ type StrategyHourlyKpi @entity {
   " Utilization for the given timeframe "
   newUtilization: BigDecimal
 }
-
-
 
 type TokenHourlyKpi @entity {
   " created by id, infix '-hour-' and unix timestamp, e.g. '0x00..00-hour-1657270000'"

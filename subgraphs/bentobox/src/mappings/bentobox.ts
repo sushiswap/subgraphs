@@ -342,10 +342,19 @@ export function onLogStrategyProfit(event: LogStrategyProfit): void {
     if (timestampDifference.gt(BigInt.fromU32(0))) {
       const multiplier = BigDecimal.fromString('31536000').div(timestampDifference.toBigDecimal())
 
-      strategyKpi.apr = event.params.amount.toBigDecimal().div(rebase.elastic.toBigDecimal()).times(multiplier)
+      // Effective APR
+      const apr = event.params.amount.toBigDecimal().div(rebase.elastic.toBigDecimal()).times(multiplier)
+
+      const tokenKpi = getOrCreateTokenKpi(tokenAddress)
+      tokenKpi.apr = apr
+      tokenKpi.save()
+
+      // Isolated Strategy APR, imperfect because can't know avg utilization
+      strategyKpi.apr = apr.div(strategyData.targetPercentage.toBigDecimal().div(BigDecimal.fromString('100')))
     }
 
     strategyKpi.utilization = strategyData.balance.toBigDecimal().div(rebase.elastic.toBigDecimal())
+    strategyKpi.save()
   }
 
   increaseProfitKpi(strategyKpi.id, event.params.amount, event.block.timestamp)
@@ -399,14 +408,23 @@ export function onLogStrategyLoss(event: LogStrategyLoss): void {
     if (timestampDifference.gt(BigInt.fromU32(0))) {
       const multiplier = BigDecimal.fromString('31536000').div(timestampDifference.toBigDecimal())
 
-      strategyKpi.apr = BigInt.fromI32(0)
+      // Effective APR
+      const apr = BigInt.fromI32(0)
         .minus(event.params.amount)
         .toBigDecimal()
         .div(rebase.elastic.toBigDecimal())
         .times(multiplier)
+
+      const tokenKpi = getOrCreateTokenKpi(tokenAddress)
+      tokenKpi.apr = apr
+      tokenKpi.save()
+
+      // Isolated Strategy APR, imperfect because can't know avg utilization
+      strategyKpi.apr = apr.div(strategyData.targetPercentage.toBigDecimal().div(BigDecimal.fromString('100')))
     }
 
     strategyKpi.utilization = strategyData.balance.toBigDecimal().div(rebase.elastic.toBigDecimal())
+    strategyKpi.save()
   }
 
   increaseLossKpi(strategyKpi.id, event.params.amount, event.block.timestamp)
