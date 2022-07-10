@@ -67,6 +67,16 @@ export function onLogDeposit(event: LogDeposit): void {
   rebase.elastic = rebase.elastic.plus(event.params.amount)
   rebase.save()
 
+  const tokenStrategy = getTokenStrategy(tokenAddress)
+  if (tokenStrategy !== null) {
+    const strategyKpi = getStrategyKpi(tokenStrategy.strategy!)
+    if (strategyKpi !== null) {
+      const strategyData = getStrategyData(tokenAddress)
+      strategyKpi.utilization = strategyData.balance.toBigDecimal().div(rebase.elastic.toBigDecimal())
+      strategyKpi.save()
+    }
+  }
+
   getOrCreateUser(event.params.from, event)
   const to = getOrCreateUser(event.params.to, event)
 
@@ -87,6 +97,16 @@ export function onLogWithdraw(event: LogWithdraw): void {
   rebase.base = rebase.base.minus(event.params.share)
   rebase.elastic = rebase.elastic.minus(event.params.amount)
   rebase.save()
+
+  const tokenStrategy = getTokenStrategy(tokenAddress)
+  if (tokenStrategy !== null) {
+    const strategyKpi = getStrategyKpi(tokenStrategy.strategy!)
+    if (strategyKpi !== null) {
+      const strategyData = getStrategyData(tokenAddress)
+      strategyKpi.utilization = strategyData.balance.toBigDecimal().div(rebase.elastic.toBigDecimal())
+      strategyKpi.save()
+    }
+  }
 
   const from = getOrCreateUser(event.params.from, event)
   getOrCreateUser(event.params.to, event)
@@ -116,9 +136,20 @@ export function onLogTransfer(event: LogTransfer): void {
 
 export function onLogFlashLoan(event: LogFlashLoan): void {
   const tokenAddress = event.params.token.toHex()
+
   const rebase = getOrCreateRebase(tokenAddress)
   rebase.elastic = rebase.elastic.plus(event.params.feeAmount)
   rebase.save()
+
+  const tokenStrategy = getTokenStrategy(tokenAddress)
+  if (tokenStrategy !== null) {
+    const strategyKpi = getStrategyKpi(tokenStrategy.strategy!)
+    if (strategyKpi !== null) {
+      const strategyData = getStrategyData(tokenAddress)
+      strategyKpi.utilization = strategyData.balance.toBigDecimal().div(rebase.elastic.toBigDecimal())
+      strategyKpi.save()
+    }
+  }
 
   createFlashLoan(event)
 
@@ -312,11 +343,13 @@ export function onLogStrategyProfit(event: LogStrategyProfit): void {
     event
   )
 
-  const strategyKpi = getStrategyKpi(tokenStrategy.strategy!)
-
   const rebase = getRebase(tokenAddress)
   rebase.elastic = rebase.elastic.plus(event.params.amount)
   rebase.save()
+
+  const strategyKpi = getStrategyKpi(tokenStrategy.strategy!)
+  strategyKpi.utilization = strategyData.balance.toBigDecimal().div(rebase.elastic.toBigDecimal())
+  strategyKpi.save()
 
   const profit = new ProfitOrLoss(tokenStrategy.strategy!.concat('-').concat(strategyKpi.profitOrLossCount.toString()))
   profit.harvest = harvest.id
@@ -351,10 +384,8 @@ export function onLogStrategyProfit(event: LogStrategyProfit): void {
 
       // Isolated Strategy APR, imperfect because can't know avg utilization
       strategyKpi.apr = apr.div(strategyData.targetPercentage.toBigDecimal().div(BigDecimal.fromString('100')))
+      strategyKpi.save()
     }
-
-    strategyKpi.utilization = strategyData.balance.toBigDecimal().div(rebase.elastic.toBigDecimal())
-    strategyKpi.save()
   }
 
   increaseProfitKpi(strategyKpi.id, event.params.amount, event.block.timestamp)
@@ -378,11 +409,13 @@ export function onLogStrategyLoss(event: LogStrategyLoss): void {
     event
   )
 
-  const strategyKpi = getStrategyKpi(tokenStrategy.strategy!)
-
   const rebase = getRebase(tokenAddress)
   rebase.elastic = rebase.elastic.minus(event.params.amount)
   rebase.save()
+
+  const strategyKpi = getStrategyKpi(tokenStrategy.strategy!)
+  strategyKpi.utilization = strategyData.balance.toBigDecimal().div(rebase.elastic.toBigDecimal())
+  strategyKpi.save()
 
   const loss = new ProfitOrLoss(tokenStrategy.strategy!.concat('-').concat(strategyKpi.profitOrLossCount.toString()))
   loss.harvest = harvest.id
@@ -421,10 +454,8 @@ export function onLogStrategyLoss(event: LogStrategyLoss): void {
 
       // Isolated Strategy APR, imperfect because can't know avg utilization
       strategyKpi.apr = apr.div(strategyData.targetPercentage.toBigDecimal().div(BigDecimal.fromString('100')))
+      strategyKpi.save()
     }
-
-    strategyKpi.utilization = strategyData.balance.toBigDecimal().div(rebase.elastic.toBigDecimal())
-    strategyKpi.save()
   }
 
   increaseLossKpi(strategyKpi.id, event.params.amount, event.block.timestamp)
