@@ -19,6 +19,7 @@ export function getOrCreateToken(id: string, event: ethereum.Event): Token {
     token = new Token(id)
 
     getOrCreateTokenKpi(id)
+    token.kpi = id
 
     const contract = ERC20.bind(Address.fromString(id))
 
