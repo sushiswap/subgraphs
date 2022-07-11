@@ -6,7 +6,7 @@ import {
   MINIMUM_NATIVE_LIQUIDITY,
   NATIVE_ADDRESS,
   STABLE_POOL_ADDRESSES,
-  STABLE_TOKEN_ADDRESSES
+  STABLE_TOKEN_ADDRESSES,
 } from './constants'
 import { getOrCreateToken } from './functions'
 import { getTokenKpi } from './functions/token-data'
@@ -14,11 +14,9 @@ import { Pool, Token, TokenKpi } from '../generated/schema'
 import { Factory as FactoryContract } from '../generated/templates/Pair/Factory'
 import { getPoolKpi } from './functions/pool-data'
 
-
 export const factoryContract = FactoryContract.bind(FACTORY_ADDRESS)
 
 export function getNativePriceInUSD(): BigDecimal {
-
   let count = 0
   let weightdPrice = BigDecimal.fromString('0')
   let nativeReserve = BigDecimal.fromString('0')
@@ -63,62 +61,73 @@ export function getNativePriceInUSD(): BigDecimal {
   return weightdPrice
 }
 
-export function findEthPerToken(token: Token, tokenKpi: TokenKpi): BigDecimal {
+/**
+ * Updates the token KPI price for the given token.
+ * Find the pool that contains the most liquidity and is safe from circular price dependency, 
+ * (e.g. if DAI is priced off USDC, then USDC cannot be priced off DAI)
+ * @param tokenAddress The address of the token kpi to update
+ * @returns 
+ */
+export function updateTokenKpiPrice(tokenAddress: string): TokenKpi {
+  const token = getOrCreateToken(tokenAddress)
+  const currentTokenKpi = getTokenKpi(tokenAddress)
   if (token.id == NATIVE_ADDRESS) {
-    return BIG_DECIMAL_ONE
+    return currentTokenKpi
   }
 
-  const isStable = STABLE_TOKEN_ADDRESSES.includes(token.id)
-  const whitelist = tokenKpi.whitelistPools
+  const pools = currentTokenKpi.pools
 
+  let pricedOffToken = ''
   let mostReseveEth = BIG_DECIMAL_ZERO
   let currentPrice = BIG_DECIMAL_ZERO
 
-  for (let i = 0; i < whitelist.length; ++i) {
-    const poolAddress = whitelist[i]
+  for (let i = 0; i < pools.length; ++i) {
+    const poolAddress = pools[i]
     const pool = Pool.load(poolAddress)
     if (pool === null) {
       continue // Not created yet
     }
     const poolKpi = getPoolKpi(poolAddress)
+    const poolToken0Kpi = getTokenKpi(pool.token0)
+    const poolToken1Kpi = getTokenKpi(pool.token1)
 
-    // If the token is a stable, we price it from the pair with native
-    // However, if there isn't enough liquidity to mass minimum native liquidity check, continue and use the pair
-    // with most liqudidity
-    // NOTE: the idea behind this is that most stables will be priced off native, and the rest could be 
-    // priced off those stables, avoiding circular price dependency
-    if (isStable) {
-      if (pool.token0 == token.id && pool.token1 == NATIVE_ADDRESS && poolKpi.reserveETH.gt(MINIMUM_NATIVE_LIQUIDITY)) {
-        const token1Kpi = getTokenKpi(pool.token1)
-        return poolKpi.token1Price.times(token1Kpi.derivedETH)
-      } else if (
-        pool.token1 == token.id &&
-        pool.token0 == NATIVE_ADDRESS &&
-        poolKpi.reserveETH.gt(MINIMUM_NATIVE_LIQUIDITY)
-      ) {
-        const token0Kpi = getTokenKpi(pool.token0)
-        return poolKpi.token0Price.times(token0Kpi.derivedETH)
-      }
-    }
-    
-    if (pool.token0 == token.id && poolKpi.reserveETH.gt(MINIMUM_NATIVE_LIQUIDITY) && poolKpi.reserveETH.gt(mostReseveEth)) {
+    if (
+      pool.token0 == token.id &&
+      poolToken1Kpi.pricedOffToken != token.id &&
+      passesLiquidityCheck(poolKpi.reserve0, mostReseveEth)
+    ) {
       const token1 = getOrCreateToken(pool.token1)
       if (token1.decimalsSuccess) {
         const token1Kpi = getTokenKpi(pool.token1)
+        pricedOffToken = token1Kpi.id
         mostReseveEth = poolKpi.reserveETH
         currentPrice = poolKpi.token1Price.times(token1Kpi.derivedETH)
       }
     }
 
-    if (pool.token1 == token.id && poolKpi.reserveETH.gt(MINIMUM_NATIVE_LIQUIDITY) && poolKpi.reserveETH.gt(mostReseveEth)) {
+    if (
+      pool.token1 == token.id &&
+      poolToken0Kpi.pricedOffToken != token.id &&
+      passesLiquidityCheck(poolKpi.reserve1, mostReseveEth)
+    ) {
       const token0 = getOrCreateToken(pool.token0)
       if (token0.decimalsSuccess) {
         const token0Kpi = getTokenKpi(pool.token0)
+        pricedOffToken = token0Kpi.id
         mostReseveEth = poolKpi.reserveETH
         currentPrice = poolKpi.token0Price.times(token0Kpi.derivedETH)
       }
     }
   }
 
-  return currentPrice
+  if (currentPrice.gt(BIG_DECIMAL_ZERO)) {
+    currentTokenKpi.pricedOffToken = pricedOffToken
+    currentTokenKpi.derivedETH = currentPrice
+    currentTokenKpi.save()
+  }
+  return currentTokenKpi
+}
+
+function passesLiquidityCheck(reserveETH: BigDecimal, mostReseveEth: BigDecimal): boolean {
+  return reserveETH.gt(MINIMUM_NATIVE_LIQUIDITY) && reserveETH.gt(mostReseveEth)
 }

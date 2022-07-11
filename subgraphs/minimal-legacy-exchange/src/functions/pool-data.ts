@@ -4,7 +4,6 @@ import { PoolKpi } from '../../generated/schema'
 
 export function createPoolKpi(id: string): PoolKpi {
   let poolKpi = new PoolKpi(id)
-  poolKpi.pool = id
   poolKpi.reserve0 = BIG_DECIMAL_ZERO
   poolKpi.reserve1 = BIG_DECIMAL_ZERO
   poolKpi.reserveETH = BIG_DECIMAL_ZERO

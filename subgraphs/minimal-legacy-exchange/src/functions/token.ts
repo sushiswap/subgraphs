@@ -10,6 +10,7 @@ export function getOrCreateToken(id: string): Token {
 
   if (token === null) {
     token = new Token(id)
+    createTokenKpi(id)
 
     const contract = ERC20.bind(Address.fromString(id))
 
@@ -26,7 +27,6 @@ export function getOrCreateToken(id: string): Token {
 
     token.save()
 
-    createTokenKpi(id)
   }
 
   return token as Token

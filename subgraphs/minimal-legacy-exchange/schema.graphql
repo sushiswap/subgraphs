@@ -19,9 +19,9 @@ type Token @entity(immutable: true) {
 type TokenKpi @entity {
   " same as token address "
   id: ID!
-  token: Token!
   derivedETH: BigDecimal!
-  whitelistPools: [Pool!]!
+  pricedOffToken: String
+  pools: [Pool!]!
 }
 
 # Pool
@@ -37,7 +37,6 @@ type Pool @entity(immutable: true) {
 type PoolKpi @entity {
   " Pool id (same as contract address) "
   id: ID!
-  pool: Pool!
   reserve0: BigDecimal!
   reserve1: BigDecimal!
   totalSupply: BigDecimal!
