@@ -63,15 +63,19 @@ export function getNativePriceInUSD(): BigDecimal {
 
 /**
  * Updates the token KPI price for the given token.
- * Find the pool that contains the most liquidity and is safe from circular price dependency, 
+ * Find the pool that contains the most liquidity and is safe from circular price dependency,
  * (e.g. if DAI is priced off USDC, then USDC cannot be priced off DAI)
  * @param tokenAddress The address of the token kpi to update
- * @returns 
+ * @returns
  */
 export function updateTokenKpiPrice(tokenAddress: string): TokenKpi {
   const token = getOrCreateToken(tokenAddress)
   const currentTokenKpi = getTokenKpi(tokenAddress)
   if (token.id == NATIVE_ADDRESS) {
+    if (!currentTokenKpi.derivedETH.equals(BIG_DECIMAL_ONE)) {
+      currentTokenKpi.derivedETH = BIG_DECIMAL_ONE
+      currentTokenKpi.save()
+    }
     return currentTokenKpi
   }
 
