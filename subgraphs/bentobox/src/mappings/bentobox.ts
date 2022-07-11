@@ -1,4 +1,4 @@
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 import {
   LogDeploy,
   LogDeposit,
@@ -26,6 +26,7 @@ import {
   getOrCreateMasterContractApproval,
   getOrCreateRebase,
   getOrCreateStrategyData,
+  getOrCreateStrategyKpi,
   getOrCreateToken,
   getOrCreateUser,
   getRebase,
@@ -67,14 +68,12 @@ export function onLogDeposit(event: LogDeposit): void {
   rebase.elastic = rebase.elastic.plus(event.params.amount)
   rebase.save()
 
-  const tokenStrategy = getTokenStrategy(tokenAddress)
-  if (tokenStrategy !== null) {
-    const strategyKpi = getStrategyKpi(tokenStrategy.strategy!)
-    if (strategyKpi !== null) {
-      const strategyData = getStrategyData(tokenAddress)
-      strategyKpi.utilization = strategyData.balance.toBigDecimal().div(rebase.elastic.toBigDecimal())
-      strategyKpi.save()
-    }
+  const tokenStrategy = TokenStrategy.load(tokenAddress)
+  if (tokenStrategy !== null && tokenStrategy.strategy !== null) {
+    const strategyKpi = getOrCreateStrategyKpi(tokenStrategy.strategy!)
+    const strategyData = getStrategyData(tokenAddress)
+    strategyKpi.utilization = strategyData.balance.toBigDecimal().div(rebase.elastic.toBigDecimal())
+    strategyKpi.save()
   }
 
   getOrCreateUser(event.params.from, event)
@@ -98,14 +97,12 @@ export function onLogWithdraw(event: LogWithdraw): void {
   rebase.elastic = rebase.elastic.minus(event.params.amount)
   rebase.save()
 
-  const tokenStrategy = getTokenStrategy(tokenAddress)
-  if (tokenStrategy !== null) {
-    const strategyKpi = getStrategyKpi(tokenStrategy.strategy!)
-    if (strategyKpi !== null) {
-      const strategyData = getStrategyData(tokenAddress)
-      strategyKpi.utilization = strategyData.balance.toBigDecimal().div(rebase.elastic.toBigDecimal())
-      strategyKpi.save()
-    }
+  const tokenStrategy = TokenStrategy.load(tokenAddress)
+  if (tokenStrategy !== null && tokenStrategy.strategy !== null) {
+    const strategyKpi = getOrCreateStrategyKpi(tokenStrategy.strategy!)
+    const strategyData = getStrategyData(tokenAddress)
+    strategyKpi.utilization = strategyData.balance.toBigDecimal().div(rebase.elastic.toBigDecimal())
+    strategyKpi.save()
   }
 
   const from = getOrCreateUser(event.params.from, event)
@@ -141,14 +138,12 @@ export function onLogFlashLoan(event: LogFlashLoan): void {
   rebase.elastic = rebase.elastic.plus(event.params.feeAmount)
   rebase.save()
 
-  const tokenStrategy = getTokenStrategy(tokenAddress)
-  if (tokenStrategy !== null) {
-    const strategyKpi = getStrategyKpi(tokenStrategy.strategy!)
-    if (strategyKpi !== null) {
-      const strategyData = getStrategyData(tokenAddress)
-      strategyKpi.utilization = strategyData.balance.toBigDecimal().div(rebase.elastic.toBigDecimal())
-      strategyKpi.save()
-    }
+  const tokenStrategy = TokenStrategy.load(tokenAddress)
+  if (tokenStrategy !== null && tokenStrategy.strategy !== null) {
+    const strategyKpi = getOrCreateStrategyKpi(tokenStrategy.strategy!)
+    const strategyData = getStrategyData(tokenAddress)
+    strategyKpi.utilization = strategyData.balance.toBigDecimal().div(rebase.elastic.toBigDecimal())
+    strategyKpi.save()
   }
 
   createFlashLoan(event)
@@ -375,15 +370,13 @@ export function onLogStrategyProfit(event: LogStrategyProfit): void {
     if (timestampDifference.gt(BigInt.fromU32(0))) {
       const multiplier = BigDecimal.fromString('31536000').div(timestampDifference.toBigDecimal())
 
-      // Effective APR
-      const apr = event.params.amount.toBigDecimal().div(rebase.elastic.toBigDecimal()).times(multiplier)
-
       const tokenKpi = getOrCreateTokenKpi(tokenAddress)
-      tokenKpi.apr = apr
+      // Effective APR
+      tokenKpi.apr = event.params.amount.toBigDecimal().div(rebase.elastic.toBigDecimal()).times(multiplier)
       tokenKpi.save()
 
-      // Isolated Strategy APR, imperfect because can't know avg utilization
-      strategyKpi.apr = apr.div(strategyData.targetPercentage.toBigDecimal().div(BigDecimal.fromString('100')))
+      // Isolated Strategy APR, might be imperfect if divest/invest happened
+      strategyKpi.apr = event.params.amount.toBigDecimal().div(strategyData.balance.toBigDecimal()).times(multiplier)
       strategyKpi.save()
     }
   }
@@ -441,19 +434,21 @@ export function onLogStrategyLoss(event: LogStrategyLoss): void {
     if (timestampDifference.gt(BigInt.fromU32(0))) {
       const multiplier = BigDecimal.fromString('31536000').div(timestampDifference.toBigDecimal())
 
+      const tokenKpi = getOrCreateTokenKpi(tokenAddress)
       // Effective APR
-      const apr = BigInt.fromI32(0)
+      tokenKpi.apr = BigInt.fromI32(0)
         .minus(event.params.amount)
         .toBigDecimal()
         .div(rebase.elastic.toBigDecimal())
         .times(multiplier)
-
-      const tokenKpi = getOrCreateTokenKpi(tokenAddress)
-      tokenKpi.apr = apr
       tokenKpi.save()
 
-      // Isolated Strategy APR, imperfect because can't know avg utilization
-      strategyKpi.apr = apr.div(strategyData.targetPercentage.toBigDecimal().div(BigDecimal.fromString('100')))
+      // Isolated Strategy APR, might be imperfect if divest/invest happened
+      strategyKpi.apr = BigInt.fromI32(0)
+        .minus(event.params.amount)
+        .toBigDecimal()
+        .div(strategyData.balance.toBigDecimal())
+        .times(multiplier)
       strategyKpi.save()
     }
   }
