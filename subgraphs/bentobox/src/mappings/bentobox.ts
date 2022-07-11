@@ -1,4 +1,4 @@
-import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import {
   LogDeploy,
   LogDeposit,
@@ -22,7 +22,6 @@ import {
   createStrategy,
   decreasePendingStrategyCount,
   getOrCreateBalance,
-  getOrCreateBentoBoxKpi,
   getOrCreateMasterContractApproval,
   getOrCreateRebase,
   getOrCreateStrategyData,
