@@ -1,0 +1,57 @@
+specVersion: 0.0.4
+description: Exchange
+repository: https://github.com/sushiswap/sushiswap-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Factory
+    network: {{ network }}
+    source:
+      address: '{{ legacy.factory.address }}'
+      abi: Factory
+      startBlock: {{ legacy.factory.startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/factory.ts
+      entities:
+        - Factory
+      abis:
+        - name: Factory
+          file: ./node_modules/abi/Uniswap/UniswapV2Factory.json
+        - name: Pair
+          file: ./node_modules/abi/Uniswap/UniswapV2Pair.json
+        - name: SushiToken
+          file: ./node_modules/abi/SUSHI/SushiToken.json
+        - name: ERC20
+          file: ./node_modules/abi/ERC20/ERC20.json
+        - name: SymbolBytes32
+          file: ./node_modules/abi/ERC20/SymbolBytes32.json
+        - name: NameBytes32
+          file: ./node_modules/abi/ERC20/NameBytes32.json
+      eventHandlers:
+        - event: PairCreated(indexed address,indexed address,address,uint256)
+          handler: onPairCreated
+templates:
+  - kind: ethereum/contract
+    name: Pair
+    network: {{ network }}
+    source:
+      abi: Pair
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/pool.ts
+      entities:
+        - Bundle
+      abis:
+        - name: Factory
+          file: ./node_modules/abi/Uniswap/UniswapV2Factory.json
+        - name: Pair
+          file: ./node_modules/abi/Uniswap/UniswapV2Pair.json
+      eventHandlers:
+        - event: Sync(uint112,uint112)
+          handler: onSync

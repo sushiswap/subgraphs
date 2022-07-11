@@ -1,0 +1,47 @@
+# Bundle
+type Bundle @entity {
+  id: ID!
+  ethPrice: BigDecimal! # price of ETH usd
+}
+
+# Token
+type Token @entity(immutable: true) {
+  id: ID!
+  kpi: TokenKpi!
+  symbol: String!
+  symbolSuccess: Boolean!
+  name: String!
+  nameSuccess: Boolean!
+  decimals: BigInt!
+  decimalsSuccess: Boolean!
+}
+
+type TokenKpi @entity {
+  " same as token address "
+  id: ID!
+  token: Token!
+  derivedETH: BigDecimal!
+  whitelistPools: [Pool!]!
+}
+
+# Pool
+type Pool @entity(immutable: true) {
+  # Contract address
+  id: ID!
+  kpi: PoolKpi!
+  name: String!
+  token0: Token!
+  token1: Token!
+}
+
+type PoolKpi @entity {
+  " Pool id (same as contract address) "
+  id: ID!
+  pool: Pool!
+  reserve0: BigDecimal!
+  reserve1: BigDecimal!
+  totalSupply: BigDecimal!
+  reserveETH: BigDecimal!
+  token0Price: BigDecimal!
+  token1Price: BigDecimal!
+}
