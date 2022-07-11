@@ -1,8 +1,7 @@
-import { BigInt, log } from '@graphprotocol/graph-ts'
 import { Clone } from '../../generated/schema'
 import { KashiPair as KashiPairTemplate } from '../../generated/templates'
 import { LogDeploy, LogSetMasterContractApproval, LogWhiteListMasterContract } from '../../generated/BentoBox/BentoBox'
-import { createKashiPair, getOrCreateBentoBox, getOrCreateMasterContractApproval, getOrCreateUser } from '../functions'
+import { createKashiPair, getOrCreateMasterContractApproval, getOrCreateUser } from '../functions'
 
 import { getOrCreateMasterContract } from '../functions/master-contract'
 import { KASHI_MEDIUM } from '../constants'
