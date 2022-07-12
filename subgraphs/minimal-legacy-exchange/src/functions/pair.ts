@@ -16,14 +16,14 @@ export function createPair(params: PairCreated__Params): Pair {
   const pair = new Pair(id)
   createPairKpi(id)
 
-  const token0Pools = token1Price.pairs
-  token0Pools.push(pair.id)
-  token1Price.pairs = token0Pools
+  const token0Pairs = token1Price.pairs
+  token0Pairs.push(pair.id)
+  token1Price.pairs = token0Pairs
   token1Price.save()
 
-  const token1Pools = token0Price.pairs
-  token1Pools.push(pair.id)
-  token0Price.pairs = token1Pools
+  const token1Pairs = token0Price.pairs
+  token1Pairs.push(pair.id)
+  token0Price.pairs = token1Pairs
   token0Price.save()
 
   pair.name = token0.symbol.concat('-').concat(token1.symbol)

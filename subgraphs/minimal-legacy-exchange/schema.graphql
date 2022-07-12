@@ -61,14 +61,16 @@ type Pair @entity(immutable: true) {
 type PairKpi @entity {
   " Pair id (same as Pair.id) "
   id: ID!
-  " Reserve of token0 "
-  reserve0: BigDecimal!
-  " Reserve of token1 "
-  reserve1: BigDecimal!
-  " Total supply of all LP tokens "
-  totalSupply: BigDecimal!
-  " Total reserve in the native token "
-  reserveNative: BigDecimal!
+  " Liquidity of first token "
+  token0Liquidity: BigDecimal!
+  " Liquidity of second token "
+  token1Liquidity: BigDecimal!
+  " Liquidity, Total supply of all LP in this pool "
+  liquidity: BigDecimal!
+  " USD liquidity"
+  liquidityUSD: BigDecimal!
+  " Native Liquidity "
+  liquidityNative: BigDecimal!
   " Price of the first token in this pair, not to be confused with TokenPrice entity "
   token0Price: BigDecimal!
   " Price of the second token in this pair, not to be confused with TokenPrice entity "

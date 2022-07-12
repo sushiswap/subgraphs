@@ -26,26 +26,26 @@ export function getNativePriceInUSD(): BigDecimal {
   for (let i = 0; i < STABLE_POOL_ADDRESSES.length; i++) {
     const address = STABLE_POOL_ADDRESSES[i]
 
-    const stablePool = Pair.load(address)
-    if (stablePool === null) {
+    const stablePair = Pair.load(address)
+    if (stablePair === null) {
       continue
     }
-    const stablePoolKpi = getPairKpi(address)
+    const stablePairKpi = getPairKpi(address)
 
     if (
-      (stablePool.token0 == NATIVE_ADDRESS && stablePoolKpi.reserve0.lt(MINIMUM_NATIVE_LIQUIDITY)) ||
-      (stablePool.token1 == NATIVE_ADDRESS && stablePoolKpi.reserve1.lt(MINIMUM_NATIVE_LIQUIDITY))
+      (stablePair.token0 == NATIVE_ADDRESS && stablePairKpi.token0Liquidity.lt(MINIMUM_NATIVE_LIQUIDITY)) ||
+      (stablePair.token1 == NATIVE_ADDRESS && stablePairKpi.token1Liquidity.lt(MINIMUM_NATIVE_LIQUIDITY))
     ) {
       continue
     }
 
-    const stableFirst = STABLE_TOKEN_ADDRESSES.includes(stablePool.token0)
+    const stableFirst = STABLE_TOKEN_ADDRESSES.includes(stablePair.token0)
 
-    nativeReserve = nativeReserve.plus(!stableFirst ? stablePoolKpi.reserve0 : stablePoolKpi.reserve1)
+    nativeReserve = nativeReserve.plus(!stableFirst ? stablePairKpi.token0Liquidity : stablePairKpi.token1Liquidity)
 
-    nativeReserves.push(!stableFirst ? stablePoolKpi.reserve0 : stablePoolKpi.reserve1)
+    nativeReserves.push(!stableFirst ? stablePairKpi.token0Liquidity : stablePairKpi.token1Liquidity)
 
-    stablePrices.push(stableFirst ? stablePoolKpi.token0Price : stablePoolKpi.token1Price)
+    stablePrices.push(stableFirst ? stablePairKpi.token0Price : stablePairKpi.token1Price)
 
     count = count + 1
   }
@@ -63,7 +63,7 @@ export function getNativePriceInUSD(): BigDecimal {
 
 /**
  * Updates the token KPI price for the given token.
- * Find the pool that contains the most liquidity and is safe from circular price dependency,
+ * Find the pair that contains the most liquidity and is safe from circular price dependency,
  * (e.g. if DAI is priced off USDC, then USDC cannot be priced off DAI)
  * @param tokenAddress The address of the token kpi to update
  * @returns
@@ -87,26 +87,26 @@ export function updateTokenKpiPrice(tokenAddress: string): TokenPrice {
   let currentPrice = BIG_DECIMAL_ZERO
 
   for (let i = 0; i < pairs.length; ++i) {
-    const poolAddress = pairs[i]
-    const pair = Pair.load(poolAddress)
+    const pairAddress = pairs[i]
+    const pair = Pair.load(pairAddress)
     if (pair === null) {
       continue // Not created yet
     }
-    const pairKpi = getPairKpi(poolAddress)
+    const pairKpi = getPairKpi(pairAddress)
     const pairToken0Price = getTokenPrice(pair.token0)
     const pairToken1Price = getTokenPrice(pair.token1)
 
     if (
       pair.token0 == token.id &&
       pairToken1Price.pricedOffToken != token.id &&
-      passesLiquidityCheck(pairKpi.reserve0, mostReseveEth)
+      passesLiquidityCheck(pairKpi.token0Liquidity, mostReseveEth)
     ) {
       const token1 = getOrCreateToken(pair.token1)
       if (token1.decimalsSuccess) {
         const token1Price = getTokenPrice(pair.token1)
         pricedOffToken = token1Price.id
         pricedOffPair = pair.id
-        mostReseveEth = pairKpi.reserveNative
+        mostReseveEth = pairKpi.liquidityNative
         currentPrice = pairKpi.token1Price.times(token1Price.derivedNative)
       }
     }
@@ -114,14 +114,14 @@ export function updateTokenKpiPrice(tokenAddress: string): TokenPrice {
     if (
       pair.token1 == token.id &&
       pairToken0Price.pricedOffToken != token.id &&
-      passesLiquidityCheck(pairKpi.reserve1, mostReseveEth)
+      passesLiquidityCheck(pairKpi.token1Liquidity, mostReseveEth)
     ) {
       const token0 = getOrCreateToken(pair.token0)
       if (token0.decimalsSuccess) {
         const token0Price = getTokenPrice(pair.token0)
         pricedOffToken = token0Price.id
         pricedOffPair = pair.id
-        mostReseveEth = pairKpi.reserveNative
+        mostReseveEth = pairKpi.liquidityNative
         currentPrice = pairKpi.token0Price.times(token0Price.derivedNative)
       }
     }
