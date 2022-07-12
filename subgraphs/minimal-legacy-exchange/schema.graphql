@@ -34,6 +34,8 @@ type TokenPrice @entity {
   derivedNative: BigDecimal!
   " price in USD. NOTE: this will not always be up to date, it only updates when onSync event is emitted, bundle.nativePrice could have changed. "
   lastUsdPrice: BigDecimal!
+  " Liquidity across all pairs. "
+  liquidity: BigDecimal!
   " Which token this price is based on "
   pricedOffToken: Token
   " Which pair this price is based on "

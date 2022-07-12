@@ -3,7 +3,7 @@ import { Sync } from '../../generated/Factory/Pair'
 import { BIG_DECIMAL_ZERO } from '../constants'
 import { convertTokenToDecimal, getOrCreateBundle, getOrCreateToken, getPair } from '../functions'
 import { getPairKpi } from '../functions/pair-kpi'
-import { getNativePriceInUSD, updateTokenKpiPrice } from '../pricing'
+import { getNativePriceInUSD, updateTokenKpiPrice as updateTokenPrice } from '../pricing'
 
 export function onSync(event: Sync): void {
   const pairId = event.address.toHex()
@@ -13,9 +13,14 @@ export function onSync(event: Sync): void {
   const token0 = getOrCreateToken(pair.token0)
   const token1 = getOrCreateToken(pair.token1)
 
+
+  const token0LiquidityDifference = convertTokenToDecimal(event.params.reserve0, token0.decimals).minus(pairKpi.token0Liquidity)
+  const token1LiquidityDifference = convertTokenToDecimal(event.params.reserve1, token1.decimals).minus(pairKpi.token1Liquidity)
+
   pairKpi.token0Liquidity = convertTokenToDecimal(event.params.reserve0, token0.decimals)
   pairKpi.token1Liquidity = convertTokenToDecimal(event.params.reserve1, token1.decimals)
 
+  
   if (pairKpi.token1Liquidity.notEqual(BIG_DECIMAL_ZERO)) {
     pairKpi.token0Price = pairKpi.token0Liquidity.div(pairKpi.token1Liquidity)
   } else {
@@ -32,8 +37,13 @@ export function onSync(event: Sync): void {
   bundle.nativePrice = getNativePriceInUSD()
   bundle.save()
 
-  const token0Price = updateTokenKpiPrice(pair.token0, bundle.nativePrice)
-  const token1Price = updateTokenKpiPrice(pair.token1, bundle.nativePrice)
+  const token0Price = updateTokenPrice(pair.token0, bundle.nativePrice)
+  const token1Price = updateTokenPrice(pair.token1, bundle.nativePrice)
+
+  token0Price.liquidity = token0Price.liquidity.plus(token0LiquidityDifference)
+  token1Price.liquidity = token1Price.liquidity.plus(token1LiquidityDifference)
+  token0Price.save()
+  token1Price.save()
 
   pairKpi.liquidityNative = pairKpi.token0Liquidity
     .times(token0Price.derivedNative as BigDecimal)
