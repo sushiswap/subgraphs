@@ -1,46 +1,76 @@
-# Bundle
+" Bundle - should only ever be one created"
 type Bundle @entity {
+  " hardcoded to '1'"
   id: ID!
-  ethPrice: BigDecimal! # price of ETH usd
+  " Price of native "
+  nativePrice: BigDecimal!
 }
 
-# Token
 type Token @entity(immutable: true) {
+  " Token address "
   id: ID!
-  kpi: TokenKpi!
+  " Token Price "
+  price: TokenPrice!
+  " Symbol of the token "
   symbol: String!
+  " if symbol was successfully retrieved "
   symbolSuccess: Boolean!
+  " Name of the token "
   name: String!
+  " if name was successfully retrieved "
   nameSuccess: Boolean!
+  " Decimals of the token "
   decimals: BigInt!
+  " if decimals were successfully retrieved "
   decimalsSuccess: Boolean!
 }
 
-type TokenKpi @entity {
-  " same as token address "
+type TokenPrice @entity {
+  " same as token entity id, address of token "
   id: ID!
-  derivedETH: BigDecimal!
-  pricedOffToken: String
-  pools: [Pool!]!
+  " Token "
+  token: Token!
+  " derived native, this is useful for calculating price. (derivedNative * bundle.nativePrice = USD price) "
+  derivedNative: BigDecimal!
+  " Which token this price is based on "
+  pricedOffToken: Token
+  " Which pair this price is based on "
+  pricedOffPair: Pair
+  " All the available pairs for pricing "
+  pairs: [Pair!]!
 }
 
-# Pool
-type Pool @entity(immutable: true) {
-  # Contract address
+
+type Pair @entity(immutable: true) {
+  " Pair address (contract address) "
   id: ID!
-  kpi: PoolKpi!
+  " Pair KPI "
+  kpi: PairKpi!
+  " name of the pair, this combines symbol of both tokens, e.g. WETH/SUSHI "
   name: String!
+  " First Token "
   token0: Token!
+  " Second Token "
   token1: Token!
+  " First tokens price "
+  token0Price: TokenPrice!
+  " Second tokens price "
+  token1Price: TokenPrice!
 }
 
-type PoolKpi @entity {
-  " Pool id (same as contract address) "
+type PairKpi @entity {
+  " Pair id (same as Pair.id) "
   id: ID!
+  " Reserve of token0 "
   reserve0: BigDecimal!
+  " Reserve of token1 "
   reserve1: BigDecimal!
+  " Total supply of all LP tokens "
   totalSupply: BigDecimal!
-  reserveETH: BigDecimal!
+  " Total reserve in the native token "
+  reserveNative: BigDecimal!
+  " Price of the first token in this pair, not to be confused with TokenPrice entity "
   token0Price: BigDecimal!
+  " Price of the second token in this pair, not to be confused with TokenPrice entity "
   token1Price: BigDecimal!
 }

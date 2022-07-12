@@ -2,22 +2,22 @@ import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { ERC20 } from '../../generated/Factory/ERC20'
 import { NameBytes32 } from '../../generated/Factory/NameBytes32'
 import { SymbolBytes32 } from '../../generated/Factory/SymbolBytes32'
-import { Token, TokenKpi } from '../../generated/schema'
-import { createTokenKpi } from './token-data'
+import { Token } from '../../generated/schema'
+import { createTokenPrice } from './token-price'
 
 export function getOrCreateToken(id: string): Token {
   let token = Token.load(id)
 
   if (token === null) {
     token = new Token(id)
-    createTokenKpi(id)
+    createTokenPrice(id)
 
     const contract = ERC20.bind(Address.fromString(id))
 
     const decimals = getTokenDecimals(contract)
     const name = getTokenName(contract)
     const symbol = getTokenSymbol(contract)
-    token.kpi = id
+    token.price = id
     token.name = name.value
     token.nameSuccess = name.success
     token.symbol = symbol.value

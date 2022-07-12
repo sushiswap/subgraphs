@@ -9,10 +9,10 @@ import {
   STABLE_TOKEN_ADDRESSES,
 } from './constants'
 import { getOrCreateToken } from './functions'
-import { getTokenKpi } from './functions/token-data'
-import { Pool, Token, TokenKpi } from '../generated/schema'
+import { getTokenPrice } from './functions/token-price'
+import { Pair, Token, TokenPrice } from '../generated/schema'
 import { Factory as FactoryContract } from '../generated/templates/Pair/Factory'
-import { getPoolKpi } from './functions/pool-data'
+import { getPairKpi } from './functions/pair-kpi'
 
 export const factoryContract = FactoryContract.bind(FACTORY_ADDRESS)
 
@@ -26,11 +26,11 @@ export function getNativePriceInUSD(): BigDecimal {
   for (let i = 0; i < STABLE_POOL_ADDRESSES.length; i++) {
     const address = STABLE_POOL_ADDRESSES[i]
 
-    const stablePool = Pool.load(address)
+    const stablePool = Pair.load(address)
     if (stablePool === null) {
       continue
     }
-    const stablePoolKpi = getPoolKpi(address)
+    const stablePoolKpi = getPairKpi(address)
 
     if (
       (stablePool.token0 == NATIVE_ADDRESS && stablePoolKpi.reserve0.lt(MINIMUM_NATIVE_LIQUIDITY)) ||
@@ -68,68 +68,72 @@ export function getNativePriceInUSD(): BigDecimal {
  * @param tokenAddress The address of the token kpi to update
  * @returns
  */
-export function updateTokenKpiPrice(tokenAddress: string): TokenKpi {
+export function updateTokenKpiPrice(tokenAddress: string): TokenPrice {
   const token = getOrCreateToken(tokenAddress)
-  const currentTokenKpi = getTokenKpi(tokenAddress)
+  const currentTokenPrice = getTokenPrice(tokenAddress)
   if (token.id == NATIVE_ADDRESS) {
-    if (!currentTokenKpi.derivedETH.equals(BIG_DECIMAL_ONE)) {
-      currentTokenKpi.derivedETH = BIG_DECIMAL_ONE
-      currentTokenKpi.save()
+    if (!currentTokenPrice.derivedNative.equals(BIG_DECIMAL_ONE)) {
+      currentTokenPrice.derivedNative = BIG_DECIMAL_ONE
+      currentTokenPrice.save()
     }
-    return currentTokenKpi
+    return currentTokenPrice
   }
 
-  const pools = currentTokenKpi.pools
+  const pairs = currentTokenPrice.pairs
 
   let pricedOffToken = ''
+  let pricedOffPair = ''
   let mostReseveEth = BIG_DECIMAL_ZERO
   let currentPrice = BIG_DECIMAL_ZERO
 
-  for (let i = 0; i < pools.length; ++i) {
-    const poolAddress = pools[i]
-    const pool = Pool.load(poolAddress)
-    if (pool === null) {
+  for (let i = 0; i < pairs.length; ++i) {
+    const poolAddress = pairs[i]
+    const pair = Pair.load(poolAddress)
+    if (pair === null) {
       continue // Not created yet
     }
-    const poolKpi = getPoolKpi(poolAddress)
-    const poolToken0Kpi = getTokenKpi(pool.token0)
-    const poolToken1Kpi = getTokenKpi(pool.token1)
+    const pairKpi = getPairKpi(poolAddress)
+    const pairToken0Price = getTokenPrice(pair.token0)
+    const pairToken1Price = getTokenPrice(pair.token1)
 
     if (
-      pool.token0 == token.id &&
-      poolToken1Kpi.pricedOffToken != token.id &&
-      passesLiquidityCheck(poolKpi.reserve0, mostReseveEth)
+      pair.token0 == token.id &&
+      pairToken1Price.pricedOffToken != token.id &&
+      passesLiquidityCheck(pairKpi.reserve0, mostReseveEth)
     ) {
-      const token1 = getOrCreateToken(pool.token1)
+      const token1 = getOrCreateToken(pair.token1)
       if (token1.decimalsSuccess) {
-        const token1Kpi = getTokenKpi(pool.token1)
-        pricedOffToken = token1Kpi.id
-        mostReseveEth = poolKpi.reserveETH
-        currentPrice = poolKpi.token1Price.times(token1Kpi.derivedETH)
+        const token1Price = getTokenPrice(pair.token1)
+        pricedOffToken = token1Price.id
+        pricedOffPair = pair.id
+        mostReseveEth = pairKpi.reserveNative
+        currentPrice = pairKpi.token1Price.times(token1Price.derivedNative)
       }
     }
 
     if (
-      pool.token1 == token.id &&
-      poolToken0Kpi.pricedOffToken != token.id &&
-      passesLiquidityCheck(poolKpi.reserve1, mostReseveEth)
+      pair.token1 == token.id &&
+      pairToken0Price.pricedOffToken != token.id &&
+      passesLiquidityCheck(pairKpi.reserve1, mostReseveEth)
     ) {
-      const token0 = getOrCreateToken(pool.token0)
+      const token0 = getOrCreateToken(pair.token0)
       if (token0.decimalsSuccess) {
-        const token0Kpi = getTokenKpi(pool.token0)
-        pricedOffToken = token0Kpi.id
-        mostReseveEth = poolKpi.reserveETH
-        currentPrice = poolKpi.token0Price.times(token0Kpi.derivedETH)
+        const token0Price = getTokenPrice(pair.token0)
+        pricedOffToken = token0Price.id
+        pricedOffPair = pair.id
+        mostReseveEth = pairKpi.reserveNative
+        currentPrice = pairKpi.token0Price.times(token0Price.derivedNative)
       }
     }
   }
 
   if (currentPrice.gt(BIG_DECIMAL_ZERO)) {
-    currentTokenKpi.pricedOffToken = pricedOffToken
-    currentTokenKpi.derivedETH = currentPrice
-    currentTokenKpi.save()
+    currentTokenPrice.pricedOffToken = pricedOffToken
+    currentTokenPrice.pricedOffPair = pricedOffPair
+    currentTokenPrice.derivedNative = currentPrice
+    currentTokenPrice.save()
   }
-  return currentTokenKpi
+  return currentTokenPrice
 }
 
 function passesLiquidityCheck(reserveETH: BigDecimal, mostReseveEth: BigDecimal): boolean {
