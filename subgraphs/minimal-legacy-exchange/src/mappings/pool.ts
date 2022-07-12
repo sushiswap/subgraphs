@@ -32,8 +32,8 @@ export function onSync(event: Sync): void {
   bundle.nativePrice = getNativePriceInUSD()
   bundle.save()
 
-  const token0Price = updateTokenKpiPrice(pair.token0)
-  const token1Price = updateTokenKpiPrice(pair.token1)
+  const token0Price = updateTokenKpiPrice(pair.token0, bundle.nativePrice)
+  const token1Price = updateTokenKpiPrice(pair.token1, bundle.nativePrice)
 
   pairKpi.liquidityNative = pairKpi.token0Liquidity
     .times(token0Price.derivedNative as BigDecimal)

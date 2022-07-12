@@ -68,7 +68,7 @@ export function getNativePriceInUSD(): BigDecimal {
  * @param tokenAddress The address of the token kpi to update
  * @returns
  */
-export function updateTokenKpiPrice(tokenAddress: string): TokenPrice {
+export function updateTokenKpiPrice(tokenAddress: string, nativePrice: BigDecimal): TokenPrice {
   const token = getOrCreateToken(tokenAddress)
   const currentTokenPrice = getTokenPrice(tokenAddress)
   if (token.id == NATIVE_ADDRESS) {
@@ -131,6 +131,7 @@ export function updateTokenKpiPrice(tokenAddress: string): TokenPrice {
     currentTokenPrice.pricedOffToken = pricedOffToken
     currentTokenPrice.pricedOffPair = pricedOffPair
     currentTokenPrice.derivedNative = currentPrice
+    currentTokenPrice.lastUsdPrice = currentPrice.times(nativePrice)
     currentTokenPrice.save()
   }
   return currentTokenPrice
