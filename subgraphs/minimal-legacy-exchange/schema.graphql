@@ -41,7 +41,19 @@ type TokenPrice @entity {
   " Which pair this price is based on "
   pricedOffPair: Pair
   " All the available pairs for pricing "
-  pairs: [Pair!]!
+  pairs: [TokenPair!]! @derivedFrom(field: "token")
+  " Count of all the pairs "
+  pairCount: BigInt!
+}
+
+
+type TokenPair @entity(immutable: true) {
+  " id is created by combining token.id and count, e.g. 0x00x00:1 "
+  id: ID!
+  " Pair "
+  pair: Pair!
+  " Token "
+  token: TokenPrice!
 }
 
 

@@ -1,4 +1,4 @@
-import { BIG_DECIMAL_ZERO } from '../constants'
+import { BIG_DECIMAL_ZERO, BIG_INT_ZERO } from '../constants'
 import { TokenPrice } from '../../generated/schema'
 
 export function createTokenPrice(id: string): TokenPrice {
@@ -6,7 +6,7 @@ export function createTokenPrice(id: string): TokenPrice {
   price.token = id
   price.derivedNative = BIG_DECIMAL_ZERO
   price.liquidity = BIG_DECIMAL_ZERO
-  price.pairs = []
+  price.pairCount = BIG_INT_ZERO
   price.save()
 
   return price as TokenPrice

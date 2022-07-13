@@ -1,4 +1,4 @@
-import { BigDecimal } from '@graphprotocol/graph-ts'
+import { BigDecimal, log } from '@graphprotocol/graph-ts'
 import {
   BIG_DECIMAL_ONE,
   BIG_DECIMAL_ZERO,
@@ -10,7 +10,7 @@ import {
 } from './constants'
 import { getOrCreateToken } from './functions'
 import { getTokenPrice } from './functions/token-price'
-import { Pair, Token, TokenPrice } from '../generated/schema'
+import { Pair, TokenPair, TokenPrice } from '../generated/schema'
 import { Factory as FactoryContract } from '../generated/templates/Pair/Factory'
 import { getPairKpi } from './functions/pair-kpi'
 
@@ -79,34 +79,40 @@ export function updateTokenKpiPrice(tokenAddress: string, nativePrice: BigDecima
     return currentTokenPrice
   }
 
-  const pairs = currentTokenPrice.pairs
 
   let pricedOffToken = ''
   let pricedOffPair = ''
-  let mostReseveEth = BIG_DECIMAL_ZERO
+  let mostLiquidity = BIG_DECIMAL_ZERO
   let currentPrice = BIG_DECIMAL_ZERO
 
-  for (let i = 0; i < pairs.length; ++i) {
-    const pairAddress = pairs[i]
-    const pair = Pair.load(pairAddress)
+  for (let i = 0; i < currentTokenPrice.pairCount.toI32(); ++i) {
+    const tokenPairRelationshipId = token.id.concat(":").concat(i.toString())
+    const tokenPairRelationship = TokenPair.load(tokenPairRelationshipId)
+
+    if (tokenPairRelationship === null) {
+      continue // Not created yet
+    }
+
+    const pair = Pair.load(tokenPairRelationship.pair)
     if (pair === null) {
       continue // Not created yet
     }
-    const pairKpi = getPairKpi(pairAddress)
+
+    const pairKpi = getPairKpi(pair.id)
     const pairToken0Price = getTokenPrice(pair.token0)
     const pairToken1Price = getTokenPrice(pair.token1)
 
     if (
       pair.token0 == token.id &&
       pairToken1Price.pricedOffToken != token.id &&
-      passesLiquidityCheck(pairKpi.token0Liquidity, mostReseveEth)
+      passesLiquidityCheck(pairKpi.token0Liquidity, mostLiquidity)
     ) {
       const token1 = getOrCreateToken(pair.token1)
       if (token1.decimalsSuccess) {
         const token1Price = getTokenPrice(pair.token1)
         pricedOffToken = token1Price.id
         pricedOffPair = pair.id
-        mostReseveEth = pairKpi.liquidityNative
+        mostLiquidity = pairKpi.liquidityNative
         currentPrice = pairKpi.token1Price.times(token1Price.derivedNative)
       }
     }
@@ -114,14 +120,15 @@ export function updateTokenKpiPrice(tokenAddress: string, nativePrice: BigDecima
     if (
       pair.token1 == token.id &&
       pairToken0Price.pricedOffToken != token.id &&
-      passesLiquidityCheck(pairKpi.token1Liquidity, mostReseveEth)
+      passesLiquidityCheck(pairKpi.token1Liquidity, mostLiquidity)
     ) {
       const token0 = getOrCreateToken(pair.token0)
       if (token0.decimalsSuccess) {
+
         const token0Price = getTokenPrice(pair.token0)
         pricedOffToken = token0Price.id
         pricedOffPair = pair.id
-        mostReseveEth = pairKpi.liquidityNative
+        mostLiquidity = pairKpi.liquidityNative
         currentPrice = pairKpi.token0Price.times(token0Price.derivedNative)
       }
     }
@@ -137,6 +144,6 @@ export function updateTokenKpiPrice(tokenAddress: string, nativePrice: BigDecima
   return currentTokenPrice
 }
 
-function passesLiquidityCheck(reserveETH: BigDecimal, mostReseveEth: BigDecimal): boolean {
-  return reserveETH.gt(MINIMUM_NATIVE_LIQUIDITY) && reserveETH.gt(mostReseveEth)
+function passesLiquidityCheck(reserveNative: BigDecimal, mostReseveEth: BigDecimal): boolean {
+  return reserveNative.gt(MINIMUM_NATIVE_LIQUIDITY) && reserveNative.gt(mostReseveEth)
 }

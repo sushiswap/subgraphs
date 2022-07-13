@@ -15,15 +15,13 @@ export function onSync(event: Sync): void {
   const token0 = getOrCreateToken(pair.token0)
   const token1 = getOrCreateToken(pair.token1)
 
-  const token0LiquidityDifference = convertTokenToDecimal(event.params.reserve0, token0.decimals).minus(
-    pairKpi.token0Liquidity
-  )
-  const token1LiquidityDifference = convertTokenToDecimal(event.params.reserve1, token1.decimals).minus(
-    pairKpi.token1Liquidity
-  )
+  const newToken0Liquidity = convertTokenToDecimal(event.params.reserve0, token0.decimals)
+  const newToken1Liquidity = convertTokenToDecimal(event.params.reserve1, token1.decimals)
+  const token0LiquidityDifference = newToken0Liquidity.minus(pairKpi.token0Liquidity)
+  const token1LiquidityDifference = newToken1Liquidity.minus(pairKpi.token1Liquidity)
 
-  pairKpi.token0Liquidity = convertTokenToDecimal(event.params.reserve0, token0.decimals)
-  pairKpi.token1Liquidity = convertTokenToDecimal(event.params.reserve1, token1.decimals)
+  pairKpi.token0Liquidity = newToken0Liquidity
+  pairKpi.token1Liquidity = newToken1Liquidity
 
   if (pairKpi.token1Liquidity.notEqual(BIG_DECIMAL_ZERO)) {
     pairKpi.token0Price = pairKpi.token0Liquidity.div(pairKpi.token1Liquidity)
