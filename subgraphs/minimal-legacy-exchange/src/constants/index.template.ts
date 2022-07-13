@@ -14,6 +14,8 @@ export function getCreate2Address(from: Bytes, salt: Bytes, initCodeHash: Bytes)
   ) as Bytes
 }
 
+export const LEGACY = "LEGACY"
+
 export const NULL_CALL_RESULT_VALUE = '0x0000000000000000000000000000000000000000000000000000000000000001'
 
 export const BIG_INT_ZERO = BigInt.fromI32(0)

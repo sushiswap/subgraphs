@@ -72,6 +72,8 @@ type Pair @entity(immutable: true) {
   token0Price: TokenPrice!
   " Second tokens price "
   token1Price: TokenPrice!
+  " Which source this pair comes from, in this case it will always be 'LEGACY' "
+  source: String!
 }
 
 type PairKpi @entity {

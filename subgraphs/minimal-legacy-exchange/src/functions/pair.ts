@@ -1,3 +1,4 @@
+import { LEGACY } from '../constants'
 import { PairCreated__Params } from '../../generated/Factory/Factory'
 import { Pair } from '../../generated/schema'
 import { Pair as PairTemplate } from '../../generated/templates'
@@ -21,6 +22,7 @@ export function createPair(params: PairCreated__Params): Pair {
   pair.token0 = token0.id
   pair.token1 = token1.id
   pair.kpi = id
+  pair.source = LEGACY
   pair.save()
 
   // create the tracked contract based on the template
