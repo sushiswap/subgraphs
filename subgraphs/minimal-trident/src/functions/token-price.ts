@@ -1,5 +1,6 @@
 import { BIG_DECIMAL_ZERO, BIG_INT_ZERO } from '../constants'
 import { TokenPrice } from '../../generated/schema'
+import { createRebase } from './rebase'
 
 export function createTokenPrice(id: string): TokenPrice {
   let price = new TokenPrice(id)

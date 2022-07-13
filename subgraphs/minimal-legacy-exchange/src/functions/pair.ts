@@ -21,6 +21,8 @@ export function createPair(params: PairCreated__Params): Pair {
   pair.name = token0.symbol.concat('-').concat(token1.symbol)
   pair.token0 = token0.id
   pair.token1 = token1.id
+  pair.token0Price = token0.id
+  pair.token1Price = token1.id
   pair.kpi = id
   pair.source = LEGACY
   pair.save()
