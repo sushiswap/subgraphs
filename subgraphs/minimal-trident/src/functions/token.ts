@@ -4,6 +4,7 @@ import { NameBytes32 } from '../../generated/MasterDeployer/NameBytes32'
 import { SymbolBytes32 } from '../../generated/MasterDeployer/SymbolBytes32'
 import { Token } from '../../generated/schema'
 import { getOrCreateRebase } from './rebase'
+import { createTokenKpi } from './token-kpi'
 import { createTokenPrice } from './token-price'
 
 export function getOrCreateToken(id: string): Token {
@@ -12,6 +13,7 @@ export function getOrCreateToken(id: string): Token {
   if (token === null) {
     token = new Token(id)
     createTokenPrice(id)
+    createTokenKpi(id)
 
     const contract = ERC20.bind(Address.fromString(id))
 
@@ -36,6 +38,13 @@ export function getOrCreateToken(id: string): Token {
   if (token.price === null) {
     const price = createTokenPrice(id)
     token.price = price.id
+    token.save()
+  }
+
+  // To deal with grafting issues
+  if (token.kpi === null) {
+    const kpi = createTokenKpi(id)
+    token.kpi = kpi.id
     token.save()
   }
 
