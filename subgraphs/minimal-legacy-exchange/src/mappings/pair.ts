@@ -1,12 +1,12 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { Transfer } from '../../generated/Factory/ERC20'
-import { PairKpi } from '../../generated/schema'
 import { Sync } from '../../generated/Factory/Pair'
+import { PairKpi } from '../../generated/schema'
 import { ADDRESS_ZERO, BIG_DECIMAL_ZERO } from '../constants'
 import { convertTokenToDecimal, getOrCreateBundle, getOrCreateToken, getPair } from '../functions'
 import { getPairKpi } from '../functions/pair-kpi'
-import { getNativePriceInUSD, updateTokenPrice as updateTokenPrice } from '../pricing'
-import { getTokenPrice } from 'src/functions/token-price'
+import { getTokenPrice } from '../functions/token-price'
+import { getNativePriceInUSD, updateTokenPrice } from '../pricing'
 
 export function onSync(event: Sync): void {
   const pairId = event.address.toHex()
