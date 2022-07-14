@@ -64,21 +64,20 @@ export function getNativePriceInUSD(): BigDecimal {
 }
 
 /**
- * Updates the token KPI price for the given token.
+ * Updates the token price.
  * Find the pair that contains the most liquidity and is safe from circular price dependency,
  * (e.g. if DAI is priced off USDC, then USDC cannot be priced off DAI)
- * @param tokenAddress The address of the token kpi to update
+ * @param tokenPrice The token price to update
  * @returns
  */
-export function updateTokenKpiPrice(tokenAddress: string, nativePrice: BigDecimal): TokenPrice {
-  const token = getOrCreateToken(tokenAddress)
-  const currentTokenPrice = getTokenPrice(tokenAddress)
-  if (token.id == NATIVE_ADDRESS) {
-    if (!currentTokenPrice.derivedNative.equals(BIG_DECIMAL_ONE)) {
-      currentTokenPrice.derivedNative = BIG_DECIMAL_ONE
-      currentTokenPrice.save()
+export function updateTokenPrice(tokenPrice: TokenPrice, nativePrice: BigDecimal): TokenPrice {
+
+  if (tokenPrice.id == NATIVE_ADDRESS) {
+    if (!tokenPrice.derivedNative.equals(BIG_DECIMAL_ONE)) {
+      tokenPrice.derivedNative = BIG_DECIMAL_ONE
+      tokenPrice.save()
     }
-    return currentTokenPrice
+    return tokenPrice
   }
 
   let pricedOffToken = ''
@@ -86,8 +85,8 @@ export function updateTokenKpiPrice(tokenAddress: string, nativePrice: BigDecima
   let mostLiquidity = BIG_DECIMAL_ZERO
   let currentPrice = BIG_DECIMAL_ZERO
 
-  for (let i = 0; i < currentTokenPrice.pairCount.toI32(); ++i) {
-    const tokenPairRelationshipId = token.id.concat(':').concat(i.toString())
+  for (let i = 0; i < tokenPrice.pairCount.toI32(); ++i) {
+    const tokenPairRelationshipId = tokenPrice.id.concat(':').concat(i.toString())
     const tokenPairRelationship = TokenPair.load(tokenPairRelationshipId)
 
     if (tokenPairRelationship === null) {
@@ -104,8 +103,8 @@ export function updateTokenKpiPrice(tokenAddress: string, nativePrice: BigDecima
     const pairToken1Price = getTokenPrice(pair.token1)
 
     if (
-      pair.token0 == token.id &&
-      pairToken1Price.pricedOffToken != token.id &&
+      pair.token0 == tokenPrice.id &&
+      pairToken1Price.pricedOffToken != tokenPrice.id &&
       passesLiquidityCheck(pairKpi.token0Liquidity, mostLiquidity)
     ) {
       const token1 = getOrCreateToken(pair.token1)
@@ -119,8 +118,8 @@ export function updateTokenKpiPrice(tokenAddress: string, nativePrice: BigDecima
     }
 
     if (
-      pair.token1 == token.id &&
-      pairToken0Price.pricedOffToken != token.id &&
+      pair.token1 == tokenPrice.id &&
+      pairToken0Price.pricedOffToken != tokenPrice.id &&
       passesLiquidityCheck(pairKpi.token1Liquidity, mostLiquidity)
     ) {
       const token0 = getOrCreateToken(pair.token0)
@@ -135,13 +134,13 @@ export function updateTokenKpiPrice(tokenAddress: string, nativePrice: BigDecima
   }
 
   if (currentPrice.gt(BIG_DECIMAL_ZERO)) {
-    currentTokenPrice.pricedOffToken = pricedOffToken
-    currentTokenPrice.pricedOffPair = pricedOffPair
-    currentTokenPrice.derivedNative = currentPrice
-    currentTokenPrice.lastUsdPrice = currentPrice.times(nativePrice)
-    currentTokenPrice.save()
+    tokenPrice.pricedOffToken = pricedOffToken
+    tokenPrice.pricedOffPair = pricedOffPair
+    tokenPrice.derivedNative = currentPrice
+    tokenPrice.lastUsdPrice = currentPrice.times(nativePrice)
+    tokenPrice.save()
   }
-  return currentTokenPrice
+  return tokenPrice
 }
 
 function passesLiquidityCheck(reserveNative: BigDecimal, mostReseveEth: BigDecimal): boolean {

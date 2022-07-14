@@ -5,7 +5,8 @@ import { Sync } from '../../generated/Factory/Pair'
 import { ADDRESS_ZERO, BIG_DECIMAL_ZERO } from '../constants'
 import { convertTokenToDecimal, getOrCreateBundle, getOrCreateToken, getPair } from '../functions'
 import { getPairKpi } from '../functions/pair-kpi'
-import { getNativePriceInUSD, updateTokenKpiPrice as updateTokenPrice } from '../pricing'
+import { getNativePriceInUSD, updateTokenPrice as updateTokenPrice } from '../pricing'
+import { getTokenPrice } from 'src/functions/token-price'
 
 export function onSync(event: Sync): void {
   const pairId = event.address.toHex()
@@ -14,11 +15,15 @@ export function onSync(event: Sync): void {
 
   const token0 = getOrCreateToken(pair.token0)
   const token1 = getOrCreateToken(pair.token1)
+  let token0Price = getTokenPrice(pair.token0)
+  let token1Price = getTokenPrice(pair.token1)
+
+  // Reset liquidity
+  token0Price.liquidity = token0Price.liquidity.minus(pairKpi.token0Liquidity)
+  token1Price.liquidity = token1Price.liquidity.minus(pairKpi.token1Liquidity)
 
   const newToken0Liquidity = convertTokenToDecimal(event.params.reserve0, token0.decimals)
   const newToken1Liquidity = convertTokenToDecimal(event.params.reserve1, token1.decimals)
-  const token0LiquidityDifference = newToken0Liquidity.minus(pairKpi.token0Liquidity)
-  const token1LiquidityDifference = newToken1Liquidity.minus(pairKpi.token1Liquidity)
 
   pairKpi.token0Liquidity = newToken0Liquidity
   pairKpi.token1Liquidity = newToken1Liquidity
@@ -39,11 +44,11 @@ export function onSync(event: Sync): void {
   bundle.nativePrice = getNativePriceInUSD()
   bundle.save()
 
-  const token0Price = updateTokenPrice(pair.token0, bundle.nativePrice)
-  const token1Price = updateTokenPrice(pair.token1, bundle.nativePrice)
+  token0Price = updateTokenPrice(token0Price, bundle.nativePrice)
+  token1Price = updateTokenPrice(token1Price, bundle.nativePrice)
 
-  token0Price.liquidity = token0Price.liquidity.plus(token0LiquidityDifference)
-  token1Price.liquidity = token1Price.liquidity.plus(token1LiquidityDifference)
+  token0Price.liquidity = token0Price.liquidity.plus(newToken0Liquidity)
+  token1Price.liquidity = token1Price.liquidity.plus(newToken1Liquidity)
   token0Price.save()
   token1Price.save()
 
