@@ -1,4 +1,4 @@
-import { Address, BigDecimal, BigInt, ByteArray, Bytes, crypto } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal, BigInt, ByteArray, Bytes, crypto, log } from '@graphprotocol/graph-ts'
 
 class CombinateReturn {
   tokens: string[]
@@ -32,8 +32,7 @@ export function getCreate2Address(from: Bytes, salt: String, initCodeHash: Bytes
   ) as Bytes
 }
 
-
-export const TRIDENT = "TRIDENT"
+export const TRIDENT = 'TRIDENT'
 
 export const NULL_CALL_RESULT_VALUE = '0x0000000000000000000000000000000000000000000000000000000000000001'
 
@@ -44,7 +43,6 @@ export const BIG_DECIMAL_ZERO = BigDecimal.fromString('0')
 export const BIG_DECIMAL_ONE = BigDecimal.fromString('1')
 
 export const BIG_INT_ONE = BigInt.fromI32(1)
-
 
 export const ADDRESS_ZERO = Address.fromString('0x0000000000000000000000000000000000000000')
 
@@ -66,21 +64,23 @@ export const WHITELISTED_TOKEN_ADDRESSES: string[] = '{{ trident.whitelistedToke
 
 export const STABLE_TOKEN_ADDRESSES: string[] = '{{ trident.stableTokenAddresses }}'.split(',')
 
-// export const STABLE_POOL_ADDRESSES: string[] = '{{ trident.stablePoolAddresses }}'.split(',')
+export const PRESET_STABLE_POOL_ADDRESSES: string[] = '{{ trident.stablePoolAddresses }}'.split(',')
 
 const STABLE_POOL_PERMUTATIONS = combinate(STABLE_TOKEN_ADDRESSES, NATIVE_ADDRESS, [false, true], [1, 5, 10, 30, 100])
 
-export const STABLE_POOL_ADDRESSES: string[] = STABLE_POOL_PERMUTATIONS.map<string>((perm: CombinateReturn) => {
-  const factory = Bytes.fromByteArray(Bytes.fromHexString('{{ constantProductPoolFactory.address }}'))
-  const token0 = perm.tokens[0].slice(2).padStart(64, '0')
-  const token1 = perm.tokens[1].slice(2).padStart(64, '0')
-  const fee = (perm.fee as i32).toString(16).padStart(64, '0')
-  const oracle = (+perm.oracle as i32).toString(16).padStart(64, '0')
-  const keccak = crypto.keccak256(ByteArray.fromHexString('0x' + token0 + token1 + fee + oracle)).toHex()
-  const initCodeHash = Bytes.fromByteArray(Bytes.fromHexString('{{ constantProductPoolFactory.initCodeHash }}'))
+export const INIT_CODE_HASH = '{{ constantProductPoolFactory.initCodeHash }}'
 
-  return getCreate2Address(factory, keccak, initCodeHash).toHex()
-})
+export const STABLE_POOL_ADDRESSES: string[] = STABLE_POOL_PERMUTATIONS.map<string>((perm: CombinateReturn) => {
+      const factory = Bytes.fromByteArray(Bytes.fromHexString('{{ constantProductPoolFactory.address }}'))
+      const token0 = perm.tokens[0].slice(2).padStart(64, '0')
+      const token1 = perm.tokens[1].slice(2).padStart(64, '0')
+      const fee = (perm.fee as i32).toString(16).padStart(64, '0')
+      const oracle = (+perm.oracle as i32).toString(16).padStart(64, '0')
+      const keccak = crypto.keccak256(ByteArray.fromHexString('0x' + token0 + token1 + fee + oracle)).toHex()
+      const initCodeHash = Bytes.fromByteArray(Bytes.fromHexString(INIT_CODE_HASH))
+
+      return getCreate2Address(factory, keccak, initCodeHash).toHex()
+    })
 
 // Minimum liqudiity threshold in native currency
 export const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('{{ trident.minimumNativeLiquidity }}')

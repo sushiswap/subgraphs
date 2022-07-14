@@ -1,4 +1,4 @@
-import { BigDecimal } from '@graphprotocol/graph-ts'
+import { BigDecimal, log } from '@graphprotocol/graph-ts'
 import { Pair, TokenPair, TokenPrice } from '../generated/schema'
 import {
   BIG_DECIMAL_ONE,
@@ -6,12 +6,13 @@ import {
   MINIMUM_NATIVE_LIQUIDITY,
   NATIVE_ADDRESS,
   STABLE_POOL_ADDRESSES,
-  STABLE_TOKEN_ADDRESSES
+  STABLE_TOKEN_ADDRESSES,
+  INIT_CODE_HASH,
+  PRESET_STABLE_POOL_ADDRESSES,
 } from './constants'
 import { getOrCreateToken } from './functions'
 import { getPairKpi } from './functions/pair-kpi'
 import { getTokenPrice } from './functions/token-price'
-
 
 export function getNativePriceInUSD(): BigDecimal {
   let count = 0
@@ -20,8 +21,12 @@ export function getNativePriceInUSD(): BigDecimal {
   let stablePrices: BigDecimal[] = []
   let nativeReserves: BigDecimal[] = []
 
-  for (let i = 0; i < STABLE_POOL_ADDRESSES.length; i++) {
-    const address = STABLE_POOL_ADDRESSES[i]
+  // NOTE: if no initCodeHash is added to the configuration, we will use a preset pool list instead. The reason for this criteria is that
+  // polygon has a bug that makes addresses non deterministic.
+  const stablePoolAddresses = INIT_CODE_HASH != "" ? STABLE_POOL_ADDRESSES : PRESET_STABLE_POOL_ADDRESSES
+
+  for (let i = 0; i < stablePoolAddresses.length; i++) {
+    const address = stablePoolAddresses[i]
 
     const stablePair = Pair.load(address)
     if (stablePair === null) {
@@ -76,14 +81,13 @@ export function updateTokenKpiPrice(tokenAddress: string, nativePrice: BigDecima
     return currentTokenPrice
   }
 
-
   let pricedOffToken = ''
   let pricedOffPair = ''
   let mostLiquidity = BIG_DECIMAL_ZERO
   let currentPrice = BIG_DECIMAL_ZERO
 
   for (let i = 0; i < currentTokenPrice.pairCount.toI32(); ++i) {
-    const tokenPairRelationshipId = token.id.concat(":").concat(i.toString())
+    const tokenPairRelationshipId = token.id.concat(':').concat(i.toString())
     const tokenPairRelationship = TokenPair.load(tokenPairRelationshipId)
 
     if (tokenPairRelationship === null) {
@@ -121,7 +125,6 @@ export function updateTokenKpiPrice(tokenAddress: string, nativePrice: BigDecima
     ) {
       const token0 = getOrCreateToken(pair.token0)
       if (token0.decimalsSuccess) {
-
         const token0Price = getTokenPrice(pair.token0)
         pricedOffToken = token0Price.id
         pricedOffPair = pair.id
