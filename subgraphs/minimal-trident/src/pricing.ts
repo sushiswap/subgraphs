@@ -68,7 +68,7 @@ export function getNativePriceInUSD(): BigDecimal {
  * Updates the token price.
  * Find the pair that contains the most liquidity and is safe from circular price dependency,
  * (e.g. if DAI is priced off USDC, then USDC cannot be priced off DAI)
- * @param tokenAddress The address of the token kpi to update
+ * @param tokenAddress The address of the token to update
  * @returns
  */
 export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal): TokenPrice {

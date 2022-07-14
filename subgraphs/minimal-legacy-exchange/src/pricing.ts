@@ -1,4 +1,6 @@
-import { BigDecimal, log } from '@graphprotocol/graph-ts'
+import { BigDecimal } from '@graphprotocol/graph-ts'
+import { Pair, TokenPair, TokenPrice } from '../generated/schema'
+import { Factory as FactoryContract } from '../generated/templates/Pair/Factory'
 import {
   BIG_DECIMAL_ONE,
   BIG_DECIMAL_ZERO,
@@ -9,10 +11,9 @@ import {
   STABLE_TOKEN_ADDRESSES,
 } from './constants'
 import { getOrCreateToken } from './functions'
-import { getTokenPrice } from './functions/token-price'
-import { Pair, TokenPair, TokenPrice } from '../generated/schema'
-import { Factory as FactoryContract } from '../generated/templates/Pair/Factory'
 import { getPairKpi } from './functions/pair-kpi'
+import { getTokenKpi } from './functions/token-kpi'
+import { getTokenPrice } from './functions/token-price'
 
 export const factoryContract = FactoryContract.bind(FACTORY_ADDRESS)
 
@@ -65,27 +66,28 @@ export function getNativePriceInUSD(): BigDecimal {
  * Updates the token price.
  * Find the pair that contains the most liquidity and is safe from circular price dependency,
  * (e.g. if DAI is priced off USDC, then USDC cannot be priced off DAI)
- * @param tokenPrice The token price to update
+ * @param tokenAddress The address of the token to update
  * @returns
  */
- export function updateTokenPrice(tokenPrice: TokenPrice, nativePrice: BigDecimal): TokenPrice {
-
-  if (tokenPrice.id == NATIVE_ADDRESS) {
-    if (!tokenPrice.derivedNative.equals(BIG_DECIMAL_ONE)) {
-      tokenPrice.derivedNative = BIG_DECIMAL_ONE
-      tokenPrice.save()
+export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal): TokenPrice {
+  const token = getOrCreateToken(tokenAddress)
+  const currentTokenPrice = getTokenPrice(tokenAddress)
+  const tokenKpi = getTokenKpi(tokenAddress)
+  if (token.id == NATIVE_ADDRESS) {
+    if (!currentTokenPrice.derivedNative.equals(BIG_DECIMAL_ONE)) {
+      currentTokenPrice.derivedNative = BIG_DECIMAL_ONE
+      currentTokenPrice.save()
     }
-    return tokenPrice
+    return currentTokenPrice
   }
-
 
   let pricedOffToken = ''
   let pricedOffPair = ''
   let mostLiquidity = BIG_DECIMAL_ZERO
   let currentPrice = BIG_DECIMAL_ZERO
 
-  for (let i = 0; i < tokenPrice.pairCount.toI32(); ++i) {
-    const tokenPairRelationshipId = tokenPrice.id.concat(":").concat(i.toString())
+  for (let i = 0; i < tokenKpi.pairCount.toI32(); ++i) {
+    const tokenPairRelationshipId = token.id.concat(':').concat(i.toString())
     const tokenPairRelationship = TokenPair.load(tokenPairRelationshipId)
 
     if (tokenPairRelationship === null) {
@@ -102,8 +104,8 @@ export function getNativePriceInUSD(): BigDecimal {
     const pairToken1Price = getTokenPrice(pair.token1)
 
     if (
-      pair.token0 == tokenPrice.id &&
-      pairToken1Price.pricedOffToken != tokenPrice.id &&
+      pair.token0 == token.id &&
+      pairToken1Price.pricedOffToken != token.id &&
       passesLiquidityCheck(pairKpi.token0Liquidity, mostLiquidity)
     ) {
       const token1 = getOrCreateToken(pair.token1)
@@ -117,13 +119,12 @@ export function getNativePriceInUSD(): BigDecimal {
     }
 
     if (
-      pair.token1 == tokenPrice.id &&
-      pairToken0Price.pricedOffToken != tokenPrice.id &&
+      pair.token1 == token.id &&
+      pairToken0Price.pricedOffToken != token.id &&
       passesLiquidityCheck(pairKpi.token1Liquidity, mostLiquidity)
     ) {
       const token0 = getOrCreateToken(pair.token0)
       if (token0.decimalsSuccess) {
-
         const token0Price = getTokenPrice(pair.token0)
         pricedOffToken = token0Price.id
         pricedOffPair = pair.id
@@ -134,13 +135,13 @@ export function getNativePriceInUSD(): BigDecimal {
   }
 
   if (currentPrice.gt(BIG_DECIMAL_ZERO)) {
-    tokenPrice.pricedOffToken = pricedOffToken
-    tokenPrice.pricedOffPair = pricedOffPair
-    tokenPrice.derivedNative = currentPrice
-    tokenPrice.lastUsdPrice = currentPrice.times(nativePrice)
-    tokenPrice.save()
+    currentTokenPrice.pricedOffToken = pricedOffToken
+    currentTokenPrice.pricedOffPair = pricedOffPair
+    currentTokenPrice.derivedNative = currentPrice
+    currentTokenPrice.lastUsdPrice = currentPrice.times(nativePrice)
+    currentTokenPrice.save()
   }
-  return tokenPrice
+  return currentTokenPrice
 }
 
 function passesLiquidityCheck(reserveNative: BigDecimal, mostReseveEth: BigDecimal): boolean {

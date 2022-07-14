@@ -11,6 +11,8 @@ type Token @entity(immutable: true) {
   id: ID!
   " Token Price "
   price: TokenPrice!
+  " Token Kpi "
+  kpi: TokenKpi!
   " Symbol of the token "
   symbol: String!
   " if symbol was successfully retrieved "
@@ -23,6 +25,8 @@ type Token @entity(immutable: true) {
   decimals: BigInt!
   " if decimals were successfully retrieved "
   decimalsSuccess: Boolean!
+  " All pairs where this token is involved in "
+  pairs: [TokenPair!]! @derivedFrom(field: "token")
 }
 
 type TokenPrice @entity {
@@ -34,32 +38,43 @@ type TokenPrice @entity {
   derivedNative: BigDecimal!
   " price in USD. NOTE: this will not always be up to date, it only updates when onSync event is emitted, bundle.nativePrice could have changed. "
   lastUsdPrice: BigDecimal!
-  " Liquidity across all pairs. "
-  liquidity: BigDecimal!
   " Which token this price is based on "
   pricedOffToken: Token
   " Which pair this price is based on "
   pricedOffPair: Pair
-  " All the available pairs for pricing "
-  pairs: [TokenPair!]! @derivedFrom(field: "token")
+}
+
+type TokenKpi @entity {
+  " same as token entity id, address of token "
+  id: ID!
+  " Token "
+  token: Token!
+  " Liquidity "
+  liquidity: BigDecimal!
+  " Liquidity in native "
+  liquidityNative: BigDecimal!
+  " Liquidity in USD "
+  liquidityUSD: BigDecimal!
   " Count of all the pairs "
   pairCount: BigInt!
 }
-
 
 type TokenPair @entity(immutable: true) {
   " id is created by combining token.id and count, e.g. 0x00x00:1 "
   id: ID!
   " Pair "
   pair: Pair!
-  " Token "
-  token: TokenPrice!
+  " Token "  
+  token: Token!
 }
-
 
 type Pair @entity(immutable: true) {
   " Pair address (contract address) "
   id: ID!
+    " Swap fee "
+  swapFee: BigInt!
+  " TWAP - time weighted average price "
+  twapEnabled: Boolean!
   " Pair KPI "
   kpi: PairKpi!
   " name of the pair, this combines symbol of both tokens, e.g. WETH/SUSHI "

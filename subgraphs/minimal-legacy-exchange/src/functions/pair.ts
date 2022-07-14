@@ -1,7 +1,7 @@
-import { LEGACY } from '../constants'
 import { PairCreated__Params } from '../../generated/Factory/Factory'
 import { Pair } from '../../generated/schema'
 import { Pair as PairTemplate } from '../../generated/templates'
+import { LEGACY, SWAP_FEE, TWAP_ENABLED } from '../constants'
 import { createPairKpi } from './pair-kpi'
 import { getOrCreateToken } from './token'
 import { createTokenPair } from './token-pair'
@@ -19,6 +19,8 @@ export function createPair(params: PairCreated__Params): Pair {
   createTokenPair(token1.id, id)
 
   pair.name = token0.symbol.concat('-').concat(token1.symbol)
+  pair.swapFee = SWAP_FEE
+  pair.twapEnabled = TWAP_ENABLED
   pair.token0 = token0.id
   pair.token1 = token1.id
   pair.token0Price = token0.id

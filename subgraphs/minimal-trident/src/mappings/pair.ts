@@ -26,8 +26,8 @@ export function onSync(event: Sync): void {
   const token0 = getOrCreateToken(pair.token0)
   const token1 = getOrCreateToken(pair.token1)
 
-  let token0Kpi = getTokenKpi(pair.token0)
-  let token1Kpi = getTokenKpi(pair.token1)
+  const token0Kpi = getTokenKpi(pair.token0)
+  const token1Kpi = getTokenKpi(pair.token1)
 
   // Reset liquidity
   token0Kpi.liquidity = token0Kpi.liquidity.minus(pairKpi.token0Liquidity)

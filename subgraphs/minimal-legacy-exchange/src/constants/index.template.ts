@@ -26,6 +26,10 @@ export const BIG_DECIMAL_ONE = BigDecimal.fromString('1')
 
 export const BIG_INT_ONE = BigInt.fromI32(1)
 
+export const SWAP_FEE = BigInt.fromI32(30)
+
+export const TWAP_ENABLED = false
+
 export const ADDRESS_ZERO = Address.fromString('0x0000000000000000000000000000000000000000')
 
 export const FACTORY_ADDRESS = Address.fromString('{{ legacy.factory.address }}')

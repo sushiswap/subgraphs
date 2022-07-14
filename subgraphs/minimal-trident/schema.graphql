@@ -27,7 +27,7 @@ type Token @entity {
   decimals: BigInt!
   " if decimals were successfully retrieved "
   decimalsSuccess: Boolean!
-  " All the available pairs for pricing "
+    " All pairs where this token is involved in "
   pairs: [TokenPair!]! @derivedFrom(field: "token")
 }
 
@@ -45,7 +45,6 @@ type TokenPrice @entity {
   " Which pair this price is based on "
   pricedOffPair: Pair
 }
-
 
 type TokenKpi @entity {
   " same as token entity id, address of token "

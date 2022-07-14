@@ -5,7 +5,7 @@ import { PairKpi } from '../../generated/schema'
 import { ADDRESS_ZERO, BIG_DECIMAL_ZERO } from '../constants'
 import { convertTokenToDecimal, getOrCreateBundle, getOrCreateToken, getPair } from '../functions'
 import { getPairKpi } from '../functions/pair-kpi'
-import { getTokenPrice } from '../functions/token-price'
+import { getTokenKpi } from '../functions/token-kpi'
 import { getNativePriceInUSD, updateTokenPrice } from '../pricing'
 
 export function onSync(event: Sync): void {
@@ -15,12 +15,12 @@ export function onSync(event: Sync): void {
 
   const token0 = getOrCreateToken(pair.token0)
   const token1 = getOrCreateToken(pair.token1)
-  let token0Price = getTokenPrice(pair.token0)
-  let token1Price = getTokenPrice(pair.token1)
+  const token0Kpi = getTokenKpi(pair.token0)
+  const token1Kpi = getTokenKpi(pair.token1)
 
   // Reset liquidity
-  token0Price.liquidity = token0Price.liquidity.minus(pairKpi.token0Liquidity)
-  token1Price.liquidity = token1Price.liquidity.minus(pairKpi.token1Liquidity)
+  token0Kpi.liquidity = token0Kpi.liquidity.minus(pairKpi.token0Liquidity)
+  token1Kpi.liquidity = token1Kpi.liquidity.minus(pairKpi.token1Liquidity)
 
   const newToken0Liquidity = convertTokenToDecimal(event.params.reserve0, token0.decimals)
   const newToken1Liquidity = convertTokenToDecimal(event.params.reserve1, token1.decimals)
@@ -44,13 +44,18 @@ export function onSync(event: Sync): void {
   bundle.nativePrice = getNativePriceInUSD()
   bundle.save()
 
-  token0Price = updateTokenPrice(token0Price, bundle.nativePrice)
-  token1Price = updateTokenPrice(token1Price, bundle.nativePrice)
+  const token0Price = updateTokenPrice(token0.id, bundle.nativePrice)
+  const token1Price = updateTokenPrice(token1.id, bundle.nativePrice)
+  token0Kpi.liquidity = token0Kpi.liquidity.plus(newToken0Liquidity)
+  token0Kpi.liquidityNative = token0Kpi.liquidityNative.plus(newToken0Liquidity.times(token0Price.derivedNative))
+  token0Kpi.liquidityUSD = token0Kpi.liquidityUSD.plus(token0Kpi.liquidityNative.times(bundle.nativePrice))
 
-  token0Price.liquidity = token0Price.liquidity.plus(newToken0Liquidity)
-  token1Price.liquidity = token1Price.liquidity.plus(newToken1Liquidity)
-  token0Price.save()
-  token1Price.save()
+  token1Kpi.liquidity = token1Kpi.liquidity.plus(newToken1Liquidity)
+  token1Kpi.liquidityNative = token1Kpi.liquidityNative.plus(newToken1Liquidity.times(token1Price.derivedNative))
+  token1Kpi.liquidityUSD = token1Kpi.liquidityUSD.plus(token1Kpi.liquidityNative.times(bundle.nativePrice))
+
+  token0Kpi.save()
+  token1Kpi.save()
 
   pairKpi.liquidityNative = pairKpi.token0Liquidity
     .times(token0Price.derivedNative as BigDecimal)

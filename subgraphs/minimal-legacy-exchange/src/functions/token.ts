@@ -3,6 +3,7 @@ import { ERC20 } from '../../generated/Factory/ERC20'
 import { NameBytes32 } from '../../generated/Factory/NameBytes32'
 import { SymbolBytes32 } from '../../generated/Factory/SymbolBytes32'
 import { Token } from '../../generated/schema'
+import { createTokenKpi } from './token-kpi'
 import { createTokenPrice } from './token-price'
 
 export function getOrCreateToken(id: string): Token {
@@ -11,6 +12,7 @@ export function getOrCreateToken(id: string): Token {
   if (token === null) {
     token = new Token(id)
     createTokenPrice(id)
+    createTokenKpi(id)
 
     const contract = ERC20.bind(Address.fromString(id))
 
@@ -18,6 +20,7 @@ export function getOrCreateToken(id: string): Token {
     const name = getTokenName(contract)
     const symbol = getTokenSymbol(contract)
     token.price = id
+    token.kpi = id
     token.name = name.value
     token.nameSuccess = name.success
     token.symbol = symbol.value
@@ -26,7 +29,6 @@ export function getOrCreateToken(id: string): Token {
     token.decimalsSuccess = decimals.success
 
     token.save()
-
   }
 
   return token as Token
