@@ -28,7 +28,7 @@ export const BIG_INT_ONE = BigInt.fromI32(1)
 
 export const SWAP_FEE = BigInt.fromI32(30)
 
-export const TWAP_ENABLED = false
+export const TWAP_ENABLED = true
 
 export const ADDRESS_ZERO = Address.fromString('0x0000000000000000000000000000000000000000')
 
