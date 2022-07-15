@@ -1,17 +1,25 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts'
-
+import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { ERC20 } from '../../generated/BentoBox/ERC20'
 import { NameBytes32 } from '../../generated/BentoBox/NameBytes32'
 import { SymbolBytes32 } from '../../generated/BentoBox/SymbolBytes32'
 import { Token } from '../../generated/schema'
+import { getOrCreateBentoBox } from './bentobox'
+import { increaseTokenCount } from './bentobox-kpi'
 import { createRebase } from './rebase'
-import { getOrCreateBentoBox } from '.'
+import { getOrCreateTokenKpi } from './token-kpi'
 
-export function getOrCreateToken(id: string): Token {
+export function getToken(id: string): Token {
+  return Token.load(id) as Token
+}
+
+export function getOrCreateToken(id: string, event: ethereum.Event): Token {
   let token = Token.load(id)
 
   if (token === null) {
     token = new Token(id)
+
+    getOrCreateTokenKpi(id)
+    token.kpi = id
 
     const contract = ERC20.bind(Address.fromString(id))
 
@@ -20,8 +28,8 @@ export function getOrCreateToken(id: string): Token {
     const symbol = getTokenSymbol(contract)
 
     const bentoBox = getOrCreateBentoBox()
-    bentoBox.tokenCount = bentoBox.tokenCount.plus(BigInt.fromU32(1 as u8))
-    bentoBox.save()
+
+    increaseTokenCount(event.block.timestamp)
 
     token.bentoBox = bentoBox.id
     token.name = name.value
@@ -101,8 +109,8 @@ export function getTokenDecimals(contract: ERC20): Decimal {
   const decimals = contract.try_decimals()
 
   if (!decimals.reverted) {
-    return { success: true, value: BigInt.fromI32(decimals.value as i32) }
+    return { success: true, value: BigInt.fromU32(decimals.value) }
   }
 
-  return { success: false, value: BigInt.fromI32(18) }
+  return { success: false, value: BigInt.fromU32(18) }
 }
