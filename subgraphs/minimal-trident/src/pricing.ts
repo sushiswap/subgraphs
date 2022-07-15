@@ -1,16 +1,16 @@
-import { BigDecimal, log } from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { Pair, TokenPair, TokenPrice } from '../generated/schema'
 import {
   BIG_DECIMAL_ONE,
   BIG_DECIMAL_ZERO,
+  INIT_CODE_HASH,
   MINIMUM_NATIVE_LIQUIDITY,
   NATIVE_ADDRESS,
-  STABLE_POOL_ADDRESSES,
-  STABLE_TOKEN_ADDRESSES,
-  INIT_CODE_HASH,
   PRESET_STABLE_POOL_ADDRESSES,
+  STABLE_POOL_ADDRESSES,
+  STABLE_TOKEN_ADDRESSES
 } from './constants'
-import { getOrCreateToken } from './functions'
+import { convertTokenToDecimal, getOrCreateToken } from './functions'
 import { getPairKpi } from './functions/pair-kpi'
 import { getTokenKpi } from './functions/token-kpi'
 import { getTokenPrice } from './functions/token-price'
@@ -24,7 +24,9 @@ export function getNativePriceInUSD(): BigDecimal {
 
   // NOTE: if no initCodeHash is added to the configuration, we will use a preset pool list instead. The reason for this criteria is that
   // polygon has a bug that makes addresses non deterministic.
-  const stablePoolAddresses = INIT_CODE_HASH != "" ? STABLE_POOL_ADDRESSES : PRESET_STABLE_POOL_ADDRESSES
+  const stablePoolAddresses = INIT_CODE_HASH != '' ? STABLE_POOL_ADDRESSES : PRESET_STABLE_POOL_ADDRESSES
+
+  const nativeToken = getOrCreateToken(NATIVE_ADDRESS)
 
   for (let i = 0; i < stablePoolAddresses.length; i++) {
     const address = stablePoolAddresses[i]
@@ -34,22 +36,25 @@ export function getNativePriceInUSD(): BigDecimal {
       continue
     }
     const stablePairKpi = getPairKpi(address)
+    const reserve0 = convertTokenToDecimal(stablePairKpi.token0Liquidity, nativeToken.decimals)
+    const reserve1 = convertTokenToDecimal(stablePairKpi.token1Liquidity, nativeToken.decimals)
 
     if (
-      (stablePair.token0 == NATIVE_ADDRESS && stablePairKpi.token0Liquidity.lt(MINIMUM_NATIVE_LIQUIDITY)) ||
-      (stablePair.token1 == NATIVE_ADDRESS && stablePairKpi.token1Liquidity.lt(MINIMUM_NATIVE_LIQUIDITY))
+      (stablePair.token0 == NATIVE_ADDRESS && reserve0.lt(MINIMUM_NATIVE_LIQUIDITY)) ||
+      (stablePair.token1 == NATIVE_ADDRESS && reserve1.lt(MINIMUM_NATIVE_LIQUIDITY))
     ) {
       continue
     }
 
     const stableFirst = STABLE_TOKEN_ADDRESSES.includes(stablePair.token0)
 
-    nativeReserve = nativeReserve.plus(!stableFirst ? stablePairKpi.token0Liquidity : stablePairKpi.token1Liquidity)
+    nativeReserve = nativeReserve.plus(!stableFirst ? reserve0 : reserve1)
 
-    nativeReserves.push(!stableFirst ? stablePairKpi.token0Liquidity : stablePairKpi.token1Liquidity)
+    nativeReserves.push(!stableFirst ? reserve0 : reserve1)
 
     stablePrices.push(stableFirst ? stablePairKpi.token0Price : stablePairKpi.token1Price)
 
+    stablePrices.push(stablePairKpi.token0Price)
     count = count + 1
   }
 
@@ -88,7 +93,7 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal):
   let mostLiquidity = BIG_DECIMAL_ZERO
   let currentPrice = BIG_DECIMAL_ZERO
 
-  for (let i = 0; i < tokenKpi.pairCount.toI32(); ++i) {
+  for (let i = 0; i < (tokenKpi.pairCount as BigInt).toI32(); ++i) {
     const tokenPairRelationshipId = token.id.concat(':').concat(i.toString())
     const tokenPairRelationship = TokenPair.load(tokenPairRelationshipId)
 
@@ -108,7 +113,7 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal):
     if (
       pair.token0 == token.id &&
       pairToken1Price.pricedOffToken != token.id &&
-      passesLiquidityCheck(pairKpi.token0Liquidity, mostLiquidity)
+      passesLiquidityCheck(pairKpi.liquidityNative, mostLiquidity)
     ) {
       const token1 = getOrCreateToken(pair.token1)
       if (token1.decimalsSuccess) {
@@ -123,7 +128,7 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal):
     if (
       pair.token1 == token.id &&
       pairToken0Price.pricedOffToken != token.id &&
-      passesLiquidityCheck(pairKpi.token1Liquidity, mostLiquidity)
+      passesLiquidityCheck(pairKpi.liquidityNative, mostLiquidity)
     ) {
       const token0 = getOrCreateToken(pair.token0)
       if (token0.decimalsSuccess) {

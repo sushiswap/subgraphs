@@ -6,13 +6,13 @@ type Bundle @entity {
   nativePrice: BigDecimal!
 }
 
-type Token @entity {
+type Token @entity(immutable: true) {
   " Token address "
   id: ID!
   " Token Price "
-  price: TokenPrice
+  price: TokenPrice!
   " Token Kpi "
-  kpi: TokenKpi
+  kpi: TokenKpi!
   " Rebase "
   rebase: Rebase!
   " Symbol of the token "
@@ -27,7 +27,7 @@ type Token @entity {
   decimals: BigInt!
   " if decimals were successfully retrieved "
   decimalsSuccess: Boolean!
-    " All pairs where this token is involved in "
+  " All pairs where this token is involved in "
   pairs: [TokenPair!]! @derivedFrom(field: "token")
 }
 
@@ -52,7 +52,7 @@ type TokenKpi @entity {
   " Token "
   token: Token!
   " Liquidity "
-  liquidity: BigDecimal!
+  liquidity: BigInt!
   " Liquidity in native "
   liquidityNative: BigDecimal!
   " Liquidity in USD "
@@ -69,7 +69,6 @@ type TokenPair @entity(immutable: true) {
   " Token "
   token: Token!
 }
-
 
 type Pair @entity(immutable: true) {
   " Pair address (contract address) "
@@ -98,11 +97,11 @@ type PairKpi @entity {
   " Pair id (same as Pair.id) "
   id: ID!
   " Liquidity of first token "
-  token0Liquidity: BigDecimal!
+  token0Liquidity: BigInt! # RENAME reserve0 1
   " Liquidity of second token "
-  token1Liquidity: BigDecimal!
+  token1Liquidity: BigInt!
   " Liquidity, Total supply of all LP in this pool "
-  liquidity: BigDecimal!
+  liquidity: BigInt!
   " USD liquidity"
   liquidityUSD: BigDecimal!
   " Native Liquidity "
@@ -114,12 +113,12 @@ type PairKpi @entity {
 }
 
 type Rebase @entity {
-  " Same as token id/address "
+  " Token address "
   id: ID!
-  " Token "
+  " Token this rebase belongs to "
   token: Token!
-  " base (shares) "
-  base: BigDecimal!
-  " elastic (amount) "
-  elastic: BigDecimal!
+  " Base (Share) "
+  base: BigInt!
+  " Elastic (Amount) "
+  elastic: BigInt!
 }

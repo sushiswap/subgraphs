@@ -1,9 +1,4 @@
 specVersion: 0.0.4
-features:
-  - grafting
-graft:
-  base: '{{ bentobox.base }}'
-  block: {{ masterDeployer.startBlock }}
 schema:
   file: ./schema.graphql
 dataSources:
@@ -20,8 +15,6 @@ dataSources:
       language: wasm/assemblyscript
       file: ./src/mappings/bentobox.ts
       entities:
-        - Token
-        - TokenPrice
         - Rebase
       abis:
         - name: BentoBox
@@ -57,6 +50,8 @@ dataSources:
         - Pair
         - PairKpi
       abis:
+        - name: BentoBox
+          file: ./node_modules/abi/BentoBox/BentoBox.json
         - name: MasterDeployer
           file: ./abis/MasterDeployer.json
         - name: ConstantProductPool

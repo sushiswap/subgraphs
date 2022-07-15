@@ -46,6 +46,8 @@ export const BIG_INT_ONE = BigInt.fromI32(1)
 
 export const ADDRESS_ZERO = Address.fromString('0x0000000000000000000000000000000000000000')
 
+export const BENTOBOX_ADDRESS = Address.fromString('{{ bentobox.address }}')
+
 export const MASTER_DEPLOYER_ADDRESS = Address.fromString('{{ masterDeployer.address }}')
 
 export const CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS = Address.fromString('{{ constantProductPoolFactory.address }}')

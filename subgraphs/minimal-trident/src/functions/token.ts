@@ -27,25 +27,12 @@ export function getOrCreateToken(id: string): Token {
     token.symbolSuccess = symbol.success
     token.decimals = decimals.value
     token.decimalsSuccess = decimals.success
-
+    token.kpi = id
+    token.price = id
     const rebase = getOrCreateRebase(id)
     token.rebase = rebase.id
     token.save()
 
-  }
-
-  // To deal with grafting issues
-  if (token.price === null) {
-    const price = createTokenPrice(id)
-    token.price = price.id
-    token.save()
-  }
-
-  // To deal with grafting issues
-  if (token.kpi === null) {
-    const kpi = createTokenKpi(id)
-    token.kpi = kpi.id
-    token.save()
   }
 
   return token as Token
