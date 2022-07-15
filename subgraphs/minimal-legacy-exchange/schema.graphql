@@ -50,7 +50,7 @@ type TokenKpi @entity {
   " Token "
   token: Token!
   " Liquidity "
-  liquidity: BigDecimal!
+  liquidity: BigInt!
   " Liquidity in native "
   liquidityNative: BigDecimal!
   " Liquidity in USD "
@@ -64,7 +64,7 @@ type TokenPair @entity(immutable: true) {
   id: ID!
   " Pair "
   pair: Pair!
-  " Token "  
+  " Token "
   token: Token!
 }
 
@@ -95,11 +95,11 @@ type PairKpi @entity {
   " Pair id (same as Pair.id) "
   id: ID!
   " Liquidity of first token "
-  token0Liquidity: BigDecimal!
+  reserve0: BigInt!
   " Liquidity of second token "
-  token1Liquidity: BigDecimal!
+  reserve1: BigInt!
   " Liquidity, Total supply of all LP in this pool "
-  liquidity: BigDecimal!
+  liquidity: BigInt!
   " USD liquidity"
   liquidityUSD: BigDecimal!
   " Native Liquidity "

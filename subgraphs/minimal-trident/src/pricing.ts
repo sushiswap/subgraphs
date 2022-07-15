@@ -54,7 +54,6 @@ export function getNativePriceInUSD(): BigDecimal {
 
     stablePrices.push(stableFirst ? stablePairKpi.token0Price : stablePairKpi.token1Price)
 
-    stablePrices.push(stablePairKpi.token0Price)
     count = count + 1
   }
 
@@ -93,7 +92,7 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal):
   let mostLiquidity = BIG_DECIMAL_ZERO
   let currentPrice = BIG_DECIMAL_ZERO
 
-  for (let i = 0; i < (tokenKpi.pairCount as BigInt).toI32(); ++i) {
+  for (let i = 0; i < tokenKpi.pairCount.toI32(); ++i) {
     const tokenPairRelationshipId = token.id.concat(':').concat(i.toString())
     const tokenPairRelationship = TokenPair.load(tokenPairRelationshipId)
 

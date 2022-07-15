@@ -52,6 +52,12 @@ templates:
           file: ./node_modules/abi/Uniswap/UniswapV2Factory.json
         - name: Pair
           file: ./node_modules/abi/Uniswap/UniswapV2Pair.json
+        - name: ERC20
+          file: ./node_modules/abi/ERC20/ERC20.json
+        - name: SymbolBytes32
+          file: ./node_modules/abi/ERC20/SymbolBytes32.json
+        - name: NameBytes32
+          file: ./node_modules/abi/ERC20/NameBytes32.json
       eventHandlers:
         - event: Sync(uint112,uint112)
           handler: onSync
