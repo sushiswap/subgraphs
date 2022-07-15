@@ -30,8 +30,8 @@ export function onSync(event: Sync): void {
   const token1Kpi = getTokenKpi(pair.token1)
 
   // Reset liquidity
-  token0Kpi.liquidity = token0Kpi.liquidity.minus(pairKpi.token0Liquidity)
-  token1Kpi.liquidity = token1Kpi.liquidity.minus(pairKpi.token1Liquidity)
+  token0Kpi.liquidity = token0Kpi.liquidity.minus(pairKpi.reserve0)
+  token1Kpi.liquidity = token1Kpi.liquidity.minus(pairKpi.reserve1)
 
   const rebase0 = getRebase(token0.id)
   const rebase1 = getRebase(token1.id)
@@ -41,20 +41,20 @@ export function onSync(event: Sync): void {
   const reserve1 = toAmount(event.params.reserve1, rebase1)
   const reserve1Decimal = convertTokenToDecimal(toAmount(event.params.reserve1, rebase1), token1.decimals)
 
-  pairKpi.token0Liquidity = reserve0
-  pairKpi.token1Liquidity = reserve1
+  pairKpi.reserve0 = reserve0
+  pairKpi.reserve1 = reserve1
 
-  if (pairKpi.token1Liquidity.notEqual(BIG_INT_ZERO)) {
-    pairKpi.token0Price = convertTokenToDecimal(pairKpi.token0Liquidity, token0.decimals).div(
-      convertTokenToDecimal(pairKpi.token1Liquidity, token1.decimals)
+  if (pairKpi.reserve1.notEqual(BIG_INT_ZERO)) {
+    pairKpi.token0Price = convertTokenToDecimal(pairKpi.reserve0, token0.decimals).div(
+      convertTokenToDecimal(pairKpi.reserve1, token1.decimals)
     )
   } else {
     pairKpi.token0Price = BIG_DECIMAL_ZERO
   }
 
-  if (pairKpi.token0Liquidity.notEqual(BIG_INT_ZERO)) {
-    pairKpi.token1Price = convertTokenToDecimal(pairKpi.token1Liquidity, token1.decimals).div(
-      convertTokenToDecimal(pairKpi.token0Liquidity, token0.decimals)
+  if (pairKpi.reserve0.notEqual(BIG_INT_ZERO)) {
+    pairKpi.token1Price = convertTokenToDecimal(pairKpi.reserve1, token1.decimals).div(
+      convertTokenToDecimal(pairKpi.reserve0, token0.decimals)
     )
   } else {
     pairKpi.token1Price = BIG_DECIMAL_ZERO
@@ -93,20 +93,9 @@ export function onMint(event: MintEvent): void {
   const token0 = getOrCreateToken(pair.token0)
   const token1 = getOrCreateToken(pair.token1)
 
-  // const amount0 = event.params.amount0
-  // .divDecimal(
-  //   BigInt.fromI32(10)
-  //     .pow(token0.decimals.toI32() as u8)
-  //     .toBigDecimal()
-  // )
   const token0Kpi = getTokenKpi(token0.id)
   token0Kpi.liquidity = token0Kpi.liquidity.plus(event.params.amount0)
 
-  // const amount1 = event.params.amount1.divDecimal(
-  //   BigInt.fromI32(10)
-  //     .pow(token1.decimals.toI32() as u8)
-  //     .toBigDecimal()
-  // )
   const token1Kpi = getTokenKpi(token1.id)
   token1Kpi.liquidity = token1Kpi.liquidity.plus(event.params.amount1)
 
@@ -120,19 +109,9 @@ export function onBurn(event: BurnEvent): void {
   const token0 = getOrCreateToken(pair.token0)
   const token1 = getOrCreateToken(pair.token1)
 
-  // const amount0 = event.params.amount0.divDecimal(
-  //   BigInt.fromI32(10)
-  //     .pow(token0.decimals.toI32() as u8)
-  //     .toBigDecimal()
-  // )
   const token0Kpi = getTokenKpi(token0.id)
   token0Kpi.liquidity = token0Kpi.liquidity.minus(event.params.amount0)
 
-  // const amount1 = event.params.amount1.divDecimal(
-  //   BigInt.fromI32(10)
-  //     .pow(token1.decimals.toI32() as u8)
-  //     .toBigDecimal()
-  // )
   const token1Kpi = getTokenKpi(token1.id)
   token1Kpi.liquidity = token1Kpi.liquidity.minus(event.params.amount1)
 
@@ -147,8 +126,6 @@ export function onTransfer(event: Transfer): void {
 
   const pairAddress = event.address.toHex()
   const pairKpi = getPairKpi(pairAddress)
-
-  // const liquidity = event.params.amount.divDecimal(BigDecimal.fromString('1e18'))
 
   if (isMint(event)) {
     pairKpi.liquidity = pairKpi.liquidity.plus(event.params.amount)

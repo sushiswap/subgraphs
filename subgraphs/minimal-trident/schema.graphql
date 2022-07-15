@@ -97,9 +97,9 @@ type PairKpi @entity {
   " Pair id (same as Pair.id) "
   id: ID!
   " Liquidity of first token "
-  token0Liquidity: BigInt! # RENAME reserve0 1
+  reserve0: BigInt!
   " Liquidity of second token "
-  token1Liquidity: BigInt!
+  reserve1: BigInt!
   " Liquidity, Total supply of all LP in this pool "
   liquidity: BigInt!
   " USD liquidity"

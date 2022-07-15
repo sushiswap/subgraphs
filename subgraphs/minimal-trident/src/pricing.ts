@@ -36,8 +36,8 @@ export function getNativePriceInUSD(): BigDecimal {
       continue
     }
     const stablePairKpi = getPairKpi(address)
-    const reserve0 = convertTokenToDecimal(stablePairKpi.token0Liquidity, nativeToken.decimals)
-    const reserve1 = convertTokenToDecimal(stablePairKpi.token1Liquidity, nativeToken.decimals)
+    const reserve0 = convertTokenToDecimal(stablePairKpi.reserve0, nativeToken.decimals)
+    const reserve1 = convertTokenToDecimal(stablePairKpi.reserve1, nativeToken.decimals)
 
     if (
       (stablePair.token0 == NATIVE_ADDRESS && reserve0.lt(MINIMUM_NATIVE_LIQUIDITY)) ||
