@@ -20,8 +20,11 @@ module.exports = {
   wbtc: { address: WBTC_ADDRESS },
   bentobox: {
     address: '0x0319000133d3ada02600f0875d2cf03d442c3367',
-    base: 'QmV5THYVNDYc2PUKZRmmQW8Jus7f2aCHs4DjjEemKCH9sG',
     startBlock: 13952308,
+    graft: {
+      base: 'QmWykWjur3oqNrhKXhLGUjSVYQvQNhTkdc3GS9oBHYXmpJ',
+      startBlock: 19962216,
+    },
   },
   masterDeployer: { address: '0x351447fc9bd20a917783e159e61e86edda0b0187', startBlock: 25840876 },
   concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },

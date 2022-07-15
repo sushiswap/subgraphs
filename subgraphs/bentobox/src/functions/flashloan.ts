@@ -1,17 +1,15 @@
-import { BigInt } from '@graphprotocol/graph-ts'
 import { FlashLoan } from '../../generated/schema'
 import { LogFlashLoan } from '../../generated/BentoBox/BentoBox'
-import { toDecimal } from '.'
 
-export function createFlashLoan(event: LogFlashLoan, tokenDecimals: BigInt): FlashLoan {
+export function createFlashLoan(event: LogFlashLoan): FlashLoan {
   const flashLoan = new FlashLoan(getFlashLoanId(event))
 
   flashLoan.bentoBox = event.address.toHex()
   flashLoan.borrower = event.params.borrower
   flashLoan.receiver = event.params.receiver
   flashLoan.token = event.params.token.toHex()
-  flashLoan.amount = toDecimal(event.params.amount, tokenDecimals)
-  flashLoan.feeAmount = toDecimal(event.params.feeAmount, tokenDecimals)
+  flashLoan.amount = event.params.amount
+  flashLoan.feeAmount = event.params.feeAmount
   flashLoan.block = event.block.number
   flashLoan.timestamp = event.block.timestamp
 

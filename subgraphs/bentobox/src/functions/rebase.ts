@@ -1,9 +1,13 @@
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
+import { BigInt } from '@graphprotocol/graph-ts'
+import { BENTOBOX_ADDRESS } from '../constants'
 import { Rebase } from '../../generated/schema'
 
 export function createRebase(token: string): Rebase {
   const rebase = new Rebase(token)
   rebase.token = token
+  rebase.bentoBox = BENTOBOX_ADDRESS.toHex()
+  rebase.base = BigInt.fromU32(0)
+  rebase.elastic = BigInt.fromU32(0)
   rebase.save()
   return rebase as Rebase
 }
@@ -13,17 +17,35 @@ export function getRebase(token: string): Rebase {
 }
 
 export function getOrCreateRebase(token: string): Rebase {
-  let rebase = Rebase.load(token)
+  const rebase = Rebase.load(token)
 
   if (rebase === null) {
-    rebase = createRebase(token)
+    return createRebase(token)
   }
 
-  return rebase as Rebase
+  return rebase
 }
 
-export function toAmount(shares: BigInt, rebase: Rebase): BigDecimal {
-  return rebase.base.gt(BigDecimal.fromString('0'))
-    ? shares.toBigDecimal().times(rebase.elastic).div(rebase.base)
-    : BigDecimal.fromString('0')
+export function toBase(total: Rebase, elastic: BigInt, roundUp: Boolean = false): BigInt {
+  if (total.elastic.equals(BigInt.fromU32(0))) {
+    return elastic
+  }
+
+  const base = elastic.times(total.base).div(total.elastic)
+
+  if (roundUp && base.times(total.elastic).div(total.base).lt(elastic)) {
+    return base.plus(BigInt.fromU32(1))
+  }
+}
+
+export function toElastic(total: Rebase, base: BigInt, roundUp: Boolean = false): BigInt {
+  if (total.base.equals(BigInt.fromU32(0))) {
+    return base
+  }
+
+  const elastic = base.times(total.elastic).div(total.base)
+
+  if (roundUp && elastic.times(total.base).div(total.elastic).lt(base)) {
+    return base.plus(BigInt.fromU32(1))
+  }
 }
