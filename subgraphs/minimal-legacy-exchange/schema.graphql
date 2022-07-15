@@ -71,7 +71,7 @@ type TokenPair @entity(immutable: true) {
 type Pair @entity(immutable: true) {
   " Pair address (contract address) "
   id: ID!
-    " Swap fee "
+  " Swap fee "
   swapFee: BigInt!
   " TWAP - time weighted average price "
   twapEnabled: Boolean!
