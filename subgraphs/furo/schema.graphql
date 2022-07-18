@@ -1,0 +1,116 @@
+enum Status {
+  ACTIVE
+  CANCELLED
+}
+
+enum TransactionType {
+  DEPOSIT
+  EXTEND
+  WITHDRAWAL
+  DISBURSEMENT # Payment to a sender and reciever when stream/vest is cancelled
+}
+
+type FuroStream @entity {
+  id: ID! # Hardcoded to 'Furo'
+  vestingCount: BigInt!
+  streamCount: BigInt!
+  userCount: BigInt!
+  transactionCount: BigInt!
+}
+
+interface Furo @entity {
+  id: ID!
+  recipient: User!
+  totalAmount: BigInt!
+  withdrawnAmount: BigInt!
+  token: Token!
+  status: Status!
+  createdBy: User!
+  fromBentoBox: Boolean!
+  startedAt: BigInt!
+  expiresAt: BigInt!
+  txHash: String!
+  transactionCount: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+  modifiedAtBlock: BigInt!
+  modifiedAtTimestamp: BigInt!
+}
+
+type Stream implements Furo @entity {
+  id: ID! # starts at 1001
+  recipient: User!
+  totalAmount: BigInt!
+  withdrawnAmount: BigInt!
+  token: Token!
+  status: Status!
+  createdBy: User!
+  fromBentoBox: Boolean!
+  startedAt: BigInt!
+  expiresAt: BigInt!
+  txHash: String!
+  transactionCount: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+  modifiedAtBlock: BigInt!
+  modifiedAtTimestamp: BigInt!
+}
+
+type Vesting implements Furo @entity {
+  id: ID! # starts at 1
+  recipient: User!
+  cliffDuration: BigInt!
+  stepDuration: BigInt!
+  steps: BigInt!
+  cliffAmount: BigInt!
+  stepAmount: BigInt!
+  totalAmount: BigInt!
+  withdrawnAmount: BigInt!
+  token: Token!
+  status: Status!
+  createdBy: User!
+  fromBentoBox: Boolean!
+  startedAt: BigInt!
+  expiresAt: BigInt!
+  txHash: String!
+  transactionCount: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+  modifiedAtBlock: BigInt!
+  modifiedAtTimestamp: BigInt!
+  cancelledAtBlock: BigInt!
+  cancelledAtTimestamp: BigInt!
+}
+
+type Transaction @entity(immutable: true) {
+  id: ID!
+  type: TransactionType!
+  furo: Furo!
+  amount: BigInt!
+  to: User!
+  token: Token!
+  toBentoBox: Boolean!
+  txHash: String!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+type Token @entity {
+  id: ID!
+  symbol: String!
+  symbolSuccess: Boolean!
+  name: String!
+  nameSuccess: Boolean!
+  decimals: BigInt!
+  decimalsSuccess: Boolean!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+type User @entity(immutable: true) {
+  id: ID!
+  incomingFuros: [Furo!]! @derivedFrom(field: "recipient")
+  outgoingFuros: [Furo!]! @derivedFrom(field: "createdBy")
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}

@@ -42,3 +42,39 @@ dataSources:
           handler: onWithdraw
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: onTransfer
+  - kind: ethereum/contract
+    name: FuroVesting
+    network: {{ network }}
+    source:
+      address: '{{ furo.vesting.address }}'
+      startBlock: {{ furo.vesting.startBlock }}
+      abi: FuroVesting
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/vesting.ts
+      entities:
+        - FuroVesting
+        - Token
+        - User
+        - Transaction
+        - Vesting
+      abis:
+        - name: FuroVesting
+          file: ./abis/FuroVesting.json
+        - name: ERC20
+          file: ./node_modules/abi/ERC20/ERC20.json
+        - name: SymbolBytes32
+          file: ./node_modules/abi/ERC20/SymbolBytes32.json
+        - name: NameBytes32
+          file: ./node_modules/abi/ERC20/NameBytes32.json
+      eventHandlers:
+        - event: CreateVesting(indexed uint256,address,indexed address,indexed address,uint32,uint32,uint32,uint32,uint128,uint128,bool)
+          handler: onCreateVesting
+        - event: CancelVesting(indexed uint256,indexed uint256,indexed uint256,address,bool)
+          handler: onCancelVesting
+        - event: Withdraw(indexed uint256,indexed address,indexed uint256,bool)
+          handler: onWithdraw
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: onVestTransfer

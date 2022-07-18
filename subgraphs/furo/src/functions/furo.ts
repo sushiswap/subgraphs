@@ -15,19 +15,25 @@ function getOrCreateFuro(): FuroStream {
 }
 
 export function increaseTransactionCount(): void {
-  const furoStream = getOrCreateFuro()
-  furoStream.transactionCount = furoStream.transactionCount.plus(BigInt.fromU32(1))
-  furoStream.save()
+  const furo = getOrCreateFuro()
+  furo.transactionCount = furo.transactionCount.plus(BigInt.fromU32(1))
+  furo.save()
 }
 
 export function increaseUserCount(): void {
-  const furoStream = getOrCreateFuro()
-  furoStream.userCount = furoStream.userCount.plus(BigInt.fromU32(1))
-  furoStream.save()
+  const furo = getOrCreateFuro()
+  furo.userCount = furo.userCount.plus(BigInt.fromU32(1))
+  furo.save()
 }
 
 export function increaseStreamCount(): void {
-  const furoStream = getOrCreateFuro()
-  furoStream.streamCount = furoStream.streamCount.plus(BigInt.fromU32(1))
-  furoStream.save()
+  const furo = getOrCreateFuro()
+  furo.streamCount = furo.streamCount.plus(BigInt.fromU32(1))
+  furo.save()
+}
+
+export function increaseVestingCount(): void {
+  const furo = getOrCreateFuro()
+  furo.vestingCount = furo.vestingCount.plus(BigInt.fromU32(1))
+  furo.save()
 }
