@@ -95,7 +95,7 @@ type Transaction @entity(immutable: true) {
   createdAtTimestamp: BigInt!
 }
 
-type Token @entity {
+type Token @entity(immutable: true) {
   id: ID!
   symbol: String!
   symbolSuccess: Boolean!
