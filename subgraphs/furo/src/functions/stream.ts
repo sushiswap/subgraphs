@@ -1,5 +1,4 @@
 import { BigInt } from '@graphprotocol/graph-ts'
-import { STREAM_PREFIX } from '../constants'
 import {
   CancelStream as CancelStreamEvent,
   CreateStream as CreateStreamEvent,
@@ -14,11 +13,10 @@ import { getOrCreateToken } from './token'
 import { getOrCreateUser } from './user'
 
 export function getOrCreateStream(id: BigInt): Stream {
-  const streamId = STREAM_PREFIX.concat(id.toString())
-  let stream = Stream.load(streamId)
+  let stream = Stream.load(id.toString())
 
   if (stream === null) {
-    stream = new Stream(streamId)
+    stream = new Stream(id.toString())
     increaseStreamCount()
     stream.save()
   }

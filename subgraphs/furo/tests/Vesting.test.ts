@@ -1,7 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateVesting as CreateVestingEvent } from '../generated/FuroVesting/FuroVesting'
-import { ACTIVE, CANCELLED, VESTING_PREFIX, WEEK, YEAR, ZERO_ADDRESS } from '../src/constants'
+import { ACTIVE, CANCELLED, WEEK, YEAR, ZERO_ADDRESS } from '../src/constants'
 import { onCancelVesting, onCreateVesting, onTransferVesting, onWithdrawVesting } from '../src/mappings/vesting'
 import {
   createCancelVestingEvent,
@@ -54,7 +54,7 @@ function cleanup(): void {
 test('Created vesting contains expected fields', () => {
   setup()
 
-  const id = VESTING_PREFIX.concat(VESTING_ID.toString())
+  const id = VESTING_ID.toString()
   assert.fieldEquals('Vesting', id, 'id', id)
   assert.fieldEquals('Vesting', id, 'recipient', RECIEVER.toHex())
   assert.fieldEquals('Vesting', id, 'cliffDuration', CLIFF_DURATION.toString())
@@ -80,7 +80,7 @@ test('Created vesting contains expected fields', () => {
 test('Stop vesting updates the vesting entity', () => {
   setup()
 
-  const id = VESTING_PREFIX.concat(VESTING_ID.toString())
+  const id = VESTING_ID.toString()
   let recipientAmount = CLIFF_AMOUNT
   let ownerAmount = TOTAL_AMOUNT.minus(recipientAmount)
   let cancelVestingEvent = createCancelVestingEvent(VESTING_ID, ownerAmount, recipientAmount, WETH_ADDRESS, true)
@@ -105,7 +105,7 @@ test('On withdraw event, withdrawnAmount field is updated', () => {
 
   onWithdrawVesting(withdrawalEvent)
 
-  const id = VESTING_PREFIX.concat(VESTING_ID.toString())
+  const id = VESTING_ID.toString()
   assert.fieldEquals('Vesting', id, 'withdrawnAmount', amount.toString())
 
   cleanup()
@@ -114,7 +114,7 @@ test('On withdraw event, withdrawnAmount field is updated', () => {
 test('Mint transaction does NOT update the vesting recipient', () => {
   setup()
 
-  const id = VESTING_PREFIX.concat(VESTING_ID.toString())
+  const id = VESTING_ID.toString()
   let transactionEvent = createTransferVestingEvent(RECIEVER, ZERO_ADDRESS, VESTING_ID)
   assert.fieldEquals('Vesting', id, 'recipient', RECIEVER.toHex())
 
@@ -128,7 +128,7 @@ test('Mint transaction does NOT update the vesting recipient', () => {
 test('Burn transaction does NOT update the vesting recipient', () => {
   setup()
 
-  const id = VESTING_PREFIX.concat(VESTING_ID.toString())
+  const id = VESTING_ID.toString()
   let transactionEvent = createTransferVestingEvent(ZERO_ADDRESS, RECIEVER, VESTING_ID)
   assert.fieldEquals('Vesting', id, 'recipient', RECIEVER.toHex())
 
@@ -142,7 +142,7 @@ test('Burn transaction does NOT update the vesting recipient', () => {
 test('Transfer event updates the vesting recipient', () => {
   setup()
 
-  const id = VESTING_PREFIX.concat(VESTING_ID.toString())
+  const id = VESTING_ID.toString()
   let transactionEvent = createTransferVestingEvent(RECIEVER, SENDER, VESTING_ID)
 
   assert.fieldEquals('Vesting', id, 'recipient', RECIEVER.toHex())

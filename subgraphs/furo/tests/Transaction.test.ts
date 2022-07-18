@@ -2,7 +2,7 @@ import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
 import { CreateVesting as CreateVestingEvent } from '../generated/FuroVesting/FuroVesting'
-import { STREAM_PREFIX, VESTING_PREFIX, WEEK, YEAR } from '../src/constants'
+import { WEEK, YEAR } from '../src/constants'
 import { onCancelStream, onCreateStream, onUpdateStream, onWithdrawStream } from '../src/mappings/stream'
 import { onCancelVesting, onCreateVesting, onWithdrawVesting } from '../src/mappings/vesting'
 import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from './../src/constants'
@@ -71,11 +71,11 @@ function cleanup(): void {
 
 test('on create stream event, a transaction entity is created', () => {
   setupStream()
-  const id = STREAM_PREFIX.concat(STREAM_ID.toString().concat(':tx:0'))
+  const id = STREAM_ID.toString().concat(':tx:0')
 
   assert.fieldEquals('Transaction', id, 'id', id)
   assert.fieldEquals('Transaction', id, 'type', DEPOSIT)
-  assert.fieldEquals('Transaction', id, 'furo', STREAM_PREFIX.concat(STREAM_ID.toString()))
+  assert.fieldEquals('Transaction', id, 'stream', STREAM_ID.toString())
   assert.fieldEquals('Transaction', id, 'amount', AMOUNT.toString())
   assert.fieldEquals('Transaction', id, 'to', RECIEVER.toHex())
   assert.fieldEquals('Transaction', id, 'token', WETH_ADDRESS.toHex())
@@ -89,8 +89,8 @@ test('on create stream event, a transaction entity is created', () => {
 
 test('Cancel stream', () => {
   setupStream()
-  const id1 = STREAM_PREFIX.concat(STREAM_ID.toString().concat(':tx:1'))
-  const id2 = STREAM_PREFIX.concat(STREAM_ID.toString().concat(':tx:2'))
+  const id1 = STREAM_ID.toString().concat(':tx:1')
+  const id2 = STREAM_ID.toString().concat(':tx:2')
   const amount2 = BigInt.fromString('2000000')
   let cancelStreamEvent = createCancelStreamEvent(STREAM_ID, amount2, AMOUNT, WETH_ADDRESS, true)
   cancelStreamEvent.block.number = BigInt.fromString('123')
@@ -100,7 +100,7 @@ test('Cancel stream', () => {
   assert.entityCount('Transaction', 3)
   assert.fieldEquals('Transaction', id1, 'id', id1)
   assert.fieldEquals('Transaction', id1, 'type', DISBURSEMENT)
-  assert.fieldEquals('Transaction', id1, 'furo', STREAM_PREFIX.concat(STREAM_ID.toString()))
+  assert.fieldEquals('Transaction', id1, 'stream', STREAM_ID.toString())
   assert.fieldEquals('Transaction', id1, 'amount', amount2.toString())
   assert.fieldEquals('Transaction', id1, 'to', SENDER.toHex())
   assert.fieldEquals('Transaction', id1, 'token', WETH_ADDRESS.toHex())
@@ -111,7 +111,7 @@ test('Cancel stream', () => {
 
   assert.fieldEquals('Transaction', id2, 'id', id2)
   assert.fieldEquals('Transaction', id2, 'type', DISBURSEMENT)
-  assert.fieldEquals('Transaction', id2, 'furo', STREAM_PREFIX.concat(STREAM_ID.toString()))
+  assert.fieldEquals('Transaction', id2, 'stream', STREAM_ID.toString())
   assert.fieldEquals('Transaction', id2, 'amount', AMOUNT.toString())
   assert.fieldEquals('Transaction', id2, 'to', RECIEVER.toHex())
   assert.fieldEquals('Transaction', id2, 'token', WETH_ADDRESS.toHex())
@@ -124,7 +124,7 @@ test('Cancel stream', () => {
 
 test('Withdraw from stream creates a Transaction', () => {
   setupStream()
-  const id = STREAM_PREFIX.concat(STREAM_ID.toString().concat(':tx:1'))
+  const id = STREAM_ID.toString().concat(':tx:1')
   const amount2 = BigInt.fromString('2000')
   let withdrawalEvent = createWithdrawStreamEvent(STREAM_ID, amount2, RECIEVER, WETH_ADDRESS, true)
   withdrawalEvent.block.number = BigInt.fromString('123')
@@ -134,7 +134,7 @@ test('Withdraw from stream creates a Transaction', () => {
   assert.entityCount('Transaction', 2)
   assert.fieldEquals('Transaction', id, 'id', id)
   assert.fieldEquals('Transaction', id, 'type', WITHDRAWAL)
-  assert.fieldEquals('Transaction', id, 'furo', STREAM_PREFIX.concat(STREAM_ID.toString()))
+  assert.fieldEquals('Transaction', id, 'stream', STREAM_ID.toString())
   assert.fieldEquals('Transaction', id, 'amount', amount2.toString())
   assert.fieldEquals('Transaction', id, 'to', RECIEVER.toHex())
   assert.fieldEquals('Transaction', id, 'token', WETH_ADDRESS.toHex())
@@ -148,7 +148,7 @@ test('Withdraw from stream creates a Transaction', () => {
 
 test('Update stream creates a transaction', () => {
   setupStream()
-  const id = STREAM_PREFIX.concat(STREAM_ID.toString().concat(':tx:1'))
+  const id = STREAM_ID.toString().concat(':tx:1')
   const extendTime = BigInt.fromString('2628000') // a month in seconds
   let updateStreamEvent = createUpdateStreamEvent(STREAM_ID, AMOUNT, extendTime, true)
 
@@ -157,7 +157,7 @@ test('Update stream creates a transaction', () => {
   assert.entityCount('Transaction', 2)
   assert.fieldEquals('Transaction', id, 'id', id)
   assert.fieldEquals('Transaction', id, 'type', EXTEND)
-  assert.fieldEquals('Transaction', id, 'furo', STREAM_PREFIX.concat(STREAM_ID.toString()))
+  assert.fieldEquals('Transaction', id, 'stream', STREAM_ID.toString())
   assert.fieldEquals('Transaction', id, 'amount', AMOUNT.toString())
   assert.fieldEquals('Transaction', id, 'to', RECIEVER.toHex())
   assert.fieldEquals('Transaction', id, 'token', WETH_ADDRESS.toHex())
@@ -172,10 +172,10 @@ test('Update stream creates a transaction', () => {
 test('Deposit transaction is created on vesting creation event', () => {
   setupVesting()
 
-  const id = VESTING_PREFIX.concat(VESTING_ID.toString().concat(':tx:0'))
+  const id = VESTING_ID.toString().concat(':tx:0')
   assert.fieldEquals('Transaction', id, 'id', id)
   assert.fieldEquals('Transaction', id, 'type', DEPOSIT)
-  assert.fieldEquals('Transaction', id, 'furo', VESTING_PREFIX.concat(VESTING_ID.toString()))
+  assert.fieldEquals('Transaction', id, 'vesting', VESTING_ID.toString())
   assert.fieldEquals('Transaction', id, 'amount', TOTAL_AMOUNT.toString())
   assert.fieldEquals('Transaction', id, 'to', RECIPIENT.toHex())
   assert.fieldEquals('Transaction', id, 'token', WETH_ADDRESS.toHex())
@@ -195,10 +195,10 @@ test('Disbursement transactions are created when vesting is cancelled', () => {
 
   onCancelVesting(cancelVestingEvent)
 
-  const id = VESTING_PREFIX.concat(VESTING_ID.toString().concat(':tx:1'))
+  const id = VESTING_ID.toString().concat(':tx:1')
   assert.fieldEquals('Transaction', id, 'id', id)
   assert.fieldEquals('Transaction', id, 'type', DISBURSEMENT)
-  assert.fieldEquals('Transaction', id, 'furo', VESTING_PREFIX.concat(VESTING_ID.toString()))
+  assert.fieldEquals('Transaction', id, 'vesting', VESTING_ID.toString())
   assert.fieldEquals('Transaction', id, 'amount', recipientAmount.toString())
   assert.fieldEquals('Transaction', id, 'to', RECIPIENT.toHex())
   assert.fieldEquals('Transaction', id, 'token', WETH_ADDRESS.toHex())
@@ -207,10 +207,10 @@ test('Disbursement transactions are created when vesting is cancelled', () => {
   assert.fieldEquals('Transaction', id, 'createdAtBlock', vestingEvent.block.number.toString())
   assert.fieldEquals('Transaction', id, 'createdAtTimestamp', vestingEvent.block.timestamp.toString())
 
-  const id2 = VESTING_PREFIX.concat(VESTING_ID.toString().concat(':tx:2'))
+  const id2 = VESTING_ID.toString().concat(':tx:2')
   assert.fieldEquals('Transaction', id2, 'id', id2)
   assert.fieldEquals('Transaction', id2, 'type', DISBURSEMENT)
-  assert.fieldEquals('Transaction', id2, 'furo', VESTING_PREFIX.concat(VESTING_ID.toString()))
+  assert.fieldEquals('Transaction', id2, 'vesting', VESTING_ID.toString())
   assert.fieldEquals('Transaction', id2, 'amount', ownerAmount.toString())
   assert.fieldEquals('Transaction', id2, 'to', SENDER.toHex())
   assert.fieldEquals('Transaction', id2, 'token', WETH_ADDRESS.toHex())
@@ -229,11 +229,10 @@ test('Withdrawal event creates withdrawal transaction', () => {
 
   onWithdrawVesting(withdrawalEvent)
 
-
-  const id = VESTING_PREFIX.concat(VESTING_ID.toString().concat(':tx:1'))
+  const id = VESTING_ID.toString().concat(':tx:1')
   assert.fieldEquals('Transaction', id, 'id', id)
   assert.fieldEquals('Transaction', id, 'type', WITHDRAWAL)
-  assert.fieldEquals('Transaction', id, 'furo', VESTING_PREFIX.concat(VESTING_ID.toString()))
+  assert.fieldEquals('Transaction', id, 'vesting', VESTING_ID.toString())
   assert.fieldEquals('Transaction', id, 'amount', amount.toString())
   assert.fieldEquals('Transaction', id, 'to', RECIPIENT.toHex())
   assert.fieldEquals('Transaction', id, 'token', WETH_ADDRESS.toHex())

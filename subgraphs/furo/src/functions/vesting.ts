@@ -6,17 +6,16 @@ import {
   Transfer as TransferEvent,
 } from '../../generated/FuroVesting/FuroVesting'
 import { Vesting } from '../../generated/schema'
-import { ACTIVE, CANCELLED, VESTING_PREFIX, ZERO_ADDRESS } from '../constants'
+import { ACTIVE, CANCELLED, ZERO_ADDRESS } from '../constants'
 import { increaseVestingCount } from './global'
 import { getOrCreateToken } from './token'
 import { getOrCreateUser } from './user'
 
 export function getOrCreateVesting(id: BigInt): Vesting {
-  const vestingId = VESTING_PREFIX.concat(id.toString())
-  let vesting = Vesting.load(vestingId)
+  let vesting = Vesting.load(id.toString())
 
   if (vesting === null) {
-    vesting = new Vesting(vestingId)
+    vesting = new Vesting(id.toString())
     increaseVestingCount()
     vesting.save()
   }

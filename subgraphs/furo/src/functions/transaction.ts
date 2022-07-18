@@ -35,7 +35,7 @@ export function createStreamTransaction<T extends ethereum.Event>(stream: Stream
     const transactionId = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
     let transaction = getOrCreateTransaction(transactionId, event)
     transaction.type = DEPOSIT
-    transaction.furo = stream.id
+    transaction.stream = stream.id
     transaction.amount = event.params.amount
     transaction.to = event.params.recipient.toHex()
     transaction.token = event.params.token.toHex()
@@ -48,7 +48,7 @@ export function createStreamTransaction<T extends ethereum.Event>(stream: Stream
     const senderTransactionId = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
     let senderTransaction = getOrCreateTransaction(senderTransactionId, event)
     senderTransaction.type = DISBURSEMENT
-    senderTransaction.furo = stream.id
+    senderTransaction.stream = stream.id
     senderTransaction.amount = event.params.senderBalance
     senderTransaction.to = stream.createdBy
     senderTransaction.token = event.params.token.toHex()
@@ -60,7 +60,7 @@ export function createStreamTransaction<T extends ethereum.Event>(stream: Stream
     const recipientTransactionId = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
     let recipientTransaction = getOrCreateTransaction(recipientTransactionId, event)
     recipientTransaction.type = DISBURSEMENT
-    recipientTransaction.furo = stream.id
+    recipientTransaction.stream = stream.id
     recipientTransaction.amount = event.params.recipientBalance
     recipientTransaction.to = stream.recipient
     recipientTransaction.token = event.params.token.toHex()
@@ -74,7 +74,7 @@ export function createStreamTransaction<T extends ethereum.Event>(stream: Stream
     let recipient = getOrCreateUser(event.params.withdrawTo, event)
     let transaction = getOrCreateTransaction(transactionId, event)
     transaction.type = WITHDRAWAL
-    transaction.furo = stream.id
+    transaction.stream = stream.id
     transaction.amount = event.params.sharesToWithdraw
     transaction.to = recipient.id
     transaction.token = event.params.token.toHex()
@@ -87,7 +87,7 @@ export function createStreamTransaction<T extends ethereum.Event>(stream: Stream
     const transactionId = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
     let transaction = getOrCreateTransaction(transactionId, event)
     transaction.type = EXTEND
-    transaction.furo = stream.id
+    transaction.stream = stream.id
     transaction.amount = event.params.topUpAmount
     transaction.to = stream.recipient
     transaction.token = stream.token
@@ -104,7 +104,7 @@ export function createVestingTransaction<T extends ethereum.Event>(vesting: Vest
     const transactionId = vesting.id.concat(':tx:').concat(vesting.transactionCount.toString())
     let transaction = getOrCreateTransaction(transactionId, event)
     transaction.type = DEPOSIT
-    transaction.furo = vesting.id
+    transaction.vesting = vesting.id
     transaction.amount = vesting.totalAmount
     transaction.to = vesting.recipient
     transaction.token = vesting.token
@@ -117,7 +117,7 @@ export function createVestingTransaction<T extends ethereum.Event>(vesting: Vest
     const senderTransactionId = vesting.id.concat(':tx:').concat(vesting.transactionCount.toString())
     let senderTransaction = getOrCreateTransaction(senderTransactionId, event)
     senderTransaction.type = DISBURSEMENT
-    senderTransaction.furo = vesting.id
+    senderTransaction.vesting = vesting.id
     senderTransaction.amount = event.params.recipientAmount
     senderTransaction.to = vesting.recipient
     senderTransaction.token = vesting.token
@@ -129,7 +129,7 @@ export function createVestingTransaction<T extends ethereum.Event>(vesting: Vest
     const recipientTransactionId = vesting.id.concat(':tx:').concat(vesting.transactionCount.toString())
     let recipientTransaction = getOrCreateTransaction(recipientTransactionId, event)
     recipientTransaction.type = DISBURSEMENT
-    recipientTransaction.furo = vesting.id
+    recipientTransaction.vesting = vesting.id
     recipientTransaction.amount = event.params.ownerAmount
     recipientTransaction.to = vesting.createdBy
     recipientTransaction.token = vesting.token
@@ -142,7 +142,7 @@ export function createVestingTransaction<T extends ethereum.Event>(vesting: Vest
     const transactionId = vesting.id.concat(':tx:').concat(vesting.transactionCount.toString())
     let transaction = getOrCreateTransaction(transactionId, event)
     transaction.type = WITHDRAWAL
-    transaction.furo = vesting.id
+    transaction.vesting = vesting.id
     transaction.amount = event.params.amount
     transaction.to = vesting.recipient
     transaction.token = vesting.token

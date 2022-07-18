@@ -18,26 +18,7 @@ type Global @entity {
   transactionCount: BigInt!
 }
 
-interface Furo @entity {
-  id: ID!
-  recipient: User!
-  totalAmount: BigInt!
-  withdrawnAmount: BigInt!
-  token: Token!
-  status: FuroStatus!
-  createdBy: User!
-  fromBentoBox: Boolean!
-  startedAt: BigInt!
-  expiresAt: BigInt!
-  txHash: String!
-  transactionCount: BigInt!
-  createdAtBlock: BigInt!
-  createdAtTimestamp: BigInt!
-  modifiedAtBlock: BigInt!
-  modifiedAtTimestamp: BigInt!
-}
-
-type Stream implements Furo @entity {
+type Stream @entity {
   id: ID! # starts at 1001
   recipient: User!
   totalAmount: BigInt!
@@ -56,7 +37,7 @@ type Stream implements Furo @entity {
   modifiedAtTimestamp: BigInt!
 }
 
-type Vesting implements Furo @entity {
+type Vesting @entity {
   id: ID! # starts at 1
   recipient: User!
   cliffDuration: BigInt!
@@ -85,7 +66,8 @@ type Vesting implements Furo @entity {
 type Transaction @entity(immutable: true) {
   id: ID!
   type: TransactionType!
-  furo: Furo!
+  stream: Stream
+  vesting: Vesting
   amount: BigInt!
   to: User!
   token: Token!
