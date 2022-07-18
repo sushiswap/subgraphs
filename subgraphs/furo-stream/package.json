@@ -1,0 +1,36 @@
+{
+  "name": "furo-stream",
+  "author": "Ola Stenberg <hello@olastenberg.com>",
+  "license": "MIT",
+  "files": [
+    "generated"
+  ],
+  "scripts": {
+    "generate": "mustache ../../config/$NETWORK.js template.yaml > subgraph.yaml && mustache ../../config/$NETWORK.js src/constants/index.template.ts > src/constants/index.ts && graph codegen",
+    "build": "graph build",
+    "test": "graph test -r",
+    "deploy-ethereum": "graph deploy --product hosted-service sushiswap/furo-stream-ethereum",
+    "deploy-goerli": "graph deploy --product hosted-service sushiswap/furo-stream-goerli",
+    "deploy-arbitrum": "graph deploy --product hosted-service sushiswap/furo-stream-arbitrum",
+    "deploy-avalanche": "graph deploy --product hosted-service sushiswap/furo-stream-avalanche",
+    "deploy-bsc": "graph deploy --product hosted-service sushiswap/furo-stream-bsc",
+    "deploy-fantom": "graph deploy --product hosted-service sushiswap/furo-stream-fantom",
+    "deploy-gnosis": "graph deploy --product hosted-service sushiswap/furo-stream-gnosis",
+    "deploy-harmony": "graph deploy --product hosted-service sushiswap/furo-stream-harmony",
+    "deploy-moonbeam": "graph deploy --product hosted-service sushiswap/furo-stream-moonbeam",
+    "deploy-moonriver": "graph deploy --product hosted-service sushiswap/furo-stream-moonriver",
+    "deploy-optimism": "graph deploy --product hosted-service sushiswap/furo-stream-optimism",
+    "deploy-polygon": "graph deploy --product hosted-service sushiswap/furo-stream-polygon",
+    "create-local": "graph create --node http://localhost:8020/ sushiswap/furo-stream",
+    "remove-local": "graph remove --node http://localhost:8020/ sushiswap/furo-stream",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/furo-stream"
+  },
+  "devDependencies": {
+    "abi": "workspace:*",
+    "@graphprotocol/graph-cli": "^0.27.0",
+    "@graphprotocol/graph-ts": "^0.24.1",
+    "matchstick-as": "^0.4.2",
+    "assemblyscript": "^0.19.20",
+    "wabt": "1.0.24"
+  }
+}
