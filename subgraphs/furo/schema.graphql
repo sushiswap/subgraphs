@@ -10,8 +10,8 @@ enum TransactionType {
   DISBURSEMENT # Payment to a sender and reciever when stream/vest is cancelled
 }
 
-type FuroStream @entity {
-  id: ID! # Hardcoded to 'Furo'
+type Global @entity {
+  id: ID! # Hardcoded to '1'
   vestingCount: BigInt!
   streamCount: BigInt!
   userCount: BigInt!

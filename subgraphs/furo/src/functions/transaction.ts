@@ -12,7 +12,7 @@ import {
 } from '../../generated/FuroStream/FuroStream'
 import { Stream, Transaction, Vesting } from '../../generated/schema'
 import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from '../constants'
-import { increaseTransactionCount } from './furo'
+import { increaseTransactionCount } from './global'
 import { getOrCreateUser } from './user'
 
 function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction {

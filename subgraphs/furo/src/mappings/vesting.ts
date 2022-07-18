@@ -16,11 +16,11 @@ export function onCancelVesting(event: CancelVestingEvent): void {
   createVestingTransaction(vesting, event)
 }
 
-export function onWithdraw(event: WithdrawEvent): void {
+export function onWithdrawVesting(event: WithdrawEvent): void {
   const vesting = withdrawFromVesting(event)
   createVestingTransaction(vesting, event)
 }
 
-export function onTransfer(event: TransferEvent): void {
+export function onTransferVesting(event: TransferEvent): void {
   transferVesting(event)
 }

@@ -8,6 +8,11 @@ export const EXTEND = 'EXTEND'
 export const WITHDRAWAL = 'WITHDRAWAL'
 export const DISBURSEMENT = 'DISBURSEMENT'
 
-export const FURO_STREAM = 'FuroStream'
+export const GLOBAL_ID = '1'
 
 export const ZERO_ADDRESS = Address.fromString('0x0000000000000000000000000000000000000000')
+
+const HOUR = 60 * 60
+const DAY = 24 * HOUR
+export const WEEK = 7 * DAY
+export const YEAR = 365 * DAY

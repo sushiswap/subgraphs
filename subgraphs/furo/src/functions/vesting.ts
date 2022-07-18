@@ -7,7 +7,7 @@ import {
 } from '../../generated/FuroVesting/FuroVesting'
 import { Vesting } from '../../generated/schema'
 import { ACTIVE, CANCELLED, ZERO_ADDRESS } from '../constants'
-import { increaseVestingCount } from './furo'
+import { increaseVestingCount } from './global'
 import { getOrCreateToken } from './token'
 import { getOrCreateUser } from './user'
 

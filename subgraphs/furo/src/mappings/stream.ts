@@ -23,12 +23,12 @@ export function onUpdateStream(event: UpdateStreamEvent): void {
   createStreamTransaction(stream, event)
 }
 
-export function onWithdraw(event: WithdrawEvent): void {
+export function onWithdrawStream(event: WithdrawEvent): void {
   const stream = withdrawFromStream(event)
   createStreamTransaction(stream, event)
 }
 
 
-export function onTransfer(event: TransferEvent): void {
+export function onTransferStream(event: TransferEvent): void {
   transferStream(event)
 }

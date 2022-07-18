@@ -2,14 +2,14 @@ import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
 import { ACTIVE, CANCELLED, ZERO_ADDRESS } from './../src/constants'
-import { onCancelStream, onCreateStream, onTransfer, onUpdateStream, onWithdraw } from '../src/mappings/stream'
+import { onCancelStream, onCreateStream, onTransferStream, onUpdateStream, onWithdrawStream } from '../src/mappings/stream'
 import {
   createCancelStreamEvent,
   createStreamEvent,
   createTokenMock,
-  createTransferEvent,
+  createTransferStreamEvent,
   createUpdateStreamEvent,
-  createWithdrawEvent
+  createWithdrawStreamEvent
 } from './mocks'
 
 const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
@@ -115,7 +115,7 @@ test('Withdraw from stream', () => {
   setup()
   const id = STREAM_ID.toString()
   const amount2 = BigInt.fromString('2000')
-  let withdrawalEvent = createWithdrawEvent(STREAM_ID, amount2, RECIEVER, WETH_ADDRESS, true)
+  let withdrawalEvent = createWithdrawStreamEvent(STREAM_ID, amount2, RECIEVER, WETH_ADDRESS, true)
   withdrawalEvent.block.number = BigInt.fromString('123')
   withdrawalEvent.block.timestamp = BigInt.fromString('11111111')
 
@@ -123,7 +123,7 @@ test('Withdraw from stream', () => {
   assert.fieldEquals('Stream', id, 'modifiedAtBlock', streamEvent.block.number.toString())
   assert.fieldEquals('Stream', id, 'modifiedAtTimestamp', streamEvent.block.timestamp.toString())
 
-  onWithdraw(withdrawalEvent)
+  onWithdrawStream(withdrawalEvent)
   assert.fieldEquals('Stream', id, 'withdrawnAmount', amount2.toString())
   assert.fieldEquals('Stream', id, 'modifiedAtBlock', withdrawalEvent.block.number.toString())
   assert.fieldEquals('Stream', id, 'modifiedAtTimestamp', withdrawalEvent.block.timestamp.toString())
@@ -135,10 +135,10 @@ test('Withdraw from stream', () => {
 test('Mint transaction does NOT update the streams recipient', () => {
   setup()
   const id = STREAM_ID.toString()
-  let transactionEvent = createTransferEvent(RECIEVER, ZERO_ADDRESS, STREAM_ID)
+  let transactionEvent = createTransferStreamEvent(RECIEVER, ZERO_ADDRESS, STREAM_ID)
   assert.fieldEquals('Stream', id, 'recipient', RECIEVER.toHex())
 
-  onTransfer(transactionEvent)
+  onTransferStream(transactionEvent)
 
   assert.fieldEquals('Stream', id, 'recipient', RECIEVER.toHex())
 
@@ -149,10 +149,10 @@ test('Mint transaction does NOT update the streams recipient', () => {
 test('Burn transaction does NOT update the streams recipient', () => {
   setup()
   const id = STREAM_ID.toString()
-  let transactionEvent = createTransferEvent(ZERO_ADDRESS, RECIEVER, STREAM_ID)
+  let transactionEvent = createTransferStreamEvent(ZERO_ADDRESS, RECIEVER, STREAM_ID)
   assert.fieldEquals('Stream', id, 'recipient', RECIEVER.toHex())
 
-  onTransfer(transactionEvent)
+  onTransferStream(transactionEvent)
 
   assert.fieldEquals('Stream', id, 'recipient', RECIEVER.toHex())
 
@@ -163,12 +163,12 @@ test('Burn transaction does NOT update the streams recipient', () => {
 test('Transfer event updates the stream recipient', () => {
   setup()
   const id = STREAM_ID.toString()
-  let transactionEvent = createTransferEvent(RECIEVER, SENDER, STREAM_ID)
+  let transactionEvent = createTransferStreamEvent(RECIEVER, SENDER, STREAM_ID)
 
   assert.fieldEquals('Stream', id, 'recipient', RECIEVER.toHex())
 
   // When: Reciever transfers the stream to sender
-  onTransfer(transactionEvent)
+  onTransferStream(transactionEvent)
 
   // Then: The Streams recipient is updated
   assert.fieldEquals('Stream', id, 'recipient', SENDER.toHex())

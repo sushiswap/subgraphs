@@ -2,13 +2,13 @@ import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
 import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from './../src/constants'
-import { onCancelStream, onCreateStream, onUpdateStream, onWithdraw } from '../src/mappings/stream'
+import { onCancelStream, onCreateStream, onUpdateStream, onWithdrawStream } from '../src/mappings/stream'
 import {
   createCancelStreamEvent,
   createStreamEvent,
   createTokenMock,
   createUpdateStreamEvent,
-  createWithdrawEvent,
+  createWithdrawStreamEvent,
 } from './mocks'
 
 const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
@@ -87,11 +87,11 @@ test('Withdraw from stream creates a Transaction', () => {
   setup()
   const id = STREAM_ID.toString().concat(':tx:1')
   const amount2 = BigInt.fromString('2000')
-  let withdrawalEvent = createWithdrawEvent(STREAM_ID, amount2, RECIEVER, WETH_ADDRESS, true)
+  let withdrawalEvent = createWithdrawStreamEvent(STREAM_ID, amount2, RECIEVER, WETH_ADDRESS, true)
   withdrawalEvent.block.number = BigInt.fromString('123')
   withdrawalEvent.block.timestamp = BigInt.fromString('11111111')
 
-  onWithdraw(withdrawalEvent)
+  onWithdrawStream(withdrawalEvent)
   assert.entityCount('Transaction', 2)
   assert.fieldEquals('Transaction', id, 'id', id)
   assert.fieldEquals('Transaction', id, 'type', WITHDRAWAL)
