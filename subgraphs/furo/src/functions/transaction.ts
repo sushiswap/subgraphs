@@ -1,30 +1,19 @@
 import { BigInt, ethereum } from '@graphprotocol/graph-ts'
 import {
-  CancelVesting as CancelVestingEvent,
-  CreateVesting as CreateVestingEvent,
-  Withdraw as WithdrawVestingEvent
-} from '../../generated/FuroVesting/FuroVesting'
-import {
   CancelStream as CancelStreamEvent,
   CreateStream as CreateStreamEvent,
   UpdateStream as UpdateStreamEvent,
-  Withdraw as WithdrawStreamEvent
+  Withdraw as WithdrawStreamEvent,
 } from '../../generated/FuroStream/FuroStream'
+import {
+  CancelVesting as CancelVestingEvent,
+  CreateVesting as CreateVestingEvent,
+  Withdraw as WithdrawVestingEvent,
+} from '../../generated/FuroVesting/FuroVesting'
 import { Stream, Transaction, Vesting } from '../../generated/schema'
 import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from '../constants'
 import { increaseTransactionCount } from './global'
 import { getOrCreateUser } from './user'
-
-// function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction {
-//   let transaction = Transaction.load(id)
-
-//   if (transaction === null) {
-//     transaction = new Transaction(id)
-//     transaction.save()
-//   }
-
-//   return transaction as Transaction
-// }
 
 export function createStreamTransaction<T extends ethereum.Event>(stream: Stream, event: T): void {
   if (event instanceof CreateStreamEvent) {
@@ -168,7 +157,7 @@ export function createVestingTransaction<T extends ethereum.Event>(vesting: Vest
     vesting.save()
   } else if (event instanceof WithdrawVestingEvent) {
     const id = vesting.id.concat(':tx:').concat(vesting.transactionCount.toString())
-    let transaction =  new Transaction(id)
+    let transaction = new Transaction(id)
     transaction.type = WITHDRAWAL
     transaction.vesting = vesting.id
     transaction.amount = event.params.amount
@@ -180,7 +169,7 @@ export function createVestingTransaction<T extends ethereum.Event>(vesting: Vest
     transaction.txHash = event.transaction.hash.toHex()
     transaction.save()
     increaseTransactionCount()
-    
+
     vesting.transactionCount = vesting.transactionCount.plus(BigInt.fromU32(1))
     vesting.save()
   }
