@@ -107,6 +107,38 @@ importers:
       matchstick-as: 0.5.0
       wabt: 1.0.24
 
+  subgraphs/furo-stream:
+    specifiers:
+      '@graphprotocol/graph-cli': ^0.27.0
+      '@graphprotocol/graph-ts': ^0.24.1
+      abi: workspace:*
+      assemblyscript: ^0.19.20
+      matchstick-as: ^0.4.2
+      wabt: 1.0.24
+    devDependencies:
+      '@graphprotocol/graph-cli': 0.27.0
+      '@graphprotocol/graph-ts': 0.24.1
+      abi: link:../../packages/abi
+      assemblyscript: 0.19.23
+      matchstick-as: 0.4.2
+      wabt: 1.0.24
+
+  subgraphs/furo-vesting:
+    specifiers:
+      '@graphprotocol/graph-cli': ^0.27.0
+      '@graphprotocol/graph-ts': ^0.24.1
+      abi: workspace:*
+      assemblyscript: ^0.19.20
+      matchstick-as: ^0.4.2
+      wabt: 1.0.24
+    devDependencies:
+      '@graphprotocol/graph-cli': 0.27.0
+      '@graphprotocol/graph-ts': 0.24.1
+      abi: link:../../packages/abi
+      assemblyscript: 0.19.23
+      matchstick-as: 0.4.2
+      wabt: 1.0.24
+
   subgraphs/kashi:
     specifiers:
       '@graphprotocol/graph-cli': ^0.27.0
