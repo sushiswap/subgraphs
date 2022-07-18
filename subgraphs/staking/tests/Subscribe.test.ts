@@ -24,7 +24,7 @@ function setup(): void {
     endTime
   )
   createTokenMock(REWARD_TOKEN.toHex(), BigInt.fromString('18'), 'SushiToken', 'SUSHI')
-  createTokenMock(TOKEN.toHex(), BigInt.fromString('18'), 'SushiSwap LP Token', 'SLP')
+  createTokenMock(TOKEN.toHex(), BigInt.fromString('18'), 'Some LP Token', 'SLP')
   onIncentiveCreated(incentiveCreatedEvent)
 }
 
@@ -45,8 +45,8 @@ test('Subscribe', () => {
   assert.fieldEquals('_Subscription', subscribeId, 'user', ALICE.toHex())
   assert.fieldEquals('_Subscription', subscribeId, 'incentive', INCENTIVE_ID.toString())
   assert.fieldEquals('_Subscription', subscribeId, 'token', TOKEN.toHex())
-  assert.fieldEquals('_Subscription', subscribeId, 'block', subscribeEvent.block.number.toString())
-  assert.fieldEquals('_Subscription', subscribeId, 'timestamp', subscribeEvent.block.timestamp.toString())
+  assert.fieldEquals('_Subscription', subscribeId, 'createdAtBlock', subscribeEvent.block.number.toString())
+  assert.fieldEquals('_Subscription', subscribeId, 'createdAtTimestamp', subscribeEvent.block.timestamp.toString())
 
   cleanup()
 })
@@ -61,7 +61,7 @@ test('Subscribe and Unsubscribe', () => {
 
   onUnsubscribe(unsubscribeEvent)
 
-  assert.notInStore('Subscription', subscribeId)
+  assert.notInStore('_Subscription', subscribeId)
   assert.entityCount('_Subscription', 0)
 
   cleanup()

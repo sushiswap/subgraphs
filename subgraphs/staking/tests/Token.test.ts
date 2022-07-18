@@ -28,7 +28,7 @@ test('Create incentive creates two tokens', () => {
   let decimals = BigInt.fromString('18')
   let rewardTokenName = 'SushiToken'
   let rewardTokenSymbol = 'SUSHI'
-  let tokenName = 'SushiSwap LP Token'
+  let tokenName = 'Some LP Token'
   let tokenSymbol = 'SLP'
   createTokenMock(REWARD_TOKEN.toHex(), decimals, rewardTokenName, rewardTokenSymbol)
   createTokenMock(TOKEN.toHex(), decimals, tokenName, tokenSymbol)
