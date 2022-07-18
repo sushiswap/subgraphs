@@ -59,8 +59,8 @@ type Vesting @entity {
   createdAtTimestamp: BigInt!
   modifiedAtBlock: BigInt!
   modifiedAtTimestamp: BigInt!
-  cancelledAtBlock: BigInt!
-  cancelledAtTimestamp: BigInt!
+  cancelledAtBlock: BigInt
+  cancelledAtTimestamp: BigInt
 }
 
 type Transaction @entity(immutable: true) {

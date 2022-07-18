@@ -11,22 +11,13 @@ import { increaseVestingCount } from './global'
 import { getOrCreateToken } from './token'
 import { getOrCreateUser } from './user'
 
-export function getOrCreateVesting(id: BigInt): Vesting {
-  let vesting = Vesting.load(id.toString())
 
-  if (vesting === null) {
-    vesting = new Vesting(id.toString())
-    increaseVestingCount()
-    vesting.save()
-  }
-
-  return vesting as Vesting
+export function getVesting(id: BigInt): Vesting {
+  return Vesting.load(id.toString()) as Vesting
 }
 
 export function createVesting(event: CreateVestingEvent): Vesting {
-  const vestId = event.params.vestId
-
-  let vesting = getOrCreateVesting(vestId)
+  let vesting = new Vesting(event.params.vestId.toString())
   let recipient = getOrCreateUser(event.params.recipient, event)
   let owner = getOrCreateUser(event.params.owner, event)
   let token = getOrCreateToken(event.params.token.toHex(), event)
@@ -45,18 +36,20 @@ export function createVesting(event: CreateVestingEvent): Vesting {
   vesting.expiresAt = calculateExpirationDate(vesting)
   vesting.totalAmount = calculateTotalAmount(vesting)
   vesting.txHash = event.transaction.hash.toHex()
-
+  vesting.transactionCount = BigInt.fromU32(0)
+  vesting.withdrawnAmount = BigInt.fromU32(0)
   vesting.createdAtBlock = event.block.number
   vesting.createdAtTimestamp = event.block.timestamp
   vesting.modifiedAtBlock = event.block.number
   vesting.modifiedAtTimestamp = event.block.timestamp
   vesting.save()
+  increaseVestingCount()
 
   return vesting
 }
 
 export function cancelVesting(event: CancelVestingEvent): Vesting {
-  let vesting = getOrCreateVesting(event.params.vestId)
+  let vesting = getVesting(event.params.vestId)
   vesting.status = CANCELLED
   vesting.withdrawnAmount = vesting.withdrawnAmount.plus(event.params.recipientAmount)
   vesting.modifiedAtBlock = event.block.number
@@ -69,7 +62,7 @@ export function cancelVesting(event: CancelVestingEvent): Vesting {
 }
 
 export function withdrawFromVesting(event: WithdrawEvent): Vesting {
-  let vesting = getOrCreateVesting(event.params.vestId)
+  let vesting = getVesting(event.params.vestId)
   vesting.withdrawnAmount = vesting.withdrawnAmount.plus(event.params.amount)
   vesting.modifiedAtBlock = event.block.number
   vesting.modifiedAtTimestamp = event.block.timestamp
@@ -84,7 +77,7 @@ export function transferVesting(event: TransferEvent): void {
   }
 
   let recipient = getOrCreateUser(event.params.to, event)
-  let vesting = getOrCreateVesting(event.params.id)
+  let vesting = getVesting(event.params.id)
   vesting.recipient = recipient.id
   vesting.modifiedAtBlock = event.block.number
   vesting.modifiedAtTimestamp = event.block.timestamp

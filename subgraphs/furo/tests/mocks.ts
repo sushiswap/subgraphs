@@ -2,18 +2,14 @@ import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { createMockedFunction, newMockEvent } from 'matchstick-as'
 import {
   CancelStream as CancelStreamEvent,
-  CreateStream as CreateStreamEvent,
-  UpdateStream as UpdateStreamEvent,
-  Transfer as TransferStreamEvent,
-  Withdraw as WithdrawStreamEvent,
+  CreateStream as CreateStreamEvent, Transfer as TransferStreamEvent, UpdateStream as UpdateStreamEvent, Withdraw as WithdrawStreamEvent
 } from '../generated/FuroStream/FuroStream'
 import {
   CancelVesting as CancelVestingEvent,
   CreateVesting as CreateVestingEvent,
   Transfer as TransferVestingEvent,
-  Withdraw as WithdrawVestingEvent,
+  Withdraw as WithdrawVestingEvent
 } from '../generated/FuroVesting/FuroVesting'
-
 
 export function createStreamEvent(
   streamId: BigInt,
@@ -25,17 +21,7 @@ export function createStreamEvent(
   endTime: BigInt,
   fromBentoBox: boolean
 ): CreateStreamEvent {
-  let mockEvent = newMockEvent()
-
-  let event = new CreateStreamEvent(
-    mockEvent.address,
-    mockEvent.logIndex,
-    mockEvent.transactionLogIndex,
-    mockEvent.logType,
-    mockEvent.block,
-    mockEvent.transaction,
-    mockEvent.parameters
-  )
+  let event = changetype<CreateStreamEvent>(newMockEvent())
 
   event.parameters = new Array()
   let streamIdParam = new ethereum.EventParam('streamId', ethereum.Value.fromUnsignedBigInt(streamId))
@@ -66,17 +52,7 @@ export function createWithdrawStreamEvent(
   token: Address,
   toBentoBox: boolean
 ): WithdrawStreamEvent {
-  let mockEvent = newMockEvent()
-
-  let event = new WithdrawStreamEvent(
-    mockEvent.address,
-    mockEvent.logIndex,
-    mockEvent.transactionLogIndex,
-    mockEvent.logType,
-    mockEvent.block,
-    mockEvent.transaction,
-    mockEvent.parameters
-  )
+  let event = changetype<WithdrawStreamEvent>(newMockEvent())
 
   event.parameters = new Array()
   let streamIdParam = new ethereum.EventParam('streamId', ethereum.Value.fromUnsignedBigInt(streamId))
@@ -104,17 +80,7 @@ export function createCancelStreamEvent(
   token: Address,
   toBentoBox: boolean
 ): CancelStreamEvent {
-  let mockEvent = newMockEvent()
-
-  let event = new CancelStreamEvent(
-    mockEvent.address,
-    mockEvent.logIndex,
-    mockEvent.transactionLogIndex,
-    mockEvent.logType,
-    mockEvent.block,
-    mockEvent.transaction,
-    mockEvent.parameters
-  )
+  let event = changetype<CancelStreamEvent>(newMockEvent())
 
   event.parameters = new Array()
   let streamIdParam = new ethereum.EventParam('streamId', ethereum.Value.fromUnsignedBigInt(streamId))
@@ -141,17 +107,7 @@ export function createUpdateStreamEvent(
   extendTime: BigInt,
   fromBentoBox: boolean
 ): UpdateStreamEvent {
-  let mockEvent = newMockEvent()
-
-  let event = new UpdateStreamEvent(
-    mockEvent.address,
-    mockEvent.logIndex,
-    mockEvent.transactionLogIndex,
-    mockEvent.logType,
-    mockEvent.block,
-    mockEvent.transaction,
-    mockEvent.parameters
-  )
+  let event = changetype<UpdateStreamEvent>(newMockEvent())
 
   event.parameters = new Array()
   let streamIdParam = new ethereum.EventParam('streamId', ethereum.Value.fromUnsignedBigInt(streamId))
@@ -167,22 +123,8 @@ export function createUpdateStreamEvent(
   return event
 }
 
-export function createTransferStreamEvent(
-  from: Address,
-  to: Address,
-  id: BigInt
-): TransferStreamEvent {
-  let mockEvent = newMockEvent()
-
-  let event = new TransferStreamEvent(
-    mockEvent.address,
-    mockEvent.logIndex,
-    mockEvent.transactionLogIndex,
-    mockEvent.logType,
-    mockEvent.block,
-    mockEvent.transaction,
-    mockEvent.parameters
-  )
+export function createTransferStreamEvent(from: Address, to: Address, id: BigInt): TransferStreamEvent {
+  let event = changetype<TransferStreamEvent>(newMockEvent())
 
   event.parameters = new Array()
   let fromParam = new ethereum.EventParam('from', ethereum.Value.fromAddress(from))
@@ -209,17 +151,7 @@ export function createVestingEvent(
   stepAmount: BigInt,
   fromBentoBox: boolean
 ): CreateVestingEvent {
-  let mockEvent = newMockEvent()
-
-  let event = new CreateVestingEvent(
-    mockEvent.address,
-    mockEvent.logIndex,
-    mockEvent.transactionLogIndex,
-    mockEvent.logType,
-    mockEvent.block,
-    mockEvent.transaction,
-    mockEvent.parameters
-  )
+  let event = changetype<CreateVestingEvent>(newMockEvent())
 
   event.parameters = new Array()
   let vestIdParam = new ethereum.EventParam('vestId', ethereum.Value.fromUnsignedBigInt(vestId))
@@ -255,17 +187,7 @@ export function createWithdrawVestingEvent(
   amount: BigInt,
   toBentoBox: boolean
 ): WithdrawVestingEvent {
-  let mockEvent = newMockEvent()
-
-  let event = new WithdrawVestingEvent(
-    mockEvent.address,
-    mockEvent.logIndex,
-    mockEvent.transactionLogIndex,
-    mockEvent.logType,
-    mockEvent.block,
-    mockEvent.transaction,
-    mockEvent.parameters
-  )
+  let event = changetype<WithdrawVestingEvent>(newMockEvent())
 
   event.parameters = new Array()
   let vestIdParam = new ethereum.EventParam('vestId', ethereum.Value.fromUnsignedBigInt(vestId))
@@ -288,17 +210,7 @@ export function createCancelVestingEvent(
   token: Address,
   toBentoBox: boolean
 ): CancelVestingEvent {
-  let mockEvent = newMockEvent()
-
-  let event = new CancelVestingEvent(
-    mockEvent.address,
-    mockEvent.logIndex,
-    mockEvent.transactionLogIndex,
-    mockEvent.logType,
-    mockEvent.block,
-    mockEvent.transaction,
-    mockEvent.parameters
-  )
+  let event = changetype<CancelVestingEvent>(newMockEvent())
 
   event.parameters = new Array()
   let vestIdParam = new ethereum.EventParam('vestId', ethereum.Value.fromUnsignedBigInt(vestId))
@@ -319,22 +231,8 @@ export function createCancelVestingEvent(
   return event
 }
 
-export function createTransferVestingEvent(
-  from: Address,
-  to: Address,
-  tokenId: BigInt
-): TransferVestingEvent {
-  let mockEvent = newMockEvent()
-
-  let event = new TransferVestingEvent(
-    mockEvent.address,
-    mockEvent.logIndex,
-    mockEvent.transactionLogIndex,
-    mockEvent.logType,
-    mockEvent.block,
-    mockEvent.transaction,
-    mockEvent.parameters
-  )
+export function createTransferVestingEvent(from: Address, to: Address, tokenId: BigInt): TransferVestingEvent {
+  let event = changetype<TransferVestingEvent>(newMockEvent())
 
   event.parameters = new Array()
   let fromParam = new ethereum.EventParam('from', ethereum.Value.fromAddress(from))
@@ -347,7 +245,6 @@ export function createTransferVestingEvent(
 
   return event
 }
-
 
 export function createTokenMock(contractAddress: string, decimals: BigInt, name: string, symbol: string): void {
   createMockedFunction(Address.fromString(contractAddress), 'decimals', 'decimals():(uint8)').returns([

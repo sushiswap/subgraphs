@@ -7,6 +7,10 @@ function getOrCreateGlobal(): Global {
 
   if (global === null) {
     global = new Global(GLOBAL_ID)
+    global.streamCount = BigInt.fromU32(0)
+    global.vestingCount = BigInt.fromU32(0)
+    global.transactionCount = BigInt.fromU32(0)
+    global.userCount = BigInt.fromU32(0)
     global.save()
   }
 
