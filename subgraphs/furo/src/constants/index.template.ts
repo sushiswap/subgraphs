@@ -9,6 +9,8 @@ export const WITHDRAWAL = 'WITHDRAWAL'
 export const DISBURSEMENT = 'DISBURSEMENT'
 
 export const GLOBAL_ID = '1'
+export const STREAM_PREFIX = 'stream:'
+export const VESTING_PREFIX = 'vesting:'
 
 export const ZERO_ADDRESS = Address.fromString('0x0000000000000000000000000000000000000000')
 

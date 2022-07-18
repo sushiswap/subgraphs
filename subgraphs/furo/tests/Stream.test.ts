@@ -1,7 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
-import { ACTIVE, CANCELLED, ZERO_ADDRESS } from './../src/constants'
+import { ACTIVE, CANCELLED, STREAM_PREFIX, ZERO_ADDRESS } from './../src/constants'
 import { onCancelStream, onCreateStream, onTransferStream, onUpdateStream, onWithdrawStream } from '../src/mappings/stream'
 import {
   createCancelStreamEvent,
@@ -34,7 +34,7 @@ function cleanup(): void {
 test('Stream entity contains expected fields', () => {
   setup()
 
-  const id = STREAM_ID.toString()
+  const id = STREAM_PREFIX.concat(STREAM_ID.toString())
   assert.fieldEquals('Stream', id, 'id', id)
   assert.fieldEquals('Stream', id, 'recipient', RECIEVER.toHex())
   assert.fieldEquals('Stream', id, 'totalAmount', AMOUNT.toString())
@@ -57,7 +57,7 @@ test('Stream entity contains expected fields', () => {
 
 test('Cancel stream', () => {
   setup()
-  const id = STREAM_ID.toString()
+  const id = STREAM_PREFIX.concat(STREAM_ID.toString())
   let cancelStreamEvent = createCancelStreamEvent(STREAM_ID, AMOUNT, AMOUNT, WETH_ADDRESS, true)
   cancelStreamEvent.block.number = BigInt.fromString('123')
   cancelStreamEvent.block.timestamp = BigInt.fromString('11111111')
@@ -86,7 +86,7 @@ test('Cancel stream', () => {
 
 test('Update stream', () => {
   setup()
-  const id = STREAM_ID.toString()
+  const id = STREAM_PREFIX.concat(STREAM_ID.toString())
   const extendTime = BigInt.fromString('2628000') // a month in seconds
   let updateStreamEvent = createUpdateStreamEvent(STREAM_ID, AMOUNT, extendTime, true)
   updateStreamEvent.block.number = BigInt.fromString('123')
@@ -113,7 +113,7 @@ test('Update stream', () => {
 
 test('Withdraw from stream', () => {
   setup()
-  const id = STREAM_ID.toString()
+  const id = STREAM_PREFIX.concat(STREAM_ID.toString())
   const amount2 = BigInt.fromString('2000')
   let withdrawalEvent = createWithdrawStreamEvent(STREAM_ID, amount2, RECIEVER, WETH_ADDRESS, true)
   withdrawalEvent.block.number = BigInt.fromString('123')
@@ -134,7 +134,7 @@ test('Withdraw from stream', () => {
 
 test('Mint transaction does NOT update the streams recipient', () => {
   setup()
-  const id = STREAM_ID.toString()
+  const id = STREAM_PREFIX.concat(STREAM_ID.toString())
   let transactionEvent = createTransferStreamEvent(RECIEVER, ZERO_ADDRESS, STREAM_ID)
   assert.fieldEquals('Stream', id, 'recipient', RECIEVER.toHex())
 
@@ -148,7 +148,7 @@ test('Mint transaction does NOT update the streams recipient', () => {
 
 test('Burn transaction does NOT update the streams recipient', () => {
   setup()
-  const id = STREAM_ID.toString()
+  const id = STREAM_PREFIX.concat(STREAM_ID.toString())
   let transactionEvent = createTransferStreamEvent(ZERO_ADDRESS, RECIEVER, STREAM_ID)
   assert.fieldEquals('Stream', id, 'recipient', RECIEVER.toHex())
 
@@ -162,7 +162,7 @@ test('Burn transaction does NOT update the streams recipient', () => {
 
 test('Transfer event updates the stream recipient', () => {
   setup()
-  const id = STREAM_ID.toString()
+  const id = STREAM_PREFIX.concat(STREAM_ID.toString())
   let transactionEvent = createTransferStreamEvent(RECIEVER, SENDER, STREAM_ID)
 
   assert.fieldEquals('Stream', id, 'recipient', RECIEVER.toHex())

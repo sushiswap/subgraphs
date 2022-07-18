@@ -77,4 +77,4 @@ dataSources:
         - event: Withdraw(indexed uint256,indexed address,indexed uint256,bool)
           handler: onWithdrawVesting
         - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: onVestTransferVesting
+          handler: onTransferVesting

@@ -1,4 +1,4 @@
-enum Status {
+enum FuroStatus {
   ACTIVE
   CANCELLED
 }
@@ -24,7 +24,7 @@ interface Furo @entity {
   totalAmount: BigInt!
   withdrawnAmount: BigInt!
   token: Token!
-  status: Status!
+  status: FuroStatus!
   createdBy: User!
   fromBentoBox: Boolean!
   startedAt: BigInt!
@@ -43,7 +43,7 @@ type Stream implements Furo @entity {
   totalAmount: BigInt!
   withdrawnAmount: BigInt!
   token: Token!
-  status: Status!
+  status: FuroStatus!
   createdBy: User!
   fromBentoBox: Boolean!
   startedAt: BigInt!
@@ -67,7 +67,7 @@ type Vesting implements Furo @entity {
   totalAmount: BigInt!
   withdrawnAmount: BigInt!
   token: Token!
-  status: Status!
+  status: FuroStatus!
   createdBy: User!
   fromBentoBox: Boolean!
   startedAt: BigInt!
@@ -109,8 +109,10 @@ type Token @entity(immutable: true) {
 
 type User @entity(immutable: true) {
   id: ID!
-  incomingFuros: [Furo!]! @derivedFrom(field: "recipient")
-  outgoingFuros: [Furo!]! @derivedFrom(field: "createdBy")
+  incomingStreams: [Stream!]! @derivedFrom(field: "recipient")
+  outgoingStreams: [Stream!]! @derivedFrom(field: "createdBy")
+  incomingVestings: [Vesting!]! @derivedFrom(field: "recipient")
+  outgoingVestings: [Vesting!]! @derivedFrom(field: "createdBy")
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
 }
