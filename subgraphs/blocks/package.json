@@ -17,7 +17,9 @@
     "remove-local": "graph remove --node http://localhost:8020/ sushiswap/blocks",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/blocks",
     "deploy-moonriver": "graph deploy --product hosted-service sushiswap/blocks-moonriver",
-    "deploy-fuse": "graph deploy --product hosted-service sushiswap/blocks-fuse"
+    "deploy-fuse": "graph deploy --product hosted-service sushiswap/blocks-fuse",
+    "deploy-kava": "graph deploy --node https://pvt-admin.graph.kava.io sushiswap/blocks-kava",
+    "deploy-metis": "graph deploy --node https://andromeda.thegraph.metisdevops.link:8020 --ipfs https://ipfs.thegraph.metisdevops.link:5001 sushiswap/blocks-metis"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.27.0",
