@@ -1,8 +1,9 @@
-import { BigInt } from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import {
   Burn as BurnEvent,
   Mint as MintEvent,
   Sync,
+  Swap,
   Transfer,
 } from '../../generated/templates/ConstantProductPool/ConstantProductPool'
 import { ADDRESS_ZERO, BIG_DECIMAL_ZERO, BIG_INT_ZERO } from '../constants'
@@ -14,6 +15,7 @@ import {
   getPairKpi,
   getRebase,
   getTokenKpi,
+  getTokenPrice,
   toAmount,
 } from '../functions'
 import { getNativePriceInUSD, updateTokenPrice } from '../pricing'
@@ -137,6 +139,30 @@ export function onTransfer(event: Transfer): void {
 
   pairKpi.save()
 }
+
+export function onSwap(event: Swap): void {
+  const pair = getPair(event.address.toHex())
+  const pairKpi = getPairKpi(pair.id)
+  const token0 = getOrCreateToken(pair.token0)
+  const token1 = getOrCreateToken(pair.token1)
+  const token0Price = getTokenPrice(pair.token0)
+  const token1Price = getTokenPrice(pair.token1)
+
+  const amount0Total = convertTokenToDecimal(event.params.amountIn, token0.decimals)
+  const amount1Total = convertTokenToDecimal(event.params.amountOut, token1.decimals)
+
+  const bundle = getOrCreateBundle()
+  const volumeNative = token0Price.derivedNative
+    .times(amount1Total)
+    .plus(token1Price.derivedNative.times(amount0Total))
+    .div(BigDecimal.fromString('2'))
+  const volumeUSD = volumeNative.times(bundle.nativePrice)
+  
+  pairKpi.volumeNative = pairKpi.volumeNative.plus(volumeNative)
+  pairKpi.volumeUSD = pairKpi.volumeUSD.plus(volumeUSD)
+  pairKpi.save()
+}
+
 
 function isInitialTransfer(event: Transfer): boolean {
   return event.params.recipient == ADDRESS_ZERO && event.params.amount.equals(BigInt.fromI32(1000))

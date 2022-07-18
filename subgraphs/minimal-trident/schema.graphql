@@ -110,6 +110,10 @@ type PairKpi @entity {
   token0Price: BigDecimal!
   " Price of the second token in this pair, not to be confused with TokenPrice entity "
   token1Price: BigDecimal!
+  # volume in Native
+  volumeNative: BigDecimal!
+  # volume in USD
+  volumeUSD: BigDecimal!
 }
 
 type Rebase @entity {

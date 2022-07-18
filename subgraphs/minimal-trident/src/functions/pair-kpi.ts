@@ -10,6 +10,8 @@ export function createPairKpi(id: string): PairKpi {
   kpi.liquidity = BIG_INT_ZERO
   kpi.liquidityNative = BIG_DECIMAL_ZERO
   kpi.liquidityUSD = BIG_DECIMAL_ZERO
+  kpi.volumeNative = BIG_DECIMAL_ZERO
+  kpi.volumeUSD = BIG_DECIMAL_ZERO
   kpi.save()
   return kpi as PairKpi
 }

@@ -1,9 +1,9 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { Transfer } from '../../generated/Factory/ERC20'
 import { Sync } from '../../generated/Factory/Pair'
-import { PairKpi } from '../../generated/schema'
+import { Swap } from '../../generated/templates/Pair/Pair'
 import { ADDRESS_ZERO, BIG_DECIMAL_ZERO, BIG_INT_ZERO } from '../constants'
-import { convertTokenToDecimal, getOrCreateBundle, getOrCreateToken, getPair } from '../functions'
+import { convertTokenToDecimal, getOrCreateBundle, getOrCreateToken, getPair, getTokenPrice } from '../functions'
 import { getPairKpi } from '../functions/pair-kpi'
 import { getTokenKpi } from '../functions/token-kpi'
 import { getNativePriceInUSD, updateTokenPrice } from '../pricing'
@@ -85,6 +85,34 @@ export function onTransfer(event: Transfer): void {
     pairKpi.liquidity = pairKpi.liquidity.minus(event.params.value)
     pairKpi.save()
   }
+}
+
+
+export function onSwap(event: Swap): void {
+  const pair = getPair(event.address.toHex())
+  const pairKpi = getPairKpi(pair.id)
+  const token0 = getOrCreateToken(pair.token0)
+  const token1 = getOrCreateToken(pair.token1)
+  const token0Price = getTokenPrice(pair.token0)
+  const token1Price = getTokenPrice(pair.token1)
+
+  const amount0In = convertTokenToDecimal(event.params.amount0In, token0.decimals)
+  const amount1In = convertTokenToDecimal(event.params.amount1In, token1.decimals)
+  const amount0Out = convertTokenToDecimal(event.params.amount0Out, token0.decimals)
+  const amount1Out = convertTokenToDecimal(event.params.amount1Out, token1.decimals)
+  const amount0Total = amount0Out.plus(amount0In)
+  const amount1Total = amount1Out.plus(amount1In)
+
+  const bundle = getOrCreateBundle()
+  const volumeNative = token0Price.derivedNative
+    .times(amount1Total)
+    .plus(token1Price.derivedNative.times(amount0Total))
+    .div(BigDecimal.fromString('2'))
+  const volumeUSD = volumeNative.times(bundle.nativePrice)
+  
+  pairKpi.volumeNative = pairKpi.volumeNative.plus(volumeNative)
+  pairKpi.volumeUSD = pairKpi.volumeUSD.plus(volumeUSD)
+  pairKpi.save()
 }
 
 function isInitialTransfer(event: Transfer): boolean {
