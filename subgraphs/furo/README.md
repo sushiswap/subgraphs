@@ -5,7 +5,7 @@
 ### Run
 
 ```sh
-yarn graph test <ONE-OR-MORE-TEST-NAMES>
+pnpm exec turbo run test --scope=furo --force
 
-yarn graph test Stream
+pnpm exec turbo run test --scope=furo --force -- transactions
 ```
