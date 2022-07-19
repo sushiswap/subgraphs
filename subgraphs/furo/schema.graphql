@@ -49,8 +49,6 @@ type Vesting @entity {
   cliffDuration: BigInt!
   stepDuration: BigInt!
   steps: BigInt!
-  " Initial amount "
-  initialAmount: BigInt!
   cliffAmount: BigInt!
   stepAmount: BigInt!
   " Total amount left, decreases on withdrawal "

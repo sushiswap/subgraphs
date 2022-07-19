@@ -66,7 +66,6 @@ test('Created vesting contains expected fields', () => {
   assert.fieldEquals('Vesting', id, 'recipient', RECIEVER.toHex())
   assert.fieldEquals('Vesting', id, 'cliffDuration', CLIFF_DURATION.toString())
   assert.fieldEquals('Vesting', id, 'stepDuration', STEP_DURATION.toString())
-  assert.fieldEquals('Vesting', id, 'initialAmount', TOTAL_AMOUNT.toString())
   assert.fieldEquals('Vesting', id, 'cliffAmount', CLIFF_AMOUNT.toString())
   assert.fieldEquals('Vesting', id, 'stepAmount', STEPS_AMOUNT.toString())
   assert.fieldEquals('Vesting', id, 'totalAmount', TOTAL_AMOUNT.toString())

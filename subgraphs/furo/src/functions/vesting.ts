@@ -8,7 +8,7 @@ import {
 import { Vesting } from '../../generated/schema'
 import { ACTIVE, CANCELLED, ZERO_ADDRESS } from '../constants'
 import { increaseVestingCount } from './global'
-import { getOrCreateRebase, toAmount } from './rebase'
+import { getOrCreateRebase, toElastic } from './rebase'
 import { getOrCreateToken } from './token'
 import { getOrCreateUser } from './user'
 
@@ -23,10 +23,10 @@ export function createVesting(event: CreateVestingEvent): Vesting {
   let token = getOrCreateToken(event.params.token.toHex(), event)
   let rebase = getOrCreateRebase(event.params.token.toHex())
   let cliffAmount = event.params.cliffShares.gt(BigInt.fromU32(0))
-    ? toAmount(event.params.cliffShares, rebase)
+    ? toElastic(rebase, event.params.cliffShares, true)
     : BigInt.fromU32(0)
   let stepAmount = event.params.stepShares.gt(BigInt.fromU32(0))
-    ? toAmount(event.params.stepShares, rebase)
+    ? toElastic(rebase, event.params.stepShares, true)
     : BigInt.fromU32(0)
   let initialAmount = calculateTotalAmount(event.params.steps, stepAmount, cliffAmount)
   vesting.recipient = recipient.id
@@ -42,7 +42,6 @@ export function createVesting(event: CreateVestingEvent): Vesting {
   vesting.startedAt = event.params.start
   vesting.expiresAt = calculateExpirationDate(vesting)
   vesting.totalAmount = initialAmount
-  vesting.initialAmount = initialAmount
   vesting.txHash = event.transaction.hash.toHex()
   vesting.transactionCount = BigInt.fromU32(0)
   vesting.withdrawnAmount = BigInt.fromU32(0)

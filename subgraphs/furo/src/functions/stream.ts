@@ -1,16 +1,12 @@
 import { BigInt } from '@graphprotocol/graph-ts'
-import { log } from 'matchstick-as'
 import {
   CancelStream as CancelStreamEvent,
-  CreateStream as CreateStreamEvent,
-  UpdateStream as UpdateStreamEvent,
-  Transfer as TransferEvent,
-  Withdraw as WithdrawEvent,
+  CreateStream as CreateStreamEvent, Transfer as TransferEvent, UpdateStream as UpdateStreamEvent, Withdraw as WithdrawEvent
 } from '../../generated/FuroStream/FuroStream'
 import { Stream } from '../../generated/schema'
 import { ACTIVE, CANCELLED, ZERO_ADDRESS } from '../constants'
 import { increaseStreamCount } from './global'
-import { getOrCreateRebase, getRebase, toAmount } from './rebase'
+import { getOrCreateRebase, toElastic } from './rebase'
 import { getOrCreateToken } from './token'
 import { getOrCreateUser } from './user'
 
@@ -19,12 +15,12 @@ export function getStream(id: BigInt): Stream {
 }
 
 export function createStream(event: CreateStreamEvent): Stream {
+  let rebase = getOrCreateRebase(event.params.token.toHex())
   let stream = new Stream(event.params.streamId.toString())
   let recipient = getOrCreateUser(event.params.recipient, event)
   let sender = getOrCreateUser(event.params.sender, event)
   let token = getOrCreateToken(event.params.token.toHex(), event)
-  let rebase = getOrCreateRebase(event.params.token.toHex())
-  let initialAmount = toAmount(event.params.amount, rebase)
+  let initialAmount = toElastic(rebase, event.params.amount, true)
   stream.recipient = recipient.id
   stream.initialAmount = initialAmount
   stream.extendedAmount = BigInt.fromU32(0)
