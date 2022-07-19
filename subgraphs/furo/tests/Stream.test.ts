@@ -1,6 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
+import { getOrCreateRebase } from '../src/functions'
 import {
   onCancelStream,
   onCreateStream,
@@ -8,11 +9,12 @@ import {
   onUpdateStream,
   onWithdrawStream,
 } from '../src/mappings/stream'
-import { ACTIVE, CANCELLED, ZERO_ADDRESS } from './../src/constants'
+import { ACTIVE, BENTOBOX_ADDRESS, CANCELLED, ZERO_ADDRESS } from './../src/constants'
 import {
   createCancelStreamEvent,
   createStreamEvent,
   createTokenMock,
+  createTotalsMock,
   createTransferStreamEvent,
   createUpdateStreamEvent,
   createWithdrawStreamEvent,
@@ -28,6 +30,11 @@ const END_TIME = BigInt.fromString('1650972295') // 	Tue Apr 26 2022 11:24:55 GM
 let streamEvent: CreateStreamEvent
 
 function setup(): void {
+  cleanup()
+
+  createTotalsMock(BENTOBOX_ADDRESS, WETH_ADDRESS, AMOUNT, AMOUNT)
+  getOrCreateRebase(WETH_ADDRESS.toHex())
+
   streamEvent = createStreamEvent(STREAM_ID, SENDER, RECIEVER, WETH_ADDRESS, AMOUNT, START_TIME, END_TIME, true)
   createTokenMock(WETH_ADDRESS.toHex(), BigInt.fromString('18'), 'Wrapped Ether', 'WETH')
   onCreateStream(streamEvent)
@@ -43,6 +50,8 @@ test('Stream entity contains expected fields', () => {
   const id = STREAM_ID.toString()
   assert.fieldEquals('Stream', id, 'id', id)
   assert.fieldEquals('Stream', id, 'recipient', RECIEVER.toHex())
+  assert.fieldEquals('Stream', id, 'initialAmount', AMOUNT.toString())
+  assert.fieldEquals('Stream', id, 'extendedAmount', '0')
   assert.fieldEquals('Stream', id, 'totalAmount', AMOUNT.toString())
   assert.fieldEquals('Stream', id, 'withdrawnAmount', '0')
   assert.fieldEquals('Stream', id, 'token', WETH_ADDRESS.toHex())

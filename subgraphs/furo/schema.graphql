@@ -21,7 +21,13 @@ type Global @entity {
 type Stream @entity {
   id: ID! # starts at 1001
   recipient: User!
+  " Initial amount "
+  initialAmount: BigInt!
+  " Extended amount, increases for each time the stream is updated with a top up amount "
+  extendedAmount: BigInt!
+  " Total amount left, decreased on withdrawal and increased on top up"
   totalAmount: BigInt!
+  " Withdrawn amount "
   withdrawnAmount: BigInt!
   token: Token!
   status: FuroStatus!
@@ -43,9 +49,13 @@ type Vesting @entity {
   cliffDuration: BigInt!
   stepDuration: BigInt!
   steps: BigInt!
+  " Initial amount "
+  initialAmount: BigInt!
   cliffAmount: BigInt!
   stepAmount: BigInt!
+  " Total amount left, decreases on withdrawal "
   totalAmount: BigInt!
+  " Withdrawn amount "
   withdrawnAmount: BigInt!
   token: Token!
   status: FuroStatus!
@@ -97,4 +107,15 @@ type User @entity(immutable: true) {
   outgoingVestings: [Vesting!]! @derivedFrom(field: "createdBy")
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
+}
+
+type Rebase @entity {
+  " Token address "
+  id: ID!
+  " Token this rebase belongs to "
+  token: Token!
+  " Base (Share) "
+  base: BigInt!
+  " Elastic (Amount) "
+  elastic: BigInt!
 }

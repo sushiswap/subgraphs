@@ -1,4 +1,5 @@
 import { BigInt } from '@graphprotocol/graph-ts'
+import { log } from 'matchstick-as'
 import {
   CancelStream as CancelStreamEvent,
   CreateStream as CreateStreamEvent,
@@ -9,6 +10,7 @@ import {
 import { Stream } from '../../generated/schema'
 import { ACTIVE, CANCELLED, ZERO_ADDRESS } from '../constants'
 import { increaseStreamCount } from './global'
+import { getOrCreateRebase, getRebase, toAmount } from './rebase'
 import { getOrCreateToken } from './token'
 import { getOrCreateUser } from './user'
 
@@ -21,9 +23,12 @@ export function createStream(event: CreateStreamEvent): Stream {
   let recipient = getOrCreateUser(event.params.recipient, event)
   let sender = getOrCreateUser(event.params.sender, event)
   let token = getOrCreateToken(event.params.token.toHex(), event)
-
+  let rebase = getOrCreateRebase(event.params.token.toHex())
+  let initialAmount = toAmount(event.params.amount, rebase)
   stream.recipient = recipient.id
-  stream.totalAmount = event.params.amount
+  stream.initialAmount = initialAmount
+  stream.extendedAmount = BigInt.fromU32(0)
+  stream.totalAmount = initialAmount
   stream.withdrawnAmount = BigInt.fromU32(0)
   stream.token = token.id
   stream.status = ACTIVE
@@ -45,6 +50,7 @@ export function createStream(event: CreateStreamEvent): Stream {
 
 export function updateStream(event: UpdateStreamEvent): Stream {
   let stream = getStream(event.params.streamId)
+  stream.extendedAmount = stream.extendedAmount.plus(event.params.topUpAmount)
   stream.totalAmount = stream.totalAmount.plus(event.params.topUpAmount)
   stream.expiresAt = stream.expiresAt.plus(event.params.extendTime)
   stream.modifiedAtBlock = event.block.number

@@ -8,9 +8,9 @@ import {
 import { Vesting } from '../../generated/schema'
 import { ACTIVE, CANCELLED, ZERO_ADDRESS } from '../constants'
 import { increaseVestingCount } from './global'
+import { getOrCreateRebase, toAmount } from './rebase'
 import { getOrCreateToken } from './token'
 import { getOrCreateUser } from './user'
-
 
 export function getVesting(id: BigInt): Vesting {
   return Vesting.load(id.toString()) as Vesting
@@ -21,7 +21,14 @@ export function createVesting(event: CreateVestingEvent): Vesting {
   let recipient = getOrCreateUser(event.params.recipient, event)
   let owner = getOrCreateUser(event.params.owner, event)
   let token = getOrCreateToken(event.params.token.toHex(), event)
-
+  let rebase = getOrCreateRebase(event.params.token.toHex())
+  let cliffAmount = event.params.cliffShares.gt(BigInt.fromU32(0))
+    ? toAmount(event.params.cliffShares, rebase)
+    : BigInt.fromU32(0)
+  let stepAmount = event.params.stepShares.gt(BigInt.fromU32(0))
+    ? toAmount(event.params.stepShares, rebase)
+    : BigInt.fromU32(0)
+  let initialAmount = calculateTotalAmount(event.params.steps, stepAmount, cliffAmount)
   vesting.recipient = recipient.id
   vesting.createdBy = owner.id
   vesting.token = token.id
@@ -34,7 +41,8 @@ export function createVesting(event: CreateVestingEvent): Vesting {
   vesting.fromBentoBox = event.params.fromBentoBox
   vesting.startedAt = event.params.start
   vesting.expiresAt = calculateExpirationDate(vesting)
-  vesting.totalAmount = calculateTotalAmount(vesting)
+  vesting.totalAmount = initialAmount
+  vesting.initialAmount = initialAmount
   vesting.txHash = event.transaction.hash.toHex()
   vesting.transactionCount = BigInt.fromU32(0)
   vesting.withdrawnAmount = BigInt.fromU32(0)
@@ -101,8 +109,6 @@ function calculateExpirationDate(vest: Vesting): BigInt {
   return startTime.plus(cliffDuration).plus(paymentDuration)
 }
 
-function calculateTotalAmount(vest: Vesting): BigInt {
-  const totalStepSum = vest.steps.times(vest.stepAmount)
-
-  return vest.cliffAmount.plus(totalStepSum)
+function calculateTotalAmount(steps: BigInt, stepAmount: BigInt, cliffAmount: BigInt): BigInt {
+  return cliffAmount.plus(steps.times(stepAmount))
 }

@@ -1,11 +1,13 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateVesting as CreateVestingEvent } from '../generated/FuroVesting/FuroVesting'
-import { ACTIVE, CANCELLED, WEEK, YEAR, ZERO_ADDRESS } from '../src/constants'
+import { ACTIVE, BENTOBOX_ADDRESS, CANCELLED, WEEK, YEAR, ZERO_ADDRESS } from '../src/constants'
+import { getOrCreateRebase } from '../src/functions'
 import { onCancelVesting, onCreateVesting, onTransferVesting, onWithdrawVesting } from '../src/mappings/vesting'
 import {
   createCancelVestingEvent,
   createTokenMock,
+  createTotalsMock,
   createTransferVestingEvent,
   createVestingEvent,
   createWithdrawVestingEvent
@@ -30,6 +32,11 @@ const TOTAL_AMOUNT = CLIFF_AMOUNT.plus(STEPS.times(STEPS_AMOUNT)) // 100000000 +
 let vestingEvent: CreateVestingEvent
 
 function setup(): void {
+  cleanup()
+
+  createTotalsMock(BENTOBOX_ADDRESS, WETH_ADDRESS, TOTAL_AMOUNT, TOTAL_AMOUNT)
+  getOrCreateRebase(WETH_ADDRESS.toHex())
+
   vestingEvent = createVestingEvent(
     VESTING_ID,
     WETH_ADDRESS,
@@ -59,6 +66,7 @@ test('Created vesting contains expected fields', () => {
   assert.fieldEquals('Vesting', id, 'recipient', RECIEVER.toHex())
   assert.fieldEquals('Vesting', id, 'cliffDuration', CLIFF_DURATION.toString())
   assert.fieldEquals('Vesting', id, 'stepDuration', STEP_DURATION.toString())
+  assert.fieldEquals('Vesting', id, 'initialAmount', TOTAL_AMOUNT.toString())
   assert.fieldEquals('Vesting', id, 'cliffAmount', CLIFF_AMOUNT.toString())
   assert.fieldEquals('Vesting', id, 'stepAmount', STEPS_AMOUNT.toString())
   assert.fieldEquals('Vesting', id, 'totalAmount', TOTAL_AMOUNT.toString())

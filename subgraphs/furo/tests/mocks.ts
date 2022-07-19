@@ -2,13 +2,16 @@ import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { createMockedFunction, newMockEvent } from 'matchstick-as'
 import {
   CancelStream as CancelStreamEvent,
-  CreateStream as CreateStreamEvent, Transfer as TransferStreamEvent, UpdateStream as UpdateStreamEvent, Withdraw as WithdrawStreamEvent
+  CreateStream as CreateStreamEvent,
+  Transfer as TransferStreamEvent,
+  UpdateStream as UpdateStreamEvent,
+  Withdraw as WithdrawStreamEvent,
 } from '../generated/FuroStream/FuroStream'
 import {
   CancelVesting as CancelVestingEvent,
   CreateVesting as CreateVestingEvent,
   Transfer as TransferVestingEvent,
-  Withdraw as WithdrawVestingEvent
+  Withdraw as WithdrawVestingEvent,
 } from '../generated/FuroVesting/FuroVesting'
 
 export function createStreamEvent(
@@ -256,4 +259,10 @@ export function createTokenMock(contractAddress: string, decimals: BigInt, name:
   createMockedFunction(Address.fromString(contractAddress), 'symbol', 'symbol():(string)').returns([
     ethereum.Value.fromString(symbol),
   ])
+}
+
+export function createTotalsMock(contractAddress: Address, tokenAddress: Address, elastic: BigInt, base: BigInt): void {
+  createMockedFunction(contractAddress, 'totals', 'totals(address):(uint128,uint128)')
+    .withArgs([ethereum.Value.fromAddress(tokenAddress)])
+    .returns([ethereum.Value.fromUnsignedBigInt(elastic), ethereum.Value.fromUnsignedBigInt(base)])
 }

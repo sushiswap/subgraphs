@@ -25,6 +25,8 @@ dataSources:
       abis:
         - name: FuroStream
           file: ./abis/FuroStream.json
+        - name: BentoBox
+          file: ./node_modules/abi/BentoBox/BentoBox.json
         - name: ERC20
           file: ./node_modules/abi/ERC20/ERC20.json
         - name: SymbolBytes32
@@ -63,6 +65,8 @@ dataSources:
       abis:
         - name: FuroVesting
           file: ./abis/FuroVesting.json
+        - name: BentoBox
+          file: ./node_modules/abi/BentoBox/BentoBox.json
         - name: ERC20
           file: ./node_modules/abi/ERC20/ERC20.json
         - name: SymbolBytes32
@@ -78,3 +82,37 @@ dataSources:
           handler: onWithdrawVesting
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: onTransferVesting
+  - kind: ethereum/contract
+    name: BentoBox
+    network: {{ network }}
+    source:
+      address: '{{ bentobox.address }}'
+      startBlock: {{ furo.stream.startBlock }}
+      abi: BentoBox
+    mapping:
+      kind: ethereun/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/bentobox.ts
+      entities:
+        - Rebase
+      abis:
+        - name: BentoBox
+          file: ./node_modules/abi/BentoBox/BentoBox.json
+        - name: ERC20
+          file: ./node_modules/abi/ERC20/ERC20.json
+        - name: SymbolBytes32
+          file: ./node_modules/abi/ERC20/SymbolBytes32.json
+        - name: NameBytes32
+          file: ./node_modules/abi/ERC20/NameBytes32.json
+      eventHandlers:
+        - event: LogDeposit(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: onLogDeposit
+        - event: LogWithdraw(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: onLogWithdraw
+        - event: LogFlashLoan(indexed address,indexed address,uint256,uint256,indexed address)
+          handler: onLogFlashLoan
+        - event: LogStrategyProfit(indexed address,uint256)
+          handler: onLogStrategyProfit
+        - event: LogStrategyLoss(indexed address,uint256)
+          handler: onLogStrategyLoss

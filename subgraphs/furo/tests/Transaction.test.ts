@@ -2,7 +2,8 @@ import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
 import { CreateVesting as CreateVestingEvent } from '../generated/FuroVesting/FuroVesting'
-import { WEEK, YEAR } from '../src/constants'
+import { BENTOBOX_ADDRESS, WEEK, YEAR } from '../src/constants'
+import { getOrCreateRebase } from '../src/functions'
 import { onCancelStream, onCreateStream, onUpdateStream, onWithdrawStream } from '../src/mappings/stream'
 import { onCancelVesting, onCreateVesting, onWithdrawVesting } from '../src/mappings/vesting'
 import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from './../src/constants'
@@ -11,10 +12,11 @@ import {
   createCancelVestingEvent,
   createStreamEvent,
   createTokenMock,
+  createTotalsMock,
   createUpdateStreamEvent,
   createVestingEvent,
   createWithdrawStreamEvent,
-  createWithdrawVestingEvent,
+  createWithdrawVestingEvent
 } from './mocks'
 
 const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
@@ -40,6 +42,11 @@ let vestingEvent: CreateVestingEvent
 let streamEvent: CreateStreamEvent
 
 function setupVesting(): void {
+  cleanup()
+
+  createTotalsMock(BENTOBOX_ADDRESS, WETH_ADDRESS, TOTAL_AMOUNT, TOTAL_AMOUNT)
+  getOrCreateRebase(WETH_ADDRESS.toHex())
+
   vestingEvent = createVestingEvent(
     VESTING_ID,
     WETH_ADDRESS,
@@ -60,6 +67,8 @@ function setupVesting(): void {
 function setupStream(): void {
   cleanup()
 
+  createTotalsMock(BENTOBOX_ADDRESS, WETH_ADDRESS, AMOUNT, AMOUNT)
+  getOrCreateRebase(WETH_ADDRESS.toHex())
   streamEvent = createStreamEvent(STREAM_ID, SENDER, RECIEVER, WETH_ADDRESS, AMOUNT, START_TIME, END_TIME, true)
   createTokenMock(WETH_ADDRESS.toHex(), BigInt.fromString('18'), 'Wrapped Ether', 'WETH')
   onCreateStream(streamEvent)
