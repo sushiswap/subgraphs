@@ -48,7 +48,7 @@ export function toElastic(total: Rebase, base: BigInt, roundUp: boolean): BigInt
   const elastic = base.times(total.elastic).div(total.base)
 
   if (roundUp && elastic.times(total.base).div(total.elastic).lt(base)) {
-    return base.plus(BigInt.fromU32(1))
+    return elastic.plus(BigInt.fromU32(1))
   }
 
   return elastic
