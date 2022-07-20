@@ -27,8 +27,33 @@ export function getOrCreateRebase(token: string): Rebase {
   return rebase as Rebase
 }
 
-export function toAmount(shares: BigInt, rebase: Rebase): BigInt {
-  return rebase.base.gt(BIG_INT_ONE) ? shares.times(rebase.elastic).div(rebase.base) : BIG_INT_ONE
+
+export function toBase(total: Rebase, elastic: BigInt, roundUp: boolean): BigInt {
+  if (total.elastic.equals(BigInt.fromU32(0))) {
+    return elastic
+  }
+
+  const base = elastic.times(total.base).div(total.elastic)
+
+  if (roundUp && base.times(total.elastic).div(total.base).lt(elastic)) {
+    return base.plus(BigInt.fromU32(1))
+  }
+
+  return base
+}
+
+export function toElastic(total: Rebase, base: BigInt, roundUp: boolean): BigInt {
+  if (total.base.equals(BigInt.fromU32(0))) {
+    return base
+  }
+
+  const elastic = base.times(total.elastic).div(total.base)
+
+  if (roundUp && elastic.times(total.base).div(total.elastic).lt(base)) {
+    return elastic.plus(BigInt.fromU32(1))
+  }
+
+  return elastic
 }
 
 class Totals {

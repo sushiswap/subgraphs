@@ -1,9 +1,9 @@
 {
-  "name": "minimal-trident",
+  "name": "trident-minimal",
   "license": "MIT",
   "repository": {
     "url": "sushiswap/subgraphs",
-    "directory": "subgraphs/minimal-trident"
+    "directory": "subgraphs/trident-minimal"
   },
   "files": [
     "generated"

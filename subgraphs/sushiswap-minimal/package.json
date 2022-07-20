@@ -1,9 +1,9 @@
 {
-    "name": "minimal-legacy-exchange",
+    "name": "sushiswap-minimal",
     "license": "MIT",
     "repository": {
       "url": "sushiswap/subgraphs",
-      "directory": "subgraphs/minimal-legacy-exchange"
+      "directory": "subgraphs/sushiswap-minimal"
     },
     "files": [
       "generated"

@@ -1,5 +1,6 @@
 export * from './bundle'
 export * from './pair'
+export * from './pair-kpi'
 export * from './token'
 export * from './token-kpi'
 export * from './token-pair'
