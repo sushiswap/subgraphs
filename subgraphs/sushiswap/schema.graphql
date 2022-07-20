@@ -1,0 +1,115 @@
+" Bundle - should only ever be one created"
+type Bundle @entity {
+  " hardcoded to '1'"
+  id: ID!
+  " Price of native "
+  nativePrice: BigDecimal!
+}
+
+type Token @entity(immutable: true) {
+  " Token address "
+  id: ID!
+  " Token Price "
+  price: TokenPrice!
+  " Token Kpi "
+  kpi: TokenKpi!
+  " Symbol of the token "
+  symbol: String!
+  " if symbol was successfully retrieved "
+  symbolSuccess: Boolean!
+  " Name of the token "
+  name: String!
+  " if name was successfully retrieved "
+  nameSuccess: Boolean!
+  " Decimals of the token "
+  decimals: BigInt!
+  " if decimals were successfully retrieved "
+  decimalsSuccess: Boolean!
+  " All pairs where this token is involved in "
+  pairs: [TokenPair!]! @derivedFrom(field: "token")
+}
+
+type TokenPrice @entity {
+  " same as token entity id, address of token "
+  id: ID!
+  " Token "
+  token: Token!
+  " derived native, this is useful for calculating price. (derivedNative * bundle.nativePrice = USD price) "
+  derivedNative: BigDecimal!
+  " price in USD. NOTE: this will not always be up to date, it only updates when onSync event is emitted, bundle.nativePrice could have changed. "
+  lastUsdPrice: BigDecimal!
+  " Which token this price is based on "
+  pricedOffToken: Token
+  " Which pair this price is based on "
+  pricedOffPair: Pair
+}
+
+type TokenKpi @entity {
+  " same as token entity id, address of token "
+  id: ID!
+  " Token "
+  token: Token!
+  " Liquidity "
+  liquidity: BigInt!
+  " Liquidity in native "
+  liquidityNative: BigDecimal!
+  " Liquidity in USD "
+  liquidityUSD: BigDecimal!
+  " Count of all the pairs "
+  pairCount: BigInt!
+}
+
+type TokenPair @entity(immutable: true) {
+  " id is created by combining token.id and count, e.g. 0x00x00:1 "
+  id: ID!
+  " Pair "
+  pair: Pair!
+  " Token "
+  token: Token!
+}
+
+type Pair @entity(immutable: true) {
+  " Pair address (contract address) "
+  id: ID!
+  " Swap fee "
+  swapFee: BigInt!
+  " TWAP - time weighted average price "
+  twapEnabled: Boolean!
+  " Pair KPI "
+  kpi: PairKpi!
+  " name of the pair, this combines symbol of both tokens, e.g. WETH/SUSHI "
+  name: String!
+  " First Token "
+  token0: Token!
+  " Second Token "
+  token1: Token!
+  " First tokens price "
+  token0Price: TokenPrice!
+  " Second tokens price "
+  token1Price: TokenPrice!
+  " Which source this pair comes from, in this case it will always be 'LEGACY' "
+  source: String!
+}
+
+type PairKpi @entity {
+  " Pair id (same as Pair.id) "
+  id: ID!
+  " Liquidity of first token "
+  reserve0: BigInt!
+  " Liquidity of second token "
+  reserve1: BigInt!
+  " Liquidity, Total supply of all LP in this pool "
+  liquidity: BigInt!
+  " USD liquidity"
+  liquidityUSD: BigDecimal!
+  " Native Liquidity "
+  liquidityNative: BigDecimal!
+  " Price of the first token in this pair, not to be confused with TokenPrice entity "
+  token0Price: BigDecimal!
+  " Price of the second token in this pair, not to be confused with TokenPrice entity "
+  token1Price: BigDecimal!
+  # volume in Native
+  volumeNative: BigDecimal!
+  # volume in USD
+  volumeUSD: BigDecimal!
+}
