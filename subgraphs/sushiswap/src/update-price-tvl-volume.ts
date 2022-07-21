@@ -1,9 +1,10 @@
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
-
-import { Transfer as TransferEvent } from '../generated/Factory/ERC20'
-import { Sync as SyncEvent } from '../generated/Factory/Pair'
-import { Swap as SwapEvent } from '../generated/templates/Pair/Pair'
-import { ADDRESS_ZERO, BIG_DECIMAL_ZERO, BIG_INT_ZERO } from './constants'
+import { BigDecimal } from '@graphprotocol/graph-ts'
+import {
+  Swap as SwapEvent,
+  Sync as SyncEvent,
+  Transfer as TransferEvent
+} from '../generated/templates/Pair/Pair'
+import { BIG_DECIMAL_ZERO, BIG_INT_ZERO } from './constants'
 import {
   convertTokenToDecimal,
   getOrCreateBundle,
@@ -11,9 +12,11 @@ import {
   getPair,
   getPairKpi,
   getTokenKpi,
-  getTokenPrice,
+  getTokenPrice
 } from './functions'
 import { getNativePriceInUSD, updateTokenPrice } from './pricing'
+import { isBurn, isInitialTransfer, isMint } from './transfer'
+
 
 export function updateTvlAndTokenPrices(event: SyncEvent): void {
   const pairId = event.address.toHex()
@@ -133,16 +136,4 @@ export function updateLiquidity(event: TransferEvent): void {
   }
 
   pairKpi.save()
-}
-
-function isInitialTransfer(event: TransferEvent): boolean {
-  return event.params.to == ADDRESS_ZERO && event.params.value.equals(BigInt.fromI32(1000))
-}
-
-function isMint(event: TransferEvent): boolean {
-  return event.params.from == ADDRESS_ZERO
-}
-
-function isBurn(event: TransferEvent): boolean {
-  return event.params.to == ADDRESS_ZERO && event.params.from.toHex() == event.address.toHex()
 }
