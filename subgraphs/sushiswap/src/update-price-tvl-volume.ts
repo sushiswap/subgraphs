@@ -1,11 +1,12 @@
-import { Address, BigDecimal, BigInt, dataSource } from '@graphprotocol/graph-ts'
-import { PairKpi, Token, TokenPrice } from '../generated/schema'
+import { BigDecimal } from '@graphprotocol/graph-ts'
+import { TokenPrice } from '../generated/schema'
 import { Swap as SwapEvent, Sync as SyncEvent, Transfer as TransferEvent } from '../generated/templates/Pair/Pair'
 import {
   BIG_DECIMAL_ZERO,
+  BIG_INT_ONE,
   BIG_INT_ZERO,
   MINIMUM_USD_THRESHOLD_NEW_PAIRS,
-  WHITELISTED_TOKEN_ADDRESSES,
+  WHITELISTED_TOKEN_ADDRESSES
 } from './constants'
 import {
   convertTokenToDecimal,
@@ -14,11 +15,15 @@ import {
   getPair,
   getPairKpi,
   getTokenKpi,
-  getTokenPrice,
+  getTokenPrice
 } from './functions'
+import { getOrCreateFactory } from './functions/factory'
 import { getNativePriceInUSD, updateTokenPrice } from './pricing'
 import { isBurn, isInitialTransfer, isMint } from './transfer'
 
+const BLACKLIST_EXCHANGE_VOLUME: string[] = [
+  '0x9ea3b5b4ec044b70375236a281986106457b20ef', // DELTA
+]
 export function updateTvlAndTokenPrices(event: SyncEvent): void {
   const pairId = event.address.toHex()
   const pair = getPair(pairId)
@@ -30,8 +35,9 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   const currentToken0Price = getTokenPrice(pair.token0)
   const currentToken1Price = getTokenPrice(pair.token1)
   const bundle = getOrCreateBundle()
+  const factory = getOrCreateFactory()
 
-  // Reset token liquidity, will be updated again later when price is updated
+  // Reset liquidity, will be updated again later when price is updated
   token0Kpi.liquidity = token0Kpi.liquidity.minus(pairKpi.reserve0)
   token1Kpi.liquidity = token1Kpi.liquidity.minus(pairKpi.reserve1)
   const token0LiquidityNative = convertTokenToDecimal(pairKpi.reserve0, token0.decimals).times(
@@ -44,22 +50,21 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   token1Kpi.liquidityNative = token1Kpi.liquidityNative.minus(token1LiquidityNative)
   token0Kpi.liquidityUSD = token0Kpi.liquidityUSD.minus(token0LiquidityNative.times(bundle.nativePrice))
   token1Kpi.liquidityUSD = token1Kpi.liquidityUSD.minus(token1LiquidityNative.times(bundle.nativePrice))
+  factory.liquidityNative = factory.liquidityNative.minus(pairKpi.liquidityNative)
 
   pairKpi.reserve0 = event.params.reserve0
   pairKpi.reserve1 = event.params.reserve1
+  const reserve0Decimals = convertTokenToDecimal(pairKpi.reserve0, token0.decimals)
+  const reserve1Decimals = convertTokenToDecimal(pairKpi.reserve1, token1.decimals)
 
   if (pairKpi.reserve1.notEqual(BIG_INT_ZERO)) {
-    pairKpi.token0Price = convertTokenToDecimal(pairKpi.reserve0, token0.decimals).div(
-      convertTokenToDecimal(pairKpi.reserve1, token1.decimals)
-    )
+    pairKpi.token0Price = reserve0Decimals.div(reserve1Decimals)
   } else {
     pairKpi.token0Price = BIG_DECIMAL_ZERO
   }
 
   if (pairKpi.reserve0.notEqual(BIG_INT_ZERO)) {
-    pairKpi.token1Price = convertTokenToDecimal(pairKpi.reserve1, token1.decimals).div(
-      convertTokenToDecimal(pairKpi.reserve0, token0.decimals)
-    )
+    pairKpi.token1Price = reserve1Decimals.div(reserve0Decimals)
   } else {
     pairKpi.token1Price = BIG_DECIMAL_ZERO
   }
@@ -69,6 +74,14 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
 
   const token0Price = updateTokenPrice(token0.id, bundle.nativePrice)
   const token1Price = updateTokenPrice(token1.id, bundle.nativePrice)
+
+  // get tracked liquidity - will be 0 if neither is in whitelist
+  let liquidityNative: BigDecimal
+  if (bundle.nativePrice.notEqual(BIG_DECIMAL_ZERO)) {
+    liquidityNative = getTrackedLiquidityUSD(reserve0Decimals, token0Price, reserve1Decimals, token1Price).div(bundle.nativePrice)
+  } else {
+    liquidityNative = BIG_DECIMAL_ZERO
+  }
 
   // Set token liquidity with updated prices
   token0Kpi.liquidity = token0Kpi.liquidity.plus(pairKpi.reserve0)
@@ -85,12 +98,16 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   token0Kpi.save()
   token1Kpi.save()
 
-  pairKpi.liquidityNative = convertTokenToDecimal(pairKpi.reserve0, token0.decimals)
+  pairKpi.liquidityNative = reserve0Decimals
     .times(token0Price.derivedNative)
-    .plus(convertTokenToDecimal(pairKpi.reserve1, token1.decimals).times(token1Price.derivedNative))
+    .plus(reserve1Decimals.times(token1Price.derivedNative))
 
   pairKpi.liquidityUSD = pairKpi.liquidityNative.times(bundle.nativePrice)
   pairKpi.save()
+
+  factory.liquidityNative = factory.liquidityNative.plus(liquidityNative)
+  factory.liquidityUSD = factory.liquidityUSD.times(bundle.nativePrice)
+  factory.save()
 }
 
 export function updateVolume(event: SwapEvent): BigDecimal {
@@ -116,26 +133,38 @@ export function updateVolume(event: SwapEvent): BigDecimal {
     .times(amount1Total)
     .plus(token1Price.derivedNative.times(amount0Total))
     .div(BigDecimal.fromString('2'))
-  const untrackedVolume = volumeNative.times(bundle.nativePrice)
+  const untrackedVolumeUSD = volumeNative.times(bundle.nativePrice)
 
   token0Kpi.volume = token0Kpi.volume.plus(amount0Total)
   token0Kpi.volumeUSD = token0Kpi.volumeUSD.plus(trackedVolume)
-  token0Kpi.untrackedVolumeUSD = token0Kpi.untrackedVolumeUSD.plus(untrackedVolume)
+  token0Kpi.untrackedVolumeUSD = token0Kpi.untrackedVolumeUSD.plus(untrackedVolumeUSD)
   token0Kpi.save()
 
   token1Kpi.volume = token1Kpi.volume.plus(amount1Total)
   token1Kpi.volumeUSD = token1Kpi.volumeUSD.plus(trackedVolume)
-  token1Kpi.untrackedVolumeUSD = token1Kpi.untrackedVolumeUSD.plus(untrackedVolume)
+  token1Kpi.untrackedVolumeUSD = token1Kpi.untrackedVolumeUSD.plus(untrackedVolumeUSD)
 
   token1Kpi.save()
 
   pairKpi.volumeNative = pairKpi.volumeNative.plus(volumeNative)
   pairKpi.volumeUSD = pairKpi.volumeUSD.plus(trackedVolume)
-  pairKpi.untrackedVolumeUSD = pairKpi.untrackedVolumeUSD.plus(untrackedVolume)
+  pairKpi.untrackedVolumeUSD = pairKpi.untrackedVolumeUSD.plus(untrackedVolumeUSD)
   pairKpi.volumeToken0 = pairKpi.volumeToken0.plus(amount0Total)
   pairKpi.volumeToken1 = pairKpi.volumeToken1.plus(amount1Total)
   pairKpi.save()
-  return trackedVolume != BIG_DECIMAL_ZERO ? trackedVolume : untrackedVolume
+
+
+  // Don't track volume for these tokens in total exchange volume
+  if (!BLACKLIST_EXCHANGE_VOLUME.includes(token0.id) && !BLACKLIST_EXCHANGE_VOLUME.includes(token1.id)) {
+    // update global values, only used tracked amounts for volume
+    const factory = getOrCreateFactory()
+    factory.volumeUSD = factory.volumeUSD.plus(trackedVolume)
+    factory.volumeNative = factory.volumeNative.plus(volumeNative)
+    factory.untrackedVolumeUSD = factory.untrackedVolumeUSD.plus(untrackedVolumeUSD)
+    factory.save()
+  }
+
+  return trackedVolume != BIG_DECIMAL_ZERO ? trackedVolume : untrackedVolumeUSD
 }
 
 export function updateLiquidity(event: TransferEvent): void {
@@ -216,37 +245,37 @@ export function getTrackedVolumeUSD(
   return BIG_DECIMAL_ZERO
 }
 
-// /**
-//  * Accepts tokens and amounts, return tracked amount based on token whitelist
-//  * If one token on whitelist, return amount in that token converted to USD * 2.
-//  * If both are, return sum of two amounts
-//  * If neither is, return 0
-//  */
-// export function getTrackedLiquidityUSD(
-//   tokenAmount0: BigDecimal,
-//   token0: Token,
-//   tokenAmount1: BigDecimal,
-//   token1: Token
-// ): BigDecimal {
-//   const bundle = getOrCreateBundle()
-//   const price0 = token0.derivedETH.times(bundle.ethPrice)
-//   const price1 = token1.derivedETH.times(bundle.ethPrice)
+/**
+ * Accepts tokens and amounts, return tracked amount based on token whitelist
+ * If one token on whitelist, return amount in that token converted to USD * 2.
+ * If both are, return sum of two amounts
+ * If neither is, return 0
+ */
+export function getTrackedLiquidityUSD(
+  tokenAmount0: BigDecimal,
+  token0Price: TokenPrice,
+  tokenAmount1: BigDecimal,
+  token1Price: TokenPrice
+): BigDecimal {
+  const bundle = getOrCreateBundle()
+  const price0 = token0Price.derivedNative.times(bundle.nativePrice)
+  const price1 = token1Price.derivedNative.times(bundle.nativePrice)
 
-//   // both are whitelist tokens, take average of both amounts
-//   if (WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
-//     return tokenAmount0.times(price0).plus(tokenAmount1.times(price1))
-//   }
+  // both are whitelist tokens, take average of both amounts
+  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0Price.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1Price.id)) {
+    return tokenAmount0.times(price0).plus(tokenAmount1.times(price1))
+  }
 
-//   // take double value of the whitelisted token amount
-//   if (WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && !WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
-//     return tokenAmount0.times(price0).times(BigDecimal.fromString('2'))
-//   }
+  // take double value of the whitelisted token amount
+  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0Price.id) && !WHITELISTED_TOKEN_ADDRESSES.includes(token1Price.id)) {
+    return tokenAmount0.times(price0).times(BigDecimal.fromString('2'))
+  }
 
-//   // take double value of the whitelisted token amount
-//   if (!WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
-//     return tokenAmount1.times(price1).times(BigDecimal.fromString('2'))
-//   }
+  // take double value of the whitelisted token amount
+  if (!WHITELISTED_TOKEN_ADDRESSES.includes(token0Price.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1Price.id)) {
+    return tokenAmount1.times(price1).times(BigDecimal.fromString('2'))
+  }
 
-//   // neither token is on white list, tracked volume is 0
-//   return BIG_DECIMAL_ZERO
-// }
+  // neither token is on white list, tracked volume is 0
+  return BIG_DECIMAL_ZERO
+}

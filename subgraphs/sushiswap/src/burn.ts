@@ -9,13 +9,12 @@ import {
   getOrCreateTransaction,
   getPair,
   getTokenPrice,
+  increaseTransactionCount,
 } from './functions'
 
 export function handleBurn(event: BurnEvent): Burn {
   const transaction = getOrCreateTransaction(event)
-
   const burns = transaction.burns
-
   let burn = getOrCreateBurn(event, burns.length)
 
   const pair = getPair(event.address.toHex())
@@ -37,5 +36,6 @@ export function handleBurn(event: BurnEvent): Burn {
   burn.amountUSD = amountTotalUSD as BigDecimal
   burn.save()
 
+  increaseTransactionCount()
   return burn
 }

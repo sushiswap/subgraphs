@@ -1,8 +1,10 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { BIG_INT_ONE } from '../constants'
 import { ERC20 } from '../../generated/Factory/ERC20'
 import { NameBytes32 } from '../../generated/Factory/NameBytes32'
 import { SymbolBytes32 } from '../../generated/Factory/SymbolBytes32'
 import { Token } from '../../generated/schema'
+import { getOrCreateFactory } from './factory'
 import { createTokenKpi } from './token-kpi'
 import { createTokenPrice } from './token-price'
 
@@ -29,6 +31,9 @@ export function getOrCreateToken(id: string): Token {
     token.decimalsSuccess = decimals.success
 
     token.save()
+    const factory = getOrCreateFactory()
+    factory.tokenCount = factory.tokenCount.plus(BIG_INT_ONE)
+    factory.save()
   }
 
   return token as Token

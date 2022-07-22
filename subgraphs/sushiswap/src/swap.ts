@@ -4,8 +4,10 @@ import { Swap as SwapEvent } from '../generated/templates/Pair/Pair'
 import {
   convertTokenToDecimal, getOrCreateToken,
   getOrCreateTransaction,
-  getPair
+  getPair,
+  increaseTransactionCount
 } from './functions'
+
 
 export function handleSwap(event: SwapEvent, volumeUSD: BigDecimal): Swap {
   const transaction = getOrCreateTransaction(event)
@@ -38,5 +40,7 @@ export function handleSwap(event: SwapEvent, volumeUSD: BigDecimal): Swap {
   transaction.swaps = transaction.swaps.concat([swap.id])
 
   transaction.save()
+
+  increaseTransactionCount()
   return swap
 }

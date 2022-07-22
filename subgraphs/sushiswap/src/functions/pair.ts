@@ -1,7 +1,8 @@
 import { PairCreated__Params } from '../../generated/Factory/Factory'
 import { Pair } from '../../generated/schema'
 import { Pair as PairTemplate } from '../../generated/templates'
-import { LEGACY, SWAP_FEE, TWAP_ENABLED } from '../constants'
+import { BIG_INT_ONE, LEGACY, SWAP_FEE, TWAP_ENABLED } from '../constants'
+import { getOrCreateFactory } from './factory'
 import { createPairKpi } from './pair-kpi'
 import { getOrCreateToken } from './token'
 import { createTokenPair } from './token-pair'
@@ -28,6 +29,10 @@ export function createPair(params: PairCreated__Params): Pair {
   pair.kpi = id
   pair.source = LEGACY
   pair.save()
+
+  const factory = getOrCreateFactory()
+  factory.pairCount = factory.pairCount.plus(BIG_INT_ONE)
+  factory.save()
 
   // create the tracked contract based on the template
   PairTemplate.create(params.pair)
