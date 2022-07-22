@@ -99,6 +99,8 @@ export function updateVolume(event: SwapEvent): BigDecimal {
   const token1 = getOrCreateToken(pair.token1)
   const token0Price = getTokenPrice(pair.token0)
   const token1Price = getTokenPrice(pair.token1)
+  const token0Kpi = getTokenKpi(pair.token0)
+  const token1Kpi = getTokenKpi(pair.token1)
 
   const amount0In = convertTokenToDecimal(event.params.amount0In, token0.decimals)
   const amount1In = convertTokenToDecimal(event.params.amount1In, token1.decimals)
@@ -107,6 +109,7 @@ export function updateVolume(event: SwapEvent): BigDecimal {
   const amount0Total = amount0Out.plus(amount0In)
   const amount1Total = amount1Out.plus(amount1In)
 
+
   const bundle = getOrCreateBundle()
   const volumeNative = token0Price.derivedNative
     .times(amount1Total)
@@ -114,8 +117,18 @@ export function updateVolume(event: SwapEvent): BigDecimal {
     .div(BigDecimal.fromString('2'))
   const volumeUSD = volumeNative.times(bundle.nativePrice)
 
+  token0Kpi.volume = token0Kpi.volume.plus(amount0Total)
+  token0Kpi.volumeUSD = token0Kpi.volumeUSD.plus(volumeUSD)
+  token0Kpi.save()
+
+  token1Kpi.volume = token1Kpi.volume.plus(amount1Total)
+  token1Kpi.volumeUSD = token1Kpi.volumeUSD.plus(volumeUSD)
+  token1Kpi.save()
+
   pairKpi.volumeNative = pairKpi.volumeNative.plus(volumeNative)
   pairKpi.volumeUSD = pairKpi.volumeUSD.plus(volumeUSD)
+  pairKpi.volumeToken0 = pairKpi.volumeToken0.plus(amount0Total)
+  pairKpi.volumeToken1 = pairKpi.volumeToken1.plus(amount1Total)
   pairKpi.save()
   return volumeUSD
 }

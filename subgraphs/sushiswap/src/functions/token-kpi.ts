@@ -8,6 +8,8 @@ export function createTokenKpi(id: string): TokenKpi {
   kpi.liquidityNative = BIG_DECIMAL_ZERO
   kpi.liquidityUSD = BIG_DECIMAL_ZERO
   kpi.pairCount = BIG_INT_ZERO
+  kpi.volumeUSD = BIG_DECIMAL_ZERO
+  kpi.volume = BIG_DECIMAL_ZERO
   kpi.save()
 
   return kpi as TokenKpi

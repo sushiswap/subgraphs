@@ -81,6 +81,10 @@ type TokenKpi @entity {
   liquidityNative: BigDecimal!
   " Liquidity in USD "
   liquidityUSD: BigDecimal!
+  " Volume "
+  volume: BigDecimal!
+  " Volume in USD "
+  volumeUSD: BigDecimal!
   " Count of all the pairs "
   pairCount: BigInt!
 }
@@ -138,6 +142,10 @@ type PairKpi @entity {
   volumeNative: BigDecimal!
   # volume in USD
   volumeUSD: BigDecimal!
+  # volume token0
+  volumeToken0: BigDecimal!
+  # volume token1
+  volumeToken1: BigDecimal!
 }
 
 type User @entity(immutable: true) {
