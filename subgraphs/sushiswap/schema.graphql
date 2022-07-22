@@ -207,20 +207,23 @@ type Burn @entity {
 }
 
 type Swap @entity {
-  "transaction.id:pairKpi.transactionCount"
+  # transaction hash - index of swap in transaction swaps array
   id: ID!
-  pair: Pair!
   transaction: Transaction!
-  tokenIn: Token!
-  tokenOut: Token!
-  amountIn: BigDecimal!
-  amountOut: BigDecimal!
-  from: Bytes!
-  to: Bytes!
-  sender: Bytes!
-  logIndex: BigInt!
-  block: BigInt!
-  timestamp: BigInt!
+  timestamp: BigInt! # need this to pull recent txns for specific token or pair
+  pair: Pair!
+
+  # populated from the Swap event
+  sender: String!
+  amount0In: BigDecimal!
+  amount1In: BigDecimal!
+  amount0Out: BigDecimal!
+  amount1Out: BigDecimal!
+  to: String!
+  logIndex: BigInt
+
+  # derived info
+  amountUSD: BigDecimal!
 }
 
 

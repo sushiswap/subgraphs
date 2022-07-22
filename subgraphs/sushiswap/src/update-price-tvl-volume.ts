@@ -92,7 +92,7 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   pairKpi.save()
 }
 
-export function updateVolume(event: SwapEvent): void {
+export function updateVolume(event: SwapEvent): BigDecimal {
   const pair = getPair(event.address.toHex())
   const pairKpi = getPairKpi(pair.id)
   const token0 = getOrCreateToken(pair.token0)
@@ -117,6 +117,7 @@ export function updateVolume(event: SwapEvent): void {
   pairKpi.volumeNative = pairKpi.volumeNative.plus(volumeNative)
   pairKpi.volumeUSD = pairKpi.volumeUSD.plus(volumeUSD)
   pairKpi.save()
+  return volumeUSD
 }
 
 export function updateLiquidity(event: TransferEvent): void {

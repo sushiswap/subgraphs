@@ -1,4 +1,5 @@
 import { Address } from '@graphprotocol/graph-ts'
+import { handleSwap } from '../swap'
 import {
   Burn as BurnEvent,
   Mint as MintEvent,
@@ -25,7 +26,8 @@ export function onTransfer(event: TransferEvent): void {
 }
 
 export function onSwap(event: SwapEvent): void {
-  updateVolume(event)
+  const volumeUSD = updateVolume(event)
+  handleSwap(event, volumeUSD)
 }
 
 export function onMint(event: MintEvent): void {
