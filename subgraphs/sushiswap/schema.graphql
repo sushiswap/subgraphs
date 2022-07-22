@@ -85,6 +85,8 @@ type TokenKpi @entity {
   volume: BigDecimal!
   " Volume in USD "
   volumeUSD: BigDecimal!
+  " Untracked Volume in USD "
+  untrackedVolumeUSD: BigDecimal!
   " Count of all the pairs "
   pairCount: BigInt!
 }
@@ -142,6 +144,8 @@ type PairKpi @entity {
   volumeNative: BigDecimal!
   # volume in USD
   volumeUSD: BigDecimal!
+  " Untracked Volume in USD "
+  untrackedVolumeUSD: BigDecimal!
   # volume token0
   volumeToken0: BigDecimal!
   # volume token1
