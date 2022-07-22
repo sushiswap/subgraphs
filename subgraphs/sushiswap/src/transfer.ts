@@ -1,4 +1,4 @@
-import { BigInt, store } from '@graphprotocol/graph-ts'
+import { BigInt, log, store } from '@graphprotocol/graph-ts'
 import { Burn, Mint } from '../generated/schema'
 import { Transfer as TransferEvent } from '../generated/templates/Pair/Pair'
 import { ADDRESS_ZERO } from './constants'
@@ -30,13 +30,13 @@ export function handleTransferMintBurn(event: TransferEvent): void {
   const burns = transaction.burns
 
   if (isMint(event)) {
-    if (isMintingComplete(mints)) {
+    if (transaction.mints.length == 0 || isMintingComplete(mints[mints.length - 1])) {
       let mint = getOrCreateMint(event, mints.length)
       transaction.mints = mints.concat([mint.id])
       transaction.save()
     }
   } else if (isDirectTransfer(event)) {
-    let burn = getOrCreateBurn(event, burns.length)
+    let burn = getOrCreateBurn(event, transaction.burns.length)
     transaction.burns = transaction.burns.concat([burn.id])
     transaction.save()
   } else if (isBurn(event)) {
@@ -52,8 +52,9 @@ export function handleTransferMintBurn(event: TransferEvent): void {
     }
 
     // if this logical burn included a fee mint, account for this
-    if (!isMintingComplete(mints)) {
+    if (mints.length != 0 && !isMintingComplete(mints[mints.length - 1])) {
       const mint = Mint.load(mints[mints.length - 1])
+
       if (mint === null) {
         return
       }
@@ -97,7 +98,7 @@ export function createLiquidityPositions(event: TransferEvent): void {
   }
 }
 
-function isMintingComplete(mints: string[]): boolean {
-  const mint = Mint.load(mints[mints.length - 1])
-  return mints.length == 0 || !mint || mint.sender !== null
+function isMintingComplete(mintId: string): boolean {
+  const mint = Mint.load(mintId)
+  return !mint || mint.sender !== null
 }

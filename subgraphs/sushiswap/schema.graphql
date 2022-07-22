@@ -229,9 +229,11 @@ type Transaction @entity {
   id: ID!
   gasLimit: BigInt!
   gasPrice: BigInt!
-  mints: [Mint!]! @derivedFrom(field: "transaction")
-  burns: [Burn!]! @derivedFrom(field: "transaction")
-  swaps: [Swap!]! @derivedFrom(field: "transaction")
+  # This is not the reverse of Mint.transaction; it is only used to
+  # track incomplete mints (similar for burns and swaps)
+  mints: [Mint!]! 
+  burns: [Burn!]!
+  swaps: [Swap!]!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
 }

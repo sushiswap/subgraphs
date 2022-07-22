@@ -11,7 +11,6 @@ export function getOrCreateMint(event: Transfer, mintCount: i32): Mint {
     mint = new Mint(id)
     mint.pair = event.address.toHex()
     mint.to = event.params.to.toHex()
-    mint.sender = event.address
     mint.liquidity = event.params.value.divDecimal(BigDecimal.fromString('1e18'))
     mint.timestamp = event.block.timestamp
     mint.transaction = event.transaction.hash.toHex()
