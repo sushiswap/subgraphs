@@ -6,7 +6,7 @@ import {
   BIG_INT_ONE,
   BIG_INT_ZERO,
   MINIMUM_USD_THRESHOLD_NEW_PAIRS,
-  WHITELISTED_TOKEN_ADDRESSES
+  WHITELISTED_TOKEN_ADDRESSES,
 } from './constants'
 import {
   convertTokenToDecimal,
@@ -15,7 +15,7 @@ import {
   getPair,
   getPairKpi,
   getTokenKpi,
-  getTokenPrice
+  getTokenPrice,
 } from './functions'
 import { getOrCreateFactory } from './functions/factory'
 import { getNativePriceInUSD, updateTokenPrice } from './pricing'
@@ -78,7 +78,9 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   // get tracked liquidity - will be 0 if neither is in whitelist
   let liquidityNative: BigDecimal
   if (bundle.nativePrice.notEqual(BIG_DECIMAL_ZERO)) {
-    liquidityNative = getTrackedLiquidityUSD(reserve0Decimals, token0Price, reserve1Decimals, token1Price).div(bundle.nativePrice)
+    liquidityNative = getTrackedLiquidityUSD(reserve0Decimals, token0Price, reserve1Decimals, token1Price).div(
+      bundle.nativePrice
+    )
   } else {
     liquidityNative = BIG_DECIMAL_ZERO
   }
@@ -127,7 +129,7 @@ export function updateVolume(event: SwapEvent): BigDecimal {
   const amount0Total = amount0Out.plus(amount0In)
   const amount1Total = amount1Out.plus(amount1In)
 
-  const trackedVolume = getTrackedVolumeUSD(amount0Total, amount1Total, pair.id)
+  const trackedVolumeUSD = getTrackedVolumeUSD(amount0Total, amount1Total, pair.id)
   const bundle = getOrCreateBundle()
   const volumeNative = token0Price.derivedNative
     .times(amount1Total)
@@ -136,35 +138,43 @@ export function updateVolume(event: SwapEvent): BigDecimal {
   const untrackedVolumeUSD = volumeNative.times(bundle.nativePrice)
 
   token0Kpi.volume = token0Kpi.volume.plus(amount0Total)
-  token0Kpi.volumeUSD = token0Kpi.volumeUSD.plus(trackedVolume)
+  token0Kpi.volumeUSD = token0Kpi.volumeUSD.plus(trackedVolumeUSD)
   token0Kpi.untrackedVolumeUSD = token0Kpi.untrackedVolumeUSD.plus(untrackedVolumeUSD)
   token0Kpi.save()
 
   token1Kpi.volume = token1Kpi.volume.plus(amount1Total)
-  token1Kpi.volumeUSD = token1Kpi.volumeUSD.plus(trackedVolume)
+  token1Kpi.volumeUSD = token1Kpi.volumeUSD.plus(trackedVolumeUSD)
   token1Kpi.untrackedVolumeUSD = token1Kpi.untrackedVolumeUSD.plus(untrackedVolumeUSD)
 
   token1Kpi.save()
 
+  const feesNative = volumeNative.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
+  const feesUSD =
+    trackedVolumeUSD != BIG_DECIMAL_ZERO
+      ? volumeNative.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
+      : untrackedVolumeUSD.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
+
   pairKpi.volumeNative = pairKpi.volumeNative.plus(volumeNative)
-  pairKpi.volumeUSD = pairKpi.volumeUSD.plus(trackedVolume)
+  pairKpi.volumeUSD = pairKpi.volumeUSD.plus(trackedVolumeUSD)
   pairKpi.untrackedVolumeUSD = pairKpi.untrackedVolumeUSD.plus(untrackedVolumeUSD)
   pairKpi.volumeToken0 = pairKpi.volumeToken0.plus(amount0Total)
   pairKpi.volumeToken1 = pairKpi.volumeToken1.plus(amount1Total)
+  pairKpi.feesNative = pairKpi.feesNative.plus(feesNative)
+  pairKpi.feesUSD = pairKpi.feesUSD.plus(feesUSD)
   pairKpi.save()
-
 
   // Don't track volume for these tokens in total exchange volume
   if (!BLACKLIST_EXCHANGE_VOLUME.includes(token0.id) && !BLACKLIST_EXCHANGE_VOLUME.includes(token1.id)) {
-    // update global values, only used tracked amounts for volume
     const factory = getOrCreateFactory()
-    factory.volumeUSD = factory.volumeUSD.plus(trackedVolume)
+    factory.volumeUSD = factory.volumeUSD.plus(trackedVolumeUSD)
     factory.volumeNative = factory.volumeNative.plus(volumeNative)
     factory.untrackedVolumeUSD = factory.untrackedVolumeUSD.plus(untrackedVolumeUSD)
+    factory.feesNative = factory.feesNative.plus(feesNative)
+    factory.feesUSD = factory.feesUSD.plus(feesUSD)
     factory.save()
   }
 
-  return trackedVolume != BIG_DECIMAL_ZERO ? trackedVolume : untrackedVolumeUSD
+  return trackedVolumeUSD != BIG_DECIMAL_ZERO ? trackedVolumeUSD : untrackedVolumeUSD
 }
 
 export function updateLiquidity(event: TransferEvent): void {

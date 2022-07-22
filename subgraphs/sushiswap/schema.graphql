@@ -152,6 +152,10 @@ type PairKpi @entity {
   volumeToken0: BigDecimal!
   # volume token1
   volumeToken1: BigDecimal!
+  " Fee in Native "
+  feesNative: BigDecimal!
+  " Fee in USD "
+  feesUSD: BigDecimal!
 }
 
 type User @entity(immutable: true) {

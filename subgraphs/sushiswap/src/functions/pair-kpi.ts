@@ -15,6 +15,8 @@ export function createPairKpi(id: string): PairKpi {
   kpi.untrackedVolumeUSD = BIG_DECIMAL_ZERO
   kpi.volumeToken0 = BIG_DECIMAL_ZERO
   kpi.volumeToken1 = BIG_DECIMAL_ZERO
+  kpi.feesNative = BIG_DECIMAL_ZERO
+  kpi.feesUSD = BIG_DECIMAL_ZERO
   kpi.save()
   return kpi as PairKpi
 }
