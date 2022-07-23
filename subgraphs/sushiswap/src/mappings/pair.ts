@@ -1,5 +1,4 @@
 import { Address } from '@graphprotocol/graph-ts'
-import { handleSwap } from '../swap'
 import {
   Burn as BurnEvent,
   Mint as MintEvent,
@@ -8,11 +7,16 @@ import {
   Transfer as TransferEvent,
 } from '../../generated/templates/Pair/Pair'
 import { handleBurn } from '../burn'
-import { getOrCreateLiquidityPosition, getOrCreateUser, updateTokenDaySnapshots } from '../functions'
+import {
+  createLiquidityPositionSnapshot,
+  getOrCreateLiquidityPosition,
+  getOrCreateUser,
+  updateTokenDaySnapshots,
+} from '../functions'
 import { handleMint } from '../mint'
+import { handleSwap } from '../swap'
 import { createLiquidityPositions, handleTransferMintBurn as handleTransfer } from '../transfer'
 import { updateLiquidity, updateTvlAndTokenPrices, updateVolume } from '../update-price-tvl-volume'
-import { createLiquidityPositionSnapshot } from '../functions/liquidity-position-snapshot'
 
 export function onSync(event: SyncEvent): void {
   updateTvlAndTokenPrices(event)

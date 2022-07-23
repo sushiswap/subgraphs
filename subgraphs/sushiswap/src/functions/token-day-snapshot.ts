@@ -1,6 +1,6 @@
-import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 import { TokenDaySnapshot } from '../../generated/schema'
-import { BIG_INT_ONE, DAY_IN_SECONDS } from '../constants'
+import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, DAY_IN_SECONDS } from '../constants'
 import { getOrCreateBundle } from './bundle'
 import { convertTokenToDecimal } from './number-converter'
 import { getPair } from './pair'
@@ -21,18 +21,21 @@ function updateTokenDaySnapshot(timestamp: BigInt, tokenId: string, nativePrice:
   let tokenPrice = getTokenPrice(tokenId)
   let tokenKpi = getTokenKpi(tokenId)
   let id = generateTokenDaySnapshotId(tokenId, timestamp)
-
   let snapshot = TokenDaySnapshot.load(id)
 
   if (snapshot === null) {
     snapshot = new TokenDaySnapshot(id)
     snapshot.date = getDayStartDate(timestamp)
     snapshot.token = tokenId
+    snapshot.transactionCount = BIG_INT_ZERO
+    snapshot.liquidityNative = BIG_DECIMAL_ZERO
   }
 
   snapshot.liquidity = convertTokenToDecimal(tokenKpi.liquidity, token.decimals)
-  snapshot.liquidityNative = tokenKpi.liquidityNative.times(tokenPrice.derivedNative)
-  snapshot.liquidityUSD = snapshot.liquidityNative.times(nativePrice)
+  snapshot.liquidityNative = tokenKpi.liquidityNative
+  snapshot.liquidityUSD = tokenKpi.liquidityUSD
+  snapshot.volume = tokenKpi.volume
+  snapshot.volumeUSD = tokenKpi.volumeUSD
   snapshot.priceNative = tokenPrice.derivedNative
   snapshot.priceUSD = tokenPrice.derivedNative.times(nativePrice)
   snapshot.transactionCount = snapshot.transactionCount.plus(BIG_INT_ONE)

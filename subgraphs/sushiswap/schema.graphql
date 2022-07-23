@@ -328,12 +328,7 @@ type TokenDaySnapshot @entity {
   liquidityNative: BigDecimal!
   liquidityUSD: BigDecimal!
   volume: BigDecimal!
-  volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
-  fees: BigDecimal!
-  feesNative: BigDecimal!
-  feesUSD: BigDecimal!
-  price: BigDecimal!
   priceNative: BigDecimal!
   priceUSD: BigDecimal!
   transactionCount: BigInt!
