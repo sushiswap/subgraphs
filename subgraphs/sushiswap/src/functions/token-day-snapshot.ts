@@ -49,5 +49,5 @@ function getDayStartDate(timestamp: BigInt): i32 {
 
 function generateTokenDaySnapshotId(tokenId: string, timestamp: BigInt): string {
   let startDate = getDayStartDate(timestamp)
-  return tokenId.concat('-').concat(BigInt.fromI32(startDate).toString())
+  return tokenId.concat('-day-').concat(BigInt.fromI32(startDate).toString())
 }

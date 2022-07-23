@@ -289,38 +289,39 @@ type LiquidityPositionSnapshot @entity(immutable: true) {
 }
 
 type PairHourSnapshot @entity {
+  " {pairId}-hour-{timestamp} "
   id: ID!
-  date: Int!
   pair: Pair!
+  date: Int!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  untrackedVolumeUSD: BigDecimal!
   liquidity: BigDecimal!
   liquidityNative: BigDecimal!
   liquidityUSD: BigDecimal!
-  volume: BigDecimal!
-  volumeNative: BigDecimal!
-  volumeUSD: BigDecimal!
-  fees: BigDecimal!
   feesNative: BigDecimal!
   feesUSD: BigDecimal!
   transactionCount: BigInt!
 }
 
 type PairDaySnapshot @entity {
+  " {pairId}-day-{timestamp} "
   id: ID!
+  pair: Pair!
   date: Int!
-  Pair: Pair!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  untrackedVolumeUSD: BigDecimal!
   liquidity: BigDecimal!
   liquidityNative: BigDecimal!
   liquidityUSD: BigDecimal!
-  volume: BigDecimal!
-  volumeNative: BigDecimal!
-  volumeUSD: BigDecimal!
-  fees: BigDecimal!
   feesNative: BigDecimal!
   feesUSD: BigDecimal!
   transactionCount: BigInt!
 }
 
 type TokenDaySnapshot @entity {
+  " {tokenId}-day-{timestamp} "
   id: ID!
   date: Int!
   token: Token!

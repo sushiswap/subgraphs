@@ -11,6 +11,7 @@ import {
   createLiquidityPositionSnapshot,
   getOrCreateLiquidityPosition,
   getOrCreateUser,
+  updatePairSnapshots,
   updateTokenDaySnapshots,
 } from '../functions'
 import { handleMint } from '../mint'
@@ -34,6 +35,7 @@ export function onSwap(event: SwapEvent): void {
   const volumeUSD = updateVolume(event)
   handleSwap(event, volumeUSD)
   updateTokenDaySnapshots(event.block.timestamp, event.address)
+  updatePairSnapshots(event.block.timestamp, event.address)
 }
 
 export function onMint(event: MintEvent): void {
@@ -42,6 +44,7 @@ export function onMint(event: MintEvent): void {
     const liquidityPosition = getOrCreateLiquidityPosition(Address.fromString(mint.to), event.address, event.block)
     createLiquidityPositionSnapshot(liquidityPosition, event.block)
     updateTokenDaySnapshots(event.block.timestamp, event.address)
+    updatePairSnapshots(event.block.timestamp, event.address)
   }
 }
 
@@ -52,4 +55,5 @@ export function onBurn(event: BurnEvent): void {
     createLiquidityPositionSnapshot(liquidityPosition, event.block)
   }
   updateTokenDaySnapshots(event.block.timestamp, event.address)
+  updatePairSnapshots(event.block.timestamp, event.address)
 }
