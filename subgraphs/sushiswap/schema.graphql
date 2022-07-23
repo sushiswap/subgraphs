@@ -250,6 +250,11 @@ type Transaction @entity {
   id: ID!
   gasLimit: BigInt!
   gasPrice: BigInt!
+  " Gas used in native "
+  gasUsed: BigInt
+  cumulativeGasUsed: BigInt
+  " Gas used in USD "
+  gasUsedUSD: BigDecimal
   # This is not the reverse of Mint.transaction; it is only used to
   # track incomplete mints (similar for burns and swaps)
   mints: [Mint!]! 

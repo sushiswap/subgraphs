@@ -1,4 +1,4 @@
-specVersion: 0.0.4
+specVersion: 0.0.6
 description: Sushiswap
 repository: https://github.com/sushiswap/sushiswap-subgraph
 schema:
@@ -13,7 +13,7 @@ dataSources:
       startBlock: {{ legacy.factory.startBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/factory.ts
       entities:
@@ -42,7 +42,7 @@ templates:
       abi: Pair
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/pair.ts
       entities:
@@ -63,9 +63,12 @@ templates:
           handler: onSync
         - event: Transfer(indexed address,indexed address,uint256)
           handler: onTransfer
+          receipt: true
         - event: Mint(indexed address,uint256,uint256)
           handler: onMint
         - event: Burn(indexed address,uint256,uint256,indexed address)
           handler: onBurn
+          receipt: true
         - event: Swap(indexed address,uint256,uint256,uint256,uint256,indexed address)
           handler: onSwap
+          receipt: true

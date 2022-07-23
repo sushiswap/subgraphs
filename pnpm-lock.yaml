@@ -157,32 +157,6 @@ importers:
       abi: link:../../packages/abi
       matchstick-as: 0.2.3
 
-  subgraphs/minimal-legacy-exchange:
-    specifiers:
-      '@graphprotocol/graph-cli': ^0.32.0
-      '@graphprotocol/graph-ts': ^0.27.0
-      abi: workspace:*
-      matchstick-as: ^0.5.0
-    devDependencies:
-      '@graphprotocol/graph-cli': 0.32.0
-      '@graphprotocol/graph-ts': 0.27.0
-      abi: link:../../packages/abi
-      matchstick-as: 0.5.0
-
-  subgraphs/minimal-trident:
-    specifiers:
-      '@graphprotocol/graph-cli': ^0.32.0
-      '@graphprotocol/graph-ts': ^0.27.0
-      abi: workspace:*
-      matchstick-as: ^0.5.0
-      wabt: 1.0.24
-    devDependencies:
-      '@graphprotocol/graph-cli': 0.32.0
-      '@graphprotocol/graph-ts': 0.27.0
-      abi: link:../../packages/abi
-      matchstick-as: 0.5.0
-      wabt: 1.0.24
-
   subgraphs/miso:
     specifiers:
       '@graphprotocol/graph-cli': ^0.27.0
@@ -229,6 +203,30 @@ importers:
       matchstick-as: 0.4.2
       wabt: 1.0.24
 
+  subgraphs/sushiswap:
+    specifiers:
+      '@graphprotocol/graph-cli': ^0.32.0
+      '@graphprotocol/graph-ts': ^0.27.0
+      abi: workspace:*
+      matchstick-as: ^0.5.0
+    devDependencies:
+      '@graphprotocol/graph-cli': 0.32.0
+      '@graphprotocol/graph-ts': 0.27.0
+      abi: link:../../packages/abi
+      matchstick-as: 0.5.0
+
+  subgraphs/sushiswap-minimal:
+    specifiers:
+      '@graphprotocol/graph-cli': ^0.32.0
+      '@graphprotocol/graph-ts': ^0.27.0
+      abi: workspace:*
+      matchstick-as: ^0.5.0
+    devDependencies:
+      '@graphprotocol/graph-cli': 0.32.0
+      '@graphprotocol/graph-ts': 0.27.0
+      abi: link:../../packages/abi
+      matchstick-as: 0.5.0
+
   subgraphs/trident:
     specifiers:
       '@graphprotocol/graph-cli': ^0.26.0
@@ -245,6 +243,20 @@ importers:
       abi: link:../../packages/abi
       assemblyscript: 0.19.23
       matchstick-as: 0.3.0
+      wabt: 1.0.24
+
+  subgraphs/trident-minimal:
+    specifiers:
+      '@graphprotocol/graph-cli': ^0.32.0
+      '@graphprotocol/graph-ts': ^0.27.0
+      abi: workspace:*
+      matchstick-as: ^0.5.0
+      wabt: 1.0.24
+    devDependencies:
+      '@graphprotocol/graph-cli': 0.32.0
+      '@graphprotocol/graph-ts': 0.27.0
+      abi: link:../../packages/abi
+      matchstick-as: 0.5.0
       wabt: 1.0.24
 
   subgraphs/xsushi:
