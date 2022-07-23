@@ -149,10 +149,7 @@ export function updateVolume(event: SwapEvent): BigDecimal {
   token1Kpi.save()
 
   const feesNative = volumeNative.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
-  const feesUSD =
-    trackedVolumeUSD != BIG_DECIMAL_ZERO
-      ? trackedVolumeUSD.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
-      : untrackedVolumeUSD.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
+  const feesUSD = trackedVolumeUSD.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
 
   pairKpi.volumeNative = pairKpi.volumeNative.plus(volumeNative)
   pairKpi.volumeUSD = pairKpi.volumeUSD.plus(trackedVolumeUSD)
