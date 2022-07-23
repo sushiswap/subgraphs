@@ -8,7 +8,7 @@ import {
   Transfer as TransferEvent,
 } from '../../generated/templates/Pair/Pair'
 import { handleBurn } from '../burn'
-import { getOrCreateLiquidityPosition, getOrCreateUser } from '../functions'
+import { getOrCreateLiquidityPosition, getOrCreateUser, updateTokenDaySnapshots } from '../functions'
 import { handleMint } from '../mint'
 import { createLiquidityPositions, handleTransferMintBurn as handleTransfer } from '../transfer'
 import { updateLiquidity, updateTvlAndTokenPrices, updateVolume } from '../update-price-tvl-volume'
@@ -29,6 +29,7 @@ export function onTransfer(event: TransferEvent): void {
 export function onSwap(event: SwapEvent): void {
   const volumeUSD = updateVolume(event)
   handleSwap(event, volumeUSD)
+  updateTokenDaySnapshots(event.block.timestamp, event.address)
 }
 
 export function onMint(event: MintEvent): void {
@@ -36,6 +37,7 @@ export function onMint(event: MintEvent): void {
   if (mint !== null) {
     const liquidityPosition = getOrCreateLiquidityPosition(Address.fromString(mint.to), event.address, event.block)
     createLiquidityPositionSnapshot(liquidityPosition, event.block)
+    updateTokenDaySnapshots(event.block.timestamp, event.address)
   }
 }
 
@@ -45,4 +47,5 @@ export function onBurn(event: BurnEvent): void {
     const liquidityPosition = getOrCreateLiquidityPosition(Address.fromString(burn.sender!), event.address, event.block)
     createLiquidityPositionSnapshot(liquidityPosition, event.block)
   }
+  updateTokenDaySnapshots(event.block.timestamp, event.address)
 }

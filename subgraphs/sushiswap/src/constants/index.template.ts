@@ -1,4 +1,5 @@
 import { Address, BigDecimal, BigInt, ByteArray, Bytes, crypto, ethereum } from '@graphprotocol/graph-ts'
+export * from './time'
 
 export function getCreate2Address(from: Bytes, salt: Bytes, initCodeHash: Bytes): Bytes {
   return Bytes.fromHexString(

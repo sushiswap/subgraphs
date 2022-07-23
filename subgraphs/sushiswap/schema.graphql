@@ -288,7 +288,6 @@ type LiquidityPositionSnapshot @entity(immutable: true) {
   liquidityTokenBalance: BigInt!
 }
 
-
 type PairHourSnapshot @entity {
   id: ID!
   date: Int!
@@ -305,7 +304,6 @@ type PairHourSnapshot @entity {
   transactionCount: BigInt!
 }
 
-
 type PairDaySnapshot @entity {
   id: ID!
   date: Int!
@@ -319,25 +317,6 @@ type PairDaySnapshot @entity {
   fees: BigDecimal!
   feesNative: BigDecimal!
   feesUSD: BigDecimal!
-  transactionCount: BigInt!
-}
-
-type TokenHourSnapshot @entity {
-  id: ID!
-  date: Int!
-  token: Token!
-  liquidity: BigDecimal!
-  liquidityNative: BigDecimal!
-  liquidityUSD: BigDecimal!
-  volume: BigDecimal!
-  volumeNative: BigDecimal!
-  volumeUSD: BigDecimal!
-  fees: BigDecimal!
-  feesNative: BigDecimal!
-  feesUSD: BigDecimal!
-  price: BigDecimal!
-  priceUSD: BigDecimal!
-  priceNative: BigDecimal!
   transactionCount: BigInt!
 }
 
