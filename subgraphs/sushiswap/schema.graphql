@@ -259,6 +259,36 @@ type Transaction @entity {
   createdAtTimestamp: BigInt!
 }
 
+# saved over time for return calculations, gets created and never updated
+type LiquidityPositionSnapshot @entity(immutable: true) {
+  " {lp.id}-{timestamp} "
+  id: ID!
+  liquidityPosition: LiquidityPosition!
+  " saved for fast historical lookups "
+  timestamp: Int! 
+  " saved for fast historical lookups "
+  block: Int! 
+  " reference to user "
+  user: User! 
+  " reference to pair "
+  pair: Pair!
+  " snapshot of token0 price "
+  token0PriceUSD: BigDecimal! 
+  " snapshot of token1 price "
+  token1PriceUSD: BigDecimal! 
+  " snapshot of pair token0 reserves "
+  reserve0: BigInt! 
+  " snapshot of pair token1 reserves "
+  reserve1: BigInt! 
+  " snapshot of pair reserves in USD "
+  reserveUSD: BigDecimal!
+  " snapshot of pool token supply "
+  liquidityTokenTotalSupply: BigInt!
+  " snapshot of users pool token balance "
+  liquidityTokenBalance: BigInt!
+}
+
+
 type PairHourSnapshot @entity {
   id: ID!
   date: Int!

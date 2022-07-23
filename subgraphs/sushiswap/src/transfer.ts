@@ -3,6 +3,7 @@ import { Burn, Mint } from '../generated/schema'
 import { Transfer as TransferEvent } from '../generated/templates/Pair/Pair'
 import { ADDRESS_ZERO } from './constants'
 import { getOrCreateBurn, getOrCreateLiquidityPosition, getOrCreateMint, getOrCreateTransaction } from './functions'
+import { createLiquidityPositionSnapshot } from './functions/liquidity-position-snapshot'
 
 export function isInitialTransfer(event: TransferEvent): boolean {
   return event.params.to == ADDRESS_ZERO && event.params.value.equals(BigInt.fromI32(1000))
@@ -85,16 +86,22 @@ export function handleTransferMintBurn(event: TransferEvent): void {
 }
 
 export function createLiquidityPositions(event: TransferEvent): void {
+  if (isInitialTransfer(event)) {
+    return
+  }
+
   if (isBurn(event)) {
     const fromUserLiquidityPosition = getOrCreateLiquidityPosition(event.params.from, event.address, event.block)
     fromUserLiquidityPosition.balance = fromUserLiquidityPosition.balance.minus(event.params.value)
     fromUserLiquidityPosition.save()
+    createLiquidityPositionSnapshot(fromUserLiquidityPosition, event.block)
   }
 
   if (isMint(event)) {
     const toUserLiquidityPosition = getOrCreateLiquidityPosition(event.params.to, event.address, event.block)
     toUserLiquidityPosition.balance = toUserLiquidityPosition.balance.plus(event.params.value)
     toUserLiquidityPosition.save()
+    createLiquidityPositionSnapshot(toUserLiquidityPosition, event.block)
   }
 }
 
