@@ -1,4 +1,5 @@
-import { BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { BigDecimal, ethereum } from '@graphprotocol/graph-ts'
+import { TokenPrice } from '../generated/schema'
 import {
   Burn as BurnEvent,
   Mint as MintEvent,
@@ -6,7 +7,13 @@ import {
   Sync as SyncEvent,
   Transfer as TransferEvent,
 } from '../generated/templates/ConstantProductPool/ConstantProductPool'
-import { ADDRESS_ZERO, BIG_DECIMAL_ZERO, BIG_INT_ZERO, FactoryType, MINIMUM_USD_THRESHOLD_NEW_PAIRS, WHITELISTED_TOKEN_ADDRESSES } from './constants'
+import {
+  BIG_DECIMAL_ZERO,
+  BIG_INT_ZERO,
+  FactoryType,
+  MINIMUM_USD_THRESHOLD_NEW_PAIRS,
+  WHITELISTED_TOKEN_ADDRESSES,
+} from './constants'
 import {
   convertTokenToDecimal,
   getOrCreateBundle,
@@ -20,7 +27,6 @@ import {
   toElastic,
 } from './functions'
 import { getNativePriceInUSD, updateTokenPrice } from './pricing'
-import { TokenPrice } from '../generated/schema'
 import { isBurn, isInitialTransfer, isMint } from './transfer'
 
 export function updateTvlAndTokenPrices(event: SyncEvent): void {
@@ -112,7 +118,7 @@ export function updateVolume(event: SwapEvent): BigDecimal {
   const token1Price = getTokenPrice(token1.id)
   const token0Kpi = getTokenKpi(token0.id)
   const token1Kpi = getTokenKpi(token1.id)
-  
+
   const amount0Total = convertTokenToDecimal(event.params.amountIn, token0.decimals)
   const amount1Total = convertTokenToDecimal(event.params.amountOut, token1.decimals)
 
@@ -208,14 +214,13 @@ export function updateLiquidity<T extends ethereum.Event>(event: T): void {
   }
 }
 
-
 /**
  * Accepts tokens and amounts, return tracked amount based on token whitelist
  * If one token on whitelist, return amount in that token converted to USD.
  * If both are, return average of two amounts
  * If neither is, return 0
  */
- export function getTrackedVolumeUSD(
+export function getTrackedVolumeUSD(
   tokenAmount0: BigDecimal,
   tokenAmount1: BigDecimal,
   pairAddress: string

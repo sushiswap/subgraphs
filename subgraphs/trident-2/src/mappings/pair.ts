@@ -5,7 +5,7 @@ import {
   Sync as SyncEvent,
   Transfer as TransferEvent
 } from '../../generated/templates/ConstantProductPool/ConstantProductPool'
-import { Address } from '@graphprotocol/graph-ts'
+import { Address, log } from '@graphprotocol/graph-ts'
 
 import { handleBurn } from '../burn'
 import {

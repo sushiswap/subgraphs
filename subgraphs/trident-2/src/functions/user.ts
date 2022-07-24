@@ -2,6 +2,7 @@ import { Address } from '@graphprotocol/graph-ts'
 import { User } from '../../generated/schema'
 import { BIG_INT_ONE, FactoryType } from '../constants'
 import { getOrCreateFactory } from './factory'
+import { createUserKpi } from './user-kpi'
 
 export function createUser(address: Address): User {
 
@@ -11,6 +12,8 @@ export function createUser(address: Address): User {
   const factory = getOrCreateFactory(FactoryType.CONSTANT_PRODUCT_POOL)
   factory.userCount = factory.userCount.plus(BIG_INT_ONE)
   factory.save()
+
+  createUserKpi(address)
 
   return user as User
 }

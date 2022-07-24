@@ -182,6 +182,13 @@ type User @entity(immutable: true) {
   liquidityPositions: [LiquidityPosition!] @derivedFrom(field: "user")
 }
 
+type UserKpi @entity {
+  " Same as user id "
+  id: ID!
+  user: User!
+  lpSnapshotsCount: BigInt!
+}
+
 type LiquidityPosition @entity {
   "pair.id:user.id"
   id: ID!

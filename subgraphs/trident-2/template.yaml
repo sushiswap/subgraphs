@@ -101,7 +101,12 @@ templates:
           handler: onMint
         - event: Burn(indexed address,uint256,uint256,indexed address)
           handler: onBurn
+          receipt: true
         - event: Sync(uint256,uint256)
           handler: onSync
         - event: Transfer(indexed address,indexed address,uint256)
           handler: onTransfer
+          receipt: true
+        - event: Swap(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: onSwap
+          receipt: true

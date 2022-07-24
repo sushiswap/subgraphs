@@ -28,6 +28,8 @@ export function handleSwap(event: SwapEvent, volumeUSD: BigDecimal): Swap {
   swap.timestamp = transaction.createdAtTimestamp
   swap.transaction = transaction.id
   swap.sender = event.transaction.from.toHex()
+  swap.tokenIn = event.params.tokenIn.toHex()
+  swap.tokenOut = event.params.tokenOut.toHex()
   swap.amountIn = amount0Total
   swap.amountOut = amount1Total
   swap.to = event.params.recipient.toHex()

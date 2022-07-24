@@ -32,22 +32,22 @@ module.exports = {
 
   trident: {
     native: { address: NATIVE_ADDRESS },
-    // whitelistedTokenAddresses: [
-    //   // WNATIVE - This is actually quite important, though uneeded here anymore since
-    //   // it's now apart of the whitelisted token check in createPair, because the
-    //   // base should always be whitelisted or pricing never begins.
-    //   NATIVE_ADDRESS,
-    //   // WETH
-    //   WETH_ADDRESS,
-    //   // WBTC
-    //   WBTC_ADDRESS,
-    //   // USDC
-    //   USDC_ADDRESS,
-    //   // USDT
-    //   USDT_ADDRESS,
-    //   // DAI
-    //   DAI_ADDRESS,
-    // ],
+    whitelistedTokenAddresses: [
+      // IMPORTANT! The native address must be included for pricing to start
+      WETH_ADDRESS,
+      USDC_ADDRESS,
+      DAI_ADDRESS,
+      USDT_ADDRESS,
+      WBTC_ADDRESS,
+      SUSHI_ADDRESS,
+      AAVE_ADDRESS,
+      FRAX_ADDRESS,
+      BCT_ADDRESS,
+      AURUM_ADDRESS,
+      MSU_ADDRESS,
+      DMAGIC_ADDRESS,
+      NDEFI_ADDRESS,
+    ],
     stableTokenAddresses: [
       // USDC
       USDC_ADDRESS,
