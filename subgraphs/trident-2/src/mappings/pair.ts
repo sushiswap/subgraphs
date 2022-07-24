@@ -1,11 +1,12 @@
-import { Address } from '@graphprotocol/graph-ts'
 import {
   Burn as BurnEvent,
   Mint as MintEvent,
   Swap as SwapEvent,
   Sync as SyncEvent,
-  Transfer as TransferEvent,
-} from '../../generated/templates/Pair/Pair'
+  Transfer as TransferEvent
+} from '../../generated/templates/ConstantProductPool/ConstantProductPool'
+import { Address } from '@graphprotocol/graph-ts'
+
 import { handleBurn } from '../burn'
 import {
   createLiquidityPositionSnapshot,
@@ -24,8 +25,8 @@ export function onSync(event: SyncEvent): void {
 }
 
 export function onTransfer(event: TransferEvent): void {
-  getOrCreateUser(event.params.to)
-  getOrCreateUser(event.params.from)
+  getOrCreateUser(event.params.recipient)
+  getOrCreateUser(event.params.sender)
   updateLiquidity(event)
   handleTransfer(event)
   createLiquidityPositions(event)

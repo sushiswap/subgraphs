@@ -72,6 +72,7 @@ module.exports = {
       '0x1bd908569c1157417abae2ed3de3cb04c734b984',
     ],
     minimumNativeLiquidity: 1000,
+    minimum_usd_threshold_new_pairs: '3000',
   },
   legacy: {
     native: { address: WETH_ADDRESS },

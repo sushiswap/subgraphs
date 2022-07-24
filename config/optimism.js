@@ -49,6 +49,7 @@ module.exports = {
       '0x1e31a2c6e6614273d740358affb46bef180efb7b',
     ],
     minimumNativeLiquidity: '0.01',
+    minimum_usd_threshold_new_pairs: '3000',
   },
 
   furo: {

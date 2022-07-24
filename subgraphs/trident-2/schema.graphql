@@ -1,0 +1,360 @@
+type Factory @entity {
+  " Contract address "
+  id: ID!
+  " Factory type "
+  type: FactoryType!
+  " Volume USD "
+  volumeUSD: BigDecimal!
+  " Untracked Volume USD "
+  untrackedVolumeUSD: BigDecimal!
+  " Volume Native "
+  volumeNative: BigDecimal!
+  " Liquidity USD "
+  liquidityUSD: BigDecimal!
+  " Liquidity NATIVE "
+  liquidityNative: BigDecimal!
+  " Fees USD "
+  feesUSD: BigDecimal!
+  " Fees NATIVE "
+  feesNative: BigDecimal!
+  " Pair count "
+  pairCount: BigInt!
+  " Transaction count "
+  transactionCount: BigInt!
+  " Token count "
+  tokenCount: BigInt!
+  " User count "
+  userCount: BigInt!
+}
+
+enum FactoryType {
+  CONSTANT_PRODUCT_POOL
+}
+
+
+" Bundle - should only ever be one created"
+type Bundle @entity {
+  " hardcoded to '1'"
+  id: ID!
+  " Price of native "
+  nativePrice: BigDecimal!
+}
+
+type Token @entity(immutable: true) {
+  " Token address "
+  id: ID!
+  " Token Price "
+  price: TokenPrice!
+  " Token Kpi "
+  kpi: TokenKpi!
+  " Rebase "
+  rebase: Rebase!
+  " Symbol of the token "
+  symbol: String!
+  " if symbol was successfully retrieved "
+  symbolSuccess: Boolean!
+  " Name of the token "
+  name: String!
+  " if name was successfully retrieved "
+  nameSuccess: Boolean!
+  " Decimals of the token "
+  decimals: BigInt!
+  " if decimals were successfully retrieved "
+  decimalsSuccess: Boolean!
+  " All pairs where this token is involved in "
+  pairs: [TokenPair!]! @derivedFrom(field: "token")
+}
+
+type TokenPrice @entity {
+  " same as token entity id, address of token "
+  id: ID!
+  " Token "
+  token: Token!
+  " derived native, this is useful for calculating price. (derivedNative * bundle.nativePrice = USD price) "
+  derivedNative: BigDecimal!
+  " price in USD. NOTE: this will not always be up to date, it only updates when onSync event is emitted, bundle.nativePrice could have changed. "
+  lastUsdPrice: BigDecimal!
+  " Which token this price is based on "
+  pricedOffToken: Token
+  " Which pair this price is based on "
+  pricedOffPair: Pair
+}
+
+type TokenKpi @entity {
+  " same as token entity id, address of token "
+  id: ID!
+  " Token "
+  token: Token!
+  " Liquidity "
+  liquidity: BigInt!
+  " Liquidity in native "
+  liquidityNative: BigDecimal!
+  " Liquidity in USD "
+  liquidityUSD: BigDecimal!
+  " Volume "
+  volume: BigDecimal!
+  " Volume in USD "
+  volumeUSD: BigDecimal!
+  " Untracked Volume in USD "
+  untrackedVolumeUSD: BigDecimal!
+  " Count of all the pairs "
+  pairCount: BigInt!
+}
+
+type TokenPair @entity(immutable: true) {
+  " id is created by combining token.id and count, e.g. 0x00x00:1 "
+  id: ID!
+  " Pair "
+  pair: Pair!
+  " Token "
+  token: Token!
+}
+
+type Pair @entity(immutable: true) {
+  " Pair address (contract address) "
+  id: ID!
+  " Swap fee "
+  swapFee: BigInt!
+  " TWAP - time weighted average price "
+  twapEnabled: Boolean!
+  " Pair KPI "
+  kpi: PairKpi!
+  " name of the pair, this combines symbol of both tokens, e.g. WETH/SUSHI "
+  name: String!
+  " First Token "
+  token0: Token!
+  " Second Token "
+  token1: Token!
+  " First tokens price "
+  token0Price: TokenPrice!
+  " Second tokens price "
+  token1Price: TokenPrice!
+  " Which source this pair comes from, in this case it will always be 'TRIDENT' "
+  source: String!
+}
+
+type PairKpi @entity {
+  " Pair id (same as Pair.id) "
+  id: ID!
+  " Liquidity of first token "
+  reserve0: BigInt!
+  " Liquidity of second token "
+  reserve1: BigInt!
+  " Liquidity, Total supply of all LP in this pool "
+  liquidity: BigInt!
+  " USD liquidity"
+  liquidityUSD: BigDecimal!
+  " Native Liquidity "
+  liquidityNative: BigDecimal!
+  " Price of the first token in this pair, not to be confused with TokenPrice entity "
+  token0Price: BigDecimal!
+  " Price of the second token in this pair, not to be confused with TokenPrice entity "
+  token1Price: BigDecimal!
+  # volume in Native
+  volumeNative: BigDecimal!
+  # volume in USD
+  volumeUSD: BigDecimal!
+  " Untracked Volume in USD "
+  untrackedVolumeUSD: BigDecimal!
+  # volume token0
+  volumeToken0: BigDecimal!
+  # volume token1
+  volumeToken1: BigDecimal!
+  " Fee in Native "
+  feesNative: BigDecimal!
+  " Fee in USD "
+  feesUSD: BigDecimal!
+}
+
+type Rebase @entity {
+  " Token address "
+  id: ID!
+  " Token this rebase belongs to "
+  token: Token!
+  " Base (Share) "
+  base: BigInt!
+  " Elastic (Amount) "
+  elastic: BigInt!
+}
+
+type User @entity(immutable: true) {
+  id: ID!
+  liquidityPositions: [LiquidityPosition!] @derivedFrom(field: "user")
+}
+
+type LiquidityPosition @entity {
+  "pair.id:user.id"
+  id: ID!
+  pair: Pair!
+  user: User!
+  balance: BigInt!
+  createdAtBlock: Int!
+  createdAtTimestamp: Int!
+}
+
+type Mint @entity {
+  " transaction.id:transaction.mints.length "
+  id: ID!
+  transaction: Transaction!
+  timestamp: BigInt! # need this to pull recent txns for specific token or pair
+  pair: Pair!
+
+  # populated from the primary Transfer event
+  to: String!
+  liquidity: BigDecimal!
+
+  # populated from the Mint event
+  sender: Bytes
+  amount0: BigDecimal
+  amount1: BigDecimal
+  logIndex: BigInt
+  # derived amount based on available prices of tokens
+  amountUSD: BigDecimal
+
+  # optional fee fields, if a Transfer event is fired in _mintFee
+  feeTo: Bytes
+  feeLiquidity: BigDecimal
+}
+
+type Burn @entity {
+  " transaction.id:transaction.burns.length "
+  id: ID!
+  transaction: Transaction!
+  timestamp: BigInt! # need this to pull recent txns for specific token or pair
+  pair: Pair!
+
+  # populated from the primary Transfer event
+  liquidity: BigDecimal!
+
+  # populated from the Burn event
+  sender: String
+  amount0: BigDecimal
+  amount1: BigDecimal
+  to: String
+  logIndex: BigInt
+  # derived amount based on available prices of tokens
+  amountUSD: BigDecimal
+
+  # mark uncomplete in ETH case
+  complete: Boolean!
+
+  # optional fee fields, if a Transfer event is fired in _mintFee
+  feeTo: String
+  feeLiquidity: BigDecimal
+}
+
+type Swap @entity {
+  # transaction hash - index of swap in transaction swaps array
+  id: ID!
+  transaction: Transaction!
+  timestamp: BigInt! # need this to pull recent txns for specific token or pair
+  pair: Pair!
+
+  # populated from the Swap event
+  sender: String!
+  tokenIn: Token!
+  tokenOut: Token!
+  amountIn: BigDecimal!
+  amountOut: BigDecimal!
+  to: String!
+  logIndex: BigInt
+
+  # derived info
+  amountUSD: BigDecimal!
+}
+
+
+type Transaction @entity {
+  " Tx hash "
+  id: ID!
+  gasLimit: BigInt!
+  gasPrice: BigInt!
+  " Gas used in native "
+  gasUsed: BigInt
+  cumulativeGasUsed: BigInt
+  " Gas used in USD "
+  gasUsedUSD: BigDecimal
+  # This is not the reverse of Mint.transaction; it is only used to
+  # track incomplete mints (similar for burns and swaps)
+  mints: [Mint!]! 
+  burns: [Burn!]!
+  swaps: [Swap!]!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+# saved over time for return calculations, gets created and never updated
+type LiquidityPositionSnapshot @entity(immutable: true) {
+  " {lp.id}-{timestamp} "
+  id: ID!
+  liquidityPosition: LiquidityPosition!
+  " saved for fast historical lookups "
+  timestamp: Int! 
+  " saved for fast historical lookups "
+  block: Int! 
+  " reference to user "
+  user: User! 
+  " reference to pair "
+  pair: Pair!
+  " snapshot of token0 price "
+  token0PriceUSD: BigDecimal! 
+  " snapshot of token1 price "
+  token1PriceUSD: BigDecimal! 
+  " snapshot of pair token0 reserves "
+  reserve0: BigInt! 
+  " snapshot of pair token1 reserves "
+  reserve1: BigInt! 
+  " snapshot of pair reserves in USD "
+  reserveUSD: BigDecimal!
+  " snapshot of pool token supply "
+  liquidityTokenTotalSupply: BigInt!
+  " snapshot of users pool token balance "
+  liquidityTokenBalance: BigInt!
+}
+
+type PairHourSnapshot @entity {
+  " {pairId}-hour-{timestamp} "
+  id: ID!
+  pair: Pair!
+  date: Int!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  untrackedVolumeUSD: BigDecimal!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type PairDaySnapshot @entity {
+  " {pairId}-day-{timestamp} "
+  id: ID!
+  pair: Pair!
+  date: Int!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  untrackedVolumeUSD: BigDecimal!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type TokenDaySnapshot @entity {
+  " {tokenId}-day-{timestamp} "
+  id: ID!
+  date: Int!
+  token: Token!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeUSD: BigDecimal!
+  priceNative: BigDecimal!
+  priceUSD: BigDecimal!
+  transactionCount: BigInt!
+}
