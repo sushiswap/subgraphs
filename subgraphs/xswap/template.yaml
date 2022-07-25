@@ -18,16 +18,16 @@ dataSources:
       abis:
         - name: Xswap
           file: ./abis/xswap.json
-        - name: ERC20
-          file: ./node_modules/abi/ERC20/ERC20.json
-        - name: SymbolBytes32
-          file: ./node_modules/abi/ERC20/SymbolBytes32.json
-        - name: NameBytes32
-          file: ./node_modules/abi/ERC20/NameBytes32.json
+        # - name: ERC20
+        #   file: ./node_modules/abi/ERC20/ERC20.json
+        # - name: SymbolBytes32
+        #   file: ./node_modules/abi/ERC20/SymbolBytes32.json
+        # - name: NameBytes32
+        #   file: ./node_modules/abi/ERC20/NameBytes32.json
       eventHandlers:
         - event: StargateSushiXSwapDst(indexed bytes32,bool)
-          handler: onSource
-        - event: StargateSushiXSwapDst(indexed bytes32,bool)
           handler: onDestination
+        - event: StargateSushiXSwapSrc(indexed bytes32)
+          handler: onSource
 
       file: ./src/mappings/xswap.ts

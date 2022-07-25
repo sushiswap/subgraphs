@@ -2,3 +2,18 @@ type Global @entity {
   id: ID!
   swapCount: BigInt!
 }
+
+type Source @entity {
+  id: ID!
+  actions: [Int!]!
+  values: [BigInt!]!
+  datas: [Bytes!]!
+}
+
+type Destination @entity {
+  id: ID!
+  failed: Boolean!
+  actions: [Int!]!
+  values: [BigInt!]!
+  datas: [Bytes!]!
+}
