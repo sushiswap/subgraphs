@@ -66,4 +66,8 @@ module.exports = {
     address: '0x0000000000000000000000000000000000000000',
     startBlock: 0,
   },
+  xswap: {
+    address: '0x53b08dbd70327b7ba3b7886fc9987bc985d27262',
+    startBlock: 18221456,
+  }
 }

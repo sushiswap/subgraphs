@@ -65,4 +65,8 @@ module.exports = {
   kashi: {
     liquidationMultiplier: 12,
   },
+  xswap: {
+    address: '0x0000000000000000000000000000000000000000',
+    startBlock: 0,
+  }
 }

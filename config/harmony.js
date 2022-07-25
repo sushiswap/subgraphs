@@ -66,4 +66,8 @@ module.exports = {
     minimumNativeLiquidity: 50000,
     minimumUsdThresholdNewPairs: 1000
   },
+  xswap: {
+    address: '0x0000000000000000000000000000000000000000',
+    startBlock: 0,
+  }
 }
