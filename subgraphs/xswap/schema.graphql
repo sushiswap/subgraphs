@@ -1,0 +1,4 @@
+type Global @entity {
+  id: ID!
+  swapCount: BigInt!
+}

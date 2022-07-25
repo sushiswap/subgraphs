@@ -1,0 +1,24 @@
+{
+  "name": "xswap",
+  "author": "Ola Stenberg <hello@olastenberg.com>",
+  "license": "MIT",
+  "repository": {
+    "url": "sushiswap/subgraphs",
+    "directory": "subgraphs/xswap"
+  },
+  "files": [
+    "generated"
+  ],
+  "scripts": {
+    "generate": "mustache ../../config/$NETWORK.js template.yaml > subgraph.yaml && mustache ../../config/$NETWORK.js src/constants/index.template.ts > src/constants/index.ts && graph codegen",
+    "build": "graph build",
+    "test": "graph test -r"
+    },
+  "devDependencies": {    
+    "abi": "workspace:*",
+    "@graphprotocol/graph-cli": "^0.32.0",
+    "@graphprotocol/graph-ts": "^0.27.0",
+    "matchstick-as": "^0.5.0",
+    "wabt": "1.0.24"
+  }
+}
