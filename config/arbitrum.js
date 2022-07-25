@@ -69,5 +69,9 @@ module.exports = {
   xswap: {
     address: '0x53b08dbd70327b7ba3b7886fc9987bc985d27262',
     startBlock: 18221456,
+  },
+  stargate: {
+    address: '0x66A71Dcef29A0fFBDBE3c6a460a3B5BC225Cd675',
+    startBlock: 7920342
   }
 }

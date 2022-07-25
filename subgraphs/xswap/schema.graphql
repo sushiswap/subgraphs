@@ -5,15 +5,44 @@ type Global @entity {
 
 type Source @entity {
   id: ID!
+  packet: Packet!
   actions: [Int!]!
   values: [BigInt!]!
   datas: [Bytes!]!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+  # destinationOperation: DestinationOperation!
+  # sourceOperation: Operation!
 }
+
+type Packet @entity {
+  id: ID!
+  chainId: Int!
+  payload: Bytes!
+  # actions: [Int!]!
+  # values: [BigInt!]!
+  # datas: [Bytes!]!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+# type DestinationOperation @entity {
+#   id: ID!
+#   chainId: Int!
+#   to: Address!
+#   sourceContext: [Bytes!]!
+#   operation: Operation!
+# }
+
+# type Operation @entity {
+#   actions: [Int!]!
+#   values: [BigInt!]!
+#   datas: [Bytes!]!
+# }
+
+
 
 type Destination @entity {
   id: ID!
   failed: Boolean!
-  actions: [Int!]!
-  values: [BigInt!]!
-  datas: [Bytes!]!
 }

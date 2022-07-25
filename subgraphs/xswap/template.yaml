@@ -29,5 +29,30 @@ dataSources:
           handler: onDestination
         - event: StargateSushiXSwapSrc(indexed bytes32)
           handler: onSource
-
       file: ./src/mappings/xswap.ts
+  - kind: ethereum/contract
+    name: Stargate
+    network: {{ network }}
+    source:
+      address: '{{ stargate.address }}'
+      startBlock: {{ xswap.startBlock }}
+      abi: Stargate
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Global
+      abis:
+        - name: Stargate
+          file: ./abis/stargate.json
+        # - name: ERC20
+        #   file: ./node_modules/abi/ERC20/ERC20.json
+        # - name: SymbolBytes32
+        #   file: ./node_modules/abi/ERC20/SymbolBytes32.json
+        # - name: NameBytes32
+        #   file: ./node_modules/abi/ERC20/NameBytes32.json
+      eventHandlers:
+        - event: Packet(uint16,bytes)
+          handler: onPacket
+      file: ./src/mappings/stargate.ts

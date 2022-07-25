@@ -8,27 +8,30 @@ import {
 export function onSource(event: SourceEvent): void {
   const input = getTxnInputDataToDecode(event)
   let decoded = ethereum.decode('(uint8[],uint256[],bytes[])', input)!.toTuple()
-  const source = new Source(event.transaction.hash.toHex())
+  const id = event.transaction.hash.toHex()
+
+  const source = new Source(id)
   source.actions = decoded[0].toI32Array()
   source.values = decoded[1].toBigIntArray()
   source.datas = decoded[2].toBytesArray()
+  source.packet = id
+  source.createdAtTimestamp = event.block.timestamp
+  source.createdAtBlock = event.block.number
   source.save()
-
-  
 }
 
-// export function onDestination(event: DestinationEvent): void {
-//   const input = getTxnInputDataToDecode(event)
-//   let decoded = ethereum.decode('(uint8[],uint256[],bytes[])', input)!.toTuple()
-//   const destination = new Destination(event.transaction.hash.toHex())
-//   destination.failed = event.params.failed
-//   destination.actions = decoded[0].toI32Array()
-//   destination.values = decoded[1].toBigIntArray()
-//   destination.datas = decoded[2].toBytesArray()
-//   destination.save()
-// }
+export function onDestination(event: DestinationEvent): void {
+  // const input = getTxnInputDataToDecode(event)
+  // let decoded = ethereum.decode('(uint8[],uint256[],bytes[])', input)!.toTuple()
+  // const destination = new Destination(event.transaction.hash.toHex())
+  // destination.failed = event.params.failed
+  // destination.actions = decoded[0].toI32Array()
+  // destination.values = decoded[1].toBigIntArray()
+  // destination.datas = decoded[2].toBytesArray()
+  // destination.save()
+}
 
-function getTxnInputDataToDecode(event: ethereum.Event): Bytes {
+export function getTxnInputDataToDecode(event: ethereum.Event): Bytes {
   const functionInput = event.transaction.input.subarray(4)
   const tuplePrefix = ByteArray.fromHexString('0x0000000000000000000000000000000000000000000000000000000000000020')
   const functionInputAsTuple = new Uint8Array(tuplePrefix.length + functionInput.length)
@@ -36,3 +39,4 @@ function getTxnInputDataToDecode(event: ethereum.Event): Bytes {
   functionInputAsTuple.set(functionInput, tuplePrefix.length)
   return Bytes.fromUint8Array(functionInputAsTuple)
 }
+
