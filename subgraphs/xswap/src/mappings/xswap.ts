@@ -11,6 +11,11 @@ export function onSource(event: SourceEvent): void {
   const id = event.transaction.hash.toHex()
 
   const source = new Source(id)
+  // bridge
+  // source context
+  // toParam
+  // payload, AVD
+  // destination payload?
   source.actions = decoded[0].toI32Array()
   source.values = decoded[1].toBigIntArray()
   source.datas = decoded[2].toBytesArray()
