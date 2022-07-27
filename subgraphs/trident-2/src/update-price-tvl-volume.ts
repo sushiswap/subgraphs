@@ -1,8 +1,6 @@
 import { BigDecimal, ethereum } from '@graphprotocol/graph-ts'
 import { TokenPrice } from '../generated/schema'
 import {
-  Burn as BurnEvent,
-  Mint as MintEvent,
   Swap as SwapEvent,
   Sync as SyncEvent,
   Transfer as TransferEvent,
@@ -164,54 +162,23 @@ export function updateVolume(event: SwapEvent): BigDecimal {
   return trackedVolumeUSD != BIG_DECIMAL_ZERO ? trackedVolumeUSD : untrackedVolumeUSD
 }
 
-export function updateLiquidity<T extends ethereum.Event>(event: T): void {
-  if (event instanceof MintEvent) {
-    const pairAddress = event.address.toHex()
-
-    const pair = getPair(pairAddress)
-    const token0 = getOrCreateToken(pair.token0)
-    const token1 = getOrCreateToken(pair.token1)
-
-    const token0Kpi = getTokenKpi(token0.id)
-    token0Kpi.liquidity = token0Kpi.liquidity.plus(event.params.amount0)
-
-    const token1Kpi = getTokenKpi(token1.id)
-    token1Kpi.liquidity = token1Kpi.liquidity.plus(event.params.amount1)
-
-    token0Kpi.save()
-    token1Kpi.save()
-  } else if (event instanceof BurnEvent) {
-    const pairAddress = event.address.toHex()
-    const pair = getPair(pairAddress)
-    const token0 = getOrCreateToken(pair.token0)
-    const token1 = getOrCreateToken(pair.token1)
-
-    const token0Kpi = getTokenKpi(token0.id)
-    token0Kpi.liquidity = token0Kpi.liquidity.minus(event.params.amount0)
-
-    const token1Kpi = getTokenKpi(token1.id)
-    token1Kpi.liquidity = token1Kpi.liquidity.minus(event.params.amount1)
-
-    token0Kpi.save()
-    token1Kpi.save()
-  } else if (event instanceof TransferEvent) {
-    if (isInitialTransfer(event)) {
-      return
-    }
-
-    const pairAddress = event.address.toHex()
-    const pairKpi = getPairKpi(pairAddress)
-
-    if (isMint(event)) {
-      pairKpi.liquidity = pairKpi.liquidity.plus(event.params.amount)
-    }
-
-    if (isBurn(event)) {
-      pairKpi.liquidity = pairKpi.liquidity.minus(event.params.amount)
-    }
-
-    pairKpi.save()
+export function updateLiquidity(event: TransferEvent): void {
+  if (isInitialTransfer(event)) {
+    return
   }
+
+  const pairAddress = event.address.toHex()
+  const pairKpi = getPairKpi(pairAddress)
+
+  if (isMint(event)) {
+    pairKpi.liquidity = pairKpi.liquidity.plus(event.params.amount)
+  }
+
+  if (isBurn(event)) {
+    pairKpi.liquidity = pairKpi.liquidity.minus(event.params.amount)
+  }
+
+  pairKpi.save()
 }
 
 /**

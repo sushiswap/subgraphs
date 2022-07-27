@@ -1,6 +1,4 @@
 import {
-  Burn as BurnEvent,
-  Mint as MintEvent,
   Swap,
   Sync,
   Transfer
@@ -9,14 +7,6 @@ import { updateLiquidity, updateTvlAndTokenPrices as updateTvlAndPrices, updateV
 
 export function onSync(event: Sync): void {
   updateTvlAndPrices(event)
-}
-
-export function onMint(event: MintEvent): void {
-  updateLiquidity(event)
-}
-
-export function onBurn(event: BurnEvent): void {
-  updateLiquidity(event)
 }
 
 export function onTransfer(event: Transfer): void {
