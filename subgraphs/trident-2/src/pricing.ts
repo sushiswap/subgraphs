@@ -140,13 +140,12 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal):
     }
   }
 
-  if (currentPrice.gt(BIG_DECIMAL_ZERO)) {
-    currentTokenPrice.pricedOffToken = pricedOffToken
-    currentTokenPrice.pricedOffPair = pricedOffPair
-    currentTokenPrice.derivedNative = currentPrice
-    currentTokenPrice.lastUsdPrice = currentPrice.times(nativePrice)
-    currentTokenPrice.save()
-  }
+  currentTokenPrice.pricedOffToken = pricedOffToken
+  currentTokenPrice.pricedOffPair = pricedOffPair
+  currentTokenPrice.derivedNative = currentPrice
+  currentTokenPrice.lastUsdPrice = currentPrice.times(nativePrice)
+  currentTokenPrice.save()
+  
   return currentTokenPrice
 }
 
