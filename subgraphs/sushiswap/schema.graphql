@@ -240,10 +240,10 @@ type Swap @entity {
 
   # populated from the Swap event
   sender: String!
-  amount0In: BigDecimal!
-  amount1In: BigDecimal!
-  amount0Out: BigDecimal!
-  amount1Out: BigDecimal!
+  tokenIn: Token!
+  tokenOut: Token!
+  amountIn: BigDecimal!
+  amountOut: BigDecimal!
   to: String!
   logIndex: BigInt
 
