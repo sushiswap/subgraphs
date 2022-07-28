@@ -3,36 +3,30 @@ type Global @entity {
   swapCount: BigInt!
 }
 
+enum PayloadType {
+  SOURCE
+  DESTINATION
+}
+
 type Source @entity {
   id: ID!
   sourcePayload: Payload!
-  destinationPayload: Payload!
+  # destinationPayload: Payload!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
 }
 
-type Packet @entity {
-  id: ID!
-  chainId: Int!
-  payload: Bytes!
-  createdAtBlock: BigInt!
-  createdAtTimestamp: BigInt!
-}
-
-type Destination @entity {
-  id: ID!
-  failed: Boolean!
-}
 
 type Payload @entity { 
   id: ID!
   " Type, SOURCE or DESTINATION"
   type: PayloadType! 
   operations: [Operation!]!
+  operationCount: Int!
 }
 
 type Operation @entity(immutable: true) {
-  " txHash:global.swapCount"
+  " txHash:global.operationCount"
   id: ID!
   action: Action!
   value: BigInt!
@@ -43,4 +37,11 @@ type Action @entity(immutable: true) {
   " Action type, e.g. '1' "
   id: ID! 
   name: String!
+}
+
+type Destination @entity {
+  id: ID!
+  failed: Boolean!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
 }
