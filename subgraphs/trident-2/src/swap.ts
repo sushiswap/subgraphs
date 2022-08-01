@@ -50,7 +50,7 @@ export function handleSwap(event: SwapEvent, volumeUSD: BigDecimal): Swap {
 export function updateApr(event: SwapEvent): void {
   const pairKpi = getPairKpi(event.address.toHex())
   const snapshot = getAprSnapshot(event.address.toHex(), event.block.timestamp)
-  if (snapshot == null || pairKpi.liquidityNative.lt(MINIMUM_NATIVE_LIQUIDITY)) {
+  if (snapshot == null || pairKpi.liquidityNative.lt(MINIMUM_NATIVE_LIQUIDITY) || pairKpi.liquidityUSD.equals(BIG_DECIMAL_ZERO)) {
     pairKpi.apr = BIG_DECIMAL_ZERO
     pairKpi.aprUpdatedAtTimestamp = event.block.timestamp
     pairKpi.save()

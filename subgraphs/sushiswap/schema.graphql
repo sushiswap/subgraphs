@@ -123,11 +123,21 @@ type Pair @entity(immutable: true) {
   token1Price: TokenPrice!
   " Which source this pair comes from, in this case it will always be 'LEGACY' "
   source: String!
+  " Liquidity Positions "
+  liquidityPositions: [LiquidityPosition!]! @derivedFrom(field: "pair")
+  " Liquidity position snapshots "
+  liquidityPositionSnapshots: [LiquidityPositionSnapshot!]! @derivedFrom(field: "pair")
+  " Pair Hour Snapshot "
+  hourSnapshots: [PairHourSnapshot!]! @derivedFrom(field: "pair")
+  " Pair Day Snapshot "
+  daySnapshots: [PairDaySnapshot!]! @derivedFrom(field: "pair")
 }
 
 type PairKpi @entity {
   " Pair id (same as Pair.id) "
   id: ID!
+  " Pair "
+  pair: Pair!
   " Liquidity of first token "
   reserve0: BigInt!
   " Liquidity of second token "
@@ -156,6 +166,10 @@ type PairKpi @entity {
   feesNative: BigDecimal!
   " Fee in USD "
   feesUSD: BigDecimal!
+  " APR "
+  apr: BigDecimal!
+  " When APR was last updated "
+  aprUpdatedAtTimestamp: BigInt!
 }
 
 type User @entity(immutable: true) {

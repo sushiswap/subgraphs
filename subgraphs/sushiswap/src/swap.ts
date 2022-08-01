@@ -1,11 +1,12 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
-import { Swap } from '../generated/schema'
+import { PairHourSnapshot, PairKpi, Swap } from '../generated/schema'
 import { Swap as SwapEvent } from '../generated/templates/Pair/Pair'
-import { BIG_INT_ZERO } from './constants'
+import { BIG_DECIMAL_ZERO, BIG_INT_ZERO, MINIMUM_NATIVE_LIQUIDITY } from './constants'
 import {
-  convertTokenToDecimal, getOrCreateToken,
+  convertTokenToDecimal, getAprSnapshot, getOrCreateToken,
   getOrCreateTransaction,
   getPair,
+  getPairKpi,
   increaseTransactionCount
 } from './functions'
 
@@ -43,3 +44,35 @@ export function handleSwap(event: SwapEvent, volumeUSD: BigDecimal): Swap {
   increaseTransactionCount()
   return swap
 }
+
+
+export function updateApr(event: SwapEvent): void {
+  const pairKpi = getPairKpi(event.address.toHex())
+  const snapshot = getAprSnapshot(event.address.toHex(), event.block.timestamp)
+  if (snapshot == null || pairKpi.liquidityNative.lt(MINIMUM_NATIVE_LIQUIDITY) || pairKpi.liquidityUSD.equals(BIG_DECIMAL_ZERO)) {
+    pairKpi.apr = BIG_DECIMAL_ZERO
+    pairKpi.aprUpdatedAtTimestamp = event.block.timestamp
+    pairKpi.save()
+    return
+  }
+  pairKpi.apr = calculateApr(pairKpi, snapshot)
+  pairKpi.aprUpdatedAtTimestamp = event.block.timestamp
+  pairKpi.save()
+}
+
+
+/**
+ * 
+ * Formula source: https://github.com/sushiswap/sushiswap-interface/blob/437586a4e659f5eddeedd167b3cfe89e0c5f9c3c/src/features/trident/pools/usePoolsTableData.tsx#L84-L98
+ * @param pairKpi 
+ * @param snapshot 
+ */
+const calculateApr = (pairKpi: PairKpi, snapshot: PairHourSnapshot): BigDecimal => {
+  const pair = getPair(pairKpi.id)
+  return pairKpi.volumeUSD.minus(snapshot.volumeUSD)
+    .times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
+    .times(BigDecimal.fromString('365')) // One year
+    .times(BigDecimal.fromString('100'))
+    .div(pairKpi.liquidityUSD)
+}
+

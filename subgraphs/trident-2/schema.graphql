@@ -170,7 +170,7 @@ type PairKpi @entity {
   feesUSD: BigDecimal!
   " APR "
   apr: BigDecimal!
-  " APR "
+  " When APR was last updated "
   aprUpdatedAtTimestamp: BigInt!
 }
 

@@ -75,3 +75,22 @@ export function getPairDaySnapshotId(pairKpiId: string, timestamp: BigInt): stri
   let startDate = getDayStartDate(timestamp)
   return pairKpiId.concat('-day-').concat(BigInt.fromI32(startDate).toString())
 }
+
+/**
+ * Get the last active hour snapshot for a pair, starting at 24 hours ago. If no snapshot is found,
+ * iterate between 24-48 hours ago until a snapshot is found or else return null. 
+ * @param pairKpiId 
+ * @param timestamp 
+ * @returns 
+ */
+ export function getAprSnapshot(pairKpiId: string, timestamp: BigInt): PairHourSnapshot | null {
+  for (let i = 23; i <= 47; i++) {
+   let startTime = BigInt.fromI32(timestamp.minus(BigInt.fromI32(i * HOUR_IN_SECONDS)).toI32())
+   let id = getPairHourSnapshotId(pairKpiId, startTime)
+   let snapshot = PairHourSnapshot.load(id)
+   if (snapshot !== null) {
+     return snapshot
+   }
+ }
+ return null
+}
