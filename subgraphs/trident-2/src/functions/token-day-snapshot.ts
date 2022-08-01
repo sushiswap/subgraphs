@@ -37,6 +37,7 @@ function updateTokenDaySnapshot(timestamp: BigInt, tokenId: string, nativePrice:
   snapshot.volume = tokenKpi.volume
   snapshot.volumeUSD = tokenKpi.volumeUSD
   snapshot.priceNative = tokenPrice.derivedNative
+  snapshot.untrackedVolumeUSD = tokenKpi.untrackedVolumeUSD
   snapshot.priceUSD = tokenPrice.derivedNative.times(nativePrice)
   snapshot.transactionCount = snapshot.transactionCount.plus(BIG_INT_ONE)
   snapshot.save()

@@ -1,5 +1,5 @@
 
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { PairDaySnapshot, PairHourSnapshot, PairKpi } from '../../generated/schema'
 import { BIG_INT_ONE, BIG_INT_ZERO, DAY_IN_SECONDS, HOUR_IN_SECONDS } from '../constants'
 import { convertTokenToDecimal } from './number-converter'
@@ -27,6 +27,7 @@ function updatePairHourSnapshot(timestamp: BigInt, pairKpi: PairKpi): void {
   snapshot.liquidityUSD = pairKpi.liquidityUSD
   snapshot.volumeNative = pairKpi.volumeNative
   snapshot.volumeUSD = pairKpi.volumeUSD
+  snapshot.untrackedVolumeUSD = pairKpi.untrackedVolumeUSD
   snapshot.feesNative = pairKpi.feesNative
   snapshot.feesUSD = pairKpi.feesUSD
   snapshot.transactionCount = snapshot.transactionCount.plus(BIG_INT_ONE)
@@ -48,6 +49,7 @@ function updatePairDaySnapshot(timestamp: BigInt, pairKpi: PairKpi): void {
   snapshot.liquidityUSD = pairKpi.liquidityUSD
   snapshot.volumeNative = pairKpi.volumeNative
   snapshot.volumeUSD = pairKpi.volumeUSD
+  snapshot.untrackedVolumeUSD = pairKpi.untrackedVolumeUSD
   snapshot.feesNative = pairKpi.feesNative
   snapshot.feesUSD = pairKpi.feesUSD
   snapshot.transactionCount = snapshot.transactionCount.plus(BIG_INT_ONE)

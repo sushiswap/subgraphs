@@ -13,6 +13,7 @@ export function createPairKpi(id: string): PairKpi {
   kpi.liquidityUSD = BIG_DECIMAL_ZERO
   kpi.volumeNative = BIG_DECIMAL_ZERO
   kpi.volumeUSD = BIG_DECIMAL_ZERO
+  kpi.untrackedVolumeUSD = BIG_DECIMAL_ZERO
   kpi.volumeToken0 = BIG_DECIMAL_ZERO
   kpi.volumeToken1 = BIG_DECIMAL_ZERO
   kpi.feesNative = BIG_DECIMAL_ZERO
