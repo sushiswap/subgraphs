@@ -9,7 +9,6 @@ export function createTokenKpi(id: string): TokenKpi {
   kpi.liquidityUSD = BIG_DECIMAL_ZERO
   kpi.pairCount = BIG_INT_ZERO
   kpi.volumeUSD = BIG_DECIMAL_ZERO
-  kpi.untrackedVolumeUSD = BIG_DECIMAL_ZERO
   kpi.volume = BIG_DECIMAL_ZERO
   kpi.save()
 

@@ -5,8 +5,6 @@ type Factory @entity {
   type: FactoryType!
   " Volume USD "
   volumeUSD: BigDecimal!
-  " Untracked Volume USD "
-  untrackedVolumeUSD: BigDecimal!
   " Volume Native "
   volumeNative: BigDecimal!
   " Liquidity USD "
@@ -95,8 +93,6 @@ type TokenKpi @entity {
   volume: BigDecimal!
   " Volume in USD "
   volumeUSD: BigDecimal!
-  " Untracked Volume in USD "
-  untrackedVolumeUSD: BigDecimal!
   " Count of all the pairs "
   pairCount: BigInt!
 }
@@ -131,11 +127,21 @@ type Pair @entity(immutable: true) {
   token1Price: TokenPrice!
   " Which source this pair comes from, in this case it will always be 'TRIDENT' "
   source: String!
+  " Liquidity Positions "
+  liquidityPositions: [LiquidityPosition!]! @derivedFrom(field: "pair")
+  " Liquidity position snapshots "
+  liquidityPositionSnapshots: [LiquidityPositionSnapshot!]! @derivedFrom(field: "pair")
+  " Pair Hour Snapshot "
+  hourSnapshots: [PairHourSnapshot!]! @derivedFrom(field: "pair")
+  " Pair Day Snapshot "
+  daySnapshots: [PairDaySnapshot!]! @derivedFrom(field: "pair")
 }
 
 type PairKpi @entity {
   " Pair id (same as Pair.id) "
   id: ID!
+  " Pair "
+  pair: Pair!
   " Liquidity of first token "
   reserve0: BigInt!
   " Liquidity of second token "
@@ -154,8 +160,6 @@ type PairKpi @entity {
   volumeNative: BigDecimal!
   # volume in USD
   volumeUSD: BigDecimal!
-  " Untracked Volume in USD "
-  untrackedVolumeUSD: BigDecimal!
   # volume token0
   volumeToken0: BigDecimal!
   # volume token1
@@ -164,6 +168,10 @@ type PairKpi @entity {
   feesNative: BigDecimal!
   " Fee in USD "
   feesUSD: BigDecimal!
+  " APR "
+  apr: BigDecimal!
+  " APR "
+  aprUpdatedAtTimestamp: BigInt!
 }
 
 type Rebase @entity {
@@ -326,7 +334,6 @@ type PairHourSnapshot @entity {
   date: Int!
   volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
-  untrackedVolumeUSD: BigDecimal!
   liquidity: BigDecimal!
   liquidityNative: BigDecimal!
   liquidityUSD: BigDecimal!
@@ -342,7 +349,6 @@ type PairDaySnapshot @entity {
   date: Int!
   volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
-  untrackedVolumeUSD: BigDecimal!
   liquidity: BigDecimal!
   liquidityNative: BigDecimal!
   liquidityUSD: BigDecimal!

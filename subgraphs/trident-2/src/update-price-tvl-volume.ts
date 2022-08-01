@@ -110,56 +110,49 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
 export function updateVolume(event: SwapEvent): BigDecimal {
   const pair = getPair(event.address.toHex())
   const pairKpi = getPairKpi(event.address.toHex())
-  const token0 = getOrCreateToken(event.params.tokenIn.toHex())
-  const token1 = getOrCreateToken(event.params.tokenOut.toHex())
-  const token0Price = getTokenPrice(token0.id)
-  const token1Price = getTokenPrice(token1.id)
-  const token0Kpi = getTokenKpi(token0.id)
-  const token1Kpi = getTokenKpi(token1.id)
+  const tokenIn = getOrCreateToken(event.params.tokenIn.toHex())
+  const tokenOut = getOrCreateToken(event.params.tokenOut.toHex())
+  const tokenInPrice = getTokenPrice(tokenIn.id)
+  const tokenOutPrice = getTokenPrice(tokenOut.id)
+  const tokenInKpi = getTokenKpi(tokenIn.id)
+  const tokenOutKpi = getTokenKpi(tokenOut.id)
 
-  const amount0Total = convertTokenToDecimal(event.params.amountIn, token0.decimals)
-  const amount1Total = convertTokenToDecimal(event.params.amountOut, token1.decimals)
+  const amountIn = convertTokenToDecimal(event.params.amountIn, tokenIn.decimals)
+  const amountOut = convertTokenToDecimal(event.params.amountOut, tokenOut.decimals)
 
-  const trackedVolumeUSD = getTrackedVolumeUSD(amount0Total, amount1Total, pair.id)
+  const volumeNative = amountIn.times(tokenInPrice.derivedNative).plus(amountOut.times(tokenOutPrice.derivedNative))
   const bundle = getOrCreateBundle()
-  const volumeNative = token0Price.derivedNative
-    .times(amount1Total)
-    .plus(token1Price.derivedNative.times(amount0Total))
-    .div(BigDecimal.fromString('2'))
-  const untrackedVolumeUSD = volumeNative.times(bundle.nativePrice)
 
-  token0Kpi.volume = token0Kpi.volume.plus(amount0Total)
-  token0Kpi.volumeUSD = token0Kpi.volumeUSD.plus(trackedVolumeUSD)
-  token0Kpi.untrackedVolumeUSD = token0Kpi.untrackedVolumeUSD.plus(untrackedVolumeUSD)
-  token0Kpi.save()
+  const volumeUSD = volumeNative.times(bundle.nativePrice)
 
-  token1Kpi.volume = token1Kpi.volume.plus(amount1Total)
-  token1Kpi.volumeUSD = token1Kpi.volumeUSD.plus(trackedVolumeUSD)
-  token1Kpi.untrackedVolumeUSD = token1Kpi.untrackedVolumeUSD.plus(untrackedVolumeUSD)
+  tokenInKpi.volume = tokenInKpi.volume.plus(amountIn)
+  tokenInKpi.volumeUSD = tokenInKpi.volumeUSD.plus(volumeUSD)
+  tokenInKpi.save()
 
-  token1Kpi.save()
+  tokenOutKpi.volume = tokenOutKpi.volume.plus(amountOut)
+  tokenOutKpi.volumeUSD = tokenOutKpi.volumeUSD.plus(volumeUSD)
+
+  tokenOutKpi.save()
 
   const feesNative = volumeNative.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
-  const feesUSD = trackedVolumeUSD.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
+  const feesUSD = volumeUSD.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
 
   pairKpi.volumeNative = pairKpi.volumeNative.plus(volumeNative)
-  pairKpi.volumeUSD = pairKpi.volumeUSD.plus(trackedVolumeUSD)
-  pairKpi.untrackedVolumeUSD = pairKpi.untrackedVolumeUSD.plus(untrackedVolumeUSD)
-  pairKpi.volumeToken0 = pairKpi.volumeToken0.plus(amount0Total)
-  pairKpi.volumeToken1 = pairKpi.volumeToken1.plus(amount1Total)
+  pairKpi.volumeUSD = pairKpi.volumeUSD.plus(volumeUSD)
+  pairKpi.volumeToken0 = pairKpi.volumeToken0.plus(amountIn)
+  pairKpi.volumeToken1 = pairKpi.volumeToken1.plus(amountOut)
   pairKpi.feesNative = pairKpi.feesNative.plus(feesNative)
   pairKpi.feesUSD = pairKpi.feesUSD.plus(feesUSD)
   pairKpi.save()
 
   const factory = getOrCreateFactory(FactoryType.CONSTANT_PRODUCT_POOL)
-  factory.volumeUSD = factory.volumeUSD.plus(trackedVolumeUSD)
+  factory.volumeUSD = factory.volumeUSD.plus(volumeUSD)
   factory.volumeNative = factory.volumeNative.plus(volumeNative)
-  factory.untrackedVolumeUSD = factory.untrackedVolumeUSD.plus(untrackedVolumeUSD)
   factory.feesNative = factory.feesNative.plus(feesNative)
   factory.feesUSD = factory.feesUSD.plus(feesUSD)
   factory.save()
 
-  return trackedVolumeUSD != BIG_DECIMAL_ZERO ? trackedVolumeUSD : untrackedVolumeUSD
+  return volumeUSD
 }
 
 export function updateLiquidity(event: TransferEvent): void {

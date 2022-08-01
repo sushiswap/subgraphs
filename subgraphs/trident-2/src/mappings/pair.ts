@@ -16,7 +16,7 @@ import {
   updateTokenDaySnapshots,
 } from '../functions'
 import { handleMint } from '../mint'
-import { handleSwap } from '../swap'
+import { handleSwap, updateApr } from '../swap'
 import { createLiquidityPositions, handleTransferMintBurn as handleTransfer } from '../transfer'
 import { updateLiquidity, updateTvlAndTokenPrices, updateVolume } from '../update-price-tvl-volume'
 
@@ -37,6 +37,7 @@ export function onSwap(event: SwapEvent): void {
   handleSwap(event, volumeUSD)
   updateTokenDaySnapshots(event.block.timestamp, event.address)
   updatePairSnapshots(event.block.timestamp, event.address)
+  updateApr(event)
 }
 
 export function onMint(event: MintEvent): void {
