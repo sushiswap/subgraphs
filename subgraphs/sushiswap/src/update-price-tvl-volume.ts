@@ -108,7 +108,7 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   pairKpi.save()
 
   factory.liquidityNative = factory.liquidityNative.plus(liquidityNative)
-  factory.liquidityUSD = factory.liquidityUSD.times(bundle.nativePrice)
+  factory.liquidityUSD = factory.liquidityNative.times(bundle.nativePrice)
   factory.save()
 }
 

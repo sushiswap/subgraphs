@@ -37,6 +37,7 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   const token1Kpi = getTokenKpi(pair.token1)
   const currentToken0Price = getTokenPrice(pair.token0)
   const currentToken1Price = getTokenPrice(pair.token1)
+  const factory = getOrCreateFactory(FactoryType.CONSTANT_PRODUCT_POOL)
   const bundle = getOrCreateBundle()
 
   // Reset token liquidity, will be updated again later when price is updated
@@ -52,7 +53,8 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   token1Kpi.liquidityNative = token1Kpi.liquidityNative.minus(token1LiquidityNative)
   token0Kpi.liquidityUSD = token0Kpi.liquidityUSD.minus(token0LiquidityNative.times(bundle.nativePrice))
   token1Kpi.liquidityUSD = token1Kpi.liquidityUSD.minus(token1LiquidityNative.times(bundle.nativePrice))
-
+  factory.liquidityNative = factory.liquidityNative.minus(pairKpi.liquidityNative)
+  
   const rebase0 = getRebase(token0.id)
   const rebase1 = getRebase(token1.id)
 
@@ -61,19 +63,17 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
 
   pairKpi.reserve0 = reserve0
   pairKpi.reserve1 = reserve1
+  const reserve0Decimals = convertTokenToDecimal(pairKpi.reserve0, token0.decimals)
+  const reserve1Decimals = convertTokenToDecimal(pairKpi.reserve1, token1.decimals)
 
   if (pairKpi.reserve1.notEqual(BIG_INT_ZERO)) {
-    pairKpi.token0Price = convertTokenToDecimal(pairKpi.reserve0, token0.decimals).div(
-      convertTokenToDecimal(pairKpi.reserve1, token1.decimals)
-    )
+    pairKpi.token0Price = reserve0Decimals.div(reserve1Decimals)
   } else {
     pairKpi.token0Price = BIG_DECIMAL_ZERO
   }
-
+  
   if (pairKpi.reserve0.notEqual(BIG_INT_ZERO)) {
-    pairKpi.token1Price = convertTokenToDecimal(pairKpi.reserve1, token1.decimals).div(
-      convertTokenToDecimal(pairKpi.reserve0, token0.decimals)
-    )
+    pairKpi.token1Price = reserve1Decimals.div(reserve0Decimals)
   } else {
     pairKpi.token1Price = BIG_DECIMAL_ZERO
   }
@@ -83,6 +83,17 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
 
   const token0Price = updateTokenPrice(token0.id, bundle.nativePrice)
   const token1Price = updateTokenPrice(token1.id, bundle.nativePrice)
+
+
+  // get tracked liquidity - will be 0 if neither is in whitelist
+  let liquidityNative: BigDecimal
+  if (bundle.nativePrice.notEqual(BIG_DECIMAL_ZERO)) {
+    liquidityNative = getTrackedLiquidityUSD(reserve0Decimals, token0Price, reserve1Decimals, token1Price).div(
+      bundle.nativePrice
+    )
+  } else {
+    liquidityNative = BIG_DECIMAL_ZERO
+  }
 
   // Set token liquidity with updated prices
   token0Kpi.liquidity = token0Kpi.liquidity.plus(pairKpi.reserve0)
@@ -105,6 +116,11 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
 
   pairKpi.liquidityUSD = pairKpi.liquidityNative.times(bundle.nativePrice)
   pairKpi.save()
+
+  factory.liquidityNative = factory.liquidityNative.plus(liquidityNative)
+  factory.liquidityUSD = factory.liquidityNative.times(bundle.nativePrice)
+  factory.save()
+
 }
 
 export function updateVolume(event: SwapEvent): BigDecimal {
@@ -189,7 +205,7 @@ export function updateLiquidity(event: TransferEvent): void {
  * If both are, return average of two amounts
  * If neither is, return 0
  */
- export function getTrackedVolumeUSD(
+export function getTrackedVolumeUSD(
   tokenAmount0: BigDecimal,
   tokenAmount1: BigDecimal,
   pairAddress: string,
@@ -199,8 +215,8 @@ export function updateLiquidity(event: TransferEvent): void {
 
   const pair = getPair(pairAddress)
   const pairKpi = getPairKpi(pairAddress)
-  const token0 = getOrCreateToken(isFirstToken ? pair.token0 : pair.token1 ) 
-  const token1 = getOrCreateToken(!isFirstToken ? pair.token0 : pair.token1 ) 
+  const token0 = getOrCreateToken(isFirstToken ? pair.token0 : pair.token1)
+  const token1 = getOrCreateToken(!isFirstToken ? pair.token0 : pair.token1)
   const token0Price = getTokenPrice(token0.id)
   const token1Price = getTokenPrice(token1.id)
   const price0 = token0Price.derivedNative.times(bundle.nativePrice)
