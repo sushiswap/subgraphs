@@ -102,42 +102,26 @@ type TokenPair @entity(immutable: true) {
   token: Token!
 }
 
-type Pair @entity(immutable: true) {
+type Pair @entity {
   " Pair address (contract address) "
   id: ID!
   " Swap fee "
   swapFee: BigInt!
   " TWAP - time weighted average price "
   twapEnabled: Boolean!
-  " Pair KPI "
-  kpi: PairKpi!
   " name of the pair, this combines symbol of both tokens, e.g. WETH/SUSHI "
   name: String!
   " First Token "
   token0: Token!
   " Second Token "
   token1: Token!
-  " First tokens price "
-  token0Price: TokenPrice!
-  " Second tokens price "
-  token1Price: TokenPrice!
   " Which source this pair comes from, in this case it will always be 'LEGACY' "
   source: String!
-  " Liquidity Positions "
-  liquidityPositions: [LiquidityPosition!]! @derivedFrom(field: "pair")
-  " Liquidity position snapshots "
-  liquidityPositionSnapshots: [LiquidityPositionSnapshot!]! @derivedFrom(field: "pair")
-  " Pair Hour Snapshot "
-  hourSnapshots: [PairHourSnapshot!]! @derivedFrom(field: "pair")
-  " Pair Day Snapshot "
-  daySnapshots: [PairDaySnapshot!]! @derivedFrom(field: "pair")
-}
+  " Which block this pair was created on "
+  createdAtBlock: BigInt!
+  " When this pair was created "
+  createdAtTimestamp: BigInt!
 
-type PairKpi @entity {
-  " Pair id (same as Pair.id) "
-  id: ID!
-  " Pair "
-  pair: Pair!
   " Liquidity of first token "
   reserve0: BigInt!
   " Liquidity of second token "
@@ -170,7 +154,17 @@ type PairKpi @entity {
   apr: BigDecimal!
   " When APR was last updated "
   aprUpdatedAtTimestamp: BigInt!
+
+  " Liquidity Positions "
+  liquidityPositions: [LiquidityPosition!]! @derivedFrom(field: "pair")
+  " Liquidity position snapshots "
+  liquidityPositionSnapshots: [LiquidityPositionSnapshot!]! @derivedFrom(field: "pair")
+  " Pair Hour Snapshot "
+  hourSnapshots: [PairHourSnapshot!]! @derivedFrom(field: "pair")
+  " Pair Day Snapshot "
+  daySnapshots: [PairDaySnapshot!]! @derivedFrom(field: "pair")
 }
+
 
 type User @entity(immutable: true) {
   id: ID!
@@ -190,8 +184,8 @@ type LiquidityPosition @entity {
   pair: Pair!
   user: User!
   balance: BigInt!
-  createdAtBlock: Int!
-  createdAtTimestamp: Int!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
 }
 
 type Mint @entity {

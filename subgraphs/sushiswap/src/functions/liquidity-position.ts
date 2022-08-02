@@ -17,8 +17,8 @@ export function getOrCreateLiquidityPosition(user: Address, pair: Address, block
     liquidityPosition.user = userAddress
     liquidityPosition.pair = pairAddress
     liquidityPosition.balance = BIG_INT_ZERO
-    liquidityPosition.createdAtBlock = block.number.toI32()
-    liquidityPosition.createdAtTimestamp = block.timestamp.toI32()
+    liquidityPosition.createdAtBlock = block.number
+    liquidityPosition.createdAtTimestamp = block.timestamp
 
     liquidityPosition.save()
   }

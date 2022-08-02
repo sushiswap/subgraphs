@@ -11,7 +11,6 @@ import {
   STABLE_TOKEN_ADDRESSES,
 } from './constants'
 import { convertTokenToDecimal, getOrCreateToken } from './functions'
-import { getPairKpi } from './functions/pair-kpi'
 import { getTokenKpi } from './functions/token-kpi'
 import { getTokenPrice } from './functions/token-price'
 
@@ -32,9 +31,8 @@ export function getNativePriceInUSD(): BigDecimal {
     if (stablePair === null) {
       continue
     }
-    const stablePairKpi = getPairKpi(address)
-    const reserve0 = convertTokenToDecimal(stablePairKpi.reserve0, nativeToken.decimals)
-    const reserve1 = convertTokenToDecimal(stablePairKpi.reserve1, nativeToken.decimals)
+    const reserve0 = convertTokenToDecimal(stablePair.reserve0, nativeToken.decimals)
+    const reserve1 = convertTokenToDecimal(stablePair.reserve1, nativeToken.decimals)
     if (
       (stablePair.token0 == NATIVE_ADDRESS && reserve0.lt(MINIMUM_NATIVE_LIQUIDITY)) ||
       (stablePair.token1 == NATIVE_ADDRESS && reserve1.lt(MINIMUM_NATIVE_LIQUIDITY))
@@ -48,7 +46,7 @@ export function getNativePriceInUSD(): BigDecimal {
 
     nativeReserves.push(!stableFirst ? reserve0 : reserve1)
 
-    stablePrices.push(stableFirst ? stablePairKpi.token0Price : stablePairKpi.token1Price)
+    stablePrices.push(stableFirst ? stablePair.token0Price : stablePair.token1Price)
 
     count = count + 1
   }
@@ -101,37 +99,36 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal):
       continue // Not created yet
     }
 
-    const pairKpi = getPairKpi(pair.id)
     const pairToken0Price = getTokenPrice(pair.token0)
     const pairToken1Price = getTokenPrice(pair.token1)
 
     if (
       pair.token0 == token.id &&
       pairToken1Price.pricedOffToken != token.id &&
-      passesLiquidityCheck(pairKpi.liquidityNative, mostLiquidity)
+      passesLiquidityCheck(pair.liquidityNative, mostLiquidity)
     ) {
       const token1 = getOrCreateToken(pair.token1)
       if (token1.decimalsSuccess) {
         const token1Price = getTokenPrice(pair.token1)
         pricedOffToken = token1Price.id
         pricedOffPair = pair.id
-        mostLiquidity = pairKpi.liquidityNative
-        currentPrice = pairKpi.token1Price.times(token1Price.derivedNative)
+        mostLiquidity = pair.liquidityNative
+        currentPrice = pair.token1Price.times(token1Price.derivedNative)
       }
     }
 
     if (
       pair.token1 == token.id &&
       pairToken0Price.pricedOffToken != token.id &&
-      passesLiquidityCheck(pairKpi.liquidityNative, mostLiquidity)
+      passesLiquidityCheck(pair.liquidityNative, mostLiquidity)
     ) {
       const token0 = getOrCreateToken(pair.token0)
       if (token0.decimalsSuccess) {
         const token0Price = getTokenPrice(pair.token0)
         pricedOffToken = token0Price.id
         pricedOffPair = pair.id
-        mostLiquidity = pairKpi.liquidityNative
-        currentPrice = pairKpi.token0Price.times(token0Price.derivedNative)
+        mostLiquidity = pair.liquidityNative
+        currentPrice = pair.token0Price.times(token0Price.derivedNative)
       }
     }
   }
