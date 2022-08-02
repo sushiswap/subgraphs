@@ -1,5 +1,5 @@
-import { BIG_DECIMAL_ZERO } from '../constants'
 import { Bundle } from '../../generated/schema'
+import { BIG_DECIMAL_ZERO } from '../constants'
 
 export function getOrCreateBundle(): Bundle {
   let bundle = Bundle.load('1')

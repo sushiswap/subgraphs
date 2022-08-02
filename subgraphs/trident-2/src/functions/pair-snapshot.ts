@@ -1,5 +1,5 @@
 
-import { Address, BigInt, log } from '@graphprotocol/graph-ts'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { Pair, PairDaySnapshot, PairHourSnapshot } from '../../generated/schema'
 import { BIG_INT_ONE, BIG_INT_ZERO, DAY_IN_SECONDS, HOUR_IN_SECONDS } from '../constants'
 import { convertTokenToDecimal } from './number-converter'
@@ -83,15 +83,15 @@ export function getPairDaySnapshotId(pairId: string, timestamp: BigInt): string 
  * @param timestamp 
  * @returns 
  */
- export function getAprSnapshot(pairId: string, timestamp: BigInt): PairHourSnapshot | null {
+export function getAprSnapshot(pairId: string, timestamp: BigInt): PairHourSnapshot | null {
   for (let i = 23; i <= 47; i++) {
-   let startTime = BigInt.fromI32(timestamp.minus(BigInt.fromI32(i * HOUR_IN_SECONDS)).toI32())
-   let id = getPairHourSnapshotId(pairId, startTime)
-   let snapshot = PairHourSnapshot.load(id)
-   if (snapshot !== null) {
-     return snapshot
-   }
- }
- return null
+    let startTime = BigInt.fromI32(timestamp.minus(BigInt.fromI32(i * HOUR_IN_SECONDS)).toI32())
+    let id = getPairHourSnapshotId(pairId, startTime)
+    let snapshot = PairHourSnapshot.load(id)
+    if (snapshot !== null) {
+      return snapshot
+    }
+  }
+  return null
 }
 

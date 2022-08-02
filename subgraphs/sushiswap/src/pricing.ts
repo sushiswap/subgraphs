@@ -8,7 +8,7 @@ import {
   MINIMUM_NATIVE_LIQUIDITY,
   NATIVE_ADDRESS,
   STABLE_POOL_ADDRESSES,
-  STABLE_TOKEN_ADDRESSES,
+  STABLE_TOKEN_ADDRESSES
 } from './constants'
 import { convertTokenToDecimal, getOrCreateToken } from './functions'
 import { getTokenKpi } from './functions/token-kpi'

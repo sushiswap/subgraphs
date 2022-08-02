@@ -10,7 +10,7 @@ import {
   getOrCreateTransaction,
   getPair,
   getTokenPrice,
-  increaseTransactionCount,
+  increaseTransactionCount
 } from './functions'
 
 export function handleBurn(event: BurnEvent): Burn {

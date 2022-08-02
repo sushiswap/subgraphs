@@ -1,7 +1,6 @@
-import { Transfer } from '../../generated/templates/Pair/Pair'
-import { Mint, Transaction } from '../../generated/schema'
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
-import { getPair } from './pair'
+import { Mint } from '../../generated/schema'
+import { Transfer } from '../../generated/templates/Pair/Pair'
 
 export function getOrCreateMint(event: Transfer, mintCount: i32): Mint {
   const id = event.transaction.hash.toHex().concat('-').concat(BigInt.fromI32(mintCount).toString())

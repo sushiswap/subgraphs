@@ -8,7 +8,7 @@ import {
   getOrCreateToken,
   getPair,
   getTokenPrice,
-  increaseTransactionCount as increaseFactoryTransactionCount,
+  increaseTransactionCount as increaseFactoryTransactionCount
 } from './functions'
 
 export function handleMint(event: MintEvent): Mint | null {

@@ -52,7 +52,7 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   token0Kpi.liquidityUSD = token0Kpi.liquidityUSD.minus(token0LiquidityNative.times(bundle.nativePrice))
   token1Kpi.liquidityUSD = token1Kpi.liquidityUSD.minus(token1LiquidityNative.times(bundle.nativePrice))
   factory.liquidityNative = factory.liquidityNative.minus(pair.liquidityNative)
-  
+
   const rebase0 = getRebase(token0.id)
   const rebase1 = getRebase(token1.id)
 
@@ -69,7 +69,7 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   } else {
     pair.token0Price = BIG_DECIMAL_ZERO
   }
-  
+
   if (pair.reserve0.notEqual(BIG_INT_ZERO)) {
     pair.token1Price = reserve1Decimals.div(reserve0Decimals)
   } else {

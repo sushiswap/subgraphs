@@ -1,6 +1,6 @@
-import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { BIG_INT_ZERO } from '../constants'
+import { Address, ethereum } from '@graphprotocol/graph-ts'
 import { LiquidityPosition } from '../../generated/schema'
+import { BIG_INT_ZERO } from '../constants'
 
 export function getOrCreateLiquidityPosition(user: Address, pair: Address, block: ethereum.Block): LiquidityPosition {
   const pairAddress = pair.toHex()

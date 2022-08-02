@@ -1,4 +1,4 @@
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
+import { BigDecimal } from '@graphprotocol/graph-ts'
 import { Pair, TokenPair, TokenPrice } from '../generated/schema'
 import {
   BIG_DECIMAL_ONE,
@@ -10,7 +10,7 @@ import {
   STABLE_POOL_ADDRESSES,
   STABLE_TOKEN_ADDRESSES
 } from './constants'
-import { convertTokenToDecimal, getOrCreateToken, getPair } from './functions'
+import { convertTokenToDecimal, getOrCreateToken } from './functions'
 import { getTokenKpi } from './functions/token-kpi'
 import { getTokenPrice } from './functions/token-price'
 
@@ -34,7 +34,7 @@ export function getNativePriceInUSD(): BigDecimal {
     if (stablePair === null) {
       continue
     }
-    
+
     const reserve0 = convertTokenToDecimal(stablePair.reserve0, nativeToken.decimals)
     const reserve1 = convertTokenToDecimal(stablePair.reserve1, nativeToken.decimals)
 
@@ -143,7 +143,7 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal):
   currentTokenPrice.derivedNative = currentPrice
   currentTokenPrice.lastUsdPrice = currentPrice.times(nativePrice)
   currentTokenPrice.save()
-  
+
   return currentTokenPrice
 }
 

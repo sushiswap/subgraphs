@@ -1,11 +1,7 @@
 import { Address } from '@graphprotocol/graph-ts'
 import { Factory } from '../../generated/schema'
 import {
-  BIG_DECIMAL_ZERO,
-  CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS,
-  BIG_INT_ZERO,
-  BIG_INT_ONE,
-  FactoryType,
+  BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS, FactoryType
 } from '../constants'
 
 export function getOrCreateFactory(type: string): Factory {

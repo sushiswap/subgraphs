@@ -1,4 +1,4 @@
-import { BigInt, log, store } from '@graphprotocol/graph-ts'
+import { BigInt, store } from '@graphprotocol/graph-ts'
 import { Burn, Mint } from '../generated/schema'
 import { Transfer as TransferEvent } from '../generated/templates/ConstantProductPool/ConstantProductPool'
 import { ADDRESS_ZERO } from './constants'

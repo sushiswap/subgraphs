@@ -1,7 +1,7 @@
 import { ethereum } from '@graphprotocol/graph-ts'
-import { BIG_INT_ONE } from '../constants'
 import { getOrCreateBundle, getPair } from '.'
 import { LiquidityPosition, LiquidityPositionSnapshot } from '../../generated/schema'
+import { BIG_INT_ONE } from '../constants'
 import { getTokenPrice } from './token-price'
 import { getUserKpi } from './user-kpi'
 

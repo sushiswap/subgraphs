@@ -4,7 +4,7 @@ import {
   Mint as MintEvent,
   Swap as SwapEvent,
   Sync as SyncEvent,
-  Transfer as TransferEvent,
+  Transfer as TransferEvent
 } from '../../generated/templates/Pair/Pair'
 import { handleBurn } from '../burn'
 import {
@@ -12,7 +12,7 @@ import {
   getOrCreateLiquidityPosition,
   getOrCreateUser,
   updatePairSnapshots,
-  updateTokenDaySnapshots,
+  updateTokenDaySnapshots
 } from '../functions'
 import { handleMint } from '../mint'
 import { handleSwap, updateApr } from '../swap'

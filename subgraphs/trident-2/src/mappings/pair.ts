@@ -1,3 +1,4 @@
+import { Address } from '@graphprotocol/graph-ts'
 import {
   Burn as BurnEvent,
   Mint as MintEvent,
@@ -5,7 +6,6 @@ import {
   Sync as SyncEvent,
   Transfer as TransferEvent
 } from '../../generated/templates/ConstantProductPool/ConstantProductPool'
-import { Address, log } from '@graphprotocol/graph-ts'
 
 import { handleBurn } from '../burn'
 import {
@@ -13,7 +13,7 @@ import {
   getOrCreateLiquidityPosition,
   getOrCreateUser,
   updatePairSnapshots,
-  updateTokenDaySnapshots,
+  updateTokenDaySnapshots
 } from '../functions'
 import { handleMint } from '../mint'
 import { handleSwap, updateApr } from '../swap'

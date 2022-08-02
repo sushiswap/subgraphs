@@ -84,16 +84,16 @@ export function getPairDaySnapshotId(pairId: string, timestamp: BigInt): string 
  * @param timestamp 
  * @returns 
  */
- export function getAprSnapshot(pairId: string, timestamp: BigInt): PairHourSnapshot | null {
+export function getAprSnapshot(pairId: string, timestamp: BigInt): PairHourSnapshot | null {
   for (let i = 23; i <= 47; i++) {
-   let startTime = BigInt.fromI32(timestamp.minus(BigInt.fromI32(i * HOUR_IN_SECONDS)).toI32())
-   let id = getPairHourSnapshotId(pairId, startTime)
-   let snapshot = PairHourSnapshot.load(id)
-   if (snapshot !== null) {
-     return snapshot
-   }
- }
- return null
+    let startTime = BigInt.fromI32(timestamp.minus(BigInt.fromI32(i * HOUR_IN_SECONDS)).toI32())
+    let id = getPairHourSnapshotId(pairId, startTime)
+    let snapshot = PairHourSnapshot.load(id)
+    if (snapshot !== null) {
+      return snapshot
+    }
+  }
+  return null
 }
 
 

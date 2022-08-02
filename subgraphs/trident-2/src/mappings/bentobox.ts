@@ -39,7 +39,7 @@ export function onLogStrategyLoss(event: LogStrategyLoss): void {
   const tokenAddress = event.params.token.toHex()
   const token = getOrCreateToken(tokenAddress)
   const rebase = getOrCreateRebase(token.id)
-  
+
   rebase.elastic = rebase.elastic.minus(event.params.amount)
   rebase.save()
 }
@@ -48,7 +48,7 @@ export function onLogFlashLoan(event: LogFlashLoan): void {
   const tokenAddress = event.params.token.toHex()
   const token = getOrCreateToken(tokenAddress)
   const rebase = getOrCreateRebase(token.id)
-  
+
   rebase.elastic = rebase.elastic.plus(event.params.feeAmount)
   rebase.save()
 }

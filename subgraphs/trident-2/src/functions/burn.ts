@@ -1,7 +1,7 @@
 import { BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { BIG_DECIMAL_ZERO } from '../constants'
 import { Burn } from '../../generated/schema'
-import { Transfer as TransferEvent, Burn as BurnEvent} from '../../generated/templates/ConstantProductPool/ConstantProductPool'
+import { Burn as BurnEvent, Transfer as TransferEvent } from '../../generated/templates/ConstantProductPool/ConstantProductPool'
+import { BIG_DECIMAL_ZERO } from '../constants'
 
 export function getOrCreateBurn<T extends ethereum.Event>(event: T, burnCount: i32): Burn {
   const id = event.transaction.hash.toHex().concat('-').concat(BigInt.fromI32(burnCount).toString())

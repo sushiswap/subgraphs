@@ -1,10 +1,9 @@
-import { Transfer } from '../../generated/templates/Pair/Pair'
-import { Transaction } from '../../generated/schema'
 import { BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { BIG_DECIMAL_ZERO, BIG_INT_ZERO, NATIVE_ADDRESS } from '../constants'
+import { Transaction } from '../../generated/schema'
+import { BIG_DECIMAL_ZERO, NATIVE_ADDRESS } from '../constants'
 import { getOrCreateBundle } from './bundle'
-import { getOrCreateToken } from './token'
 import { convertTokenToDecimal } from './number-converter'
+import { getOrCreateToken } from './token'
 
 export function createTransaction(event: ethereum.Event): Transaction {
   const id = event.transaction.hash.toHex()
