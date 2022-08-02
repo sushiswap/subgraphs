@@ -40,9 +40,13 @@ export const CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS = Address.fromString(
   '{{ trident.constantProductPoolFactory.address }}'
 )
 
-export const HYBRID_POOL_FACTORY_ADDRESS = Address.fromString('{{ trident.hybridPoolFactory.address }}')
+export const HYBRID_POOL_FACTORY_ADDRESS = Address.fromString(
+  '{{ trident.hybridPoolFactory.address }}{{^trident.hybridPoolFactory.address}}0x0000000000000000000000000000000000000000{{/trident.hybridPoolFactory.address}}'
+)
 
-export const INDEX_POOL_FACTORY_ADDRESS = Address.fromString('{{ trident.indexPoolFactory.address }}')
+export const INDEX_POOL_FACTORY_ADDRESS = Address.fromString(
+  '{{ trident.indexPoolFactory.address }}{{^trident.indexPoolFactory.address}}0x0000000000000000000000000000000000000000{{/trident.indexPoolFactory.address}}'
+)
 
 export const CONCENTRATED_LIQUIDITY_POOL_FACTORY_ADDRESS = Address.fromString(
   '{{ concentratedLiquidityPoolFactory.address }}{{^concentratedLiquidityPoolFactory.address}}0x0000000000000000000000000000000000000000{{/concentratedLiquidityPoolFactory.address}}'
@@ -67,6 +71,9 @@ export const STABLE_POOL_ADDRESSES: string[] = STABLE_POOL_PERMUTATIONS.map<stri
 
   return getCreate2Address(factory, keccak, initCodeHash).toHex()
 })
+
+// ENABLE FOR POLYGON
+// export const STABLE_POOL_ADDRESSES: string[] = '{{ trident.stablePoolAddresses }}'.split(',')
 
 // Minimum liqudiity threshold in native currency
 export const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('{{ trident.minimumNativeLiquidity }}')

@@ -4,6 +4,9 @@ features:
 graft:
   base: '{{ trident.bentobox.base }}'
   block: {{ trident.masterDeployer.startBlock }}
+  # For grafting on top of itself
+  # base: '{{ trident.graft.base }}'
+  # block: {{ trident.graft.startBlock }}
 schema:
   file: ./schema.graphql
 dataSources:
