@@ -1,57 +1,57 @@
 
 import { Address, BigInt, log } from '@graphprotocol/graph-ts'
-import { PairDaySnapshot, PairHourSnapshot, PairKpi } from '../../generated/schema'
+import { Pair, PairDaySnapshot, PairHourSnapshot } from '../../generated/schema'
 import { BIG_INT_ONE, BIG_INT_ZERO, DAY_IN_SECONDS, HOUR_IN_SECONDS } from '../constants'
 import { convertTokenToDecimal } from './number-converter'
-import { getPairKpi } from './pair-kpi'
+import { getPair } from './pair'
 
 export function updatePairSnapshots(timestamp: BigInt, pairAddress: Address): void {
-  let pairKpi = getPairKpi(pairAddress.toHex())
-  updatePairHourSnapshot(timestamp, pairKpi)
-  updatePairDaySnapshot(timestamp, pairKpi)
+  let pair = getPair(pairAddress.toHex())
+  updatePairHourSnapshot(timestamp, pair)
+  updatePairDaySnapshot(timestamp, pair)
 }
 
-function updatePairHourSnapshot(timestamp: BigInt, pairKpi: PairKpi): void {
-  let id = getPairHourSnapshotId(pairKpi.id, timestamp)
+function updatePairHourSnapshot(timestamp: BigInt, pair: Pair): void {
+  let id = getPairHourSnapshotId(pair.id, timestamp)
 
   let snapshot = PairHourSnapshot.load(id)
 
   if (snapshot === null) {
     snapshot = new PairHourSnapshot(id)
     snapshot.date = getHourStartDate(timestamp)
-    snapshot.pair = pairKpi.id
+    snapshot.pair = pair.id
     snapshot.transactionCount = BIG_INT_ZERO
   }
-  snapshot.liquidity = convertTokenToDecimal(pairKpi.liquidity, BigInt.fromU32(18))
-  snapshot.liquidityNative = pairKpi.liquidityNative
-  snapshot.liquidityUSD = pairKpi.liquidityUSD
-  snapshot.volumeNative = pairKpi.volumeNative
-  snapshot.volumeUSD = pairKpi.volumeUSD
-  snapshot.untrackedVolumeUSD = pairKpi.untrackedVolumeUSD
-  snapshot.feesNative = pairKpi.feesNative
-  snapshot.feesUSD = pairKpi.feesUSD
+  snapshot.liquidity = convertTokenToDecimal(pair.liquidity, BigInt.fromU32(18))
+  snapshot.liquidityNative = pair.liquidityNative
+  snapshot.liquidityUSD = pair.liquidityUSD
+  snapshot.volumeNative = pair.volumeNative
+  snapshot.volumeUSD = pair.volumeUSD
+  snapshot.untrackedVolumeUSD = pair.untrackedVolumeUSD
+  snapshot.feesNative = pair.feesNative
+  snapshot.feesUSD = pair.feesUSD
   snapshot.transactionCount = snapshot.transactionCount.plus(BIG_INT_ONE)
   snapshot.save()
 }
 
-function updatePairDaySnapshot(timestamp: BigInt, pairKpi: PairKpi): void {
-  let id = getPairDaySnapshotId(pairKpi.id, timestamp)
+function updatePairDaySnapshot(timestamp: BigInt, pair: Pair): void {
+  let id = getPairDaySnapshotId(pair.id, timestamp)
   let snapshot = PairDaySnapshot.load(id)
 
   if (snapshot === null) {
     snapshot = new PairDaySnapshot(id)
     snapshot.date = getHourStartDate(timestamp)
-    snapshot.pair = pairKpi.id
+    snapshot.pair = pair.id
     snapshot.transactionCount = BIG_INT_ZERO
   }
-  snapshot.liquidity = convertTokenToDecimal(pairKpi.liquidity, BigInt.fromU32(18))
-  snapshot.liquidityNative = pairKpi.liquidityNative
-  snapshot.liquidityUSD = pairKpi.liquidityUSD
-  snapshot.volumeNative = pairKpi.volumeNative
-  snapshot.volumeUSD = pairKpi.volumeUSD
-  snapshot.untrackedVolumeUSD = pairKpi.untrackedVolumeUSD
-  snapshot.feesNative = pairKpi.feesNative
-  snapshot.feesUSD = pairKpi.feesUSD
+  snapshot.liquidity = convertTokenToDecimal(pair.liquidity, BigInt.fromU32(18))
+  snapshot.liquidityNative = pair.liquidityNative
+  snapshot.liquidityUSD = pair.liquidityUSD
+  snapshot.volumeNative = pair.volumeNative
+  snapshot.volumeUSD = pair.volumeUSD
+  snapshot.untrackedVolumeUSD = pair.untrackedVolumeUSD
+  snapshot.feesNative = pair.feesNative
+  snapshot.feesUSD = pair.feesUSD
   snapshot.transactionCount = snapshot.transactionCount.plus(BIG_INT_ONE)
   snapshot.save()
 }
@@ -66,27 +66,27 @@ function getDayStartDate(timestamp: BigInt): i32 {
   return dayIndex * DAY_IN_SECONDS // want the rounded effect
 }
 
-export function getPairHourSnapshotId(pairKpiId: string, timestamp: BigInt): string {
+export function getPairHourSnapshotId(pairId: string, timestamp: BigInt): string {
   let startDate = getHourStartDate(timestamp)
-  return pairKpiId.concat('-hour-').concat(BigInt.fromI32(startDate).toString())
+  return pairId.concat('-hour-').concat(BigInt.fromI32(startDate).toString())
 }
 
-export function getPairDaySnapshotId(pairKpiId: string, timestamp: BigInt): string {
+export function getPairDaySnapshotId(pairId: string, timestamp: BigInt): string {
   let startDate = getDayStartDate(timestamp)
-  return pairKpiId.concat('-day-').concat(BigInt.fromI32(startDate).toString())
+  return pairId.concat('-day-').concat(BigInt.fromI32(startDate).toString())
 }
 
 /**
  * Get the last active hour snapshot for a pair, starting at 24 hours ago. If no snapshot is found,
  * iterate between 24-48 hours ago until a snapshot is found or else return null. 
- * @param pairKpiId 
+ * @param pairId 
  * @param timestamp 
  * @returns 
  */
- export function getAprSnapshot(pairKpiId: string, timestamp: BigInt): PairHourSnapshot | null {
+ export function getAprSnapshot(pairId: string, timestamp: BigInt): PairHourSnapshot | null {
   for (let i = 23; i <= 47; i++) {
    let startTime = BigInt.fromI32(timestamp.minus(BigInt.fromI32(i * HOUR_IN_SECONDS)).toI32())
-   let id = getPairHourSnapshotId(pairKpiId, startTime)
+   let id = getPairHourSnapshotId(pairId, startTime)
    let snapshot = PairHourSnapshot.load(id)
    if (snapshot !== null) {
      return snapshot

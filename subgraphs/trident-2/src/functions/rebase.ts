@@ -1,7 +1,7 @@
-import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
-import { BENTOBOX_ADDRESS, BIG_DECIMAL_ONE, BIG_INT_ONE } from '../constants'
-import { Rebase } from '../../generated/schema'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { BentoBox } from '../../generated/BentoBox/BentoBox'
+import { Rebase } from '../../generated/schema'
+import { BENTOBOX_ADDRESS, BIG_INT_ONE } from '../constants'
 
 export function createRebase(token: string): Rebase {
   const rebase = new Rebase(token)

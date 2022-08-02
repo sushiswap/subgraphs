@@ -1,12 +1,11 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
-import { PairHourSnapshot, PairKpi, Swap } from '../generated/schema'
+import { Pair, PairHourSnapshot, Swap } from '../generated/schema'
 import { Swap as SwapEvent } from '../generated/templates/ConstantProductPool/ConstantProductPool'
-import { BIG_DECIMAL_ZERO, FactoryType, MINIMUM_NATIVE_LIQUIDITY } from './constants'
+import { BIG_DECIMAL_ZERO, FactoryType } from './constants'
 import {
   convertTokenToDecimal, getAprSnapshot, getOrCreateToken,
   getOrCreateTransaction,
   getPair,
-  getPairKpi,
   increaseTransactionCount
 } from './functions'
 
@@ -48,32 +47,31 @@ export function handleSwap(event: SwapEvent, volumeUSD: BigDecimal): Swap {
 
 
 export function updateApr(event: SwapEvent): void {
-  const pairKpi = getPairKpi(event.address.toHex())
+  const pair = getPair(event.address.toHex())
   const snapshot = getAprSnapshot(event.address.toHex(), event.block.timestamp)
-  if (snapshot == null || pairKpi.liquidityUSD.equals(BIG_DECIMAL_ZERO)) {
-    pairKpi.apr = BIG_DECIMAL_ZERO
-    pairKpi.aprUpdatedAtTimestamp = event.block.timestamp
-    pairKpi.save()
+  if (snapshot == null || pair.liquidityUSD.equals(BIG_DECIMAL_ZERO)) {
+    pair.apr = BIG_DECIMAL_ZERO
+    pair.aprUpdatedAtTimestamp = event.block.timestamp
+    pair.save()
     return
   }
-  pairKpi.apr = calculateApr(pairKpi, snapshot)
-  pairKpi.aprUpdatedAtTimestamp = event.block.timestamp
-  pairKpi.save()
+  pair.apr = calculateApr(pair, snapshot)
+  pair.aprUpdatedAtTimestamp = event.block.timestamp
+  pair.save()
 }
 
 
 /**
  * 
  * Formula source: https://github.com/sushiswap/sushiswap-interface/blob/437586a4e659f5eddeedd167b3cfe89e0c5f9c3c/src/features/trident/pools/usePoolsTableData.tsx#L84-L98
- * @param pairKpi 
+ * @param pair 
  * @param snapshot 
  */
-const calculateApr = (pairKpi: PairKpi, snapshot: PairHourSnapshot): BigDecimal => {
-  const pair = getPair(pairKpi.id)
-  return pairKpi.volumeUSD.minus(snapshot.volumeUSD)
+const calculateApr = (pair: Pair, snapshot: PairHourSnapshot): BigDecimal => {
+  return pair.volumeUSD.minus(snapshot.volumeUSD)
     .times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
     .times(BigDecimal.fromString('365')) // One year
     .times(BigDecimal.fromString('100'))
-    .div(pairKpi.liquidityUSD)
+    .div(pair.liquidityUSD)
 }
 

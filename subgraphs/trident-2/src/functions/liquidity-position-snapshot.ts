@@ -2,7 +2,6 @@ import { ethereum } from '@graphprotocol/graph-ts'
 import { getOrCreateBundle, getPair } from '.'
 import { LiquidityPosition, LiquidityPositionSnapshot } from '../../generated/schema'
 import { BIG_INT_ONE } from '../constants'
-import { getPairKpi } from './pair-kpi'
 import { getTokenPrice } from './token-price'
 import { getUserKpi } from './user-kpi'
 
@@ -17,7 +16,6 @@ export function createLiquidityPositionSnapshot(position: LiquidityPosition, blo
 
   const bundle = getOrCreateBundle()
   const pair = getPair(position.pair)
-  const pairKpi = getPairKpi(position.pair)
   const token0Price = getTokenPrice(pair.token0)
   const token1Price = getTokenPrice(pair.token1)
 
@@ -29,10 +27,10 @@ export function createLiquidityPositionSnapshot(position: LiquidityPosition, blo
   snapshot.pair = position.pair
   snapshot.token0PriceUSD = token0Price.derivedNative.times(bundle.nativePrice)
   snapshot.token1PriceUSD = token1Price.derivedNative.times(bundle.nativePrice)
-  snapshot.reserve0 = pairKpi.reserve0
-  snapshot.reserve1 = pairKpi.reserve1
-  snapshot.reserveUSD = pairKpi.liquidityUSD
-  snapshot.liquidityTokenTotalSupply = pairKpi.liquidity
+  snapshot.reserve0 = pair.reserve0
+  snapshot.reserve1 = pair.reserve1
+  snapshot.reserveUSD = pair.liquidityUSD
+  snapshot.liquidityTokenTotalSupply = pair.liquidity
   snapshot.liquidityTokenBalance = position.balance
   snapshot.liquidityPosition = position.id
   snapshot.save()
