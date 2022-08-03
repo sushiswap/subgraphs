@@ -4,7 +4,7 @@ import {
   Transfer as TransferEvent,
   UpdateStream as UpdateStreamEvent,
   Withdraw as WithdrawEvent,
-} from '../../generated/FuroStream/FuroStream'
+} from '../../generated/FuroStream1_1/FuroStream'
 import { cancelStream, createStream, transferStream, updateStream, withdrawFromStream } from '../functions/stream'
 import { createStreamTransaction } from '../functions'
 

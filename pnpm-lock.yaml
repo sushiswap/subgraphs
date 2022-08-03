@@ -107,38 +107,6 @@ importers:
       matchstick-as: 0.5.0
       wabt: 1.0.24
 
-  subgraphs/furo-stream:
-    specifiers:
-      '@graphprotocol/graph-cli': ^0.27.0
-      '@graphprotocol/graph-ts': ^0.24.1
-      abi: workspace:*
-      assemblyscript: ^0.19.20
-      matchstick-as: ^0.4.2
-      wabt: 1.0.24
-    devDependencies:
-      '@graphprotocol/graph-cli': 0.27.0
-      '@graphprotocol/graph-ts': 0.24.1
-      abi: link:../../packages/abi
-      assemblyscript: 0.19.23
-      matchstick-as: 0.4.2
-      wabt: 1.0.24
-
-  subgraphs/furo-vesting:
-    specifiers:
-      '@graphprotocol/graph-cli': ^0.27.0
-      '@graphprotocol/graph-ts': ^0.24.1
-      abi: workspace:*
-      assemblyscript: ^0.19.20
-      matchstick-as: ^0.4.2
-      wabt: 1.0.24
-    devDependencies:
-      '@graphprotocol/graph-cli': 0.27.0
-      '@graphprotocol/graph-ts': 0.24.1
-      abi: link:../../packages/abi
-      assemblyscript: 0.19.23
-      matchstick-as: 0.4.2
-      wabt: 1.0.24
-
   subgraphs/kashi:
     specifiers:
       '@graphprotocol/graph-cli': ^0.27.0
@@ -846,7 +814,7 @@ packages:
   /axios/0.21.4_debug@4.3.1:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
-      follow-redirects: 1.14.9_debug@4.3.1
+      follow-redirects: 1.14.9_debug@4.1.1
     transitivePeerDependencies:
       - debug
     dev: true
@@ -854,7 +822,7 @@ packages:
   /axios/0.21.4_debug@4.3.4:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
-      follow-redirects: 1.14.9_debug@4.3.4
+      follow-redirects: 1.14.9_debug@4.1.1
     transitivePeerDependencies:
       - debug
     dev: true
@@ -1645,30 +1613,6 @@ packages:
         optional: true
     dependencies:
       debug: 4.1.1
-    dev: true
-
-  /follow-redirects/1.14.9_debug@4.3.1:
-    resolution: {integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w==}
-    engines: {node: '>=4.0'}
-    peerDependencies:
-      debug: '*'
-    peerDependenciesMeta:
-      debug:
-        optional: true
-    dependencies:
-      debug: 4.3.1
-    dev: true
-
-  /follow-redirects/1.14.9_debug@4.3.4:
-    resolution: {integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w==}
-    engines: {node: '>=4.0'}
-    peerDependencies:
-      debug: '*'
-    peerDependenciesMeta:
-      debug:
-        optional: true
-    dependencies:
-      debug: 4.3.4
     dev: true
 
   /forever-agent/0.6.1:

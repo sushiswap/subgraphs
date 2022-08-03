@@ -20,6 +20,7 @@ type Global @entity {
 
 type Stream @entity {
   id: ID! # starts at 1001
+  contract: String!
   recipient: User!
   " Initial amount "
   initialAmount: BigInt!
@@ -45,6 +46,7 @@ type Stream @entity {
 
 type Vesting @entity {
   id: ID! # starts at 1
+  contract: String!
   recipient: User!
   cliffDuration: BigInt!
   stepDuration: BigInt!
