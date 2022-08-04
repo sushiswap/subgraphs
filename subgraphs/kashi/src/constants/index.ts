@@ -1,4 +1,13 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
+
+
+export const BIG_INT_ZERO = BigInt.fromI32(0)
+export const BIG_DECIMAL_ZERO = BigDecimal.fromString('0')
+export const BIG_DECIMAL_ONE = BigDecimal.fromString('1')
+export const BIG_INT_ONE = BigInt.fromI32(1)
+
+export const HOUR_IN_SECONDS = 3600
+export const DAY_IN_SECONDS = 24 * HOUR_IN_SECONDS
 
 export const BENTOBOX_ADDRESS = Address.fromString('0x74c764d41b77dbbb4fe771dab1939b00b146894a')
 
@@ -26,6 +35,7 @@ export const MINIMUM_INTEREST_PER_YEAR = BigInt.fromI32(79274480)
   .times(BigInt.fromI32(60))
   .times(BigInt.fromI32(24))
   .times(BigInt.fromI32(365)) // approx 0.25% APR
+
 
 export const MAXIMUM_INTEREST_PER_YEAR = STARTING_INTEREST_PER_YEAR.times(BigInt.fromI32(1000)) // approx 1000% APR
 

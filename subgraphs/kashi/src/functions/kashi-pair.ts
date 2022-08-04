@@ -4,11 +4,11 @@ import { KashiPair } from '../../generated/schema'
 import { KashiPair as KashiPairContract } from '../../generated/BentoBox/KashiPair'
 import { getOrCreateBentoBox } from './bentobox'
 import { getOrCreateMasterContract } from './master-contract'
-import { createKashiPairKpi } from './kashi-pair-kpi'
 import { createKashiPairAccrueInfo } from './kashi-pair-accrue-info'
 import { getOrCreateToken } from './token'
 import { LogDeploy } from '../../generated/BentoBox/BentoBox'
 import { createRebase } from './rebase'
+import { STARTING_INTEREST_PER_YEAR } from '../constants'
 
 // TODO: should add props for specific kashi pair types (collateralization rates, etc.)
 
@@ -22,7 +22,6 @@ export function createKashiPair(event: LogDeploy): KashiPair {
   const asset = getOrCreateToken(pairContract.asset().toHex())
   const collateral = getOrCreateToken(pairContract.collateral().toHex())
 
-  const kpi = createKashiPairKpi(event.params.cloneAddress)
   const accrueInfo = createKashiPairAccrueInfo(event.params.cloneAddress)
 
   const totalAsset = createRebase(event.params.cloneAddress.toHex().concat('-').concat('asset'))
@@ -46,7 +45,10 @@ export function createKashiPair(event: LogDeploy): KashiPair {
   pair.decimals = BigInt.fromU32(pairContract.decimals())
   pair.totalSupply = pairContract.totalSupply()
 
-  pair.kpi = kpi.id
+  pair.borrowAPR = BigInt.fromU32(0)
+  pair.supplyAPR = STARTING_INTEREST_PER_YEAR
+  pair.utilization = BigInt.fromU32(0)
+  pair.totalFeesEarnedFraction = BigInt.fromU32(0)
 
   pair.block = event.block.number
   pair.timestamp = event.block.timestamp

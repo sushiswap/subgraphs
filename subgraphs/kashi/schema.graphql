@@ -110,12 +110,64 @@ type KashiPair @entity {
   decimals: BigInt!
   " KashiPair totalSupply "
   totalSupply: BigInt!
-  " KashiPairKpi "
-  kpi: KashiPairKpi!
+  " Supply APR "
+  supplyAPR: BigInt!
+  " Borrow APR "
+  borrowAPR: BigInt!
+  " Utilization "
+  utilization: BigInt!
+  " Total fees earned fraction "
+  totalFeesEarnedFraction: BigInt!
   " Block number of this pair "
   block: BigInt!
   " Timestamp of this pair "
   timestamp: BigInt!
+}
+
+type KashiPairHourSnapshot @entity {
+  " {KashiPairAddress}-hour-{timestamp} "
+  id: ID!
+  " Kashi pair this hour snapshot belongs to "
+  pair: KashiPair!
+  " Date of this snapshot "
+  date: Int!
+ " Total collateral share of this pair "
+  totalCollateralShare: BigInt!
+  " KashiPair cached exchange rate "
+  exchangeRate: BigInt!
+  " KashiPair totalSupply "
+  totalSupply: BigInt!
+  " Supply APR "
+  supplyAPR: BigInt!
+  " Borrow APR "
+  borrowAPR: BigInt!
+  " Utilization "
+  utilization: BigInt!
+  " Total fees earned fraction "
+  totalFeesEarnedFraction: BigInt!
+}
+
+type KashiPairDaySnapshot @entity {
+  " {KashiPairAddress}-day-{timestamp} "
+  id: ID!
+  " Kashi pair this hour snapshot belongs to "
+  pair: KashiPair!
+  " Date of this snapshot "
+  date: Int!
+ " Total collateral share of this pair "
+  totalCollateralShare: BigInt!
+  " KashiPair cached exchange rate "
+  exchangeRate: BigInt!
+  " KashiPair totalSupply "
+  totalSupply: BigInt!
+  " Supply APR "
+  supplyAPR: BigInt!
+  " Borrow APR "
+  borrowAPR: BigInt!
+  " Utilization "
+  utilization: BigInt!
+  " Total fees earned fraction "
+  totalFeesEarnedFraction: BigInt!
 }
 
 type KashiPairAccrueInfo @entity {
@@ -127,19 +179,6 @@ type KashiPairAccrueInfo @entity {
   lastAccrued: BigInt!
   " Fees earned fraction "
   feesEarnedFraction: BigInt!
-}
-
-type KashiPairKpi @entity {
-  " KashiPair address "
-  id: ID!
-  " Supply APR "
-  supplyAPR: BigInt!
-  " Borrow APR "
-  borrowAPR: BigInt!
-  " Utilization "
-  utilization: BigInt!
-  " Total fees earned fraction "
-  totalFeesEarnedFraction: BigInt!
 }
 
 type Swapper @entity {
