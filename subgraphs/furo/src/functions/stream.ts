@@ -1,12 +1,8 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { BigInt } from '@graphprotocol/graph-ts'
 import {
   CancelStream as CancelStreamEvent,
-  CreateStream as CreateStreamEvent,
-  Transfer as TransferEvent,
-  UpdateStream as UpdateStreamEvent,
-  Withdraw as WithdrawEvent
+  CreateStream as CreateStreamEvent, Transfer as TransferEvent, UpdateStream as UpdateStreamEvent, Withdraw as WithdrawEvent
 } from '../../generated/FuroStream/FuroStream'
-
 import { Stream } from '../../generated/schema'
 import { ACTIVE, CANCELLED, ZERO_ADDRESS } from '../constants'
 import { increaseStreamCount } from './global'
@@ -14,19 +10,17 @@ import { getOrCreateRebase, toElastic } from './rebase'
 import { getOrCreateToken } from './token'
 import { getOrCreateUser } from './user'
 
-export function getStream(contractAddress: Address, id: BigInt): Stream {
-  return Stream.load(contractAddress.toHex().concat("-").concat(id.toString())) as Stream
+export function getStream(id: BigInt): Stream {
+  return Stream.load(id.toString()) as Stream
 }
 
 export function createStream(event: CreateStreamEvent): Stream {
-  let rebase = getOrCreateRebase(event.params.token.toHex())    
-  const streamId = event.address.toHex().concat("-").concat(event.params.streamId.toString())
-  let stream = new Stream(streamId)
+  let rebase = getOrCreateRebase(event.params.token.toHex())
+  let stream = new Stream(event.params.streamId.toString())
   let recipient = getOrCreateUser(event.params.recipient, event)
   let sender = getOrCreateUser(event.params.sender, event)
   let token = getOrCreateToken(event.params.token.toHex(), event)
   let initialAmount = toElastic(rebase, event.params.amount, true)
-  stream.contract = event.address.toHex()
   stream.recipient = recipient.id
   stream.initialAmount = initialAmount
   stream.extendedAmount = BigInt.fromU32(0)
@@ -51,7 +45,7 @@ export function createStream(event: CreateStreamEvent): Stream {
 }
 
 export function updateStream(event: UpdateStreamEvent): Stream {
-  let stream = getStream(event.address, event.params.streamId)
+  let stream = getStream(event.params.streamId)
   stream.extendedAmount = stream.extendedAmount.plus(event.params.topUpAmount)
   stream.totalAmount = stream.totalAmount.plus(event.params.topUpAmount)
   stream.expiresAt = stream.expiresAt.plus(event.params.extendTime)
@@ -63,7 +57,7 @@ export function updateStream(event: UpdateStreamEvent): Stream {
 }
 
 export function cancelStream(event: CancelStreamEvent): Stream {
-  let stream = getStream(event.address, event.params.streamId)
+  let stream = getStream(event.params.streamId)
   stream.status = CANCELLED
   stream.withdrawnAmount = stream.withdrawnAmount.plus(event.params.recipientBalance)
   stream.modifiedAtBlock = event.block.number
@@ -74,7 +68,7 @@ export function cancelStream(event: CancelStreamEvent): Stream {
 }
 
 export function withdrawFromStream(event: WithdrawEvent): Stream {
-  let stream = getStream(event.address, event.params.streamId)
+  const stream = getStream(event.params.streamId)
   stream.withdrawnAmount = stream.withdrawnAmount.plus(event.params.sharesToWithdraw)
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
@@ -89,7 +83,7 @@ export function transferStream(event: TransferEvent): void {
   }
 
   let recipient = getOrCreateUser(event.params.to, event)
-  let stream = getStream(event.address, event.params.id)
+  let stream = getStream(event.params.id)
   stream.recipient = recipient.id
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp

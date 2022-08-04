@@ -28,6 +28,7 @@ export function onWithdrawStream(event: WithdrawEvent): void {
   createStreamTransaction(stream, event)
 }
 
+
 export function onTransferStream(event: TransferEvent): void {
   transferStream(event)
 }

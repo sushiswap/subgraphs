@@ -1,5 +1,5 @@
 specVersion: 0.0.4
-description: Furo
+description: Furo Stream
 repository: https://github.com/sushiswap/subgraphs
 schema:
   file: ./schema.graphql
@@ -8,8 +8,8 @@ dataSources:
     name: FuroStream
     network: {{ network }}
     source:
-      address: '{{ furo.version1.stream.address }}'
-      startBlock: {{ furo.version1.stream.startBlock }}
+      address: '{{ furo.stream.address }}'
+      startBlock: {{ furo.stream.startBlock }}
       abi: FuroStream
     mapping:
       kind: ethereum/events
@@ -33,7 +33,6 @@ dataSources:
           file: ./node_modules/abi/ERC20/SymbolBytes32.json
         - name: NameBytes32
           file: ./node_modules/abi/ERC20/NameBytes32.json
-          
       eventHandlers:
         - event: CancelStream(indexed uint256,indexed uint256,indexed uint256,address,bool)
           handler: onCancelStream
@@ -49,8 +48,8 @@ dataSources:
     name: FuroVesting
     network: {{ network }}
     source:
-      address: '{{ furo.version1.vesting.address }}'
-      startBlock: {{ furo.version1.vesting.startBlock }}
+      address: '{{ furo.vesting.address }}'
+      startBlock: {{ furo.vesting.startBlock }}
       abi: FuroVesting
     mapping:
       kind: ethereum/events
@@ -83,93 +82,12 @@ dataSources:
           handler: onWithdrawVesting
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: onTransferVesting
-  
-  - kind: ethereum/contract
-    name: FuroStream1_1
-    network: {{ network }}
-    source:
-      address: '{{ furo.version1_1.stream.address }}'
-      startBlock: {{ furo.version1_1.stream.startBlock }}
-      abi: FuroStream
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/mappings/stream.ts
-      entities:
-        - FuroStream
-        - Token
-        - User
-        - Transaction
-        - Stream
-      abis:
-        - name: FuroStream
-          file: ./abis/FuroStream1_1.json
-        - name: BentoBox
-          file: ./node_modules/abi/BentoBox/BentoBox.json
-        - name: ERC20
-          file: ./node_modules/abi/ERC20/ERC20.json
-        - name: SymbolBytes32
-          file: ./node_modules/abi/ERC20/SymbolBytes32.json
-        - name: NameBytes32
-          file: ./node_modules/abi/ERC20/NameBytes32.json
-      eventHandlers:
-        - event: CancelStream(indexed uint256,indexed uint256,indexed uint256,address,bool)
-          handler: onCancelStream
-        - event: CreateStream(indexed uint256,indexed address,indexed address,address,uint256,uint256,uint256,bool)
-          handler: onCreateStream
-        - event: UpdateStream(indexed uint256,indexed uint128,indexed uint64,bool)
-          handler: onUpdateStream
-        - event: Withdraw(indexed uint256,indexed uint256,indexed address,address,bool)
-          handler: onWithdrawStream
-        - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: onTransferStream
-
-  - kind: ethereum/contract
-    name: FuroVesting1_1
-    network: {{ network }}
-    source:
-      address: '{{ furo.version1_1.vesting.address }}'
-      startBlock: {{ furo.version1_1.vesting.startBlock }}
-      abi: FuroVesting
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/mappings/vesting.ts
-      entities:
-        - FuroVesting
-        - Token
-        - User
-        - Transaction
-        - Vesting
-      abis:
-        - name: FuroVesting
-          file: ./abis/FuroVesting1_1.json
-        - name: BentoBox
-          file: ./node_modules/abi/BentoBox/BentoBox.json
-        - name: ERC20
-          file: ./node_modules/abi/ERC20/ERC20.json
-        - name: SymbolBytes32
-          file: ./node_modules/abi/ERC20/SymbolBytes32.json
-        - name: NameBytes32
-          file: ./node_modules/abi/ERC20/NameBytes32.json
-      eventHandlers:
-        - event: CreateVesting(indexed uint256,address,indexed address,indexed address,uint32,uint32,uint32,uint32,uint128,uint128,bool)
-          handler: onCreateVesting
-        - event: CancelVesting(indexed uint256,indexed uint256,indexed uint256,address,bool)
-          handler: onCancelVesting
-        - event: Withdraw(indexed uint256,indexed address,indexed uint256,bool)
-          handler: onWithdrawVesting
-        - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: onTransferVesting
-
   - kind: ethereum/contract
     name: BentoBox
     network: {{ network }}
     source:
       address: '{{ bentobox.address }}'
-      startBlock: {{ furo.version1.stream.startBlock }}
+      startBlock: {{ furo.stream.startBlock }}
       abi: BentoBox
     mapping:
       kind: ethereun/events

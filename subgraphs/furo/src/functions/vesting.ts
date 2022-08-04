@@ -1,9 +1,10 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { BigInt } from '@graphprotocol/graph-ts'
 import {
   CancelVesting as CancelVestingEvent,
-  CreateVesting as CreateVestingEvent, Transfer as TransferEvent, Withdraw as WithdrawEvent
+  CreateVesting as CreateVestingEvent,
+  Withdraw as WithdrawEvent,
+  Transfer as TransferEvent,
 } from '../../generated/FuroVesting/FuroVesting'
-
 import { Vesting } from '../../generated/schema'
 import { ACTIVE, CANCELLED, ZERO_ADDRESS } from '../constants'
 import { increaseVestingCount } from './global'
@@ -11,15 +12,12 @@ import { getOrCreateRebase, toElastic } from './rebase'
 import { getOrCreateToken } from './token'
 import { getOrCreateUser } from './user'
 
-export function getVesting(contractAddress: Address, id: BigInt): Vesting {
-  return Vesting.load(contractAddress.toHex().concat("-").concat(id.toString())) as Vesting
+export function getVesting(id: BigInt): Vesting {
+  return Vesting.load(id.toString()) as Vesting
 }
 
 export function createVesting(event: CreateVestingEvent): Vesting {
-
-  const vestId = event.address.toHex().concat("-").concat(event.params.vestId.toString())
-  let vesting = new Vesting(vestId)
-
+  let vesting = new Vesting(event.params.vestId.toString())
   let recipient = getOrCreateUser(event.params.recipient, event)
   let owner = getOrCreateUser(event.params.owner, event)
   let token = getOrCreateToken(event.params.token.toHex(), event)
@@ -31,7 +29,6 @@ export function createVesting(event: CreateVestingEvent): Vesting {
     ? toElastic(rebase, event.params.stepShares, true)
     : BigInt.fromU32(0)
   let initialAmount = calculateTotalAmount(event.params.steps, stepAmount, cliffAmount)
-  vesting.contract = event.address.toHex()
   vesting.recipient = recipient.id
   vesting.createdBy = owner.id
   vesting.token = token.id
@@ -59,7 +56,7 @@ export function createVesting(event: CreateVestingEvent): Vesting {
 }
 
 export function cancelVesting(event: CancelVestingEvent): Vesting {
-  let vesting = getVesting(event.address, event.params.vestId)
+  let vesting = getVesting(event.params.vestId)
   vesting.status = CANCELLED
   vesting.withdrawnAmount = vesting.withdrawnAmount.plus(event.params.recipientAmount)
   vesting.modifiedAtBlock = event.block.number
@@ -72,7 +69,7 @@ export function cancelVesting(event: CancelVestingEvent): Vesting {
 }
 
 export function withdrawFromVesting(event: WithdrawEvent): Vesting {
-  let vesting = getVesting(event.address, event.params.vestId)
+  let vesting = getVesting(event.params.vestId)
   vesting.withdrawnAmount = vesting.withdrawnAmount.plus(event.params.amount)
   vesting.modifiedAtBlock = event.block.number
   vesting.modifiedAtTimestamp = event.block.timestamp
@@ -87,7 +84,7 @@ export function transferVesting(event: TransferEvent): void {
   }
 
   let recipient = getOrCreateUser(event.params.to, event)
-  let vesting = getVesting(event.address, event.params.id)
+  let vesting = getVesting(event.params.id)
   vesting.recipient = recipient.id
   vesting.modifiedAtBlock = event.block.number
   vesting.modifiedAtTimestamp = event.block.timestamp

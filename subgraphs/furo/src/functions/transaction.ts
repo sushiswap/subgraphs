@@ -10,7 +10,6 @@ import {
   CreateVesting as CreateVestingEvent,
   Withdraw as WithdrawVestingEvent,
 } from '../../generated/FuroVesting/FuroVesting'
-
 import { Stream, Transaction, Vesting } from '../../generated/schema'
 import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from '../constants'
 import { increaseTransactionCount } from './global'
