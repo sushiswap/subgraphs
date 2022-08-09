@@ -11,15 +11,15 @@ module.exports = {
     base: 'QmYJh2tYmFv9yGxeyRHDTKKCFgyHAv7wgczpWojF5B4BqN',
     startBlock: 7019815,
   },
-  masterDeployer: { address: '0xcaabdd9cf4b61813d4a52f980d6bc1b713fe66f5', startBlock: 7464195 },
-  concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
-  constantProductPoolFactory: {
-    address: '0x93395129bd3fcf49d95730d3c2737c17990ff328',
-    initCodeHash: '0x3172d82413be467c1130709f7479a07def9b99caf8e0059f248c131081e4ea09',
-  },
-  hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
-  indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
   trident: {
+    masterDeployer: { address: '0xcaabdd9cf4b61813d4a52f980d6bc1b713fe66f5', startBlock: 7464195 },
+    concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
+    constantProductPoolFactory: {
+      address: '0x93395129bd3fcf49d95730d3c2737c17990ff328',
+      initCodeHash: '0x3172d82413be467c1130709f7479a07def9b99caf8e0059f248c131081e4ea09',
+    },
+    hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
+    indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [
       // WNATIVE - This is actually quite important, though uneeded here anymore since
