@@ -1,26 +1,27 @@
-const NATIVE_ADDRESS = '0xc86c7c0efbd6a49b35e8714c5f59d99de09a225b'
-const WBTC_ADDRESS = '0x818ec0a7fe18ff94269904fced6ae3dae6d6dc0b'
-const USDC_ADDRESS = '0xfa9343c3897324496a05fc75abed6bac29f8a40f'
-const USDT_ADDRESS = '0xb44a9b6905af7c801311e8f4e76932ee959c663c'
-const DAI_ADDRESS = '0x765277eebeca2e31912c9946eae1021199b39c61'
-const WETH_ADDRESS = '0xe3f5a90f9cb311505cd691a46596599aa1a0ad7d'
+const NATIVE_ADDRESS = '0x75cb093e4d61d2a2e65d8e0bbb01de8d89b53481'
+const USDC_ADDRESS = '0xea32a96608495e54156ae48931a7c20f0dcc1a21'
+const USDT_ADDRESS = '0xbb06dca3ae6887fabf931640f67cab3e3a16f4dc'
+const DAI_ADDRESS = '0x4c078361fc9bbb78df910800a991c7c3dd2f6ce0'
+const WETH_ADDRESS = '0x420000000000000000000000000000000000000A'
 
 module.exports = {
-  network: 'kava-evm',
-  blocks: {
-    address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
-    startBlock: 161967,
-  },
+  network: 'andromeda',
+  auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   bentobox: {
     address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
-    startBlock: 161967,
+    base: 'QmSTz1vJeN5LKJHv9xqTxpsqiLRgpH2YWN5dVhQDv6Pd95',
+    startBlock: 3030672,
+  },
+  blocks: {
+    address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
+    startBlock: 3030672,
   },
   trident: {
     bentobox: {
-      base: 'QmXtBjEnPnD5pwxj4yYLQyWpaE38ioprpKJ3rXSZQh4xHS',
-      startBlock: 162097,
+      base: 'QmaoDfL5Ro7bmoE7bcpB4adt6dyZLShqeWEtLi7rQiUFmG',
+      startBlock: 3030678,
     },
-    masterDeployer: { address: '0x1b02da8cb0d097eb8d57a175b88c7d8b47997506', startBlock: 162097 },
+    masterDeployer: { address: '0x1b02da8cb0d097eb8d57a175b88c7d8b47997506', startBlock: 3030678 },
     concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     constantProductPoolFactory: {
       address: '0x0769fd68dfb93167989c6f7254cd0d766fb2841f',
@@ -36,8 +37,6 @@ module.exports = {
       NATIVE_ADDRESS,
       // WETH
       WETH_ADDRESS,
-      // WBTC
-      WBTC_ADDRESS,
       // USDC
       USDC_ADDRESS,
       // USDT
@@ -53,22 +52,11 @@ module.exports = {
       // DAI
       DAI_ADDRESS,
     ],
-    // List of STABLE/NATIVE pools to use to price NATIVE in USD
-    stablePoolAddresses: [
-      // USDC/WKAVA/30/FALSE
-      '0x88395b86cf9787e131d2fb5462a22b44056bf574',
-    ],
-    minimum_usd_threshold_new_pairs: '3000',
     minimumNativeLiquidity: '0.1',
   },
   furo: {
     stream: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
     vesting: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   },
-  auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
-
-  kashi: {
-    liquidationMultiplier: 12,
-  },
 }

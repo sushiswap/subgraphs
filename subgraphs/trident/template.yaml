@@ -2,8 +2,11 @@ specVersion: 0.0.4
 features:
   - grafting
 graft:
-  base: '{{ bentobox.base }}'
-  block: {{ masterDeployer.startBlock }}
+  base: '{{ trident.bentobox.base }}'
+  block: {{ trident.masterDeployer.startBlock }}
+  # For grafting on top of itself
+  # base: '{{ trident.graft.base }}'
+  # block: {{ trident.graft.startBlock }}
 schema:
   file: ./schema.graphql
 dataSources:
@@ -12,7 +15,7 @@ dataSources:
     network: {{ network }}
     source:
       address: '{{ bentobox.address }}'
-      startBlock: {{ masterDeployer.startBlock }}
+      startBlock: {{ trident.masterDeployer.startBlock }}
       abi: BentoBox
     mapping:
       kind: ethereun/events
@@ -44,8 +47,8 @@ dataSources:
     name: MasterDeployer
     network: {{ network }}
     source:
-      address: '{{ masterDeployer.address }}'
-      startBlock: {{ masterDeployer.startBlock }}
+      address: '{{ trident.masterDeployer.address }}'
+      startBlock: {{ trident.masterDeployer.startBlock }}
       abi: MasterDeployer
     mapping:
       kind: ethereum/events
