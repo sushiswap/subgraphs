@@ -10,8 +10,10 @@ export function createPair(event: DeployPool): Pair {
   const id = event.params.pool.toHex()
 
   const decoded = ethereum.decode('(address,address,uint256,bool)', event.params.deployData)!.toTuple()
-  const token0Address = decoded[0].toAddress().toHex()
-  const token1Address = decoded[1].toAddress().toHex()
+  const isCorrectOrder = decoded[0].toAddress().toHex() < decoded[1].toAddress().toHex()
+  const token0Address = isCorrectOrder ? decoded[0].toAddress().toHex() : decoded[1].toAddress().toHex()
+  const token1Address = !isCorrectOrder ? decoded[0].toAddress().toHex() : decoded[1].toAddress().toHex()
+
   const swapFee = decoded[2].toBigInt() as BigInt
   const twapEnabled = decoded[3].toBoolean() as boolean
 
