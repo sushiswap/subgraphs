@@ -28,20 +28,20 @@ export function createVesting(event: CreateVestingEvent): Vesting {
   let stepAmount = event.params.stepShares.gt(BigInt.fromU32(0))
     ? toElastic(rebase, event.params.stepShares, true)
     : BigInt.fromU32(0)
-  let initialAmount = calculateTotalAmount(event.params.steps, stepAmount, cliffAmount)
+  let initialShares = calculateTotalShares(event.params.steps, stepAmount, cliffAmount)
   vesting.recipient = recipient.id
   vesting.createdBy = owner.id
   vesting.token = token.id
   vesting.cliffDuration = event.params.cliffDuration
   vesting.stepDuration = event.params.stepDuration
   vesting.steps = event.params.steps
-  vesting.cliffAmount = event.params.cliffShares
-  vesting.stepAmount = event.params.stepShares
+  vesting.cliffShares = event.params.cliffShares
+  vesting.stepShares = event.params.stepShares
   vesting.status = ACTIVE
   vesting.fromBentoBox = event.params.fromBentoBox
   vesting.startedAt = event.params.start
   vesting.expiresAt = calculateExpirationDate(vesting)
-  vesting.totalAmount = initialAmount
+  vesting.remainingShares = initialShares
   vesting.txHash = event.transaction.hash.toHex()
   vesting.transactionCount = BigInt.fromU32(0)
   vesting.withdrawnAmount = BigInt.fromU32(0)
@@ -108,6 +108,6 @@ function calculateExpirationDate(vest: Vesting): BigInt {
   return startTime.plus(cliffDuration).plus(paymentDuration)
 }
 
-function calculateTotalAmount(steps: BigInt, stepAmount: BigInt, cliffAmount: BigInt): BigInt {
-  return cliffAmount.plus(steps.times(stepAmount))
+function calculateTotalShares(steps: BigInt, stepShares: BigInt, cliffShares: BigInt): BigInt {
+  return cliffShares.plus(steps.times(stepShares))
 }

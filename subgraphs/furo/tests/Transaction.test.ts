@@ -2,7 +2,7 @@ import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
 import { CreateVesting as CreateVestingEvent } from '../generated/FuroVesting/FuroVesting'
-import { BENTOBOX_ADDRESS, WEEK, YEAR } from '../src/constants'
+import { BENTOBOX_ADDRESS, BIG_INT_ZERO, FURO_STREAM_ADDRESS, WEEK, YEAR } from '../src/constants'
 import { getOrCreateRebase } from '../src/functions'
 import { onCancelStream, onCreateStream, onUpdateStream, onWithdrawStream } from '../src/mappings/stream'
 import { onCancelVesting, onCreateVesting, onWithdrawVesting } from '../src/mappings/vesting'
@@ -16,7 +16,8 @@ import {
   createUpdateStreamEvent,
   createVestingEvent,
   createWithdrawStreamEvent,
-  createWithdrawVestingEvent
+  createWithdrawVestingEvent,
+  mockStreamBalanceOf
 } from './mocks'
 
 const WETH_ADDRESS = Address.fromString('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2')
@@ -157,23 +158,42 @@ test('Withdraw from stream creates a Transaction', () => {
 
 test('Update stream creates a transaction', () => {
   setupStream()
-  const id = STREAM_ID.toString().concat(':tx:1')
+  const withdrawId = STREAM_ID.toString().concat(':tx:1')
+  const updateId = STREAM_ID.toString().concat(':tx:2')
   const extendTime = BigInt.fromString('2628000') // a month in seconds
-  let updateStreamEvent = createUpdateStreamEvent(STREAM_ID, AMOUNT, extendTime, true)
+  const topUpAmount = BigInt.fromString('1000')
+  let updateStreamEvent = createUpdateStreamEvent(STREAM_ID, topUpAmount, extendTime, true)
+  let senderBalance = AMOUNT.div(BigInt.fromU32(2)).plus(topUpAmount)
+  let expectedAmount = AMOUNT.div(BigInt.fromU32(2))
+ 
 
+  mockStreamBalanceOf(FURO_STREAM_ADDRESS, STREAM_ID, senderBalance, BIG_INT_ZERO)
   onUpdateStream(updateStreamEvent)
 
-  assert.entityCount('Transaction', 2)
-  assert.fieldEquals('Transaction', id, 'id', id)
-  assert.fieldEquals('Transaction', id, 'type', EXTEND)
-  assert.fieldEquals('Transaction', id, 'stream', STREAM_ID.toString())
-  assert.fieldEquals('Transaction', id, 'amount', AMOUNT.toString())
-  assert.fieldEquals('Transaction', id, 'to', RECIEVER.toHex())
-  assert.fieldEquals('Transaction', id, 'token', WETH_ADDRESS.toHex())
-  assert.fieldEquals('Transaction', id, 'toBentoBox', 'true')
-  assert.fieldEquals('Transaction', id, 'txHash', updateStreamEvent.transaction.hash.toHex())
-  assert.fieldEquals('Transaction', id, 'createdAtBlock', updateStreamEvent.block.number.toString())
-  assert.fieldEquals('Transaction', id, 'createdAtTimestamp', updateStreamEvent.block.timestamp.toString())
+
+  assert.entityCount('Transaction', 3)
+  assert.fieldEquals('Transaction', withdrawId, 'id', withdrawId)
+  assert.fieldEquals('Transaction', withdrawId, 'type', WITHDRAWAL)
+  assert.fieldEquals('Transaction', withdrawId, 'stream', STREAM_ID.toString())
+  assert.fieldEquals('Transaction', withdrawId, 'amount', expectedAmount.toString())
+  assert.fieldEquals('Transaction', withdrawId, 'to', RECIEVER.toHex())
+  assert.fieldEquals('Transaction', withdrawId, 'token', WETH_ADDRESS.toHex())
+  assert.fieldEquals('Transaction', withdrawId, 'toBentoBox', 'true')
+  assert.fieldEquals('Transaction', withdrawId, 'txHash', updateStreamEvent.transaction.hash.toHex())
+  assert.fieldEquals('Transaction', withdrawId, 'createdAtBlock', updateStreamEvent.block.number.toString())
+  assert.fieldEquals('Transaction', withdrawId, 'createdAtTimestamp', updateStreamEvent.block.timestamp.toString())
+
+  
+  assert.fieldEquals('Transaction', updateId, 'id', updateId)
+  assert.fieldEquals('Transaction', updateId, 'type', EXTEND)
+  assert.fieldEquals('Transaction', updateId, 'stream', STREAM_ID.toString())
+  assert.fieldEquals('Transaction', updateId, 'amount', topUpAmount.toString())
+  assert.fieldEquals('Transaction', updateId, 'to', RECIEVER.toHex())
+  assert.fieldEquals('Transaction', updateId, 'token', WETH_ADDRESS.toHex())
+  assert.fieldEquals('Transaction', updateId, 'toBentoBox', 'true')
+  assert.fieldEquals('Transaction', updateId, 'txHash', updateStreamEvent.transaction.hash.toHex())
+  assert.fieldEquals('Transaction', updateId, 'createdAtBlock', updateStreamEvent.block.number.toString())
+  assert.fieldEquals('Transaction', updateId, 'createdAtTimestamp', updateStreamEvent.block.timestamp.toString())
 
   cleanup()
 })

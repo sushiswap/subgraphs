@@ -11,17 +11,19 @@ import {
   Withdraw as WithdrawVestingEvent,
 } from '../../generated/FuroVesting/FuroVesting'
 import { Stream, Transaction, Vesting } from '../../generated/schema'
-import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from '../constants'
+import { BIG_INT_ZERO, DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from '../constants'
 import { increaseTransactionCount } from './global'
+import { getOrCreateRebase, toElastic } from './rebase'
 import { getOrCreateUser } from './user'
 
-export function createStreamTransaction<T extends ethereum.Event>(stream: Stream, event: T): void {
+export function createStreamTransaction<T extends ethereum.Event>(stream: Stream, event: T, withdrawnAmount: BigInt = BIG_INT_ZERO): void {
+  let rebase = getOrCreateRebase(stream.token)
   if (event instanceof CreateStreamEvent) {
     const id = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
     let transaction = new Transaction(id)
     transaction.type = DEPOSIT
     transaction.stream = stream.id
-    transaction.amount = event.params.amount
+    transaction.amount = toElastic(rebase, stream.remainingShares, true)
     transaction.to = event.params.recipient.toHex()
     transaction.token = event.params.token.toHex()
     transaction.toBentoBox = event.params.fromBentoBox
@@ -38,7 +40,7 @@ export function createStreamTransaction<T extends ethereum.Event>(stream: Stream
     let senderTransaction = new Transaction(senderTransactionId)
     senderTransaction.type = DISBURSEMENT
     senderTransaction.stream = stream.id
-    senderTransaction.amount = event.params.senderBalance
+    senderTransaction.amount = toElastic(rebase, event.params.senderBalance, true)
     senderTransaction.to = stream.createdBy
     senderTransaction.token = event.params.token.toHex()
     senderTransaction.toBentoBox = event.params.toBentoBox
@@ -54,7 +56,7 @@ export function createStreamTransaction<T extends ethereum.Event>(stream: Stream
     let recipientTransaction = new Transaction(recipientTransactionId)
     recipientTransaction.type = DISBURSEMENT
     recipientTransaction.stream = stream.id
-    recipientTransaction.amount = event.params.recipientBalance
+    recipientTransaction.amount = toElastic(rebase, event.params.recipientBalance, true)
     recipientTransaction.to = stream.recipient
     recipientTransaction.token = event.params.token.toHex()
     recipientTransaction.toBentoBox = event.params.toBentoBox
@@ -72,7 +74,7 @@ export function createStreamTransaction<T extends ethereum.Event>(stream: Stream
     let transaction = new Transaction(id)
     transaction.type = WITHDRAWAL
     transaction.stream = stream.id
-    transaction.amount = event.params.sharesToWithdraw
+    transaction.amount = toElastic(rebase, event.params.sharesToWithdraw, true)
     transaction.to = recipient.id
     transaction.token = event.params.token.toHex()
     transaction.toBentoBox = event.params.toBentoBox
@@ -85,18 +87,34 @@ export function createStreamTransaction<T extends ethereum.Event>(stream: Stream
     stream.transactionCount = stream.transactionCount.plus(BigInt.fromU32(1))
     stream.save()
   } else if (event instanceof UpdateStreamEvent) {
-    const id = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
-    let transaction = new Transaction(id)
-    transaction.type = EXTEND
+
+    const withdrawTransaction = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
+    let transaction = new Transaction(withdrawTransaction)
+    transaction.type = WITHDRAWAL
     transaction.stream = stream.id
-    transaction.amount = event.params.topUpAmount
+    transaction.amount = withdrawnAmount
     transaction.to = stream.recipient
     transaction.token = stream.token
-    transaction.toBentoBox = event.params.fromBentoBox
+    transaction.toBentoBox = true
     transaction.createdAtBlock = event.block.number
     transaction.createdAtTimestamp = event.block.timestamp
     transaction.txHash = event.transaction.hash.toHex()
     transaction.save()
+    increaseTransactionCount()
+    stream.transactionCount = stream.transactionCount.plus(BigInt.fromU32(1))
+
+    const updateId = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
+    let updateTransaction = new Transaction(updateId)
+    updateTransaction.type = EXTEND
+    updateTransaction.stream = stream.id
+    updateTransaction.amount = toElastic(rebase, event.params.topUpAmount, true)
+    updateTransaction.to = stream.recipient
+    updateTransaction.token = stream.token
+    updateTransaction.toBentoBox = event.params.fromBentoBox
+    updateTransaction.createdAtBlock = event.block.number
+    updateTransaction.createdAtTimestamp = event.block.timestamp
+    updateTransaction.txHash = event.transaction.hash.toHex()
+    updateTransaction.save()
     increaseTransactionCount()
 
     stream.transactionCount = stream.transactionCount.plus(BigInt.fromU32(1))
@@ -105,12 +123,13 @@ export function createStreamTransaction<T extends ethereum.Event>(stream: Stream
 }
 
 export function createVestingTransaction<T extends ethereum.Event>(vesting: Vesting, event: T): void {
+  let rebase = getOrCreateRebase(vesting.token)
   if (event instanceof CreateVestingEvent) {
     const id = vesting.id.concat(':tx:').concat(vesting.transactionCount.toString())
     let transaction = new Transaction(id)
     transaction.type = DEPOSIT
     transaction.vesting = vesting.id
-    transaction.amount = vesting.totalAmount
+    transaction.amount = toElastic(rebase, vesting.remainingShares, true)
     transaction.to = vesting.recipient
     transaction.token = vesting.token
     transaction.toBentoBox = true
@@ -125,9 +144,10 @@ export function createVestingTransaction<T extends ethereum.Event>(vesting: Vest
   } else if (event instanceof CancelVestingEvent) {
     const senderTransactionId = vesting.id.concat(':tx:').concat(vesting.transactionCount.toString())
     let senderTransaction = new Transaction(senderTransactionId)
+    
     senderTransaction.type = DISBURSEMENT
     senderTransaction.vesting = vesting.id
-    senderTransaction.amount = event.params.recipientAmount
+    senderTransaction.amount = toElastic(rebase, event.params.recipientAmount, true)
     senderTransaction.to = vesting.recipient
     senderTransaction.token = vesting.token
     senderTransaction.toBentoBox = event.params.toBentoBox
@@ -143,7 +163,7 @@ export function createVestingTransaction<T extends ethereum.Event>(vesting: Vest
     let recipientTransaction = new Transaction(recipientTransactionId)
     recipientTransaction.type = DISBURSEMENT
     recipientTransaction.vesting = vesting.id
-    recipientTransaction.amount = event.params.ownerAmount
+    recipientTransaction.amount = toElastic(rebase, event.params.ownerAmount, true)
     recipientTransaction.to = vesting.createdBy
     recipientTransaction.token = vesting.token
     recipientTransaction.toBentoBox = event.params.toBentoBox
@@ -160,7 +180,7 @@ export function createVestingTransaction<T extends ethereum.Event>(vesting: Vest
     let transaction = new Transaction(id)
     transaction.type = WITHDRAWAL
     transaction.vesting = vesting.id
-    transaction.amount = event.params.amount
+    transaction.amount = toElastic(rebase, event.params.amount, true)
     transaction.to = vesting.recipient
     transaction.token = vesting.token
     transaction.toBentoBox = event.params.toBentoBox

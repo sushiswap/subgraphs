@@ -6,7 +6,7 @@ import {
 import { Stream } from '../../generated/schema'
 import { ACTIVE, CANCELLED, ZERO_ADDRESS } from '../constants'
 import { increaseStreamCount } from './global'
-import { getOrCreateRebase, toElastic } from './rebase'
+import { getOrCreateRebase, toBase, toElastic } from './rebase'
 import { getOrCreateToken } from './token'
 import { getOrCreateUser } from './user'
 
@@ -20,11 +20,13 @@ export function createStream(event: CreateStreamEvent): Stream {
   let recipient = getOrCreateUser(event.params.recipient, event)
   let sender = getOrCreateUser(event.params.sender, event)
   let token = getOrCreateToken(event.params.token.toHex(), event)
+  let initialShares = event.params.amount
   let initialAmount = toElastic(rebase, event.params.amount, true)
   stream.recipient = recipient.id
+  stream.initialShares = initialShares
   stream.initialAmount = initialAmount
-  stream.extendedAmount = BigInt.fromU32(0)
-  stream.totalAmount = initialAmount
+  stream.extendedShares = BigInt.fromU32(0)
+  stream.remainingShares = initialShares
   stream.withdrawnAmount = BigInt.fromU32(0)
   stream.token = token.id
   stream.status = ACTIVE
@@ -44,10 +46,11 @@ export function createStream(event: CreateStreamEvent): Stream {
   return stream
 }
 
-export function updateStream(event: UpdateStreamEvent): Stream {
+export function updateStream(remainingShares: BigInt, withdrawnAmount: BigInt, event: UpdateStreamEvent): Stream {
   let stream = getStream(event.params.streamId)
-  stream.extendedAmount = stream.extendedAmount.plus(event.params.topUpAmount)
-  stream.totalAmount = stream.totalAmount.plus(event.params.topUpAmount)
+  stream.extendedShares = stream.extendedShares.plus(event.params.topUpAmount)
+  stream.remainingShares = remainingShares
+  stream.withdrawnAmount = stream.withdrawnAmount.plus(withdrawnAmount)
   stream.expiresAt = stream.expiresAt.plus(event.params.extendTime)
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
@@ -58,8 +61,9 @@ export function updateStream(event: UpdateStreamEvent): Stream {
 
 export function cancelStream(event: CancelStreamEvent): Stream {
   let stream = getStream(event.params.streamId)
+  let rebase = getOrCreateRebase(stream.token)
   stream.status = CANCELLED
-  stream.withdrawnAmount = stream.withdrawnAmount.plus(event.params.recipientBalance)
+  stream.withdrawnAmount = stream.withdrawnAmount.plus(toBase(rebase, event.params.recipientBalance, true))
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
   stream.save()
@@ -69,7 +73,8 @@ export function cancelStream(event: CancelStreamEvent): Stream {
 
 export function withdrawFromStream(event: WithdrawEvent): Stream {
   const stream = getStream(event.params.streamId)
-  stream.withdrawnAmount = stream.withdrawnAmount.plus(event.params.sharesToWithdraw)
+  let rebase = getOrCreateRebase(stream.token)
+  stream.withdrawnAmount = stream.withdrawnAmount.plus(toBase(rebase, event.params.sharesToWithdraw, true))
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
   stream.save()

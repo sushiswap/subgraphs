@@ -266,3 +266,10 @@ export function createTotalsMock(contractAddress: Address, tokenAddress: Address
     .withArgs([ethereum.Value.fromAddress(tokenAddress)])
     .returns([ethereum.Value.fromUnsignedBigInt(elastic), ethereum.Value.fromUnsignedBigInt(base)])
 }
+
+
+export function mockStreamBalanceOf(contractAddress: Address, streamId: BigInt, recipientBalance: BigInt, senderBalance: BigInt): void {
+  createMockedFunction(contractAddress, 'streamBalanceOf', 'streamBalanceOf(uint256):(uint256,uint256)')
+    .withArgs([ethereum.Value.fromUnsignedBigInt(streamId)])
+    .returns([ethereum.Value.fromUnsignedBigInt(recipientBalance), ethereum.Value.fromUnsignedBigInt(senderBalance)])
+}

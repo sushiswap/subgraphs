@@ -27,6 +27,13 @@ export function getOrCreateRebase(token: string): Rebase {
   return rebase as Rebase
 }
 
+/**
+ * To base (shares)
+ * @param total 
+ * @param elastic 
+ * @param roundUp 
+ * @returns 
+ */
 export function toBase(total: Rebase, elastic: BigInt, roundUp: boolean): BigInt {
   if (total.elastic.equals(BigInt.fromU32(0))) {
     return elastic
@@ -41,6 +48,13 @@ export function toBase(total: Rebase, elastic: BigInt, roundUp: boolean): BigInt
   return base
 }
 
+/**
+ * To elastic (amount)
+ * @param total 
+ * @param base 
+ * @param roundUp 
+ * @returns 
+ */
 export function toElastic(total: Rebase, base: BigInt, roundUp: boolean): BigInt {
   if (total.base.equals(BigInt.fromU32(0))) {
     return base

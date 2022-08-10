@@ -21,12 +21,14 @@ type Global @entity {
 type Stream @entity {
   id: ID! # starts at 1001
   recipient: User!
+  " Initial shares "
+  initialShares: BigInt!
   " Initial amount "
   initialAmount: BigInt!
-  " Extended amount, increases for each time the stream is updated with a top up amount "
-  extendedAmount: BigInt!
-  " Total amount left, decreased on withdrawal and increased on top up"
-  totalAmount: BigInt!
+  " Extended shares, increases for each time the stream is updated with a top up amount "
+  extendedShares: BigInt!
+  " Remaining shares "
+  remainingShares: BigInt!
   " Withdrawn amount "
   withdrawnAmount: BigInt!
   token: Token!
@@ -49,10 +51,10 @@ type Vesting @entity {
   cliffDuration: BigInt!
   stepDuration: BigInt!
   steps: BigInt!
-  cliffAmount: BigInt!
-  stepAmount: BigInt!
-  " Total amount left, decreases on withdrawal "
-  totalAmount: BigInt!
+  cliffShares: BigInt!
+  stepShares: BigInt!
+  " shares remaining, decreases on withdrawal "
+  remainingShares: BigInt!
   " Withdrawn amount "
   withdrawnAmount: BigInt!
   token: Token!
