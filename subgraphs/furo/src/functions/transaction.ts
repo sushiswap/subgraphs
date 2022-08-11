@@ -88,8 +88,8 @@ export function createStreamTransaction<T extends ethereum.Event>(stream: Stream
     stream.save()
   } else if (event instanceof UpdateStreamEvent) {
 
-    const withdrawTransaction = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
-    let transaction = new Transaction(withdrawTransaction)
+    const withdrawTransactionId = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
+    let transaction = new Transaction(withdrawTransactionId)
     transaction.type = WITHDRAWAL
     transaction.stream = stream.id
     transaction.amount = withdrawnAmount
@@ -107,7 +107,7 @@ export function createStreamTransaction<T extends ethereum.Event>(stream: Stream
     let updateTransaction = new Transaction(updateId)
     updateTransaction.type = EXTEND
     updateTransaction.stream = stream.id
-    updateTransaction.amount = toElastic(rebase, event.params.topUpAmount, true)
+    updateTransaction.amount = event.params.topUpAmount
     updateTransaction.to = stream.recipient
     updateTransaction.token = stream.token
     updateTransaction.toBentoBox = event.params.fromBentoBox
