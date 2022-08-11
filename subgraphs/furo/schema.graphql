@@ -55,6 +55,10 @@ type Vesting @entity {
   stepShares: BigInt!
   " shares remaining, decreases on withdrawal "
   remainingShares: BigInt!
+  " Initial shares "
+  initialShares: BigInt!
+  " Initial amount "
+  initialAmount: BigInt!
   " Withdrawn amount "
   withdrawnAmount: BigInt!
   token: Token!

@@ -42,6 +42,8 @@ export function createVesting(event: CreateVestingEvent): Vesting {
   vesting.startedAt = event.params.start
   vesting.expiresAt = calculateExpirationDate(vesting)
   vesting.remainingShares = initialShares
+  vesting.initialShares = initialShares
+  vesting.initialAmount = toElastic(rebase, initialShares, true)
   vesting.txHash = event.transaction.hash.toHex()
   vesting.transactionCount = BigInt.fromU32(0)
   vesting.withdrawnAmount = BigInt.fromU32(0)

@@ -123,7 +123,7 @@ test('Update stream', () => {
 
   let expectedExpirationDate = END_TIME.plus(extendTime).toString()
   assert.fieldEquals('Stream', id, 'status', ACTIVE)
-  assert.fieldEquals('Stream', id, 'remainingShares', expectedWithdrawnAmount.toString())
+  assert.fieldEquals('Stream', id, 'remainingShares', senderBalance.toString())
   assert.fieldEquals('Stream', id, 'withdrawnAmount', expectedWithdrawnAmount.toString())
   assert.fieldEquals('Stream', id, 'expiresAt', expectedExpirationDate)
   assert.fieldEquals('Stream', id, 'modifiedAtBlock', updateStreamEvent.block.number.toString())
