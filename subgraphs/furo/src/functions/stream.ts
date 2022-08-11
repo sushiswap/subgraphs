@@ -6,7 +6,7 @@ import {
 import { Stream } from '../../generated/schema'
 import { ACTIVE, CANCELLED, ZERO_ADDRESS } from '../constants'
 import { increaseStreamCount } from './global'
-import { getOrCreateRebase, toBase, toElastic } from './rebase'
+import { getOrCreateRebase, toElastic } from './rebase'
 import { getOrCreateToken } from './token'
 import { getOrCreateUser } from './user'
 
@@ -63,7 +63,7 @@ export function cancelStream(event: CancelStreamEvent): Stream {
   let stream = getStream(event.params.streamId)
   let rebase = getOrCreateRebase(stream.token)
   stream.status = CANCELLED
-  stream.withdrawnAmount = stream.withdrawnAmount.plus(toBase(rebase, event.params.recipientBalance, true))
+  stream.withdrawnAmount = stream.withdrawnAmount.plus(toElastic(rebase, event.params.recipientBalance, true))
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
   stream.save()
@@ -74,7 +74,7 @@ export function cancelStream(event: CancelStreamEvent): Stream {
 export function withdrawFromStream(event: WithdrawEvent): Stream {
   const stream = getStream(event.params.streamId)
   let rebase = getOrCreateRebase(stream.token)
-  stream.withdrawnAmount = stream.withdrawnAmount.plus(toBase(rebase, event.params.sharesToWithdraw, true))
+  stream.withdrawnAmount = stream.withdrawnAmount.plus(toElastic(rebase, event.params.sharesToWithdraw, true))
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
   stream.save()

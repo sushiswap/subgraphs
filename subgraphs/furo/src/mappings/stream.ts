@@ -7,9 +7,9 @@ import {
   Withdraw as WithdrawEvent,
 } from '../../generated/FuroStream/FuroStream'
 import { cancelStream, createStream, getStream, transferStream, updateStream, withdrawFromStream } from '../functions/stream'
-import { createStreamTransaction, getOrCreateRebase, toBase, toElastic } from '../functions'
+import { createStreamTransaction, getOrCreateRebase, toElastic } from '../functions'
 import { FURO_STREAM_ADDRESS } from '../constants'
-import { log } from '@graphprotocol/graph-ts'
+
 
 export function onCreateStream(event: CreateStreamEvent): void {
   const stream = createStream(event)
@@ -27,10 +27,12 @@ export function onUpdateStream(event: UpdateStreamEvent): void {
 
   const streamBeforeUpdate = getStream(event.params.streamId)
   const rebase = getOrCreateRebase(streamBeforeUpdate.token)
-  const remainingShares = streamBeforeUpdate.initialShares.plus(event.params.topUpAmount).minus(balanceOf.getSenderBalance())
-  const withdrawnAmountToBentoBox = toElastic(rebase, remainingShares, true).minus(streamBeforeUpdate.withdrawnAmount)
+  const withdrawnAmountToBentoBox = toElastic(rebase,
+    streamBeforeUpdate.initialShares.plus(event.params.topUpAmount).minus(balanceOf.getSenderBalance())
+    , true)
+    .minus(streamBeforeUpdate.withdrawnAmount)
 
-  const stream = updateStream(remainingShares, withdrawnAmountToBentoBox, event)
+  const stream = updateStream(balanceOf.getSenderBalance(), withdrawnAmountToBentoBox, event)
   createStreamTransaction(stream, event, withdrawnAmountToBentoBox)
 }
 
