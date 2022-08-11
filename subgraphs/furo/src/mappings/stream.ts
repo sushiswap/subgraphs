@@ -7,7 +7,7 @@ import {
   Withdraw as WithdrawEvent,
 } from '../../generated/FuroStream/FuroStream'
 import { cancelStream, createStream, getStream, transferStream, updateStream, withdrawFromStream } from '../functions/stream'
-import { createStreamTransaction, getOrCreateRebase, toBase, toElastic } from '../functions'
+import { createRebase, createStreamTransaction, getOrCreateRebase, toBase, toElastic } from '../functions'
 import { FURO_STREAM_ADDRESS } from '../constants'
 import { log } from '@graphprotocol/graph-ts'
 
@@ -26,13 +26,11 @@ export function onUpdateStream(event: UpdateStreamEvent): void {
   const balanceOf = contract.streamBalanceOf(event.params.streamId)
 
   const streamBeforeUpdate = getStream(event.params.streamId)
-  const rebase = getOrCreateRebase(streamBeforeUpdate.token)
+  const rebase = createRebase(streamBeforeUpdate.token) // force update rebase, needed because we read balance off the stream contract.
   const topUpShares = toBase(rebase, event.params.topUpAmount, false) // have to convert to share, bug in contract where it emits amount
   const shares = balanceOf.getSenderBalance().minus(streamBeforeUpdate.remainingShares).minus(topUpShares).abs()
   const withdrawnAmount = toElastic(rebase, shares, false)
-
-
-  const withdrawnShares = toBase(rebase, withdrawnAmount, true)
+  const withdrawnShares = toBase(rebase, withdrawnAmount, true)  
   const stream = updateStream(balanceOf.getSenderBalance(), withdrawnShares, event)
   createStreamTransaction(stream, event, withdrawnAmount)
 }
