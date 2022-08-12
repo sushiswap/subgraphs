@@ -24,14 +24,15 @@ export function onCancelStream(event: CancelStreamEvent): void {
 export function onUpdateStream(event: UpdateStreamEvent): void {
   const contract = FuroStream.bind(FURO_STREAM_ADDRESS)
   const balanceOf = contract.streamBalanceOf(event.params.streamId)
+  const remainingShares = balanceOf.getSenderBalance()
 
   const streamBeforeUpdate = getStream(event.params.streamId)
   const rebase = createRebase(streamBeforeUpdate.token) // force update rebase, needed because we read balance off the stream contract.
   const topUpShares = toBase(rebase, event.params.topUpAmount, false) // have to convert to share, bug in contract where it emits amount
-  const shares = balanceOf.getSenderBalance().minus(streamBeforeUpdate.remainingShares).minus(topUpShares).abs()
+  const shares = remainingShares.minus(streamBeforeUpdate.remainingShares).minus(topUpShares).abs() // calculate balance sent to bentobox 
   const withdrawnAmount = toElastic(rebase, shares, false)
   const withdrawnShares = toBase(rebase, withdrawnAmount, true)  
-  const stream = updateStream(balanceOf.getSenderBalance(), withdrawnShares, event)
+  const stream = updateStream(remainingShares, withdrawnShares, event)
   createStreamTransaction(stream, event, withdrawnAmount)
 }
 
