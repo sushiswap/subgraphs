@@ -70,7 +70,7 @@ export const PRESET_STABLE_POOL_ADDRESSES: string[] = '{{ trident.stablePoolAddr
 
 const STABLE_POOL_PERMUTATIONS = combinate(STABLE_TOKEN_ADDRESSES, NATIVE_ADDRESS, [false, true], [1, 5, 10, 30, 100])
 
-export const INIT_CODE_HASH = '{{ constantProductPoolFactory.initCodeHash }}'
+export const INIT_CODE_HASH = '{{ trident.constantProductPoolFactory.initCodeHash }}'
 
 export const STABLE_POOL_ADDRESSES: string[] = STABLE_POOL_PERMUTATIONS.map<string>((perm: CombinateReturn) => {
       const factory = Bytes.fromByteArray(Bytes.fromHexString('{{ constantProductPoolFactory.address }}'))
