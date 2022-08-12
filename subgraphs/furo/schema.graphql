@@ -41,6 +41,8 @@ type Stream @entity {
   transactionCount: BigInt!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
+  extendedAtBlock: BigInt!
+  extendedAtTimestamp: BigInt!
   modifiedAtBlock: BigInt!
   modifiedAtTimestamp: BigInt!
 }

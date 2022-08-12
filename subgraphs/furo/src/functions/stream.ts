@@ -40,6 +40,8 @@ export function createStream(event: CreateStreamEvent): Stream {
   stream.createdAtTimestamp = event.block.timestamp
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
+  stream.extendedAtBlock = BigInt.fromU32(0)
+  stream.extendedAtTimestamp = BigInt.fromU32(0)
   stream.save()
   increaseStreamCount()
 
@@ -56,6 +58,8 @@ export function updateStream(remainingShares: BigInt, withdrawnShares: BigInt, e
   stream.expiresAt = stream.expiresAt.plus(event.params.extendTime)
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
+  stream.extendedAtBlock = event.block.number
+  stream.extendedAtTimestamp = event.block.timestamp
   stream.save()
 
   return stream
@@ -66,6 +70,7 @@ export function cancelStream(event: CancelStreamEvent): Stream {
   let rebase = getOrCreateRebase(stream.token)
   stream.status = CANCELLED
   stream.withdrawnAmount = stream.withdrawnAmount.plus(toElastic(rebase, event.params.recipientBalance, true))
+  stream.remainingShares = BigInt.fromU32(0)
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
   stream.save()

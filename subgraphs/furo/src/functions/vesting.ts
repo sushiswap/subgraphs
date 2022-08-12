@@ -22,13 +22,7 @@ export function createVesting(event: CreateVestingEvent): Vesting {
   let owner = getOrCreateUser(event.params.owner, event)
   let token = getOrCreateToken(event.params.token.toHex(), event)
   let rebase = getOrCreateRebase(event.params.token.toHex())
-  let cliffAmount = event.params.cliffShares.gt(BigInt.fromU32(0))
-    ? toElastic(rebase, event.params.cliffShares, true)
-    : BigInt.fromU32(0)
-  let stepAmount = event.params.stepShares.gt(BigInt.fromU32(0))
-    ? toElastic(rebase, event.params.stepShares, true)
-    : BigInt.fromU32(0)
-  let initialShares = calculateTotalShares(event.params.steps, stepAmount, cliffAmount)
+  let initialShares = calculateTotalShares(event.params.steps, event.params.stepShares, event.params.cliffShares)
   vesting.recipient = recipient.id
   vesting.createdBy = owner.id
   vesting.token = token.id
@@ -58,9 +52,11 @@ export function createVesting(event: CreateVestingEvent): Vesting {
 }
 
 export function cancelVesting(event: CancelVestingEvent): Vesting {
+  let rebase = getOrCreateRebase(event.params.token.toHex())
   let vesting = getVesting(event.params.vestId)
   vesting.status = CANCELLED
-  vesting.withdrawnAmount = vesting.withdrawnAmount.plus(event.params.recipientAmount)
+  vesting.withdrawnAmount = toElastic(rebase, vesting.withdrawnAmount.plus(event.params.recipientAmount), true)
+  vesting.remainingShares = BigInt.fromU32(0)
   vesting.modifiedAtBlock = event.block.number
   vesting.modifiedAtTimestamp = event.block.timestamp
   vesting.cancelledAtTimestamp = event.block.timestamp
@@ -71,8 +67,10 @@ export function cancelVesting(event: CancelVestingEvent): Vesting {
 }
 
 export function withdrawFromVesting(event: WithdrawEvent): Vesting {
+  let rebase = getOrCreateRebase(event.params.token.toHex())
   let vesting = getVesting(event.params.vestId)
-  vesting.withdrawnAmount = vesting.withdrawnAmount.plus(event.params.amount)
+  vesting.withdrawnAmount = vesting.withdrawnAmount.plus(toElastic(rebase, event.params.amount, true))
+  vesting.remainingShares = vesting.remainingShares.minus(event.params.amount)
   vesting.modifiedAtBlock = event.block.number
   vesting.modifiedAtTimestamp = event.block.timestamp
   vesting.save()

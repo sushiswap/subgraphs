@@ -94,9 +94,9 @@ test('Cancel stream', () => {
   // And: withdrawnAmount is updated
   assert.fieldEquals('Stream', id, 'withdrawnAmount', cancelStreamEvent.params.recipientBalance.toString())
 
-  // And: the amount remains and the status is changed
+  // And: the remainingShares and the status is changed
   assert.fieldEquals('Stream', id, 'status', CANCELLED)
-  assert.fieldEquals('Stream', id, 'remainingShares', SHARES.toString())
+  assert.fieldEquals('Stream', id, 'remainingShares', '0')
 
   cleanup()
 })
