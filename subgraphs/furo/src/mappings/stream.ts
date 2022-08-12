@@ -29,9 +29,8 @@ export function onUpdateStream(event: UpdateStreamEvent): void {
   const streamBeforeUpdate = getStream(event.params.streamId)
   const rebase = createRebase(streamBeforeUpdate.token) // force update rebase, needed because we read balance off the stream contract.
   const topUpShares = toBase(rebase, event.params.topUpAmount, false) // have to convert to share, bug in contract where it emits amount
-  const shares = remainingShares.minus(streamBeforeUpdate.remainingShares).minus(topUpShares).abs() // calculate balance sent to bentobox 
-  const withdrawnAmount = toElastic(rebase, shares, false)
-  const withdrawnShares = toBase(rebase, withdrawnAmount, true)  
+  const withdrawnShares = remainingShares.minus(streamBeforeUpdate.remainingShares).minus(topUpShares).abs() // calculate balance sent to bentobox 
+  const withdrawnAmount = toElastic(rebase, withdrawnShares, true)
   const stream = updateStream(remainingShares, withdrawnShares, event)
   createStreamTransaction(stream, event, withdrawnAmount)
 }

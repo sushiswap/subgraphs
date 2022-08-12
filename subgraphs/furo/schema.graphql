@@ -29,8 +29,6 @@ type Stream @entity {
   extendedShares: BigInt!
   " Remaining shares "
   remainingShares: BigInt!
-  " Withdrawn shares "
-  withdrawnShares: BigInt!
   " Withdrawn amount "
   withdrawnAmount: BigInt!
   token: Token!

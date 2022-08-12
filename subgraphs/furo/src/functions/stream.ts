@@ -28,7 +28,6 @@ export function createStream(event: CreateStreamEvent): Stream {
   stream.extendedShares = BigInt.fromU32(0)
   stream.remainingShares = initialShares
   stream.withdrawnAmount = BigInt.fromU32(0)
-  stream.withdrawnShares = BigInt.fromU32(0)
   stream.token = token.id
   stream.status = ACTIVE
   stream.createdBy = sender.id
@@ -54,7 +53,6 @@ export function updateStream(remainingShares: BigInt, withdrawnShares: BigInt, e
   stream.extendedShares = stream.extendedShares.plus(topUpShares)
   stream.remainingShares = remainingShares
   stream.withdrawnAmount = stream.withdrawnAmount.plus(toElastic(rebase, withdrawnShares, true))
-  stream.withdrawnShares = stream.withdrawnShares.plus(withdrawnShares)
   stream.expiresAt = stream.expiresAt.plus(event.params.extendTime)
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
@@ -79,7 +77,6 @@ export function withdrawFromStream(event: WithdrawEvent): Stream {
   const stream = getStream(event.params.streamId)
   let rebase = getOrCreateRebase(stream.token)
   stream.withdrawnAmount = stream.withdrawnAmount.plus(toElastic(rebase, event.params.sharesToWithdraw, true))
-  stream.withdrawnShares = stream.withdrawnShares.plus(event.params.sharesToWithdraw)
   stream.remainingShares = stream.remainingShares.minus(event.params.sharesToWithdraw)
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
