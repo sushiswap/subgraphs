@@ -53,7 +53,7 @@ module.exports = {
       DAI_ADDRESS,
     ],
     minimumNativeLiquidity: '0.1',
-    minimum_usd_threshold_new_pairs: '3000',
+    minimum_usd_threshold_new_pairs: '1000',
   },
   furo: {
     stream: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
