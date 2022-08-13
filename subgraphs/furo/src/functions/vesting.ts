@@ -4,9 +4,10 @@ import {
   CreateVesting as CreateVestingEvent,
   Withdraw as WithdrawEvent,
   Transfer as TransferEvent,
+  FuroVesting,
 } from '../../generated/FuroVesting/FuroVesting'
 import { Vesting } from '../../generated/schema'
-import { ACTIVE, CANCELLED, ZERO_ADDRESS } from '../constants'
+import { ACTIVE, CANCELLED, FURO_VESTING_ADDRESS, ZERO_ADDRESS } from '../constants'
 import { increaseVestingCount } from './global'
 import { getOrCreateRebase, toElastic } from './rebase'
 import { getOrCreateToken } from './token'
@@ -17,14 +18,17 @@ export function getVesting(id: BigInt): Vesting {
 }
 
 export function createVesting(event: CreateVestingEvent): Vesting {
+  // The event.params.owner is the Router contract, but that's being transferred so we need to read it off the contract
+  const contract = FuroVesting.bind(FURO_VESTING_ADDRESS)
+  const owner = contract.vests(event.params.vestId).getOwner()
+  let createdBy = getOrCreateUser(owner, event)
   let vesting = new Vesting(event.params.vestId.toString())
   let recipient = getOrCreateUser(event.params.recipient, event)
-  let owner = getOrCreateUser(event.params.owner, event)
   let token = getOrCreateToken(event.params.token.toHex(), event)
   let rebase = getOrCreateRebase(event.params.token.toHex())
   let initialShares = calculateTotalShares(event.params.steps, event.params.stepShares, event.params.cliffShares)
   vesting.recipient = recipient.id
-  vesting.createdBy = owner.id
+  vesting.createdBy = createdBy.id
   vesting.token = token.id
   vesting.cliffDuration = event.params.cliffDuration
   vesting.stepDuration = event.params.stepDuration

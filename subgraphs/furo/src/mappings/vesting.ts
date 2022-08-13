@@ -6,6 +6,7 @@ import {
 } from '../../generated/FuroVesting/FuroVesting'
 import { cancelVesting, createVesting, createVestingTransaction, transferVesting, withdrawFromVesting } from '../functions'
 
+
 export function onCreateVesting(event: CreateVestingEvent): void {
   const vesting = createVesting(event)
   createVestingTransaction(vesting, event)

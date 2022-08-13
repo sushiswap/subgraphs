@@ -13,6 +13,7 @@ export const GLOBAL_ID = '1'
 export const BENTOBOX_ADDRESS = Address.fromString('{{ bentobox.address }}')
 export const ZERO_ADDRESS = Address.fromString('0x0000000000000000000000000000000000000000')
 export const FURO_STREAM_ADDRESS = Address.fromString('{{ furo.stream.address }}')
+export const FURO_VESTING_ADDRESS = Address.fromString('{{ furo.vesting.address }}')
 
 export const BIG_INT_ZERO = BigInt.fromI32(0)
 export const BIG_DECIMAL_ZERO = BigDecimal.fromString('0')

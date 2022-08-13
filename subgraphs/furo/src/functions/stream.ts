@@ -1,10 +1,10 @@
-import { BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
 import {
   CancelStream as CancelStreamEvent,
-  CreateStream as CreateStreamEvent, Transfer as TransferEvent, UpdateStream as UpdateStreamEvent, Withdraw as WithdrawEvent
+  CreateStream as CreateStreamEvent, FuroStream, Transfer as TransferEvent, UpdateStream as UpdateStreamEvent, Withdraw as WithdrawEvent
 } from '../../generated/FuroStream/FuroStream'
 import { Stream } from '../../generated/schema'
-import { ACTIVE, CANCELLED, ZERO_ADDRESS } from '../constants'
+import { ACTIVE, CANCELLED, FURO_STREAM_ADDRESS, ZERO_ADDRESS } from '../constants'
 import { increaseStreamCount } from './global'
 import { getOrCreateRebase, toBase, toElastic } from './rebase'
 import { getOrCreateToken } from './token'
@@ -15,10 +15,14 @@ export function getStream(id: BigInt): Stream {
 }
 
 export function createStream(event: CreateStreamEvent): Stream {
+  // The event.params.sender is the Router contract, but that's being transferred so we need to read it off the contract
+  const contract = FuroStream.bind(FURO_STREAM_ADDRESS)
+  const owner = contract.streams(event.params.streamId).getSender()
+  let sender = getOrCreateUser(owner, event)
+
   let rebase = getOrCreateRebase(event.params.token.toHex())
   let stream = new Stream(event.params.streamId.toString())
   let recipient = getOrCreateUser(event.params.recipient, event)
-  let sender = getOrCreateUser(event.params.sender, event)
   let token = getOrCreateToken(event.params.token.toHex(), event)
   let initialShares = event.params.amount
   let initialAmount = toElastic(rebase, event.params.amount, false)
