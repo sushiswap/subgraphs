@@ -52,6 +52,7 @@ export function createPair(event: DeployPool, type: string): Pair {
   pair.feesUSD = BIG_DECIMAL_ZERO
   pair.apr = BIG_DECIMAL_ZERO
   pair.aprUpdatedAtTimestamp = BIG_INT_ZERO
+  pair.txCount = BIG_INT_ZERO
 
   pair.save()
 

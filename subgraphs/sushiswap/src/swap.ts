@@ -1,12 +1,12 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { Pair, PairHourSnapshot, Swap } from '../generated/schema'
 import { Swap as SwapEvent } from '../generated/templates/Pair/Pair'
-import { BIG_DECIMAL_ZERO, BIG_INT_ZERO } from './constants'
+import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO } from './constants'
 import {
   convertTokenToDecimal, getAprSnapshot, getOrCreateToken,
   getOrCreateTransaction,
   getPair,
-  increaseTransactionCount
+  increaseFactoryTransactionCount
 } from './functions'
 
 
@@ -40,7 +40,9 @@ export function handleSwap(event: SwapEvent, volumeUSD: BigDecimal): Swap {
 
   transaction.save()
 
-  increaseTransactionCount()
+  pair.txCount = pair.txCount.plus(BIG_INT_ONE)
+  pair.save()
+  increaseFactoryTransactionCount()
   return swap
 }
 

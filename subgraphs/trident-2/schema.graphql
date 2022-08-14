@@ -167,6 +167,8 @@ type Pair @entity {
   apr: BigDecimal!
   " When APR was last updated "
   aprUpdatedAtTimestamp: BigInt!
+  " Transaction count "
+  txCount: BigInt!
 
   " Liquidity Positions "
   liquidityPositions: [LiquidityPosition!]! @derivedFrom(field: "pair")

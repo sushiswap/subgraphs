@@ -1,7 +1,7 @@
 import { BigDecimal } from '@graphprotocol/graph-ts'
 import { Burn } from '../generated/schema'
 import { Burn as BurnEvent } from '../generated/templates/ConstantProductPool/ConstantProductPool'
-import { FactoryType } from './constants'
+import { BIG_INT_ONE, FactoryType } from './constants'
 import {
   convertTokenToDecimal,
   getOrCreateBundle,
@@ -10,7 +10,7 @@ import {
   getOrCreateTransaction,
   getPair,
   getTokenPrice,
-  increaseTransactionCount
+  increaseFactoryTransactionCount
 } from './functions'
 
 export function handleBurn(event: BurnEvent): Burn {
@@ -36,7 +36,9 @@ export function handleBurn(event: BurnEvent): Burn {
   burn.logIndex = event.logIndex
   burn.amountUSD = amountTotalUSD as BigDecimal
   burn.save()
+  pair.txCount = pair.txCount.plus(BIG_INT_ONE)
+  pair.save()
 
-  increaseTransactionCount(FactoryType.CONSTANT_PRODUCT_POOL)
+  increaseFactoryTransactionCount(FactoryType.CONSTANT_PRODUCT_POOL)
   return burn
 }

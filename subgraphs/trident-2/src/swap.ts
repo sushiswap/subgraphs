@@ -1,18 +1,18 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { Pair, PairHourSnapshot, Swap } from '../generated/schema'
 import { Swap as SwapEvent } from '../generated/templates/ConstantProductPool/ConstantProductPool'
-import { BIG_DECIMAL_ZERO, FactoryType } from './constants'
+import { BIG_DECIMAL_ZERO, BIG_INT_ONE, FactoryType } from './constants'
 import {
   convertTokenToDecimal, getAprSnapshot, getOrCreateToken,
   getOrCreateTransaction,
   getPair,
-  increaseTransactionCount
+  increaseFactoryTransactionCount
 } from './functions'
 
 
 export function handleSwap(event: SwapEvent, volumeUSD: BigDecimal): Swap {
   const transaction = getOrCreateTransaction(event)
-
+  const pair = getPair(event.address.toHex())
   const swaps = transaction.swaps
 
   const tokenIn = getOrCreateToken(event.params.tokenIn.toHex())
@@ -22,7 +22,7 @@ export function handleSwap(event: SwapEvent, volumeUSD: BigDecimal): Swap {
   const amount1Total = convertTokenToDecimal(event.params.amountOut, tokenOut.decimals)
 
   const swap = new Swap(event.transaction.hash.toHex().concat('-').concat(BigInt.fromI32(swaps.length).toString()))
-  swap.pair = event.address.toHex()
+  swap.pair = pair.id
   swap.timestamp = transaction.createdAtTimestamp
   swap.transaction = transaction.id
   swap.sender = event.transaction.from.toHex()
@@ -39,7 +39,9 @@ export function handleSwap(event: SwapEvent, volumeUSD: BigDecimal): Swap {
 
   transaction.save()
 
-  increaseTransactionCount(FactoryType.CONSTANT_PRODUCT_POOL)
+  pair.txCount = pair.txCount.plus(BIG_INT_ONE)
+  pair.save()
+  increaseFactoryTransactionCount(FactoryType.CONSTANT_PRODUCT_POOL)
   return swap
 }
 

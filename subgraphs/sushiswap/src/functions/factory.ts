@@ -24,7 +24,7 @@ export function getOrCreateFactory(id: Address = FACTORY_ADDRESS): Factory {
   return factory as Factory
 }
 
-export function increaseTransactionCount(): void {
+export function increaseFactoryTransactionCount(): void {
   const factory = getOrCreateFactory()
   factory.transactionCount = factory.transactionCount.plus(BIG_INT_ONE)
   factory.save()

@@ -28,7 +28,7 @@ export function getOrCreateFactory(type: string): Factory {
   return factory as Factory
 }
 
-export function increaseTransactionCount(type: string): void {
+export function increaseFactoryTransactionCount(type: string): void {
   const factory = getOrCreateFactory(type)
   factory.transactionCount = factory.transactionCount.plus(BIG_INT_ONE)
   factory.save()
