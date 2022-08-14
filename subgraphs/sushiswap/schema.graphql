@@ -1,3 +1,6 @@
+enum PairType {
+  CONSTANT_PRODUCT_POOL
+}
 
 type Factory @entity {
   " Contract address "
@@ -105,6 +108,8 @@ type TokenPair @entity(immutable: true) {
 type Pair @entity {
   " Pair address (contract address) "
   id: ID!
+  " Pair type "
+  type: PairType!
   " Swap fee "
   swapFee: BigInt!
   " TWAP - time weighted average price "

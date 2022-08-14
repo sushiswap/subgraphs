@@ -1,3 +1,11 @@
+enum FactoryType {
+  CONSTANT_PRODUCT_POOL
+}
+
+enum PairType {
+  CONSTANT_PRODUCT_POOL
+}
+
 type Factory @entity {
   " Contract address "
   id: ID!
@@ -26,11 +34,6 @@ type Factory @entity {
   " User count "
   userCount: BigInt!
 }
-
-enum FactoryType {
-  CONSTANT_PRODUCT_POOL
-}
-
 
 " Bundle - should only ever be one created"
 type Bundle @entity {
@@ -113,6 +116,8 @@ type TokenPair @entity(immutable: true) {
 type Pair @entity {
   " Pair address (contract address) "
   id: ID!
+  " Pair type "
+  type: PairType!
   " Swap fee "
   swapFee: BigInt!
   " TWAP - time weighted average price "

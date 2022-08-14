@@ -1,7 +1,7 @@
 import { PairCreated } from '../../generated/Factory/Factory'
 import { Pair } from '../../generated/schema'
 import { Pair as PairTemplate } from '../../generated/templates'
-import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, LEGACY, SWAP_FEE, TWAP_ENABLED } from '../constants'
+import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, LEGACY, PairType, SWAP_FEE, TWAP_ENABLED } from '../constants'
 import { getOrCreateFactory } from './factory'
 import { getOrCreateToken } from './token'
 import { createTokenPair } from './token-pair'
@@ -18,6 +18,7 @@ export function createPair(event: PairCreated): Pair {
   createTokenPair(token1.id, id)
 
   pair.name = token0.symbol.concat('-').concat(token1.symbol)
+  pair.type = PairType.CONSTANT_PRODUCT_POOL
   pair.swapFee = SWAP_FEE
   pair.twapEnabled = TWAP_ENABLED
   pair.token0 = token0.id

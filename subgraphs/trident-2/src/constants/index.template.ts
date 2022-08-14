@@ -96,5 +96,9 @@ export namespace FactoryType {
   export const CONSTANT_PRODUCT_POOL = "CONSTANT_PRODUCT_POOL";
 }
 
+export namespace PairType {
+  export const CONSTANT_PRODUCT_POOL = "CONSTANT_PRODUCT_POOL";
+}
+
 export * from './id'
 export * from './time'

@@ -1,4 +1,4 @@
-import { BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { DeployPool } from '../../generated/MasterDeployer/MasterDeployer'
 import { Pair } from '../../generated/schema'
 import { ConstantProductPool } from '../../generated/templates'
@@ -6,7 +6,7 @@ import { BIG_DECIMAL_ZERO, BIG_INT_ZERO, TRIDENT } from '../constants'
 import { getOrCreateToken } from './token'
 import { createTokenPair } from './token-pair'
 
-export function createPair(event: DeployPool): Pair {
+export function createPair(event: DeployPool, type: string): Pair {
   const id = event.params.pool.toHex()
 
   const decoded = ethereum.decode('(address,address,uint256,bool)', event.params.deployData)!.toTuple()
@@ -29,6 +29,7 @@ export function createPair(event: DeployPool): Pair {
   pair.name = token0.symbol.concat('-').concat(token1.symbol)
   pair.token0 = token0.id
   pair.token1 = token1.id
+  pair.type = type
   pair.source = TRIDENT
   pair.swapFee = swapFee
   pair.twapEnabled = twapEnabled
@@ -63,3 +64,4 @@ export function createPair(event: DeployPool): Pair {
 export function getPair(address: string): Pair {
   return Pair.load(address) as Pair
 }
+
