@@ -1,12 +1,12 @@
 import { BIG_INT_ONE } from '../constants'
-import { TokenPair } from '../../generated/schema'
+import { _TokenPair } from '../../generated/schema'
 import { getOrCreateToken } from './token'
 
-export function createTokenPair(tokenId: string, pairId: string): TokenPair {
+export function createTokenPair(tokenId: string, pairId: string): _TokenPair {
 
   let token = getOrCreateToken(tokenId)
   const id = tokenId.concat(":").concat(token.pairCount.toString())
-  let tokenPair = new TokenPair(id)
+  let tokenPair = new _TokenPair(id)
   tokenPair.token = id
   tokenPair.pair = pairId
   tokenPair.token = tokenId
@@ -14,5 +14,5 @@ export function createTokenPair(tokenId: string, pairId: string): TokenPair {
   token.pairCount = token.pairCount.plus(BIG_INT_ONE)
   token.save()
 
-  return tokenPair as TokenPair
+  return tokenPair as _TokenPair
 }

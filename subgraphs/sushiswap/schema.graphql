@@ -79,7 +79,7 @@ type Token @entity {
   pairCount: BigInt!
 
   " All pairs where this token is involved in "
-  pairs: [TokenPair!]! @derivedFrom(field: "token")
+  pairs: [_TokenPair!]! @derivedFrom(field: "token")
 }
 
 type TokenPrice @entity {
@@ -97,7 +97,7 @@ type TokenPrice @entity {
   pricedOffPair: Pair
 }
 
-type TokenPair @entity(immutable: true) {
+type _TokenPair @entity(immutable: true) {
   " id is created by combining token.id and count, e.g. 0x00x00:1 "
   id: ID!
   " Pair "

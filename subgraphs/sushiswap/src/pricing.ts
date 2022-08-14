@@ -1,5 +1,5 @@
 import { BigDecimal } from '@graphprotocol/graph-ts'
-import { Pair, TokenPair, TokenPrice } from '../generated/schema'
+import { Pair, TokenPrice, _TokenPair } from '../generated/schema'
 import { Factory as FactoryContract } from '../generated/templates/Pair/Factory'
 import {
   BIG_DECIMAL_ONE,
@@ -86,7 +86,7 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal):
 
   for (let i = 0; i < token.pairCount.toI32(); ++i) {
     const tokenPairRelationshipId = token.id.concat(':').concat(i.toString())
-    const tokenPairRelationship = TokenPair.load(tokenPairRelationshipId)
+    const tokenPairRelationship = _TokenPair.load(tokenPairRelationshipId)
 
     if (tokenPairRelationship === null) {
       continue // Not created yet
