@@ -15,16 +15,14 @@ export function handleSwap(event: SwapEvent, volumeUSD: BigDecimal): Swap {
 
   const swaps = transaction.swaps
 
-  const pair = getPair(event.address.toHex())
+  const tokenIn = getOrCreateToken(event.params.tokenIn.toHex())
+  const tokenOut = getOrCreateToken(event.params.tokenOut.toHex())
 
-  const token0 = getOrCreateToken(pair.token0)
-  const token1 = getOrCreateToken(pair.token1)
-
-  const amount0Total = convertTokenToDecimal(event.params.amountIn, token0.decimals)
-  const amount1Total = convertTokenToDecimal(event.params.amountOut, token1.decimals)
+  const amount0Total = convertTokenToDecimal(event.params.amountIn, tokenIn.decimals)
+  const amount1Total = convertTokenToDecimal(event.params.amountOut, tokenOut.decimals)
 
   const swap = new Swap(event.transaction.hash.toHex().concat('-').concat(BigInt.fromI32(swaps.length).toString()))
-  swap.pair = pair.id
+  swap.pair = event.address.toHex()
   swap.timestamp = transaction.createdAtTimestamp
   swap.transaction = transaction.id
   swap.sender = event.transaction.from.toHex()
