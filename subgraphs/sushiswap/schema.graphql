@@ -329,6 +329,7 @@ type PairHourSnapshot @entity {
   liquidityUSD: BigDecimal!
   feesNative: BigDecimal!
   feesUSD: BigDecimal!
+  apr: BigDecimal!
   transactionCount: BigInt!
 }
 
@@ -345,6 +346,7 @@ type PairDaySnapshot @entity {
   liquidityUSD: BigDecimal!
   feesNative: BigDecimal!
   feesUSD: BigDecimal!
+  apr: BigDecimal!
   transactionCount: BigInt!
 }
 

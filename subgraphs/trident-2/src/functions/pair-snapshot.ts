@@ -30,6 +30,7 @@ function updatePairHourSnapshot(timestamp: BigInt, pair: Pair): void {
   snapshot.untrackedVolumeUSD = pair.untrackedVolumeUSD
   snapshot.feesNative = pair.feesNative
   snapshot.feesUSD = pair.feesUSD
+  snapshot.apr = pair.apr
   snapshot.transactionCount = snapshot.transactionCount.plus(BIG_INT_ONE)
   snapshot.save()
 }
@@ -52,6 +53,7 @@ function updatePairDaySnapshot(timestamp: BigInt, pair: Pair): void {
   snapshot.untrackedVolumeUSD = pair.untrackedVolumeUSD
   snapshot.feesNative = pair.feesNative
   snapshot.feesUSD = pair.feesUSD
+  snapshot.apr = pair.apr
   snapshot.transactionCount = snapshot.transactionCount.plus(BIG_INT_ONE)
   snapshot.save()
 }
