@@ -37,6 +37,8 @@ export function getOrCreateToken(id: string): Token {
     token.volumeNative = BIG_DECIMAL_ZERO
     token.volumeUSD = BIG_DECIMAL_ZERO
     token.untrackedVolumeUSD = BIG_DECIMAL_ZERO
+    token.feesNative = BIG_DECIMAL_ZERO
+    token.feesUSD = BIG_DECIMAL_ZERO
     token.txCount = BIG_INT_ZERO
     token.pairCount = BIG_INT_ZERO
 
