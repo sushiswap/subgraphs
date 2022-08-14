@@ -68,7 +68,8 @@ export function updateApr(event: SwapEvent): void {
 /**
  * 
  * Formula source: https://github.com/sushiswap/sushiswap-interface/blob/437586a4e659f5eddeedd167b3cfe89e0c5f9c3c/src/features/trident/pools/usePoolsTableData.tsx#L84-L98
- * @param pair 
+ * The only extra addition is the div by 100 to convert from percents to decimals
+* @param pair 
  * @param snapshot 
  */
 const calculateApr = (pair: Pair, snapshot: PairHourSnapshot): BigDecimal => {
@@ -77,5 +78,6 @@ const calculateApr = (pair: Pair, snapshot: PairHourSnapshot): BigDecimal => {
     .times(BigDecimal.fromString('365')) // One year
     .times(BigDecimal.fromString('100'))
     .div(pair.liquidityUSD)
+    .div(BigDecimal.fromString('100'))
 }
 
