@@ -53,6 +53,10 @@ export function handleMint(event: MintEvent): Mint | null {
   }
   pair.txCount = pair.txCount.plus(BIG_INT_ONE)
   pair.save()
+  token0.txCount = token0.txCount.plus(BIG_INT_ONE)
+  token0.save()
+  token1.txCount = token1.txCount.plus(BIG_INT_ONE)
+  token1.save()
 
   increaseFactoryTransactionCount(FactoryType.CONSTANT_PRODUCT_POOL)
   return mint

@@ -42,6 +42,10 @@ export function handleSwap(event: SwapEvent, volumeUSD: BigDecimal): Swap {
 
   pair.txCount = pair.txCount.plus(BIG_INT_ONE)
   pair.save()
+  tokenIn.txCount = tokenIn.txCount.plus(BIG_INT_ONE)
+  tokenIn.save()
+  tokenOut.txCount = tokenOut.txCount.plus(BIG_INT_ONE)
+  tokenOut.save()
   increaseFactoryTransactionCount()
   return swap
 }

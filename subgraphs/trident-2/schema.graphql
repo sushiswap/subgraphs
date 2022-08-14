@@ -71,13 +71,21 @@ type Token @entity {
   liquidityUSD: BigDecimal!
   " Volume "
   volume: BigDecimal!
+  " Volume in native "
+  volumeNative: BigDecimal!
   " Volume in USD "
   volumeUSD: BigDecimal!
   " Untracked Volume USD "
   untrackedVolumeUSD: BigDecimal!
+  " Fee in USD "
+  feesNative: BigDecimal!
+  " Volume in USD "
+  feesUSD: BigDecimal!
+  " Count of all the transactions "
+  txCount: BigInt!
   " Count of all the pairs "
   pairCount: BigInt!
-  
+
   " All pairs where this token is involved in "
   pairs: [TokenPair!]! @derivedFrom(field: "token")
 }

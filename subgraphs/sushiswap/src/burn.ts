@@ -38,6 +38,10 @@ export function handleBurn(event: BurnEvent): Burn {
   burn.save()
   pair.txCount = pair.txCount.plus(BIG_INT_ONE)
   pair.save()
+  token0.txCount = token0.txCount.plus(BIG_INT_ONE)
+  token0.save()
+  token1.txCount = token1.txCount.plus(BIG_INT_ONE)
+  token1.save()
 
   increaseFactoryTransactionCount()
   return burn

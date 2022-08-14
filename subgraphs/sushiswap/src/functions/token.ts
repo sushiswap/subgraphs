@@ -30,10 +30,12 @@ export function getOrCreateToken(id: string): Token {
     token.liquidity = BIG_INT_ZERO
     token.liquidityNative = BIG_DECIMAL_ZERO
     token.liquidityUSD = BIG_DECIMAL_ZERO
-    token.pairCount = BIG_INT_ZERO
+    token.volume = BIG_DECIMAL_ZERO
+    token.volumeNative = BIG_DECIMAL_ZERO
     token.volumeUSD = BIG_DECIMAL_ZERO
     token.untrackedVolumeUSD = BIG_DECIMAL_ZERO
-    token.volume = BIG_DECIMAL_ZERO
+    token.txCount = BIG_INT_ZERO
+    token.pairCount = BIG_INT_ZERO
 
     token.save()
     const factory = getOrCreateFactory()

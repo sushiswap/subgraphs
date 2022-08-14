@@ -137,20 +137,25 @@ export function updateVolume(event: SwapEvent): BigDecimal {
     .plus(tokenOutPrice.derivedNative.times(amountIn))
     .div(BigDecimal.fromString('2'))
   const untrackedVolumeUSD = volumeNative.times(bundle.nativePrice)
+  const feesNative = volumeNative.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
+  const feesUSD = trackedVolumeUSD.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
 
   tokenIn.volume = tokenIn.volume.plus(amountIn)
+  tokenIn.volumeNative = tokenIn.volumeNative.plus(volumeNative)
   tokenIn.volumeUSD = tokenIn.volumeUSD.plus(trackedVolumeUSD)
   tokenIn.untrackedVolumeUSD = tokenIn.untrackedVolumeUSD.plus(untrackedVolumeUSD)
+  tokenIn.feesNative = tokenIn.feesNative.plus(feesNative)
+  tokenIn.feesUSD = tokenIn.feesUSD.plus(feesUSD)
   tokenIn.save()
 
   tokenOut.volume = tokenOut.volume.plus(amountOut)
+  tokenOut.volumeNative = tokenOut.volumeNative.plus(volumeNative)
   tokenOut.volumeUSD = tokenOut.volumeUSD.plus(trackedVolumeUSD)
   tokenOut.untrackedVolumeUSD = tokenOut.untrackedVolumeUSD.plus(untrackedVolumeUSD)
-
+  tokenOut.feesNative = tokenOut.feesNative.plus(feesNative)
+  tokenOut.feesUSD = tokenOut.feesUSD.plus(feesUSD)
   tokenOut.save()
 
-  const feesNative = volumeNative.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
-  const feesUSD = trackedVolumeUSD.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
 
   pair.volumeNative = pair.volumeNative.plus(volumeNative)
   pair.volumeUSD = pair.volumeUSD.plus(trackedVolumeUSD)
