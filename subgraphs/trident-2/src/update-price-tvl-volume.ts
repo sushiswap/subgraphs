@@ -75,6 +75,7 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   } else {
     pair.token1Price = BIG_DECIMAL_ZERO
   }
+  pair.save()
 
   bundle.nativePrice = getNativePriceInUSD()
   bundle.save()

@@ -64,10 +64,11 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   } else {
     pair.token1Price = BIG_DECIMAL_ZERO
   }
+  pair.save()
 
   bundle.nativePrice = getNativePriceInUSD()
   bundle.save()
-
+  
   const token0Price = updateTokenPrice(token0.id, bundle.nativePrice)
   const token1Price = updateTokenPrice(token1.id, bundle.nativePrice)
 
