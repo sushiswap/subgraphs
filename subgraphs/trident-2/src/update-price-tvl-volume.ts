@@ -19,7 +19,6 @@ import {
   getOrCreateToken,
   getPair,
   getRebase,
-  getTokenKpi,
   getTokenPrice,
   toElastic
 } from './functions'
@@ -31,26 +30,24 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   const pair = getPair(pairId)
   const token0 = getOrCreateToken(pair.token0)
   const token1 = getOrCreateToken(pair.token1)
-  const token0Kpi = getTokenKpi(pair.token0)
-  const token1Kpi = getTokenKpi(pair.token1)
   const currentToken0Price = getTokenPrice(pair.token0)
   const currentToken1Price = getTokenPrice(pair.token1)
   const factory = getOrCreateFactory(FactoryType.CONSTANT_PRODUCT_POOL)
   const bundle = getOrCreateBundle()
 
   // Reset token liquidity, will be updated again later when price is updated
-  token0Kpi.liquidity = token0Kpi.liquidity.minus(pair.reserve0)
-  token1Kpi.liquidity = token1Kpi.liquidity.minus(pair.reserve1)
+  token0.liquidity = token0.liquidity.minus(pair.reserve0)
+  token1.liquidity = token1.liquidity.minus(pair.reserve1)
   const token0LiquidityNative = convertTokenToDecimal(pair.reserve0, token0.decimals).times(
     currentToken0Price.derivedNative
   )
   const token1LiquidityNative = convertTokenToDecimal(pair.reserve1, token1.decimals).times(
     currentToken1Price.derivedNative
   )
-  token0Kpi.liquidityNative = token0Kpi.liquidityNative.minus(token0LiquidityNative)
-  token1Kpi.liquidityNative = token1Kpi.liquidityNative.minus(token1LiquidityNative)
-  token0Kpi.liquidityUSD = token0Kpi.liquidityUSD.minus(token0LiquidityNative.times(bundle.nativePrice))
-  token1Kpi.liquidityUSD = token1Kpi.liquidityUSD.minus(token1LiquidityNative.times(bundle.nativePrice))
+  token0.liquidityNative = token0.liquidityNative.minus(token0LiquidityNative)
+  token1.liquidityNative = token1.liquidityNative.minus(token1LiquidityNative)
+  token0.liquidityUSD = token0.liquidityUSD.minus(token0LiquidityNative.times(bundle.nativePrice))
+  token1.liquidityUSD = token1.liquidityUSD.minus(token1LiquidityNative.times(bundle.nativePrice))
   factory.liquidityNative = factory.liquidityNative.minus(pair.liquidityNative)
 
   const rebase0 = getRebase(token0.id)
@@ -95,19 +92,19 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   }
 
   // Set token liquidity with updated prices
-  token0Kpi.liquidity = token0Kpi.liquidity.plus(pair.reserve0)
-  token0Kpi.liquidityNative = convertTokenToDecimal(token0Kpi.liquidity, token0.decimals).times(
+  token0.liquidity = token0.liquidity.plus(pair.reserve0)
+  token0.liquidityNative = convertTokenToDecimal(token0.liquidity, token0.decimals).times(
     token0Price.derivedNative
   )
-  token0Kpi.liquidityUSD = token0Kpi.liquidityNative.times(bundle.nativePrice)
+  token0.liquidityUSD = token0.liquidityNative.times(bundle.nativePrice)
 
-  token1Kpi.liquidity = token1Kpi.liquidity.plus(pair.reserve1)
-  token1Kpi.liquidityNative = convertTokenToDecimal(token1Kpi.liquidity, token1.decimals).times(
+  token1.liquidity = token1.liquidity.plus(pair.reserve1)
+  token1.liquidityNative = convertTokenToDecimal(token1.liquidity, token1.decimals).times(
     token1Price.derivedNative
   )
-  token1Kpi.liquidityUSD = token1Kpi.liquidityNative.times(bundle.nativePrice)
-  token0Kpi.save()
-  token1Kpi.save()
+  token1.liquidityUSD = token1.liquidityNative.times(bundle.nativePrice)
+  token0.save()
+  token1.save()
 
   pair.liquidityNative = convertTokenToDecimal(pair.reserve0, token0.decimals)
     .times(token0Price.derivedNative)
@@ -128,8 +125,6 @@ export function updateVolume(event: SwapEvent): BigDecimal {
   const tokenOut = getOrCreateToken(event.params.tokenOut.toHex())
   const tokenInPrice = getTokenPrice(tokenIn.id)
   const tokenOutPrice = getTokenPrice(tokenOut.id)
-  const tokenInKpi = getTokenKpi(tokenIn.id)
-  const tokenOutKpi = getTokenKpi(tokenOut.id)
 
   const amountIn = convertTokenToDecimal(event.params.amountIn, tokenIn.decimals)
   const amountOut = convertTokenToDecimal(event.params.amountOut, tokenOut.decimals)
@@ -143,16 +138,16 @@ export function updateVolume(event: SwapEvent): BigDecimal {
     .div(BigDecimal.fromString('2'))
   const untrackedVolumeUSD = volumeNative.times(bundle.nativePrice)
 
-  tokenInKpi.volume = tokenInKpi.volume.plus(amountIn)
-  tokenInKpi.volumeUSD = tokenInKpi.volumeUSD.plus(trackedVolumeUSD)
-  tokenInKpi.untrackedVolumeUSD = tokenInKpi.untrackedVolumeUSD.plus(untrackedVolumeUSD)
-  tokenInKpi.save()
+  tokenIn.volume = tokenIn.volume.plus(amountIn)
+  tokenIn.volumeUSD = tokenIn.volumeUSD.plus(trackedVolumeUSD)
+  tokenIn.untrackedVolumeUSD = tokenIn.untrackedVolumeUSD.plus(untrackedVolumeUSD)
+  tokenIn.save()
 
-  tokenOutKpi.volume = tokenOutKpi.volume.plus(amountOut)
-  tokenOutKpi.volumeUSD = tokenOutKpi.volumeUSD.plus(trackedVolumeUSD)
-  tokenOutKpi.untrackedVolumeUSD = tokenOutKpi.untrackedVolumeUSD.plus(untrackedVolumeUSD)
+  tokenOut.volume = tokenOut.volume.plus(amountOut)
+  tokenOut.volumeUSD = tokenOut.volumeUSD.plus(trackedVolumeUSD)
+  tokenOut.untrackedVolumeUSD = tokenOut.untrackedVolumeUSD.plus(untrackedVolumeUSD)
 
-  tokenOutKpi.save()
+  tokenOut.save()
 
   const feesNative = volumeNative.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
   const feesUSD = trackedVolumeUSD.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))

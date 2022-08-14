@@ -5,7 +5,6 @@ import { getOrCreateBundle } from './bundle'
 import { convertTokenToDecimal } from './number-converter'
 import { getPair } from './pair'
 import { getOrCreateToken } from './token'
-import { getTokenKpi } from './token-kpi'
 import { getTokenPrice } from './token-price'
 
 export function updateTokenDaySnapshots(timestamp: BigInt, pairAddress: Address): void {
@@ -19,7 +18,6 @@ export function updateTokenDaySnapshots(timestamp: BigInt, pairAddress: Address)
 function updateTokenDaySnapshot(timestamp: BigInt, tokenId: string, nativePrice: BigDecimal): void {
   let token = getOrCreateToken(tokenId)
   let tokenPrice = getTokenPrice(tokenId)
-  let tokenKpi = getTokenKpi(tokenId)
   let id = generateTokenDaySnapshotId(tokenId, timestamp)
   let snapshot = TokenDaySnapshot.load(id)
 
@@ -31,13 +29,13 @@ function updateTokenDaySnapshot(timestamp: BigInt, tokenId: string, nativePrice:
     snapshot.liquidityNative = BIG_DECIMAL_ZERO
   }
 
-  snapshot.liquidity = convertTokenToDecimal(tokenKpi.liquidity, token.decimals)
-  snapshot.liquidityNative = tokenKpi.liquidityNative
-  snapshot.liquidityUSD = tokenKpi.liquidityUSD
-  snapshot.volume = tokenKpi.volume
-  snapshot.volumeUSD = tokenKpi.volumeUSD
+  snapshot.liquidity = convertTokenToDecimal(token.liquidity, token.decimals)
+  snapshot.liquidityNative = token.liquidityNative
+  snapshot.liquidityUSD = token.liquidityUSD
+  snapshot.volume = token.volume
+  snapshot.volumeUSD = token.volumeUSD
   snapshot.priceNative = tokenPrice.derivedNative
-  snapshot.untrackedVolumeUSD = tokenKpi.untrackedVolumeUSD
+  snapshot.untrackedVolumeUSD = token.untrackedVolumeUSD
   snapshot.priceUSD = tokenPrice.derivedNative.times(nativePrice)
   snapshot.transactionCount = snapshot.transactionCount.plus(BIG_INT_ONE)
   snapshot.save()

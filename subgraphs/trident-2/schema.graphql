@@ -43,13 +43,11 @@ type Bundle @entity {
   nativePrice: BigDecimal!
 }
 
-type Token @entity(immutable: true) {
+type Token @entity {
   " Token address "
   id: ID!
   " Token Price "
   price: TokenPrice!
-  " Token Kpi "
-  kpi: TokenKpi!
   " Rebase "
   rebase: Rebase!
   " Symbol of the token "
@@ -64,6 +62,22 @@ type Token @entity(immutable: true) {
   decimals: BigInt!
   " if decimals were successfully retrieved "
   decimalsSuccess: Boolean!
+
+  " Liquidity "
+  liquidity: BigInt!
+  " Liquidity in native "
+  liquidityNative: BigDecimal!
+  " Liquidity in USD "
+  liquidityUSD: BigDecimal!
+  " Volume "
+  volume: BigDecimal!
+  " Volume in USD "
+  volumeUSD: BigDecimal!
+  " Untracked Volume USD "
+  untrackedVolumeUSD: BigDecimal!
+  " Count of all the pairs "
+  pairCount: BigInt!
+  
   " All pairs where this token is involved in "
   pairs: [TokenPair!]! @derivedFrom(field: "token")
 }
@@ -83,26 +97,6 @@ type TokenPrice @entity {
   pricedOffPair: Pair
 }
 
-type TokenKpi @entity {
-  " same as token entity id, address of token "
-  id: ID!
-  " Token "
-  token: Token!
-  " Liquidity "
-  liquidity: BigInt!
-  " Liquidity in native "
-  liquidityNative: BigDecimal!
-  " Liquidity in USD "
-  liquidityUSD: BigDecimal!
-  " Volume "
-  volume: BigDecimal!
-  " Volume in USD "
-  volumeUSD: BigDecimal!
-  " Untracked Volume USD "
-  untrackedVolumeUSD: BigDecimal!
-  " Count of all the pairs "
-  pairCount: BigInt!
-}
 
 type TokenPair @entity(immutable: true) {
   " id is created by combining token.id and count, e.g. 0x00x00:1 "

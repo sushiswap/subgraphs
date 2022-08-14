@@ -3,9 +3,8 @@ import { ERC20 } from '../../generated/Factory/ERC20'
 import { NameBytes32 } from '../../generated/Factory/NameBytes32'
 import { SymbolBytes32 } from '../../generated/Factory/SymbolBytes32'
 import { Token } from '../../generated/schema'
-import { BIG_INT_ONE } from '../constants'
+import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO } from '../constants'
 import { getOrCreateFactory } from './factory'
-import { createTokenKpi } from './token-kpi'
 import { createTokenPrice } from './token-price'
 
 export function getOrCreateToken(id: string): Token {
@@ -14,7 +13,6 @@ export function getOrCreateToken(id: string): Token {
   if (token === null) {
     token = new Token(id)
     createTokenPrice(id)
-    createTokenKpi(id)
 
     const contract = ERC20.bind(Address.fromString(id))
 
@@ -22,13 +20,20 @@ export function getOrCreateToken(id: string): Token {
     const name = getTokenName(contract)
     const symbol = getTokenSymbol(contract)
     token.price = id
-    token.kpi = id
     token.name = name.value
     token.nameSuccess = name.success
     token.symbol = symbol.value
     token.symbolSuccess = symbol.success
     token.decimals = decimals.value
     token.decimalsSuccess = decimals.success
+
+    token.liquidity = BIG_INT_ZERO
+    token.liquidityNative = BIG_DECIMAL_ZERO
+    token.liquidityUSD = BIG_DECIMAL_ZERO
+    token.pairCount = BIG_INT_ZERO
+    token.volumeUSD = BIG_DECIMAL_ZERO
+    token.untrackedVolumeUSD = BIG_DECIMAL_ZERO
+    token.volume = BIG_DECIMAL_ZERO
 
     token.save()
     const factory = getOrCreateFactory()

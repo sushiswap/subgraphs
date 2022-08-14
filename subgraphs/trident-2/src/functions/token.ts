@@ -1,10 +1,10 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { BIG_DECIMAL_ZERO, BIG_INT_ZERO } from '../constants'
 import { ERC20 } from '../../generated/MasterDeployer/ERC20'
 import { NameBytes32 } from '../../generated/MasterDeployer/NameBytes32'
 import { SymbolBytes32 } from '../../generated/MasterDeployer/SymbolBytes32'
 import { Token } from '../../generated/schema'
 import { getOrCreateRebase } from './rebase'
-import { createTokenKpi } from './token-kpi'
 import { createTokenPrice } from './token-price'
 
 export function getOrCreateToken(id: string): Token {
@@ -13,7 +13,6 @@ export function getOrCreateToken(id: string): Token {
   if (token === null) {
     token = new Token(id)
     createTokenPrice(id)
-    createTokenKpi(id)
 
     const contract = ERC20.bind(Address.fromString(id))
 
@@ -27,10 +26,18 @@ export function getOrCreateToken(id: string): Token {
     token.symbolSuccess = symbol.success
     token.decimals = decimals.value
     token.decimalsSuccess = decimals.success
-    token.kpi = id
     token.price = id
     const rebase = getOrCreateRebase(id)
     token.rebase = rebase.id
+
+    token.liquidity = BIG_INT_ZERO
+    token.liquidityNative = BIG_DECIMAL_ZERO
+    token.liquidityUSD = BIG_DECIMAL_ZERO
+    token.pairCount = BIG_INT_ZERO
+    token.volumeUSD = BIG_DECIMAL_ZERO
+    token.untrackedVolumeUSD = BIG_DECIMAL_ZERO
+    token.volume = BIG_DECIMAL_ZERO
+
     token.save()
 
   }

@@ -11,7 +11,6 @@ import {
   STABLE_TOKEN_ADDRESSES
 } from './constants'
 import { convertTokenToDecimal, getOrCreateToken } from './functions'
-import { getTokenKpi } from './functions/token-kpi'
 import { getTokenPrice } from './functions/token-price'
 
 export function getNativePriceInUSD(): BigDecimal {
@@ -77,7 +76,6 @@ export function getNativePriceInUSD(): BigDecimal {
 export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal): TokenPrice {
   const token = getOrCreateToken(tokenAddress)
   const currentTokenPrice = getTokenPrice(tokenAddress)
-  const tokenKpi = getTokenKpi(tokenAddress)
   if (token.id == NATIVE_ADDRESS) {
     if (!currentTokenPrice.derivedNative.equals(BIG_DECIMAL_ONE)) {
       currentTokenPrice.derivedNative = BIG_DECIMAL_ONE
@@ -91,7 +89,7 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal):
   let mostLiquidity = BIG_DECIMAL_ZERO
   let currentPrice = BIG_DECIMAL_ZERO
 
-  for (let i = 0; i < tokenKpi.pairCount.toI32(); ++i) {
+  for (let i = 0; i < token.pairCount.toI32(); ++i) {
     const tokenPairRelationshipId = token.id.concat(':').concat(i.toString())
     const tokenPairRelationship = TokenPair.load(tokenPairRelationshipId)
 
