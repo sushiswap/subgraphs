@@ -377,5 +377,7 @@ type TokenDaySnapshot @entity {
   untrackedVolumeUSD: BigDecimal!
   priceNative: BigDecimal!
   priceUSD: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
   transactionCount: BigInt!
 }
