@@ -1,18 +1,18 @@
-import { ethereum } from '@graphprotocol/graph-ts'
+import { Address, ethereum } from '@graphprotocol/graph-ts'
 import { getOrCreateBundle, getPair } from '.'
 import { LiquidityPosition, LiquidityPositionSnapshot } from '../../generated/schema'
 import { BIG_INT_ONE } from '../constants'
 import { getTokenPrice } from './token-price'
-import { getUserKpi } from './user-kpi'
+import { getOrCreateUser } from './user'
 
 export function createLiquidityPositionSnapshot(position: LiquidityPosition, block: ethereum.Block): void {
   const timestamp = block.timestamp.toI32()
-  const userKpi = getUserKpi(position.user)
+  const user = getOrCreateUser(Address.fromString(position.user))
   const id = position.id
     .concat('-')
     .concat(timestamp.toString())
     .concat('-')
-    .concat(userKpi.lpSnapshotsCount.toString())
+    .concat(user.lpSnapshotsCount.toString())
 
   const bundle = getOrCreateBundle()
   const pair = getPair(position.pair)
@@ -35,6 +35,6 @@ export function createLiquidityPositionSnapshot(position: LiquidityPosition, blo
   snapshot.liquidityPosition = position.id
   snapshot.save()
 
-  userKpi.lpSnapshotsCount = userKpi.lpSnapshotsCount.plus(BIG_INT_ONE)
-  userKpi.save()
+  user.lpSnapshotsCount = user.lpSnapshotsCount.plus(BIG_INT_ONE)
+  user.save()
 }

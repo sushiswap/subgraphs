@@ -1,19 +1,18 @@
 import { Address } from '@graphprotocol/graph-ts'
 import { User } from '../../generated/schema'
-import { BIG_INT_ONE } from '../constants'
+import { BIG_INT_ONE, BIG_INT_ZERO } from '../constants'
 import { getOrCreateFactory } from './factory'
-import { createUserKpi } from './user-kpi'
 
 export function createUser(address: Address): User {
 
   const user = new User(address.toHex())
+  user.lpSnapshotsCount = BIG_INT_ZERO
   user.save()
 
   const factory = getOrCreateFactory()
   factory.userCount = factory.userCount.plus(BIG_INT_ONE)
   factory.save()
 
-  createUserKpi(address)
 
   return user as User
 }
