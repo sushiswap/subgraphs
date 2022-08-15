@@ -27,7 +27,7 @@ module.exports = {
   },
   trident: {
     masterDeployer: { address: '0x351447fc9bd20a917783e159e61e86edda0b0187', startBlock: 25840876 },
-    stablePoolFactory: { address: '0xe52180815c81d7711b83412e53259bed6a3ab70a' },
+    stablePoolFactory: { address: '0xf96149e31c3af9650d209c5fe26a9b06c5bc91d4' },
     concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     constantProductPoolFactory: {
       address: '0x05689fcfee31fce4a67fbc7cab13e74f80a4e288',

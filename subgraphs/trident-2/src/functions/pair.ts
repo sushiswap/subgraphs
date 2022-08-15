@@ -8,13 +8,13 @@ import { createTokenPair } from './token-pair'
 export function createPair(event: DeployPool, type: string): Pair {
   const id = event.params.pool.toHex()
 
-  const decoded = decodePool(event, type)
+  const decoded = decodeDeployData(event, type)
   const isCorrectOrder = decoded[0].toAddress().toHex() < decoded[1].toAddress().toHex()
   const token0Address = isCorrectOrder ? decoded[0].toAddress().toHex() : decoded[1].toAddress().toHex()
   const token1Address = !isCorrectOrder ? decoded[0].toAddress().toHex() : decoded[1].toAddress().toHex()
 
   const swapFee = decoded[2].toBigInt() as BigInt
-  const twapEnabled = getTwap(decoded, type)
+  const twapEnabled = decoded[3].toBoolean() as boolean
 
   let token0 = getOrCreateToken(token0Address)
   let token1 = getOrCreateToken(token1Address)
@@ -57,28 +57,19 @@ export function createPair(event: DeployPool, type: string): Pair {
   return pair as Pair
 }
 
-// TODO: refactor, make it return 4 params, set twap to false if not constant product pool
-function decodePool(event: DeployPool, type: string): ethereum.Tuple {
+function decodeDeployData(event: DeployPool, type: string): ethereum.Tuple {
   if (type === PairType.CONSTANT_PRODUCT_POOL) {
     return ethereum.decode('(address,address,uint256,bool)', event.params.deployData)!.toTuple()
   }
   else if (type === PairType.STABLE_POOL) {
-    return ethereum.decode('(address,address,uint256)', event.params.deployData)!.toTuple()
+    const decode = ethereum.decode('(address,address,uint256)', event.params.deployData)!.toTuple()
+    decode.push(ethereum.Value.fromBoolean(false))
+    return decode
   }
   else {
     throw new Error(
       `Unknown pair type: ${type}, currently available: ${PairType.CONSTANT_PRODUCT_POOL} and ${PairType.STABLE_POOL}. Did you forget to add it to the list of supported pairs?`
     )
-  }
-}
-
-
-function getTwap(decoded: ethereum.Tuple, type: string): boolean {
-  if (type === PairType.CONSTANT_PRODUCT_POOL) {
-    return decoded[3].toBoolean() as boolean
-  }
-  else {
-    return false
   }
 }
 

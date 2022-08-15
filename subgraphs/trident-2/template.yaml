@@ -7,8 +7,7 @@ dataSources:
     network: {{ network }}
     source:
       address: '{{ bentobox.address }}'
-      # startBlock: {{ trident.masterDeployer.startBlock }}
-      startBlock: 31895548
+      startBlock: {{ trident.masterDeployer.startBlock }}
       abi: BentoBox
     mapping:
       kind: ethereun/events
@@ -43,8 +42,7 @@ dataSources:
     network: {{ network }}
     source:
       address: '{{ trident.masterDeployer.address }}'
-      # startBlock: {{ trident.masterDeployer.startBlock }}
-      startBlock: 31895548
+      startBlock: {{ trident.masterDeployer.startBlock }}
       abi: MasterDeployer
     mapping:
       kind: ethereum/events
@@ -100,20 +98,20 @@ templates:
           file: ./node_modules/abi/ERC20/SymbolBytes32.json
         - name: NameBytes32
           file: ./node_modules/abi/ERC20/NameBytes32.json
-  #     eventHandlers:
-  #       - event: Mint(indexed address,uint256,uint256,indexed address)
-  #         handler: onMint
-  #       - event: Burn(indexed address,uint256,uint256,indexed address)
-  #         handler: onBurn
-  #         receipt: true
-  #       - event: Sync(uint256,uint256)
-  #         handler: onSync
-  #       - event: Transfer(indexed address,indexed address,uint256)
-  #         handler: onTransfer
-  #         receipt: true
-  #       - event: Swap(indexed address,indexed address,indexed address,uint256,uint256)
-  #         handler: onSwap
-  #         receipt: true
+      eventHandlers:
+        - event: Mint(indexed address,uint256,uint256,indexed address)
+          handler: onMint
+        - event: Burn(indexed address,uint256,uint256,indexed address)
+          handler: onBurn
+          receipt: true
+        - event: Sync(uint256,uint256)
+          handler: onSync
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: onTransfer
+          receipt: true
+        - event: Swap(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: onSwap
+          receipt: true
   - kind: ethereum/contract
     name: StablePool
     network: {{ network }}
