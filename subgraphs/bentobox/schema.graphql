@@ -50,7 +50,7 @@ type BentoBoxKpi @entity {
   pendingStrategyCount: BigInt!
 }
 
-type MasterContract @entity(immutable: true) {
+type MasterContract @entity {
   " MasterContract address "
   id: ID!
   " BentoBox this master contract belongs to "
@@ -60,6 +60,17 @@ type MasterContract @entity(immutable: true) {
   " MasterContractApprovals that belong to this master contract "
   masterContractApprovals: [MasterContractApproval!] @derivedFrom(field: "masterContract")
   " MasterContract is whitelisted by Sushi Operations"
+  approved: Boolean!
+}
+
+type MasterContractApproval @entity {
+  "Concatenation of user adddress and master contract address"
+  id: ID!
+  " MasterContract this master contract approval belongs to "
+  masterContract: MasterContract!
+  " User this master contract approval belongs to "
+  user: User!
+  " If user has approved this master contract "
   approved: Boolean!
 }
 
@@ -269,17 +280,6 @@ type FlashLoan @entity(immutable: true) {
   block: BigInt!
   " Timestamp of this flash loan "
   timestamp: BigInt!
-}
-
-type MasterContractApproval @entity {
-  "Concatenation of user adddress and master contract address"
-  id: ID!
-  " MasterContract this master contract approval belongs to "
-  masterContract: MasterContract!
-  " User this master contract approval belongs to "
-  user: User!
-  " If user has approved this master contract "
-  approved: Boolean!
 }
 
 type Protocol @entity(immutable: true) {

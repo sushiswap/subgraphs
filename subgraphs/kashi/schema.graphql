@@ -1,168 +1,249 @@
-type BentoBox @entity {
-  # Contract ID
+type BentoBox @entity(immutable: true) {
+  " BentoBox address "
   id: ID!
-
-  kashiPairs: [KashiPair!] @derivedFrom(field: "bentoBox")
+  " Master contracts that belong to this bento box "
   masterContracts: [MasterContract!] @derivedFrom(field: "bentoBox")
-
-  masterContractCount: BigInt!
-  kashiPairCount: BigInt!
-
-  block: BigInt!
-  timestamp: BigInt!
 }
 
 type MasterContract @entity {
+  " MasterContract address "
   id: ID!
+  " BentoBox this master contract belongs to "
   bentoBox: BentoBox!
+  " Clones that belong to this master contract "
   clones: [Clone!] @derivedFrom(field: "masterContract")
+  " MasterContractApprovals that belong to this master contract "
   masterContractApprovals: [MasterContractApproval!] @derivedFrom(field: "masterContract")
+  " MasterContract is whitelisted by Sushi Operations"
+  approved: Boolean!
 }
 
-type Clone @entity {
+type Clone @entity(immutable: true) {
+  " Clone address "
   id: ID!
+  " BentoBox this clone belongs to "
   bentoBox: BentoBox!
+  " Master contract this clone belongs to "
   masterContract: MasterContract!
-  data: String!
+  " Clone data "
+  data: Bytes!
+  " Block number of this clone "
   block: BigInt!
+  " Timestamp of this clone "
   timestamp: BigInt!
 }
 
 type MasterContractApproval @entity {
-  # concatenate UserAddress with MasterContract
+  "Concatenation of user adddress and master contract address"
   id: ID!
+  " MasterContract this master contract approval belongs to "
   masterContract: MasterContract!
+  " User this master contract approval belongs to "
   user: User!
+  " If user has approved this master contract "
   approved: Boolean!
 }
 
-type User @entity {
+type Kashi @entity {
+  " BentoBox address "
   id: ID!
-  bentoBox: BentoBox!
-  kashiPairs: [UserKashiPair!] @derivedFrom(field: "user")
-}
-
-enum KashiPairType {
-  medium
+  " Master contract count "
+  masterContractCount: BigInt!
+  " Token count "
+  tokenCount: BigInt!
+  " Transaction count "
+  transactionCount: BigInt!
+  " User count "
+  userCount: BigInt!
+  " Add collateral count "
+  addCollateralCount: BigInt!
+  " Remove collateral count "
+  removeCollateralCount: BigInt!
+  " Add asset count "
+  addAssetCount: BigInt!
+  " Remove asset count "
+  removeAssetCount: BigInt!
+  " Borrow count "
+  borrowCount: BigInt!
+  " Repay count "
+  repayCount: BigInt!
+  " Market count "
+  marketCount: BigInt!
 }
 
 type KashiPair @entity {
+  " KashiPair address "
   id: ID!
+  " The BentoBox this pair belongs to "
   bentoBox: BentoBox!
-  type: KashiPairType!
+  " The MasterContract this pair belongs to "
   masterContract: MasterContract!
-  owner: Bytes!
+  " The feeTo address of this pair "
   feeTo: Bytes!
-  name: String!
-  symbol: String!
+  " Swappers which belong to this pair "
+  swappers: [Swapper!] @derivedFrom(field: "pair")
+  " Collateral "
+  collateral: Token!
+  " Asset "
+  asset: Token!
+  " Oracle address "
   oracle: Bytes!
-  asset: Bytes!
-  collateral: Bytes!
+  " Oracle data "
+  oracleData: Bytes!
+ " Total collateral share of this pair "
+  totalCollateralShare: BigInt!
+ " Total asset rebase of this pair "
+  totalAsset: Rebase!
+  " Total borrow rebase of this pair "
+  totalBorrow: Rebase!
+  " Balances which belong to this pair "
+  balances: [Balance!] @derivedFrom(field: "pair")
+  " KashiPair cached exchange rate "
   exchangeRate: BigInt!
-  totalAssetElastic: BigInt!
-  totalAssetBase: BigInt!
-  totalCollateralShare: BigInt!
-  totalBorrowElastic: BigInt!
-  totalBorrowBase: BigInt!
-  interestPerSecond: BigInt!
-  utilization: BigInt!
-  feesEarnedFraction: BigInt!
-  totalFeesEarnedFraction: BigInt!
-  lastAccrued: BigInt!
+  " AccrueInfo for this pair"
+  accrueInfo: KashiPairAccrueInfo!
+  " KashiPair name "
+  name: String!
+  " KashiPair symbol "
+  symbol: String!
+  " KashiPair decimals "
+  decimals: BigInt!
+  " KashiPair totalSupply "
+  totalSupply: BigInt!
+  " Supply APR "
   supplyAPR: BigInt!
+  " Borrow APR "
   borrowAPR: BigInt!
-  transactions: [KashiPairAction!] @derivedFrom(field: "pair")
-  users: [UserKashiPair!] @derivedFrom(field: "pair")
+  " Utilization "
+  utilization: BigInt!
+  " Total fees earned fraction "
+  totalFeesEarnedFraction: BigInt!
+  " Block number of this pair "
   block: BigInt!
+  " Timestamp of this pair "
   timestamp: BigInt!
 }
 
-enum KashiPairActionType {
-  addAsset
-  removeAsset
-  addCollateral
-  removeCollateral
-  borrow
-  repay
-}
-
-type KashiPairAction @entity {
+type KashiPairHourSnapshot @entity {
+  " {KashiPairAddress}-hour-{timestamp} "
   id: ID!
-  type: KashiPairActionType!
+  " Kashi pair this hour snapshot belongs to "
   pair: KashiPair!
-  root: UserKashiPair!
-  token: Bytes!
-  amount: BigInt
-  share: BigInt
-  feeAmount: BigInt
-  fraction: BigInt
-  part: BigInt
-  poolPercentage: BigInt!
-  block: BigInt!
-  timestamp: BigInt!
-}
-
-type UserKashiPair @entity {
-  id: ID!
-  user: User!
-  pair: KashiPair!
-  assetFraction: BigInt! #comes from balanceOf on pair contract
-  collateralShare: BigInt!
-  borrowPart: BigInt!
-  transactions: [KashiPairAction!] @derivedFrom(field: "root")
-  block: BigInt!
-  timestamp: BigInt!
-}
-
-type KashiPairHourData @entity {
-  # pair id - hour start timestamp
-  id: ID!
-
-  hourStartUnix: Int!
-
-  pair: KashiPair!
-
-  totalAssetElastic: BigInt!
-  totalAssetBase: BigInt!
-  totalCollateralShare: BigInt!
-  totalBorrowElastic: BigInt!
-  totalBorrowBase: BigInt!
-
-  #hourlyVolumeSupplied
-  #hourlyVolumeBorrowed
-  #hourlyTxns
-
-  #totalFeesEarnedFraction: BigInt!
-  avgExchangeRate: BigInt!
-  avgUtilization: BigInt!
-  avgInterestPerSecond: BigInt!
-  #avgSupplyInterestPerSecond: BigInt!
-  #avgBorrowInterestPerSecond: BigInt!
-}
-
-type KashiPairDayData @entity {
-  # pair id - day start timestamp
-  id: ID!
-
-  # date - hour start timestamp
+  " Date of this snapshot "
   date: Int!
-
-  pair: KashiPair!
-
-  totalAssetElastic: BigInt!
-  totalAssetBase: BigInt!
+ " Total collateral share of this pair "
   totalCollateralShare: BigInt!
-  totalBorrowElastic: BigInt!
-  totalBorrowBase: BigInt!
+  " KashiPair cached exchange rate "
+  exchangeRate: BigInt!
+  " KashiPair totalSupply "
+  totalSupply: BigInt!
+  " Supply APR "
+  supplyAPR: BigInt!
+  " Borrow APR "
+  borrowAPR: BigInt!
+  " Utilization "
+  utilization: BigInt!
+  " Total fees earned fraction "
+  totalFeesEarnedFraction: BigInt!
+}
 
-  #hourlyVolumeSupplied
-  #hourlyVolumeBorrowed
-  #hourlyTxns
+type KashiPairDaySnapshot @entity {
+  " {KashiPairAddress}-day-{timestamp} "
+  id: ID!
+  " Kashi pair this hour snapshot belongs to "
+  pair: KashiPair!
+  " Date of this snapshot "
+  date: Int!
+ " Total collateral share of this pair "
+  totalCollateralShare: BigInt!
+  " KashiPair cached exchange rate "
+  exchangeRate: BigInt!
+  " KashiPair totalSupply "
+  totalSupply: BigInt!
+  " Supply APR "
+  supplyAPR: BigInt!
+  " Borrow APR "
+  borrowAPR: BigInt!
+  " Utilization "
+  utilization: BigInt!
+  " Total fees earned fraction "
+  totalFeesEarnedFraction: BigInt!
+}
 
-  #totalFeesEarnedFraction: BigInt!
-  avgExchangeRate: BigInt!
-  avgUtilization: BigInt!
-  avgInterestPerSecond: BigInt!
-  #avgSupplyInterestPerSecond: BigInt!
-  #avgBorrowInterestPerSecond: BigInt!
+type KashiPairAccrueInfo @entity {
+  " KashiPair address "
+  id: ID!
+  " Interest per second "  
+  interestPerSecond: BigInt!
+  " Last accrued timestamp "
+  lastAccrued: BigInt!
+  " Fees earned fraction "
+  feesEarnedFraction: BigInt!
+}
+
+type Swapper @entity {
+  " Swapper address "
+  id: ID!
+  " Kashi pair which this swapper belongs to "
+  pair: KashiPair!
+}
+
+type Token @entity(immutable: true) {
+  " Token address "
+  id: ID!
+  " The Rebase that belongs to this token "
+  rebase: Rebase!
+  " Token symbol, if fetched successfully, else default to ??? "
+  symbol: String!
+  " If the symbol was succesfully fetched "
+  symbolSuccess: Boolean!
+  " Token name, if fetched successfully, else default to ??? "
+  name: String!
+  " If the name was succesfully fetched "
+  nameSuccess: Boolean!
+  " Token decimals, if fetched successfully, else default to 18 "
+  decimals: BigInt!
+  " If the decimals was succesfully fetched "
+  decimalsSuccess: Boolean!
+}
+
+type Rebase @entity {
+  " Concatenation of pair address and 'asset' or 'borrow' "
+  id: ID!
+  " BentoBox this rebase belongs to "
+  bentoBox: BentoBox!
+  " Token this rebase belongs to "
+  token: Token!
+  " Base (Share) "
+  base: BigInt!
+  " Elastic (Amount) "
+  elastic: BigInt!
+}
+
+type User @entity(immutable: true) {
+  " User address "
+  id: ID!
+  " BentoBox this user belongs to "
+  bentoBox: BentoBox!
+  " MasterContractApprovals that belong to this user "
+  masterContractApprovals: [MasterContractApproval!] @derivedFrom(field: "user")
+  " Balances that belong to this user "
+  balances: [Balance!] @derivedFrom(field: "user")
+  " Block number of this user "
+  block: BigInt!
+  " Timestamp of this user "
+  timestamp: BigInt!
+}
+
+type Balance @entity {
+  " User address "
+  id: ID!
+  " Kashi pair which this balance belongs to "  
+  pair: KashiPair!
+  " User which this balance belongs to "  
+  user: User!
+  " User collateral share "  
+  userCollateralShare: BigInt!
+  " User borrow part "  
+  userBorrowPart: BigInt!
 }

@@ -1,10 +1,10 @@
 {
-  "name": "kashi",
-  "author": "Lufy <lufy@sushi.com>",
+  "name": "kashi-2",
+  "author": "Matthew Lilley <hello@matthewlilley.com>",
   "license": "MIT",
   "repository": {
     "url": "sushiswap/subgraphs",
-    "directory": "subgraphs/kashi"
+    "directory": "subgraphs/kashi-2"
   },
   "files": [
     "generated"
@@ -12,18 +12,18 @@
   "scripts": {
     "generate": "mustache ../../config/$NETWORK.js template.yaml > subgraph.yaml && mustache ../../config/$NETWORK.js src/constants/index.template.ts > src/constants/index.ts && graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ sushiswap/kashi",
-    "create-local": "graph create --node http://localhost:8020/ sushiswap/kashi",
-    "remove-local": "graph remove --node http://localhost:8020/ sushiswap/kashi",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/kashi",
-    "deploy-arbitrum": "graph deploy --product hosted-service matthewlilley/kashi-arbitrum"
+    "test": "graph test -r",
+    "create-local": "graph create --node http://localhost:8020/ sushiswap/kashi-local",
+    "remove-local": "graph remove --node http://localhost:8020/ sushiswap/kashi-local",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/kashi-local",
+    "deploy-polygon": "graph deploy --product hosted-service sushiswap/kashi-polygon",
+    "deploy-arbitrum": "graph deploy --product hosted-service sushiswap/kashi-arbitrum"
   },
   "devDependencies": {
     "abi": "workspace:*",
-    "@graphprotocol/graph-cli": "^0.27.0",
-    "@graphprotocol/graph-ts": "^0.24.1",
-    "matchstick-as": "^0.4.2",
-    "assemblyscript": "^0.19.20",
-    "wabt": "1.0.24"
+    "math": "workspace:*",
+    "@graphprotocol/graph-cli": "^0.32.0",
+    "@graphprotocol/graph-ts": "^0.27.0",
+    "matchstick-as": "^0.5.0"
   }
 }
