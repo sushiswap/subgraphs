@@ -1,9 +1,11 @@
 enum FactoryType {
   CONSTANT_PRODUCT_POOL
+  STABLE_POOL
 }
 
 enum PairType {
   CONSTANT_PRODUCT_POOL
+  STABLE_POOL
 }
 
 type Factory @entity {

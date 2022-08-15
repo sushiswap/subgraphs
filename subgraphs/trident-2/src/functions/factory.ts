@@ -1,7 +1,7 @@
 import { Address } from '@graphprotocol/graph-ts'
 import { Factory } from '../../generated/schema'
 import {
-  BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS, FactoryType
+  BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS, FactoryType, STABLE_POOL_FACTORY_ADDRESS
 } from '../constants'
 
 export function getOrCreateFactory(type: string): Factory {
@@ -37,9 +37,13 @@ export function increaseFactoryTransactionCount(type: string): void {
 function getFactoryAddress(type: string): Address {
   if (type === FactoryType.CONSTANT_PRODUCT_POOL) {
     return CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS
-  } else {
+  }
+  else if (type === FactoryType.STABLE_POOL) {
+    return STABLE_POOL_FACTORY_ADDRESS
+  }
+  else {
     throw new Error(
-      `Unknown factory type: ${type}, currently available: ${FactoryType.CONSTANT_PRODUCT_POOL}. Did you forget to add it to the list of supported factories?`
+      `Unknown factory type: ${type}, currently available: ${FactoryType.CONSTANT_PRODUCT_POOL} and ${FactoryType.STABLE_POOL}. Did you forget to add it to the list of supported factories?`
     )
   }
 }
