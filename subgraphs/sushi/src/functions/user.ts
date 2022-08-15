@@ -10,6 +10,7 @@ export function createUser(id: string, event: TransferEvent): User {
   user.createdAtTimestamp = event.block.timestamp
   user.modifiedAtBlock = event.block.number
   user.modifiedAtTimestamp = event.block.timestamp
+  user.balance = BigInt.fromU32(1)
   user.save()
 
   const sushi = getOrCreateSushi()

@@ -21,7 +21,7 @@
     "deploy-polygon": "graph deploy --product hosted-service sushiswap/trident-polygon",
     "deploy-optimism": "graph deploy --product hosted-service matthewlilley/trident-optimism",
     "deploy-kava": "graph deploy --node https://pvt-admin.graph.kava.io sushiswap/trident-kava",
-    "deploy-metis": "graph deploy --node https://andromeda.thegraph.metisdevops.link:8020 --ipfs https://ipfs.thegraph.metisdevops.link:5001 sushiswap/trident-metis"
+    "deploy-metis": "graph deploy --node https://andromeda.thegraph.metisdevops.link:8020 --ipfs https://ipfs.thegraph.metisdevops.link:5001 sushi-labs/trident-metis"
   },
   "devDependencies": {
     "abi": "workspace:*",

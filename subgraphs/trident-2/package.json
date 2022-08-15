@@ -11,7 +11,13 @@
   "scripts": {
     "generate": "mustache ../../config/$NETWORK.js template.yaml > subgraph.yaml && mustache ../../config/$NETWORK.js src/constants/index.template.ts > src/constants/index.ts && graph codegen",
     "build": "graph build",
-    "test": "graph test -r"
+    "test": "graph test -r",
+    "create-local": "graph create --node http://localhost:8020/ sushiswap/trident-ethereum",
+    "remove-local": "graph remove --node http://localhost:8020/ sushiswap/trident-ethereum",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/trident-ethereum",
+    "deploy-polygon": "graph deploy --product hosted-service sushiswap/trident-polygon",
+    "deploy-optimism": "graph deploy --product hosted-service sushiswap/trident-optimism",
+    "deploy-metis": "graph deploy --node https://jsonrpc.andromeda.thegraph.metis.io sushiswap/trident-metis"
   },
   "devDependencies": {
     "abi": "workspace:*",

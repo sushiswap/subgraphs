@@ -49,7 +49,7 @@ export const INDEX_POOL_FACTORY_ADDRESS = Address.fromString(
 )
 
 export const CONCENTRATED_LIQUIDITY_POOL_FACTORY_ADDRESS = Address.fromString(
-  '{{ concentratedLiquidityPoolFactory.address }}{{^concentratedLiquidityPoolFactory.address}}0x0000000000000000000000000000000000000000{{/concentratedLiquidityPoolFactory.address}}'
+  '{{ trident.concentratedLiquidityPoolFactory.address }}{{^trident.concentratedLiquidityPoolFactory.address}}0x0000000000000000000000000000000000000000{{/trident.concentratedLiquidityPoolFactory.address}}'
 )
 
 export const NATIVE_ADDRESS = '{{ trident.native.address }}'
