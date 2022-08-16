@@ -113,3 +113,11 @@ function getTokenDecimals(contract: ERC20): Decimal {
 
   return { success: false, value: BigInt.fromI32(18) }
 }
+
+const BLACKLIST_EXCHANGE_VOLUME: string[] = [
+  '0x9ea3b5b4ec044b70375236a281986106457b20ef', // DELTA
+]
+
+export function isBlacklistedToken(token: string): boolean {
+  return BLACKLIST_EXCHANGE_VOLUME.includes(token)
+}

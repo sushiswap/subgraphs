@@ -23,15 +23,17 @@ export function updateTokenDaySnapshots(
 ): void {
   let pair = getPair(pairAddress.toHex())
   let bundle = getOrCreateBundle()
-  updateTokenDaySnapshot(timestamp, pair.token0, bundle.nativePrice, volume.amount0Total)
-  updateTokenDaySnapshot(timestamp, pair.token1, bundle.nativePrice, volume.amount1Total)
+  updateTokenDaySnapshot(timestamp, pair.token0, bundle.nativePrice, volume.amount0Total, volume.feesNative, volume.feesUSD)
+  updateTokenDaySnapshot(timestamp, pair.token1, bundle.nativePrice, volume.amount1Total, volume.feesNative, volume.feesUSD)
 }
 
 function updateTokenDaySnapshot(
   timestamp: BigInt, 
   tokenId: string, 
   nativePrice: BigDecimal,
-  volume: BigDecimal
+  volume: BigDecimal,
+  feesNative: BigDecimal,
+  feesUSD: BigDecimal,
   ): void {
   let token = getOrCreateToken(tokenId)
   let tokenPrice = getTokenPrice(tokenId)
@@ -44,9 +46,12 @@ function updateTokenDaySnapshot(
     snapshot.token = tokenId
     snapshot.transactionCount = BIG_INT_ZERO
     snapshot.liquidityNative = BIG_DECIMAL_ZERO
+    snapshot.liquidityUSD = BIG_DECIMAL_ZERO
     snapshot.volume = BIG_DECIMAL_ZERO
     snapshot.volumeNative = BIG_DECIMAL_ZERO
     snapshot.volumeUSD = BIG_DECIMAL_ZERO
+    snapshot.feesNative = BIG_DECIMAL_ZERO
+    snapshot.feesUSD = BIG_DECIMAL_ZERO
   }
 
   snapshot.liquidity = convertTokenToDecimal(token.liquidity, token.decimals)
@@ -58,8 +63,8 @@ function updateTokenDaySnapshot(
   snapshot.priceNative = tokenPrice.derivedNative
   snapshot.priceUSD = tokenPrice.derivedNative.times(nativePrice)
   snapshot.transactionCount = snapshot.transactionCount.plus(BIG_INT_ONE)
-  snapshot.feesNative = token.feesNative
-  snapshot.feesUSD = token.feesUSD
+  snapshot.feesNative = snapshot.feesNative.plus(feesNative)
+  snapshot.feesUSD = token.feesUSD.plus(feesUSD)
   snapshot.save()
 }
 

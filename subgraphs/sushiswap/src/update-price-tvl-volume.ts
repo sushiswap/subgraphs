@@ -11,15 +11,14 @@ import {
   getOrCreateBundle,
   getOrCreateToken,
   getPair,
-  getTokenPrice
+  getTokenPrice,
+  isBlacklistedToken
 } from './functions'
 import { getOrCreateFactory } from './functions/factory'
 import { getNativePriceInUSD, updateTokenPrice } from './pricing'
 import { isBurn, isInitialTransfer, isMint } from './transfer'
 
-const BLACKLIST_EXCHANGE_VOLUME: string[] = [
-  '0x9ea3b5b4ec044b70375236a281986106457b20ef', // DELTA
-]
+
 export function updateTvlAndTokenPrices(event: SyncEvent): void {
   const pairId = event.address.toHex()
   const pair = getPair(pairId)
@@ -157,7 +156,7 @@ export function updateVolume(event: SwapEvent): Volume {
   pair.save()
 
   // Don't track volume for these tokens in total exchange volume
-  if (!BLACKLIST_EXCHANGE_VOLUME.includes(token0.id) && !BLACKLIST_EXCHANGE_VOLUME.includes(token1.id)) {
+  if (!isBlacklistedToken(token0.id) && !isBlacklistedToken(token1.id)) {
     const factory = getOrCreateFactory()
     factory.volumeUSD = factory.volumeUSD.plus(trackedVolumeUSD)
     factory.volumeNative = factory.volumeNative.plus(volumeNative)

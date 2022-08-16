@@ -385,17 +385,18 @@ type TokenDaySnapshot @entity {
   transactionCount: BigInt!
 }
 
-# type FactoryDaySnapshot @entity {
-#   " {factoryId}-day-{timestamp} "
-#   id: ID!
-#   date: Int!
-#   volumeUSD: BigDecimal!
-#   volumeNative: BigDecimal!
-#   untrackedVolumeUSD: BigDecimal!
-#   liquidityNative: BigDecimal!
-#   liquidityUSD: BigDecimal!
-#   feesNative: BigDecimal!
-#   feesUSD: BigDecimal!
-#   transactionCount: BigInt!
-# }
+type FactoryDaySnapshot @entity {
+  " {factoryId}-day-{timestamp} "
+  id: ID!
+  factory: Factory!
+  date: Int!
+  volumeUSD: BigDecimal!
+  volumeNative: BigDecimal!
+  untrackedVolumeUSD: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
 

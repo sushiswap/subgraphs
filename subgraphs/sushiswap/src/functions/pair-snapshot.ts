@@ -45,6 +45,8 @@ function updatePairHourSnapshot(
     snapshot.volumeNative = BIG_DECIMAL_ZERO
     snapshot.volumeUSD = BIG_DECIMAL_ZERO
     snapshot.untrackedVolumeUSD = BIG_DECIMAL_ZERO
+    snapshot.feesNative = BIG_DECIMAL_ZERO
+    snapshot.feesUSD = BIG_DECIMAL_ZERO
   }
   snapshot.liquidity = convertTokenToDecimal(pair.liquidity, BigInt.fromU32(18))
   snapshot.liquidityNative = pair.liquidityNative
@@ -79,6 +81,8 @@ function updatePairDaySnapshot(
     snapshot.volumeNative = BIG_DECIMAL_ZERO
     snapshot.volumeUSD = BIG_DECIMAL_ZERO
     snapshot.untrackedVolumeUSD = BIG_DECIMAL_ZERO
+    snapshot.feesNative = BIG_DECIMAL_ZERO
+    snapshot.feesUSD = BIG_DECIMAL_ZERO
   }
   snapshot.liquidity = convertTokenToDecimal(pair.liquidity, BigInt.fromU32(18))
   snapshot.liquidityNative = pair.liquidityNative
@@ -111,7 +115,11 @@ function updatePairWeeklySnapshot(
     snapshot.transactionCount = BIG_INT_ZERO
     snapshot.volumeToken0 = BIG_DECIMAL_ZERO
     snapshot.volumeToken1 = BIG_DECIMAL_ZERO
+    snapshot.volumeNative = BIG_DECIMAL_ZERO
     snapshot.volumeUSD = BIG_DECIMAL_ZERO
+    snapshot.untrackedVolumeUSD = BIG_DECIMAL_ZERO
+    snapshot.feesNative = BIG_DECIMAL_ZERO
+    snapshot.feesUSD = BIG_DECIMAL_ZERO
   }
   snapshot.liquidity = convertTokenToDecimal(pair.liquidity, BigInt.fromU32(18))
   snapshot.liquidityNative = pair.liquidityNative
