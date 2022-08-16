@@ -33,6 +33,7 @@ export function createPair(event: PairCreated): Pair {
   pair.token0Price = BIG_DECIMAL_ZERO
   pair.token1Price = BIG_DECIMAL_ZERO
   pair.liquidity = BIG_INT_ZERO
+  pair.trackedLiquidityNative = BIG_DECIMAL_ZERO
   pair.liquidityNative = BIG_DECIMAL_ZERO
   pair.liquidityUSD = BIG_DECIMAL_ZERO
   pair.volumeNative = BIG_DECIMAL_ZERO

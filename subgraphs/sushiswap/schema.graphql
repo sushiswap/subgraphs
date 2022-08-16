@@ -138,6 +138,8 @@ type Pair @entity {
   liquidityUSD: BigDecimal!
   " Native Liquidity "
   liquidityNative: BigDecimal!
+  " Tracked Liquidity native "
+  trackedLiquidityNative: BigDecimal!
   " Price of the first token in this pair, not to be confused with TokenPrice entity "
   token0Price: BigDecimal!
   " Price of the second token in this pair, not to be confused with TokenPrice entity "
