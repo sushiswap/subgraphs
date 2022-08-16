@@ -1,7 +1,7 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { Volume } from '../update-price-tvl-volume'
 import { TokenDaySnapshot } from '../../generated/schema'
-import { BIG_DECIMAL_ONE, BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, DAY_IN_SECONDS } from '../constants'
+import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, DAY_IN_SECONDS } from '../constants'
 import { getOrCreateBundle } from './bundle'
 import { convertTokenToDecimal } from './number-converter'
 import { getPair } from './pair'
@@ -11,14 +11,21 @@ import { getTokenPrice } from './token-price'
 export function updateTokenDaySnapshots(
   timestamp: BigInt,
   pairAddress: Address,
-  volume: Volume = { volumeUSD: BIG_DECIMAL_ZERO, amount0Total: BIG_DECIMAL_ZERO, amount1Total: BIG_DECIMAL_ZERO }
+  volume: Volume = { 
+    volumeUSD: BIG_DECIMAL_ZERO, 
+    volumeNative: BIG_DECIMAL_ZERO, 
+    feesNative: BIG_DECIMAL_ZERO, 
+    feesUSD: BIG_DECIMAL_ZERO, 
+    untrackedVolumeUSD: BIG_DECIMAL_ZERO, 
+    amount0Total: BIG_DECIMAL_ZERO, 
+    amount1Total: BIG_DECIMAL_ZERO 
+  }
 ): void {
   let pair = getPair(pairAddress.toHex())
   let bundle = getOrCreateBundle()
   updateTokenDaySnapshot(timestamp, pair.token0, bundle.nativePrice, volume.amount0Total)
   updateTokenDaySnapshot(timestamp, pair.token1, bundle.nativePrice, volume.amount1Total)
 }
-
 
 function updateTokenDaySnapshot(
   timestamp: BigInt, 

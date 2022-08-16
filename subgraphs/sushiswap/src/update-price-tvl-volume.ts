@@ -168,8 +168,12 @@ export function updateVolume(event: SwapEvent): Volume {
   }
 
   return {
-    volumeUSD: trackedVolumeUSD != BIG_DECIMAL_ZERO ? trackedVolumeUSD : untrackedVolumeUSD, 
-    amount0Total, 
+    volumeUSD: trackedVolumeUSD != BIG_DECIMAL_ZERO ? trackedVolumeUSD : untrackedVolumeUSD,
+    volumeNative,
+    untrackedVolumeUSD,
+    feesNative,
+    feesUSD,
+    amount0Total,
     amount1Total
   }
 }
@@ -289,6 +293,10 @@ export function getTrackedLiquidityUSD(
 
 export class Volume {
   volumeUSD: BigDecimal
+  volumeNative: BigDecimal
+  untrackedVolumeUSD: BigDecimal
+  feesNative: BigDecimal
+  feesUSD: BigDecimal
   amount0Total: BigDecimal
   amount1Total: BigDecimal
 }
