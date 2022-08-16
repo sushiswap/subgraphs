@@ -1,18 +1,27 @@
 
 import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Volume } from '../update-price-tvl-volume'
 import { Pair, PairDaySnapshot, PairHourSnapshot } from '../../generated/schema'
-import { BIG_INT_ONE, BIG_INT_ZERO, DAY_IN_SECONDS, HOUR_IN_SECONDS } from '../constants'
+import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, DAY_IN_SECONDS, HOUR_IN_SECONDS } from '../constants'
 import { convertTokenToDecimal } from './number-converter'
 import { getPair } from './pair'
 
 
-export function updatePairSnapshots(timestamp: BigInt, pairAddress: Address): void {
+export function updatePairSnapshots(
+  timestamp: BigInt,
+  pairAddress: Address,
+  volume: Volume = {volumeUSD: BIG_DECIMAL_ZERO, amount0Total: BIG_DECIMAL_ZERO, amount1Total: BIG_DECIMAL_ZERO},
+): void {
   let pair = getPair(pairAddress.toHex())
-  updatePairHourSnapshot(timestamp, pair)
-  updatePairDaySnapshot(timestamp, pair)
+  updatePairHourSnapshot(timestamp, pair, volume)
+  updatePairDaySnapshot(timestamp, pair, volume)
 }
 
-function updatePairHourSnapshot(timestamp: BigInt, pair: Pair): void {
+function updatePairHourSnapshot(
+  timestamp: BigInt,
+  pair: Pair,
+  volume: Volume
+  ): void {
   let id = getPairHourSnapshotId(pair.id, timestamp)
 
   let snapshot = PairHourSnapshot.load(id)
@@ -22,13 +31,16 @@ function updatePairHourSnapshot(timestamp: BigInt, pair: Pair): void {
     snapshot.date = getHourStartDate(timestamp)
     snapshot.pair = pair.id
     snapshot.transactionCount = BIG_INT_ZERO
+    snapshot.volumeToken0 = BIG_DECIMAL_ZERO
+    snapshot.volumeToken1 = BIG_DECIMAL_ZERO
+    snapshot.volumeUSD = BIG_DECIMAL_ZERO
   }
   snapshot.liquidity = convertTokenToDecimal(pair.liquidity, BigInt.fromU32(18))
   snapshot.liquidityNative = pair.liquidityNative
   snapshot.liquidityUSD = pair.liquidityUSD
-  snapshot.volumeNative = pair.volumeNative
-  snapshot.volumeUSD = pair.volumeUSD
-  snapshot.untrackedVolumeUSD = pair.untrackedVolumeUSD
+  snapshot.volumeUSD = snapshot.volumeUSD.plus(volume.volumeUSD)
+  snapshot.volumeToken0 = snapshot.volumeToken0.plus(volume.amount0Total)
+  snapshot.volumeToken1 = snapshot.volumeToken1.plus(volume.amount1Total)
   snapshot.feesNative = pair.feesNative
   snapshot.feesUSD = pair.feesUSD
   snapshot.apr = pair.apr
@@ -36,7 +48,11 @@ function updatePairHourSnapshot(timestamp: BigInt, pair: Pair): void {
   snapshot.save()
 }
 
-function updatePairDaySnapshot(timestamp: BigInt, pair: Pair): void {
+function updatePairDaySnapshot(
+  timestamp: BigInt, 
+  pair: Pair,
+  volume: Volume
+  ): void {
   let id = getPairDaySnapshotId(pair.id, timestamp)
   let snapshot = PairDaySnapshot.load(id)
 
@@ -45,13 +61,16 @@ function updatePairDaySnapshot(timestamp: BigInt, pair: Pair): void {
     snapshot.date = getHourStartDate(timestamp)
     snapshot.pair = pair.id
     snapshot.transactionCount = BIG_INT_ZERO
+    snapshot.volumeToken0 = BIG_DECIMAL_ZERO
+    snapshot.volumeToken1 = BIG_DECIMAL_ZERO
+    snapshot.volumeUSD = BIG_DECIMAL_ZERO
   }
   snapshot.liquidity = convertTokenToDecimal(pair.liquidity, BigInt.fromU32(18))
   snapshot.liquidityNative = pair.liquidityNative
   snapshot.liquidityUSD = pair.liquidityUSD
-  snapshot.volumeNative = pair.volumeNative
-  snapshot.volumeUSD = pair.volumeUSD
-  snapshot.untrackedVolumeUSD = pair.untrackedVolumeUSD
+  snapshot.volumeUSD = snapshot.volumeUSD.plus(volume.volumeUSD)
+  snapshot.volumeToken0 = snapshot.volumeToken0.plus(volume.amount0Total)
+  snapshot.volumeToken1 = snapshot.volumeToken1.plus(volume.amount1Total)
   snapshot.feesNative = pair.feesNative
   snapshot.feesUSD = pair.feesUSD
   snapshot.apr = pair.apr

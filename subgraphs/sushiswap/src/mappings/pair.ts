@@ -1,4 +1,4 @@
-import { Address } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal } from '@graphprotocol/graph-ts'
 import {
   Burn as BurnEvent,
   Mint as MintEvent,
@@ -32,10 +32,10 @@ export function onTransfer(event: TransferEvent): void {
 }
 
 export function onSwap(event: SwapEvent): void {
-  const volumeUSD = updateVolume(event)
-  handleSwap(event, volumeUSD)
-  updateTokenDaySnapshots(event.block.timestamp, event.address)
-  updatePairSnapshots(event.block.timestamp, event.address)
+  const volume = updateVolume(event)
+  handleSwap(event, volume.volumeUSD)
+  updateTokenDaySnapshots(event.block.timestamp, event.address, volume)
+  updatePairSnapshots(event.block.timestamp, event.address, volume)
   updateApr(event)
 }
 

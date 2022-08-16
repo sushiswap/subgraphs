@@ -315,9 +315,9 @@ type PairHourSnapshot @entity {
   id: ID!
   pair: Pair!
   date: Int!
-  volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
-  untrackedVolumeUSD: BigDecimal!
+  volumeToken0: BigDecimal!
+  volumeToken1: BigDecimal!
   liquidity: BigDecimal!
   liquidityNative: BigDecimal!
   liquidityUSD: BigDecimal!
@@ -332,9 +332,9 @@ type PairDaySnapshot @entity {
   id: ID!
   pair: Pair!
   date: Int!
-  volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
-  untrackedVolumeUSD: BigDecimal!
+  volumeToken0: BigDecimal!
+  volumeToken1: BigDecimal!
   liquidity: BigDecimal!
   liquidityNative: BigDecimal!
   liquidityUSD: BigDecimal!
@@ -353,6 +353,7 @@ type TokenDaySnapshot @entity {
   liquidityNative: BigDecimal!
   liquidityUSD: BigDecimal!
   volume: BigDecimal!
+  volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
   priceNative: BigDecimal!
   priceUSD: BigDecimal!

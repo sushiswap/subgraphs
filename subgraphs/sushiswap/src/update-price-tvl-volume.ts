@@ -65,7 +65,7 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
 
   bundle.nativePrice = getNativePriceInUSD()
   bundle.save()
-  
+
   const token0Price = updateTokenPrice(token0.id, bundle.nativePrice)
   const token1Price = updateTokenPrice(token1.id, bundle.nativePrice)
 
@@ -106,7 +106,7 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   factory.save()
 }
 
-export function updateVolume(event: SwapEvent): BigDecimal {
+export function updateVolume(event: SwapEvent): Volume {
   const pair = getPair(event.address.toHex())
   const token0 = getOrCreateToken(pair.token0)
   const token1 = getOrCreateToken(pair.token1)
@@ -167,7 +167,11 @@ export function updateVolume(event: SwapEvent): BigDecimal {
     factory.save()
   }
 
-  return trackedVolumeUSD != BIG_DECIMAL_ZERO ? trackedVolumeUSD : untrackedVolumeUSD
+  return {
+    volumeUSD: trackedVolumeUSD != BIG_DECIMAL_ZERO ? trackedVolumeUSD : untrackedVolumeUSD, 
+    amount0Total, 
+    amount1Total
+  }
 }
 
 export function updateLiquidity(event: TransferEvent): void {
@@ -279,4 +283,12 @@ export function getTrackedLiquidityUSD(
 
   // neither token is on white list, tracked volume is 0
   return BIG_DECIMAL_ZERO
+}
+
+
+
+export class Volume {
+  volumeUSD: BigDecimal
+  amount0Total: BigDecimal
+  amount1Total: BigDecimal
 }

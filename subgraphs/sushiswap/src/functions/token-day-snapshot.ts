@@ -1,21 +1,31 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
+import { Volume } from '../update-price-tvl-volume'
 import { TokenDaySnapshot } from '../../generated/schema'
-import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, DAY_IN_SECONDS } from '../constants'
+import { BIG_DECIMAL_ONE, BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, DAY_IN_SECONDS } from '../constants'
 import { getOrCreateBundle } from './bundle'
 import { convertTokenToDecimal } from './number-converter'
 import { getPair } from './pair'
 import { getOrCreateToken } from './token'
 import { getTokenPrice } from './token-price'
 
-export function updateTokenDaySnapshots(timestamp: BigInt, pairAddress: Address): void {
+export function updateTokenDaySnapshots(
+  timestamp: BigInt,
+  pairAddress: Address,
+  volume: Volume = { volumeUSD: BIG_DECIMAL_ZERO, amount0Total: BIG_DECIMAL_ZERO, amount1Total: BIG_DECIMAL_ZERO }
+): void {
   let pair = getPair(pairAddress.toHex())
   let bundle = getOrCreateBundle()
-  updateTokenDaySnapshot(timestamp, pair.token0, bundle.nativePrice)
-  updateTokenDaySnapshot(timestamp, pair.token1, bundle.nativePrice)
+  updateTokenDaySnapshot(timestamp, pair.token0, bundle.nativePrice, volume.amount0Total)
+  updateTokenDaySnapshot(timestamp, pair.token1, bundle.nativePrice, volume.amount1Total)
 }
 
 
-function updateTokenDaySnapshot(timestamp: BigInt, tokenId: string, nativePrice: BigDecimal): void {
+function updateTokenDaySnapshot(
+  timestamp: BigInt, 
+  tokenId: string, 
+  nativePrice: BigDecimal,
+  volume: BigDecimal
+  ): void {
   let token = getOrCreateToken(tokenId)
   let tokenPrice = getTokenPrice(tokenId)
   let id = generateTokenDaySnapshotId(tokenId, timestamp)
@@ -27,13 +37,17 @@ function updateTokenDaySnapshot(timestamp: BigInt, tokenId: string, nativePrice:
     snapshot.token = tokenId
     snapshot.transactionCount = BIG_INT_ZERO
     snapshot.liquidityNative = BIG_DECIMAL_ZERO
+    snapshot.volume = BIG_DECIMAL_ZERO
+    snapshot.volumeNative = BIG_DECIMAL_ZERO
+    snapshot.volumeUSD = BIG_DECIMAL_ZERO
   }
 
   snapshot.liquidity = convertTokenToDecimal(token.liquidity, token.decimals)
   snapshot.liquidityNative = token.liquidityNative
   snapshot.liquidityUSD = token.liquidityUSD
-  snapshot.volume = token.volume
-  snapshot.volumeUSD = token.volumeUSD
+  snapshot.volume = snapshot.volume.plus(volume)
+  snapshot.volumeUSD = snapshot.volumeUSD.plus(volume.times(tokenPrice.derivedNative))
+  snapshot.volumeNative = snapshot.volumeNative.plus(volume.times(tokenPrice.derivedNative).times(nativePrice))
   snapshot.priceNative = tokenPrice.derivedNative
   snapshot.priceUSD = tokenPrice.derivedNative.times(nativePrice)
   snapshot.transactionCount = snapshot.transactionCount.plus(BIG_INT_ONE)
