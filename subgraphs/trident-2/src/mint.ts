@@ -1,7 +1,7 @@
 import { BigDecimal } from '@graphprotocol/graph-ts'
 import { Mint, Transaction } from '../generated/schema'
 import { Mint as MintEvent } from '../generated/templates/ConstantProductPool/ConstantProductPool'
-import { BIG_INT_ONE, FactoryType } from './constants'
+import { BIG_INT_ONE, PairType } from './constants'
 import {
   convertTokenToDecimal,
   getOrCreateBundle,
@@ -58,6 +58,6 @@ export function handleMint(event: MintEvent): Mint | null {
   token1.txCount = token1.txCount.plus(BIG_INT_ONE)
   token1.save()
 
-  increaseFactoryTransactionCount(FactoryType.CONSTANT_PRODUCT_POOL)
+  increaseFactoryTransactionCount(PairType.CONSTANT_PRODUCT_POOL)
   return mint
 }

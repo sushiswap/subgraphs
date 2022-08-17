@@ -1,11 +1,12 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { BIG_DECIMAL_ZERO, BIG_INT_ZERO } from '../constants'
+import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, PairType } from '../constants'
 import { ERC20 } from '../../generated/MasterDeployer/ERC20'
 import { NameBytes32 } from '../../generated/MasterDeployer/NameBytes32'
 import { SymbolBytes32 } from '../../generated/MasterDeployer/SymbolBytes32'
 import { Token } from '../../generated/schema'
 import { getOrCreateRebase } from './rebase'
 import { createTokenPrice } from './token-price'
+import { getOrCreateFactory } from './factory'
 
 export function getOrCreateToken(id: string): Token {
   let token = Token.load(id)
@@ -44,6 +45,9 @@ export function getOrCreateToken(id: string): Token {
 
     token.save()
 
+    const factory = getOrCreateFactory(PairType.CONSTANT_PRODUCT_POOL)
+    factory.tokenCount = factory.tokenCount.plus(BIG_INT_ONE)
+    factory.save()
   }
 
   return token as Token
@@ -113,4 +117,12 @@ function getTokenDecimals(contract: ERC20): Decimal {
   }
 
   return { success: false, value: BigInt.fromI32(18) }
+}
+
+const BLACKLIST_EXCHANGE_VOLUME: string[] = [
+  '0x9ea3b5b4ec044b70375236a281986106457b20ef', // DELTA
+]
+
+export function isBlacklistedToken(token: string): boolean {
+  return BLACKLIST_EXCHANGE_VOLUME.includes(token)
 }

@@ -1,6 +1,7 @@
 export * from './bundle'
 export * from './burn'
 export * from './factory'
+export * from './factory-snapshot'
 export * from './liquidity-position'
 export * from './liquidity-position-snapshot'
 export * from './mint'
@@ -14,3 +15,4 @@ export * from './token-pair'
 export * from './token-price'
 export * from './transaction'
 export * from './user'
+

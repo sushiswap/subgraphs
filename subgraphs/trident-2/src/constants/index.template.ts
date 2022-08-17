@@ -92,10 +92,6 @@ export const MINIMUM_USD_THRESHOLD_NEW_PAIRS = BigDecimal.fromString(
   '{{ trident.minimum_usd_threshold_new_pairs }}{{^trident.minimum_usd_threshold_new_pairs}}3000{{/trident.minimum_usd_threshold_new_pairs}}'
 )
 
-export namespace FactoryType {
-  export const CONSTANT_PRODUCT_POOL = "CONSTANT_PRODUCT_POOL";
-}
-
 export namespace PairType {
   export const CONSTANT_PRODUCT_POOL = "CONSTANT_PRODUCT_POOL";
 }

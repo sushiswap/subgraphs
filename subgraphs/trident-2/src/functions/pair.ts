@@ -41,6 +41,7 @@ export function createPair(event: DeployPool, type: string): Pair {
   pair.token0Price = BIG_DECIMAL_ZERO
   pair.token1Price = BIG_DECIMAL_ZERO
   pair.liquidity = BIG_INT_ZERO
+  pair.trackedLiquidityNative = BIG_DECIMAL_ZERO
   pair.liquidityNative = BIG_DECIMAL_ZERO
   pair.liquidityUSD = BIG_DECIMAL_ZERO
   pair.volumeNative = BIG_DECIMAL_ZERO
@@ -53,7 +54,6 @@ export function createPair(event: DeployPool, type: string): Pair {
   pair.apr = BIG_DECIMAL_ZERO
   pair.aprUpdatedAtTimestamp = BIG_INT_ZERO
   pair.txCount = BIG_INT_ZERO
-
   pair.save()
 
   // create the tracked contract based on the template

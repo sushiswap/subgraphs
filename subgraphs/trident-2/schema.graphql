@@ -1,6 +1,3 @@
-enum FactoryType {
-  CONSTANT_PRODUCT_POOL
-}
 
 enum PairType {
   CONSTANT_PRODUCT_POOL
@@ -10,7 +7,7 @@ type Factory @entity {
   " Contract address "
   id: ID!
   " Factory type "
-  type: FactoryType!
+  type: PairType!
   " Volume USD "
   volumeUSD: BigDecimal!
   " Untracked Volume USD "
@@ -147,6 +144,8 @@ type Pair @entity {
   liquidityUSD: BigDecimal!
   " Native Liquidity "
   liquidityNative: BigDecimal!
+  " Tracked Liquidity native "
+  trackedLiquidityNative: BigDecimal!
   " Price of the first token in this pair, not to be confused with TokenPrice entity "
   token0Price: BigDecimal!
   " Price of the second token in this pair, not to be confused with TokenPrice entity "
@@ -335,9 +334,11 @@ type PairHourSnapshot @entity {
   id: ID!
   pair: Pair!
   date: Int!
-  volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
+  volumeNative: BigDecimal!
   untrackedVolumeUSD: BigDecimal!
+  volumeToken0: BigDecimal!
+  volumeToken1: BigDecimal!
   liquidity: BigDecimal!
   liquidityNative: BigDecimal!
   liquidityUSD: BigDecimal!
@@ -352,9 +353,30 @@ type PairDaySnapshot @entity {
   id: ID!
   pair: Pair!
   date: Int!
-  volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
+  volumeNative: BigDecimal!
   untrackedVolumeUSD: BigDecimal!
+  volumeToken0: BigDecimal!
+  volumeToken1: BigDecimal!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  apr: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type PairWeeklySnapshot @entity {
+  " {pairId}-weekly-{timestamp} "
+  id: ID!
+  pair: Pair!
+  date: Int!
+  volumeUSD: BigDecimal!
+  volumeNative: BigDecimal!
+  untrackedVolumeUSD: BigDecimal!
+  volumeToken0: BigDecimal!
+  volumeToken1: BigDecimal!
   liquidity: BigDecimal!
   liquidityNative: BigDecimal!
   liquidityUSD: BigDecimal!
@@ -373,11 +395,27 @@ type TokenDaySnapshot @entity {
   liquidityNative: BigDecimal!
   liquidityUSD: BigDecimal!
   volume: BigDecimal!
+  volumeNative: BigDecimal!
   volumeUSD: BigDecimal!
-  untrackedVolumeUSD: BigDecimal!
   priceNative: BigDecimal!
   priceUSD: BigDecimal!
   feesNative: BigDecimal!
   feesUSD: BigDecimal!
   transactionCount: BigInt!
 }
+
+type FactoryDaySnapshot @entity {
+  " {factoryId}-day-{timestamp} "
+  id: ID!
+  factory: Factory!
+  date: Int!
+  volumeUSD: BigDecimal!
+  volumeNative: BigDecimal!
+  untrackedVolumeUSD: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+

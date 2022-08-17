@@ -8,7 +8,7 @@ import {
 import {
   BIG_DECIMAL_ZERO,
   BIG_INT_ZERO,
-  FactoryType,
+  PairType,
   MINIMUM_USD_THRESHOLD_NEW_PAIRS,
   WHITELISTED_TOKEN_ADDRESSES
 } from './constants'
@@ -30,24 +30,13 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   const pair = getPair(pairId)
   const token0 = getOrCreateToken(pair.token0)
   const token1 = getOrCreateToken(pair.token1)
-  const currentToken0Price = getTokenPrice(pair.token0)
-  const currentToken1Price = getTokenPrice(pair.token1)
-  const factory = getOrCreateFactory(FactoryType.CONSTANT_PRODUCT_POOL)
-  const bundle = getOrCreateBundle()
+  const factory = getOrCreateFactory(PairType.CONSTANT_PRODUCT_POOL)
 
   // Reset token liquidity, will be updated again later when price is updated
   token0.liquidity = token0.liquidity.minus(pair.reserve0)
   token1.liquidity = token1.liquidity.minus(pair.reserve1)
-  const token0LiquidityNative = convertTokenToDecimal(pair.reserve0, token0.decimals).times(
-    currentToken0Price.derivedNative
-  )
-  const token1LiquidityNative = convertTokenToDecimal(pair.reserve1, token1.decimals).times(
-    currentToken1Price.derivedNative
-  )
-  token0.liquidityNative = token0.liquidityNative.minus(token0LiquidityNative)
-  token1.liquidityNative = token1.liquidityNative.minus(token1LiquidityNative)
-  token0.liquidityUSD = token0.liquidityUSD.minus(token0LiquidityNative.times(bundle.nativePrice))
-  token1.liquidityUSD = token1.liquidityUSD.minus(token1LiquidityNative.times(bundle.nativePrice))
+  token0.save()
+  token1.save()
   factory.liquidityNative = factory.liquidityNative.minus(pair.liquidityNative)
 
   const rebase0 = getRebase(token0.id)
@@ -74,6 +63,7 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   }
   pair.save()
 
+  const bundle = getOrCreateBundle()
   bundle.nativePrice = getNativePriceInUSD()
   bundle.save()
 
@@ -82,13 +72,13 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
 
 
   // get tracked liquidity - will be 0 if neither is in whitelist
-  let liquidityNative: BigDecimal
+  let trackedLiquidityNative: BigDecimal
   if (bundle.nativePrice.notEqual(BIG_DECIMAL_ZERO)) {
-    liquidityNative = getTrackedLiquidityUSD(reserve0Decimals, token0Price, reserve1Decimals, token1Price).div(
+    trackedLiquidityNative = getTrackedLiquidityUSD(reserve0Decimals, token0Price, reserve1Decimals, token1Price).div(
       bundle.nativePrice
     )
   } else {
-    liquidityNative = BIG_DECIMAL_ZERO
+    trackedLiquidityNative = BIG_DECIMAL_ZERO
   }
 
   // Set token liquidity with updated prices
@@ -106,6 +96,7 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   token0.save()
   token1.save()
 
+  pair.trackedLiquidityNative = trackedLiquidityNative
   pair.liquidityNative = convertTokenToDecimal(pair.reserve0, token0.decimals)
     .times(token0Price.derivedNative)
     .plus(convertTokenToDecimal(pair.reserve1, token1.decimals).times(token1Price.derivedNative))
@@ -113,29 +104,32 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   pair.liquidityUSD = pair.liquidityNative.times(bundle.nativePrice)
   pair.save()
 
-  factory.liquidityNative = factory.liquidityNative.plus(liquidityNative)
+  factory.liquidityNative = factory.liquidityNative.plus(trackedLiquidityNative)
   factory.liquidityUSD = factory.liquidityNative.times(bundle.nativePrice)
   factory.save()
 
 }
 
-export function updateVolume(event: SwapEvent): BigDecimal {
+export function updateVolume(event: SwapEvent): Volume {
   const pair = getPair(event.address.toHex())
   const tokenIn = getOrCreateToken(event.params.tokenIn.toHex())
   const tokenOut = getOrCreateToken(event.params.tokenOut.toHex())
-  const tokenInPrice = getTokenPrice(tokenIn.id)
-  const tokenOutPrice = getTokenPrice(tokenOut.id)
-
   const amountIn = convertTokenToDecimal(event.params.amountIn, tokenIn.decimals)
   const amountOut = convertTokenToDecimal(event.params.amountOut, tokenOut.decimals)
 
   const isFirstToken = pair.token0 == event.params.tokenIn.toHex()
   const trackedVolumeUSD = getTrackedVolumeUSD(amountIn, amountOut, pair.id, isFirstToken)
   const bundle = getOrCreateBundle()
-  const volumeNative = tokenInPrice.derivedNative
-    .times(amountOut)
-    .plus(tokenOutPrice.derivedNative.times(amountIn))
-    .div(BigDecimal.fromString('2'))
+
+  let volumeNative: BigDecimal
+
+  if (bundle.nativePrice.equals(BIG_DECIMAL_ZERO)) {
+    volumeNative = BIG_DECIMAL_ZERO
+  } else {
+    volumeNative = trackedVolumeUSD.div(bundle.nativePrice)
+  }
+
+
   const untrackedVolumeUSD = volumeNative.times(bundle.nativePrice)
   const feesNative = volumeNative.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
   const feesUSD = trackedVolumeUSD.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
@@ -166,7 +160,7 @@ export function updateVolume(event: SwapEvent): BigDecimal {
   pair.feesUSD = pair.feesUSD.plus(feesUSD)
   pair.save()
 
-  const factory = getOrCreateFactory(FactoryType.CONSTANT_PRODUCT_POOL)
+  const factory = getOrCreateFactory(PairType.CONSTANT_PRODUCT_POOL)
   factory.volumeUSD = factory.volumeUSD.plus(trackedVolumeUSD)
   factory.volumeNative = factory.volumeNative.plus(volumeNative)
   factory.untrackedVolumeUSD = factory.untrackedVolumeUSD.plus(untrackedVolumeUSD)
@@ -174,7 +168,15 @@ export function updateVolume(event: SwapEvent): BigDecimal {
   factory.feesUSD = factory.feesUSD.plus(feesUSD)
   factory.save()
 
-  return trackedVolumeUSD != BIG_DECIMAL_ZERO ? trackedVolumeUSD : untrackedVolumeUSD
+  return {
+    volumeUSD: trackedVolumeUSD != BIG_DECIMAL_ZERO ? trackedVolumeUSD : untrackedVolumeUSD,
+    volumeNative,
+    untrackedVolumeUSD,
+    feesNative,
+    feesUSD,
+    amount0Total: amountIn,
+    amount1Total: amountOut
+  }
 }
 
 export function updateLiquidity(event: TransferEvent): void {
@@ -287,4 +289,14 @@ export function getTrackedLiquidityUSD(
 
   // neither token is on white list, tracked volume is 0
   return BIG_DECIMAL_ZERO
+}
+
+export class Volume {
+  volumeUSD: BigDecimal
+  volumeNative: BigDecimal
+  untrackedVolumeUSD: BigDecimal
+  feesNative: BigDecimal
+  feesUSD: BigDecimal
+  amount0Total: BigDecimal
+  amount1Total: BigDecimal
 }
