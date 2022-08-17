@@ -1,4 +1,4 @@
-import { BigDecimal } from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 import { TokenPrice } from '../generated/schema'
 import { Swap as SwapEvent, Sync as SyncEvent, Transfer as TransferEvent } from '../generated/templates/Pair/Pair'
 import {
@@ -24,25 +24,14 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   const pair = getPair(pairId)
   const token0 = getOrCreateToken(pair.token0)
   const token1 = getOrCreateToken(pair.token1)
-  const currentToken0Price = getTokenPrice(pair.token0)
-  const currentToken1Price = getTokenPrice(pair.token1)
-  const bundle = getOrCreateBundle()
   const factory = getOrCreateFactory()
 
   // Reset liquidity, will be updated again later when price is updated
   token0.liquidity = token0.liquidity.minus(pair.reserve0)
   token1.liquidity = token1.liquidity.minus(pair.reserve1)
-  const token0LiquidityNative = convertTokenToDecimal(pair.reserve0, token0.decimals).times(
-    currentToken0Price.derivedNative
-  )
-  const token1LiquidityNative = convertTokenToDecimal(pair.reserve1, token1.decimals).times(
-    currentToken1Price.derivedNative
-  )
+  token0.save()
+  token1.save()
 
-  token0.liquidityNative = token0.liquidityNative.minus(token0LiquidityNative)
-  token1.liquidityNative = token1.liquidityNative.minus(token1LiquidityNative)
-  token0.liquidityUSD = token0.liquidityUSD.minus(token0LiquidityNative.times(bundle.nativePrice))
-  token1.liquidityUSD = token1.liquidityUSD.minus(token1LiquidityNative.times(bundle.nativePrice))
   factory.liquidityNative = factory.liquidityNative.minus(pair.trackedLiquidityNative)
 
 
@@ -62,15 +51,15 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   } else {
     pair.token1Price = BIG_DECIMAL_ZERO
   }
-  token0.save()
-  token1.save()
   pair.save()
 
+  const bundle = getOrCreateBundle()
   bundle.nativePrice = getNativePriceInUSD()
   bundle.save()
 
   const token0Price = updateTokenPrice(token0.id, bundle.nativePrice)
   const token1Price = updateTokenPrice(token1.id, bundle.nativePrice)
+
 
   // get tracked liquidity - will be 0 if neither is in whitelist
   let trackedLiquidityNative: BigDecimal
@@ -97,6 +86,7 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   token0.save()
   token1.save()
 
+  pair.trackedLiquidityNative = trackedLiquidityNative
   pair.liquidityNative = reserve0Decimals
     .times(token0Price.derivedNative)
     .plus(reserve1Decimals.times(token1Price.derivedNative))
