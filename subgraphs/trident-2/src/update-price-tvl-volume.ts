@@ -37,7 +37,7 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   token1.liquidity = token1.liquidity.minus(pair.reserve1)
   token0.save()
   token1.save()
-  factory.liquidityNative = factory.liquidityNative.minus(pair.liquidityNative)
+  factory.liquidityNative = factory.liquidityNative.minus(pair.trackedLiquidityNative)
 
   const rebase0 = getRebase(token0.id)
   const rebase1 = getRebase(token1.id)
