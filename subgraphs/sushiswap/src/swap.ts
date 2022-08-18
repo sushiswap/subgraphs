@@ -76,7 +76,7 @@ const calculateApr = (pair: Pair, snapshot: PairHourSnapshot): BigDecimal => {
   return pair.volumeUSD.minus(snapshot.volumeUSD)
     .times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
     .times(BigDecimal.fromString('365')) // One year
-    .times(BigDecimal.fromString('100'))
+    .div(BigDecimal.fromString('100'))
     .div(pair.liquidityUSD)
 }
 
