@@ -1,12 +1,16 @@
 import { Address, ethereum } from '@graphprotocol/graph-ts'
 
 import { User } from '../../generated/schema'
-import { BIG_INT_ZERO, Product } from '../constants'
+import { ADDRESS_ZERO, BIG_INT_ZERO, Product } from '../constants'
 import { updateGlobalMetrics } from './global'
 import { updateSnapshots } from './snapshots'
 
 
 export function handleUser(id: Address, event: ethereum.Event, product: string): void {
+  if (id.equals(ADDRESS_ZERO)) {
+    return
+  }
+
   let user = User.load(id.toHex())
 
   if (user === null) {

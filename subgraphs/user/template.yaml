@@ -2,29 +2,6 @@ specVersion: 0.0.6
 schema:
   file: ./schema.graphql
 dataSources:
-  # - kind: ethereum/contract
-  #   name: Xswap
-  #   network: arbitrum-one
-  #   source:
-  #     address: '0x53b08dbd70327b7ba3b7886fc9987bc985d27262'
-  #     startBlock: 18221456
-  #     abi: Xswap
-  #   mapping:
-  #     kind: ethereum/events
-  #     apiVersion: 0.0.7
-  #     language: wasm/assemblyscript
-  #     entities: []
-  #     abis:
-  #       - name: Xswap
-  #         file: ./abis/xswap.json
-
-  #     eventHandlers:
-  #       - event: StargateSushiXSwapDst(indexed bytes32,bool)
-  #         handler: onDestination
-  #       - event: StargateSushiXSwapSrc(indexed bytes32)
-  #         handler: onSource
-  #     file: ./src/mappings/user.ts
-
   - kind: ethereum/contract
     name: BentoBox
     network: {{ network }}
@@ -44,3 +21,11 @@ dataSources:
       eventHandlers:
         - event: LogDeposit(indexed address,indexed address,indexed address,uint256,uint256)
           handler: onLogDeposit
+        - event: LogWithdraw(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: onLogWithdraw
+        - event: LogTransfer(indexed address,indexed address,indexed address,uint256)
+          handler: onLogTransfer
+        - event: LogFlashLoan(indexed address,indexed address,uint256,uint256,indexed address)
+          handler: onLogFlashLoan
+        - event: LogSetMasterContractApproval(indexed address,indexed address,bool)
+          handler: onLogSetMasterContractApproval
