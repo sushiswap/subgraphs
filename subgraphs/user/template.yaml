@@ -100,6 +100,48 @@ dataSources:
         - event: Withdraw(indexed address,indexed uint256,uint256,indexed address)
           handler: withdraw
       file: ./src/mappings/masterchef-v2.ts
+# SUSHI
+  - kind: ethereum/contract
+    name: Sushi
+    network: {{ network }}
+    source:
+      address: '{{ sushi.address }}'
+      startBlock: {{ sushi.startBlock }}
+      abi: Sushi
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/sushi.ts
+      entities: []
+      abis:
+        - name: Sushi
+          file: ./node_modules/abi/SUSHI/SUSHI.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: onTransfer
+# XSUSHI
+  - kind: ethereum/contract
+    name: xSushi
+    network: {{ network }}
+    source:
+      address: '{{ xSushi.address }}'
+      startBlock: {{ xSushi.startBlock }}
+      abi: xSushi
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/xsushi.ts
+      entities:
+        - Transaction
+        - User
+      abis:
+        - name: xSushi
+          file: ./node_modules/abi/xSUSHI/xSUSHI.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: onTransfer
 templates:
 # SUSHISWAP TEMPLATE
   - kind: ethereum/contract
