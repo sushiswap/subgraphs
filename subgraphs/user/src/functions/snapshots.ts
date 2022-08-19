@@ -36,6 +36,7 @@ function updateHourSnapshot(
         snapshot.newMasterChefV2Users = BIG_INT_ZERO
         snapshot.newMiniChefUsers = BIG_INT_ZERO
         snapshot.newSushiUsers = BIG_INT_ZERO
+        snapshot.newXSushiUsers = BIG_INT_ZERO
         snapshot.newFuroUsers = BIG_INT_ZERO
         snapshot.newLimitOrderUsers = BIG_INT_ZERO
         snapshot.newKashiUsers = BIG_INT_ZERO
@@ -110,6 +111,7 @@ function updateDaySnapshot(
         snapshot.newMasterChefV2Users = BIG_INT_ZERO
         snapshot.newMiniChefUsers = BIG_INT_ZERO
         snapshot.newSushiUsers = BIG_INT_ZERO
+        snapshot.newXSushiUsers = BIG_INT_ZERO
         snapshot.newFuroUsers = BIG_INT_ZERO
         snapshot.newLimitOrderUsers = BIG_INT_ZERO
         snapshot.newKashiUsers = BIG_INT_ZERO
@@ -185,6 +187,7 @@ function updateWeekSnapshot(
         snapshot.newMasterChefV2Users = BIG_INT_ZERO
         snapshot.newMiniChefUsers = BIG_INT_ZERO
         snapshot.newSushiUsers = BIG_INT_ZERO
+        snapshot.newXSushiUsers = BIG_INT_ZERO
         snapshot.newFuroUsers = BIG_INT_ZERO
         snapshot.newLimitOrderUsers = BIG_INT_ZERO
         snapshot.newKashiUsers = BIG_INT_ZERO

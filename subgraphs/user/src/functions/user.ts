@@ -88,10 +88,12 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     user.kashiLatestInteractionAtBlock = BIG_INT_ZERO
     user.kashiLatestInteractionAtTimestamp = BIG_INT_ZERO
 
+    user.usedMiso = false
     user.misoFirstInteractionAtBlock = BIG_INT_ZERO
     user.misoFirstInteractionAtTimestamp = BIG_INT_ZERO
     user.misoLatestInteractionAtBlock = BIG_INT_ZERO
     user.misoLatestInteractionAtTimestamp = BIG_INT_ZERO
+
     user.save()
   }
 
@@ -207,6 +209,26 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     }
     user.limitOrderLatestInteractionAtBlock = event.block.number
     user.limitOrderLatestInteractionAtTimestamp = event.block.timestamp
+    user.modifiedAtBlock = event.block.number
+    user.modifiedAtTimestamp = event.block.timestamp
+    user.save()
+  } else if (product === Product.KASHI) {
+    if (!user.usedKashi) {
+      isNewUser = true
+      user.usedKashi = true
+    }
+    user.kashiLatestInteractionAtBlock = event.block.number
+    user.kashiLatestInteractionAtTimestamp = event.block.timestamp
+    user.modifiedAtBlock = event.block.number
+    user.modifiedAtTimestamp = event.block.timestamp
+    user.save()
+  } else if (product === Product.MISO) {
+    if (!user.usedMiso) {
+      isNewUser = true
+      user.usedMiso = true
+    }
+    user.misoLatestInteractionAtBlock = event.block.number
+    user.misoLatestInteractionAtTimestamp = event.block.timestamp
     user.modifiedAtBlock = event.block.number
     user.modifiedAtTimestamp = event.block.timestamp
     user.save()
