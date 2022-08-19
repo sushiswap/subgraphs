@@ -1,0 +1,46 @@
+type Global @entity {
+    id: ID!
+    totalUsers: BigInt!
+    bentoBoxUsers: BigInt!
+}
+
+
+type User @entity {
+    id: ID!
+    createdAtBlock: BigInt!
+    createdAtTimestamp: BigInt!
+    modifiedAtBlock: BigInt!
+    modifiedAtTimestamp: BigInt!
+
+    usedBentoBox: Boolean!
+    bentoBoxFirstInteractionAtTimestamp: BigInt!
+    bentoBoxFirstInteractionAtBlock: BigInt!
+    bentoBoxLatestInteractionAtTimestamp: BigInt!
+    bentoBoxLatestInteractionAtAtBlock: BigInt!
+    
+}
+
+type HourlySnapshot @entity {
+    id: ID!
+    totalUsers: BigInt!
+    newUsers: BigInt!
+    bentoBoxTotalUsers: BigInt!
+    newBentoBoxUsers: BigInt!
+}
+
+# type DailySnapshot @entity {
+#     id: ID!
+#     totalUsers: BigInt!
+#     newUsers: BigInt!
+#     bentoBoxTotalUsers: BigInt!
+#     newBentoBoxUsers: BigInt!
+# }
+
+
+# type WeeklySnapshot @entity {
+#     id: ID!
+#     totalUsers: BigInt!
+#     newUsers: BigInt!
+#     bentoBoxTotalUsers: BigInt!
+#     newBentoBoxUsers: BigInt!
+# }
