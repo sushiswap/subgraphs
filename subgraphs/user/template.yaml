@@ -2,6 +2,7 @@ specVersion: 0.0.6
 schema:
   file: ./schema.graphql
 dataSources:
+# BENTOBOX
   - kind: ethereum/contract
     name: BentoBox
     network: {{ network }}
@@ -11,7 +12,7 @@ dataSources:
       abi: BentoBox
     mapping:
       kind: ethereun/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/bentobox.ts
       entities: []
@@ -29,3 +30,45 @@ dataSources:
           handler: onLogFlashLoan
         - event: LogSetMasterContractApproval(indexed address,indexed address,bool)
           handler: onLogSetMasterContractApproval
+# SUSHISWAP
+  - kind: ethereum/contract
+    name: Factory
+    network: {{ network }}
+    source:
+      address: '{{ legacy.factory.address }}'
+      abi: Factory
+      startBlock: {{ legacy.factory.startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/sushiswap-factory.ts
+      entities: []
+      abis:
+        - name: Factory
+          file: ./node_modules/abi/Uniswap/UniswapV2Factory.json
+        - name: Pair
+          file: ./node_modules/abi/Uniswap/UniswapV2Pair.json
+      eventHandlers:
+        - event: PairCreated(indexed address,indexed address,address,uint256)
+          handler: onPairCreated
+templates:
+  - kind: ethereum/contract
+    name: Pair
+    network: {{ network }}
+    source:
+      abi: Pair
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/sushiswap-pair.ts
+      entities: []
+      abis:
+        - name: Factory
+          file: ./node_modules/abi/Uniswap/UniswapV2Factory.json
+        - name: Pair
+          file: ./node_modules/abi/Uniswap/UniswapV2Pair.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: onTransfer
