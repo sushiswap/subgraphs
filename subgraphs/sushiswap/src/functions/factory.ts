@@ -1,12 +1,13 @@
 import { Address } from '@graphprotocol/graph-ts'
 import { Factory } from '../../generated/schema'
-import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, FACTORY_ADDRESS } from '../constants'
+import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, FACTORY_ADDRESS, PairType } from '../constants'
 
 export function getOrCreateFactory(id: Address = FACTORY_ADDRESS): Factory {
   let factory = Factory.load(id.toHex())
 
   if (factory === null) {
     factory = new Factory(id.toHex())
+    factory.type = PairType.CONSTANT_PRODUCT_POOL
     factory.volumeUSD = BIG_DECIMAL_ZERO
     factory.untrackedVolumeUSD = BIG_DECIMAL_ZERO
     factory.volumeNative = BIG_DECIMAL_ZERO

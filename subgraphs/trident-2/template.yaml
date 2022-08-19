@@ -14,8 +14,7 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/bentobox.ts
-      entities:
-        - Rebase
+      entities: []
       abis:
         - name: BentoBox
           file: ./node_modules/abi/BentoBox/BentoBox.json
@@ -48,9 +47,7 @@ dataSources:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
-      entities:
-        - Pair
-        - PairKpi
+      entities: []
       abis:
         - name: BentoBox
           file: ./node_modules/abi/BentoBox/BentoBox.json
@@ -79,12 +76,7 @@ templates:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/pair.ts
-      entities:
-        - Pair
-        - PairKpi
-        - Token
-        - TokenPair
-        - TokenPrice
+      entities: []
       abis:
         - name: ConstantProductPool
           file: ./abis/ConstantProductPool.json
@@ -101,12 +93,9 @@ templates:
           handler: onMint
         - event: Burn(indexed address,uint256,uint256,indexed address)
           handler: onBurn
-          receipt: true
         - event: Sync(uint256,uint256)
           handler: onSync
         - event: Transfer(indexed address,indexed address,uint256)
           handler: onTransfer
-          receipt: true
         - event: Swap(indexed address,indexed address,indexed address,uint256,uint256)
           handler: onSwap
-          receipt: true

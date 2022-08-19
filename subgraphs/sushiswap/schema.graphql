@@ -5,6 +5,8 @@ enum PairType {
 type Factory @entity {
   " Contract address "
   id: ID!
+  " Factory type "
+  type: PairType!
   " Volume USD "
   volumeUSD: BigDecimal!
   " Untracked Volume USD "
@@ -269,11 +271,6 @@ type Transaction @entity {
   id: ID!
   gasLimit: BigInt!
   gasPrice: BigInt!
-  " Gas used in native "
-  gasUsed: BigInt
-  cumulativeGasUsed: BigInt
-  " Gas used in USD "
-  gasUsedUSD: BigDecimal
   # This is not the reverse of Mint.transaction; it is only used to
   # track incomplete mints (similar for burns and swaps)
   mints: [Mint!]! 
@@ -382,6 +379,21 @@ type TokenDaySnapshot @entity {
   volumeUSD: BigDecimal!
   priceNative: BigDecimal!
   priceUSD: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type FactoryHourSnapshot @entity {
+  " {factoryId}-hour-{timestamp} "
+  id: ID!
+  factory: Factory!
+  date: Int!
+  volumeUSD: BigDecimal!
+  volumeNative: BigDecimal!
+  untrackedVolumeUSD: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
   feesNative: BigDecimal!
   feesUSD: BigDecimal!
   transactionCount: BigInt!

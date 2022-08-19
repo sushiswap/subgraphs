@@ -78,5 +78,6 @@ const calculateApr = (pair: Pair, snapshot: PairHourSnapshot): BigDecimal => {
     .times(BigDecimal.fromString('365')) // One year
     .div(BigDecimal.fromString('100'))
     .div(pair.liquidityUSD)
+    .div(BigDecimal.fromString('100'))
 }
 

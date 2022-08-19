@@ -72,7 +72,7 @@ type Token @entity {
   volumeNative: BigDecimal!
   " Volume in USD "
   volumeUSD: BigDecimal!
-  " Untracked Volume USD "
+  " Untracked Volume in USD "
   untrackedVolumeUSD: BigDecimal!
   " Fee in USD "
   feesNative: BigDecimal!
@@ -101,7 +101,6 @@ type TokenPrice @entity {
   " Which pair this price is based on "
   pricedOffPair: Pair
 }
-
 
 type _TokenPair @entity(immutable: true) {
   " id is created by combining token.id and count, e.g. 0x00x00:1 "
@@ -154,7 +153,7 @@ type Pair @entity {
   volumeNative: BigDecimal!
   # volume in USD
   volumeUSD: BigDecimal!
-  " Untracked Volume USD "
+  " Untracked Volume in USD "
   untrackedVolumeUSD: BigDecimal!
   # volume token0
   volumeToken0: BigDecimal!
@@ -286,11 +285,6 @@ type Transaction @entity {
   id: ID!
   gasLimit: BigInt!
   gasPrice: BigInt!
-  " Gas used in native "
-  gasUsed: BigInt
-  cumulativeGasUsed: BigInt
-  " Gas used in USD "
-  gasUsedUSD: BigDecimal
   # This is not the reverse of Mint.transaction; it is only used to
   # track incomplete mints (similar for burns and swaps)
   mints: [Mint!]! 
@@ -399,6 +393,21 @@ type TokenDaySnapshot @entity {
   volumeUSD: BigDecimal!
   priceNative: BigDecimal!
   priceUSD: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
+type FactoryHourSnapshot @entity {
+  " {factoryId}-hour-{timestamp} "
+  id: ID!
+  factory: Factory!
+  date: Int!
+  volumeUSD: BigDecimal!
+  volumeNative: BigDecimal!
+  untrackedVolumeUSD: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
   feesNative: BigDecimal!
   feesUSD: BigDecimal!
   transactionCount: BigInt!
