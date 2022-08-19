@@ -36,7 +36,7 @@ dataSources:
       kind: ethereun/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
-      file: ./src/mappings/index.ts
+      file: ./src/mappings/bentobox.ts
       entities: []
       abis:
         - name: BentoBox

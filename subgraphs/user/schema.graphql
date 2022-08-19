@@ -2,6 +2,18 @@ type Global @entity {
     id: ID!
     totalUsers: BigInt!
     bentoBoxUsers: BigInt!
+    sushiswapUsers: BigInt!
+    tridentUsers: BigInt!
+    sushiXSwapUsers: BigInt!
+    masterChefV1Users: BigInt!
+    masterChefV2Users: BigInt!
+    miniChefUsers: BigInt!
+    sushiUsers: BigInt!
+    xSushiUsers: BigInt!
+    furoUsers: BigInt!
+    limitOrderUsers: BigInt!
+    kashiUsers: BigInt!
+    misoUsers: BigInt!
 }
 
 
@@ -16,31 +28,179 @@ type User @entity {
     bentoBoxFirstInteractionAtTimestamp: BigInt!
     bentoBoxFirstInteractionAtBlock: BigInt!
     bentoBoxLatestInteractionAtTimestamp: BigInt!
-    bentoBoxLatestInteractionAtAtBlock: BigInt!
-    
+    bentoBoxLatestInteractionAtBlock: BigInt!
+
+    usedSushiswap: Boolean!
+    sushiswapFirstInteractionAtTimestamp: BigInt!
+    sushiswapFirstInteractionAtBlock: BigInt!
+    sushiswapLatestInteractionAtTimestamp: BigInt!
+    sushiswapLatestInteractionAtBlock: BigInt!
+
+    usedTrident: Boolean!
+    tridentFirstInteractionAtTimestamp: BigInt!
+    tridentFirstInteractionAtBlock: BigInt!
+    tridentLatestInteractionAtTimestamp: BigInt!
+    tridentLatestInteractionAtBlock: BigInt!
+
+    usedSushiXSwap: Boolean!
+    sushiXSwapFirstInteractionAtTimestamp: BigInt!
+    sushiXSwapFirstInteractionAtBlock: BigInt!
+    sushiXSwapLatestInteractionAtTimestamp: BigInt!
+    sushiXSwapLatestInteractionAtBlock: BigInt!
+
+    usedMasterChefV1: Boolean!
+    masterChefV1FirstInteractionAtTimestamp: BigInt!
+    masterChefV1FirstInteractionAtBlock: BigInt!
+    masterChefV1LatestInteractionAtTimestamp: BigInt!
+    masterChefV1LatestInteractionAtBlock: BigInt!
+
+    usedMasterChefV2: Boolean!
+    masterChefV2FirstInteractionAtTimestamp: BigInt!
+    masterChefV2FirstInteractionAtBlock: BigInt!
+    masterChefV2LatestInteractionAtTimestamp: BigInt!
+    masterChefV2LatestInteractionAtBlock: BigInt!
+
+    usedMiniChef: Boolean!
+    miniChefFirstInteractionAtTimestamp: BigInt!
+    miniChefFirstInteractionAtBlock: BigInt!
+    miniChefLatestInteractionAtTimestamp: BigInt!
+    miniChefLatestInteractionAtBlock: BigInt!
+
+    usedSushi: Boolean!
+    sushiFirstInteractionAtTimestamp: BigInt!
+    sushiFirstInteractionAtBlock: BigInt!
+    sushiLatestInteractionAtTimestamp: BigInt!
+    sushiLatestInteractionAtBlock: BigInt!
+
+    usedXSushi: Boolean!
+    xSushiFirstInteractionAtTimestamp: BigInt!
+    xSushiFirstInteractionAtBlock: BigInt!
+    xSushiLatestInteractionAtTimestamp: BigInt!
+    xSushiLatestInteractionAtBlock: BigInt!
+
+    usedFuro: Boolean!
+    furoFirstInteractionAtTimestamp: BigInt!
+    furoFirstInteractionAtBlock: BigInt!
+    furoLatestInteractionAtTimestamp: BigInt!
+    furoLatestInteractionAtBlock: BigInt!
+
+    usedLimitOrder: Boolean!
+    limitOrderFirstInteractionAtTimestamp: BigInt!
+    limitOrderFirstInteractionAtBlock: BigInt!
+    limitOrderLatestInteractionAtTimestamp: BigInt!
+    limitOrderLatestInteractionAtBlock: BigInt!
+
+    usedKashi: Boolean!
+    kashiFirstInteractionAtTimestamp: BigInt!
+    kashiFirstInteractionAtBlock: BigInt!
+    kashiLatestInteractionAtTimestamp: BigInt!
+    kashiLatestInteractionAtBlock: BigInt!
+
+    usedMiso: Boolean!
+    misoFirstInteractionAtTimestamp: BigInt!
+    misoFirstInteractionAtBlock: BigInt!
+    misoLatestInteractionAtTimestamp: BigInt!
+    misoLatestInteractionAtBlock: BigInt!
 }
 
 type HourlySnapshot @entity {
+    "hourly-{date}"
     id: ID!
+    date: Int!
     totalUsers: BigInt!
     newUsers: BigInt!
     bentoBoxTotalUsers: BigInt!
     newBentoBoxUsers: BigInt!
+    sushiswapTotalUsers: BigInt!
+    newSushiswapUsers: BigInt!
+    tridentTotalUsers: BigInt!
+    newTridentUsers: BigInt!
+    sushiXSwapTotalUsers: BigInt!
+    newSushiXSwapUsers: BigInt!
+    masterChefV1TotalUsers: BigInt!
+    newMasterChefV1Users: BigInt!
+    masterChefV2TotalUsers: BigInt!
+    newMasterChefV2Users: BigInt!
+    miniChefTotalUsers: BigInt!
+    newMiniChefUsers: BigInt!
+    sushiTotalUsers: BigInt!
+    newSushiUsers: BigInt!
+    xSushiTotalUsers: BigInt!
+    newXSushiUsers: BigInt!
+    furoTotalUsers: BigInt!
+    newFuroUsers: BigInt!
+    limitOrderTotalUsers: BigInt!
+    newLimitOrderUsers: BigInt!
+    kashiTotalUsers: BigInt!
+    newKashiUsers: BigInt!
+    misoTotalUsers: BigInt!
+    newMisoUsers: BigInt!
 }
 
-# type DailySnapshot @entity {
-#     id: ID!
-#     totalUsers: BigInt!
-#     newUsers: BigInt!
-#     bentoBoxTotalUsers: BigInt!
-#     newBentoBoxUsers: BigInt!
-# }
+type DailySnapshot @entity {
+    "day-{date}"
+    id: ID!
+    date: Int!
+    totalUsers: BigInt!
+    newUsers: BigInt!
+    bentoBoxTotalUsers: BigInt!
+    newBentoBoxUsers: BigInt!
+    sushiswapTotalUsers: BigInt!
+    newSushiswapUsers: BigInt!
+    tridentTotalUsers: BigInt!
+    newTridentUsers: BigInt!
+    sushiXSwapTotalUsers: BigInt!
+    newSushiXSwapUsers: BigInt!
+    masterChefV1TotalUsers: BigInt!
+    newMasterChefV1Users: BigInt!
+    masterChefV2TotalUsers: BigInt!
+    newMasterChefV2Users: BigInt!
+    miniChefTotalUsers: BigInt!
+    newMiniChefUsers: BigInt!
+    sushiTotalUsers: BigInt!
+    newSushiUsers: BigInt!
+    xSushiTotalUsers: BigInt!
+    newXSushiUsers: BigInt!
+    furoTotalUsers: BigInt!
+    newFuroUsers: BigInt!
+    limitOrderTotalUsers: BigInt!
+    newLimitOrderUsers: BigInt!
+    kashiTotalUsers: BigInt!
+    newKashiUsers: BigInt!
+    misoTotalUsers: BigInt!
+    newMisoUsers: BigInt!
+}
 
-
-# type WeeklySnapshot @entity {
-#     id: ID!
-#     totalUsers: BigInt!
-#     newUsers: BigInt!
-#     bentoBoxTotalUsers: BigInt!
-#     newBentoBoxUsers: BigInt!
-# }
+type WeeklySnapshot @entity {
+    "week-{date}"
+    id: ID!
+    date: Int!
+    totalUsers: BigInt!
+    newUsers: BigInt!
+    bentoBoxTotalUsers: BigInt!
+    newBentoBoxUsers: BigInt!
+    sushiswapTotalUsers: BigInt!
+    newSushiswapUsers: BigInt!
+    tridentTotalUsers: BigInt!
+    newTridentUsers: BigInt!
+    sushiXSwapTotalUsers: BigInt!
+    newSushiXSwapUsers: BigInt!
+    masterChefV1TotalUsers: BigInt!
+    newMasterChefV1Users: BigInt!
+    masterChefV2TotalUsers: BigInt!
+    newMasterChefV2Users: BigInt!
+    miniChefTotalUsers: BigInt!
+    newMiniChefUsers: BigInt!
+    sushiTotalUsers: BigInt!
+    newSushiUsers: BigInt!
+    xSushiTotalUsers: BigInt!
+    newXSushiUsers: BigInt!
+    furoTotalUsers: BigInt!
+    newFuroUsers: BigInt!
+    limitOrderTotalUsers: BigInt!
+    newLimitOrderUsers: BigInt!
+    kashiTotalUsers: BigInt!
+    newKashiUsers: BigInt!
+    misoTotalUsers: BigInt!
+    newMisoUsers: BigInt!
+}

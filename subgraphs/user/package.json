@@ -10,7 +10,7 @@
     ],
     "scripts": {
       "generate": "mustache ../../config/$NETWORK.js template.yaml > subgraph.yaml && mustache ../../config/$NETWORK.js src/constants/index.template.ts > src/constants/index.ts && graph codegen",
-      "build": "graph build",
+      "build": "graph build"
     },
     "devDependencies": {
         "abi": "workspace:*",
