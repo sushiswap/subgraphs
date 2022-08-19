@@ -126,4 +126,6 @@ module.exports = {
     address: '0x0000000000000000000000000000000000000000',
     startBlock: 0,
   },
+  masterChefV1: { address: '0xc2EdaD668740f1aA35E4D8f227fB8E17dcA888Cd', startBlock: 10736242 },
+  masterChefV2: { address: '0xEF0881eC094552b2e128Cf945EF17a6752B4Ec5d', startBlock: 12428169 },
 }

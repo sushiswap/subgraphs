@@ -52,7 +52,56 @@ dataSources:
       eventHandlers:
         - event: PairCreated(indexed address,indexed address,address,uint256)
           handler: onPairCreated
+# MASTER_CHEF_V1
+  - kind: ethereum/contract
+    name: MasterChefV1
+    network: {{ network }}
+    source:
+      address: '{{ masterChefV1.address }}'
+      abi: MasterChefV1
+      startBlock: {{ masterChefV1.startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: MasterChefV1
+          file: ./node_modules/abi/MasterChefV1/MasterChefV1.json
+      eventHandlers:
+        - event: Deposit(indexed address,indexed uint256,uint256)
+          handler: deposit
+        - event: EmergencyWithdraw(indexed address,indexed uint256,uint256)
+          handler: emergencyWithdraw
+        - event: Withdraw(indexed address,indexed uint256,uint256)
+          handler: withdraw
+      file: ./src/mappings/masterchef-v1.ts
+# MASTER_CHEF_V2
+  - kind: ethereum/contract
+    name: MasterChefV2
+    network: {{ network }}
+    source:
+      address: '{{ masterChefV2.address }}'
+      abi: MasterChefV2
+      startBlock: {{ masterChefV2.startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: MasterChefV2
+          file: ./node_modules/abi/MasterChefV2/MasterChefV2.json
+      eventHandlers:
+        - event: Deposit(indexed address,indexed uint256,uint256,indexed address)
+          handler: deposit
+        - event: EmergencyWithdraw(indexed address,indexed uint256,uint256,indexed address)
+          handler: emergencyWithdraw
+        - event: Withdraw(indexed address,indexed uint256,uint256,indexed address)
+          handler: withdraw
+      file: ./src/mappings/masterchef-v2.ts
 templates:
+# SUSHISWAP TEMPLATE
   - kind: ethereum/contract
     name: Pair
     network: {{ network }}
