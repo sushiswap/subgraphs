@@ -19,6 +19,8 @@ dataSources:
       abis:
         - name: BentoBox
           file: ./node_modules/abi/BentoBox/BentoBox.json
+        - name: KashiPair
+          file: ./node_modules/abi/Kashi/KashiPair.json
       eventHandlers:
         - event: LogDeposit(indexed address,indexed address,indexed address,uint256,uint256)
           handler: onLogDeposit
@@ -30,6 +32,8 @@ dataSources:
           handler: onLogFlashLoan
         - event: LogSetMasterContractApproval(indexed address,indexed address,bool)
           handler: onLogSetMasterContractApproval
+        - event: LogDeploy(indexed address,bytes,indexed address)
+          handler: onLogDeploy
 # SUSHISWAP
   - kind: ethereum/contract
     name: Factory
@@ -203,3 +207,25 @@ templates:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: onTransfer
+# KASHI TEMPLATE
+  - kind: ethereum/contract
+    name: KashiPair
+    network: {{ network }}
+    source:
+      abi: KashiPair
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/kashi.ts
+      entities: []
+      abis:
+        - name: BentoBox
+          file: ./node_modules/abi/BentoBox/BentoBox.json
+        - name: KashiPair
+          file: ./node_modules/abi/Kashi/KashiPair.json
+      eventHandlers:
+        - event: LogAddCollateral(indexed address,indexed address,uint256)
+          handler: handleLogAddCollateral
+        - event: LogAddAsset(indexed address,indexed address,uint256,uint256)
+          handler: handleLogAddAsset

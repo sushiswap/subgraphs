@@ -27,3 +27,6 @@ export namespace Product {
     export const KASHI = "KASHI";
     export const MISO = "MISO";
 }
+
+
+export const KASHI_MEDIUM_RISK_MASTER_CONTRACT_ADDRESSES = '{{ kashi.medium }}'.split(',')

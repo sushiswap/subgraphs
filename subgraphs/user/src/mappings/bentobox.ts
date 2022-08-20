@@ -1,6 +1,8 @@
 import { Product } from "../constants";
 import { handleUser } from "../functions";
-import { LogDeposit, LogFlashLoan, LogSetMasterContractApproval, LogTransfer, LogWithdraw } from "../../generated/BentoBox/BentoBox";
+import { LogDeploy, LogDeposit, LogFlashLoan, LogSetMasterContractApproval, LogTransfer, LogWithdraw } from "../../generated/BentoBox/BentoBox";
+import { KASHI_MEDIUM_RISK_MASTER_CONTRACT_ADDRESSES } from "../constants";
+import { KashiPair as KashiPairTemplate } from '../../generated/templates'
 
 export function onLogDeposit(event: LogDeposit): void {
     handleUser(event.params.from, event, Product.BENTOBOX)
@@ -21,3 +23,11 @@ export function onLogTransfer(event: LogTransfer): void {
 export function onLogFlashloan(event: LogFlashLoan): void {
     handleUser(event.params.borrower, event, Product.BENTOBOX)
 }
+
+
+export function onLogDeploy(event: LogDeploy): void {
+    if (KASHI_MEDIUM_RISK_MASTER_CONTRACT_ADDRESSES.includes(event.params.masterContract.toHex())) {
+      KashiPairTemplate.create(event.params.cloneAddress)
+    }
+  }
+  
