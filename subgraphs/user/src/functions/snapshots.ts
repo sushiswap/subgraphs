@@ -6,18 +6,20 @@ import { getOrCreateGlobal } from "./global"
 export function updateSnapshots(
     timestamp: BigInt,
     isNewUser: boolean,
+    usedNewProduct: boolean,
     product: string
 ): void {
     let global = getOrCreateGlobal()
-    updateHourSnapshot(timestamp, global, isNewUser, product)
-    updateDaySnapshot(timestamp, global, isNewUser, product)
-    updateWeekSnapshot(timestamp, global, isNewUser, product)
+    updateHourSnapshot(timestamp, global, isNewUser, usedNewProduct, product)
+    updateDaySnapshot(timestamp, global, isNewUser, usedNewProduct, product)
+    updateWeekSnapshot(timestamp, global, isNewUser, usedNewProduct, product)
 }
 
 function updateHourSnapshot(
     timestamp: BigInt,
     global: Global,
     isNewUser: boolean,
+    usedNewProduct: boolean,
     product: string,
 ): void {
     let id = getHourSnapshotId(timestamp)
@@ -58,6 +60,8 @@ function updateHourSnapshot(
     snapshot.misoTotalUsers = global.misoUsers
     if (isNewUser) {
         snapshot.newUsers = snapshot.newUsers.plus(BIG_INT_ONE)
+    }
+    if (usedNewProduct) {
         if (product === Product.BENTOBOX) {
             snapshot.newBentoBoxUsers = snapshot.newBentoBoxUsers.plus(BIG_INT_ONE)
         } else if (product === Product.SUSHISWAP) {
@@ -94,6 +98,7 @@ function updateDaySnapshot(
     timestamp: BigInt,
     global: Global,
     isNewUser: boolean,
+    usedNewProduct: boolean,
     product: string,
 ): void {
     let id = getDaySnapshotId(timestamp)
@@ -134,6 +139,8 @@ function updateDaySnapshot(
     snapshot.misoTotalUsers = global.misoUsers
     if (isNewUser) {
         snapshot.newUsers = snapshot.newUsers.plus(BIG_INT_ONE)
+    }
+    if (usedNewProduct) {
         if (product === Product.BENTOBOX) {
             snapshot.newBentoBoxUsers = snapshot.newBentoBoxUsers.plus(BIG_INT_ONE)
         } else if (product === Product.SUSHISWAP) {
@@ -171,6 +178,7 @@ function updateWeekSnapshot(
     timestamp: BigInt,
     global: Global,
     isNewUser: boolean,
+    usedNewProduct: boolean,
     product: string,
 ): void {
     let id = getWeeklySnapshotId(timestamp)
@@ -211,6 +219,8 @@ function updateWeekSnapshot(
     snapshot.misoTotalUsers = global.misoUsers
     if (isNewUser) {
         snapshot.newUsers = snapshot.newUsers.plus(BIG_INT_ONE)
+    }
+    if (usedNewProduct) {
         if (product === Product.BENTOBOX) {
             snapshot.newBentoBoxUsers = snapshot.newBentoBoxUsers.plus(BIG_INT_ONE)
         } else if (product === Product.SUSHISWAP) {
@@ -239,7 +249,6 @@ function updateWeekSnapshot(
             snapshot.newMisoUsers = snapshot.newMisoUsers.plus(BIG_INT_ONE)
         }
     }
-
     snapshot.save()
 }
 

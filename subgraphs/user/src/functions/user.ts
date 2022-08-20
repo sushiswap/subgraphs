@@ -269,5 +269,5 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     updateGlobalMetrics(product, usedNewProduct, isNewUser)
   }
 
-  updateSnapshots(event.block.timestamp, usedNewProduct, product)
+  updateSnapshots(event.block.timestamp, isNewUser, usedNewProduct, product)
 }
