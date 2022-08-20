@@ -12,7 +12,7 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
   }
 
   let user = User.load(id.toHex())
-
+  let isNewUser = false
   if (user === null) {
     user = new User(id.toHex())
     user.createdAtBlock = event.block.number
@@ -99,12 +99,13 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     user.misoLatestInteractionAtTimestamp = BIG_INT_ZERO
 
     user.save()
+    isNewUser = true
   }
 
-  let isNewUser = false
+  let usedNewProduct = false
   if (product === Product.BENTOBOX) {
     if (!user.usedBentoBox) {
-      isNewUser = true
+      usedNewProduct = true
       user.usedBentoBox = true
     }
     user.bentoBoxLatestInteractionAtBlock = event.block.number
@@ -114,7 +115,7 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     user.save()
   } else if (product === Product.SUSHISWAP) {
     if (!user.usedSushiswap) {
-      isNewUser = true
+      usedNewProduct = true
       user.usedSushiswap = true
     }
     user.sushiswapLatestInteractionAtBlock = event.block.number
@@ -124,7 +125,7 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     user.save()
   } else if (product === Product.TRIDENT) {
     if (!user.usedTrident) {
-      isNewUser = true
+      usedNewProduct = true
       user.usedTrident = true
     }
     user.tridentLatestInteractionAtBlock = event.block.number
@@ -134,7 +135,7 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     user.save()
   } else if (product === Product.SUSHI_X_SWAP) {
     if (!user.usedSushiXSwap) {
-      isNewUser = true
+      usedNewProduct = true
       user.usedSushiXSwap = true
     }
     user.sushiXSwapLatestInteractionAtBlock = event.block.number
@@ -144,7 +145,7 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     user.save()
   } else if (product === Product.MASTER_CHEF_V1) {
     if (!user.usedMasterChefV1) {
-      isNewUser = true
+      usedNewProduct = true
       user.usedMasterChefV1 = true
     }
     user.masterChefV1LatestInteractionAtBlock = event.block.number
@@ -154,7 +155,7 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     user.save()
   } else if (product === Product.MASTER_CHEF_V2) {
     if (!user.usedMasterChefV2) {
-      isNewUser = true
+      usedNewProduct = true
       user.usedMasterChefV2 = true
     }
     user.masterChefV2LatestInteractionAtBlock = event.block.number
@@ -164,7 +165,7 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     user.save()
   } else if (product === Product.MINI_CHEF) {
     if (!user.usedMiniChef) {
-      isNewUser = true
+      usedNewProduct = true
       user.usedMiniChef = true
     }
     user.miniChefLatestInteractionAtBlock = event.block.number
@@ -175,7 +176,7 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
   }
   else if (product === Product.SUSHI) {
     if (!user.usedSushi) {
-      isNewUser = true
+      usedNewProduct = true
       user.usedSushi = true
     }
     user.sushiLatestInteractionAtBlock = event.block.number
@@ -186,7 +187,7 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
   }
   else if (product === Product.XSUSHI) {
     if (!user.usedXSushi) {
-      isNewUser = true
+      usedNewProduct = true
       user.usedXSushi = true
     }
     user.xSushiLatestInteractionAtBlock = event.block.number
@@ -197,7 +198,7 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
   }
   else if (product === Product.FURO) {
     if (!user.usedFuro) {
-      isNewUser = true
+      usedNewProduct = true
       user.usedFuro = true
     }
     user.furoLatestInteractionAtBlock = event.block.number
@@ -208,7 +209,7 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
   }
   else if (product === Product.LIMIT_ORDERS) {
     if (!user.usedLimitOrder) {
-      isNewUser = true
+      usedNewProduct = true
       user.usedLimitOrder = true
     }
     user.limitOrderLatestInteractionAtBlock = event.block.number
@@ -218,7 +219,7 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     user.save()
   } else if (product === Product.KASHI) {
     if (!user.usedKashi) {
-      isNewUser = true
+      usedNewProduct = true
       user.usedKashi = true
     }
     user.kashiLatestInteractionAtBlock = event.block.number
@@ -228,7 +229,7 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     user.save()
   } else if (product === Product.MISO) {
     if (!user.usedMiso) {
-      isNewUser = true
+      usedNewProduct = true
       user.usedMiso = true
     }
     user.misoLatestInteractionAtBlock = event.block.number
@@ -238,9 +239,9 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     user.save()
   }
 
-  if (isNewUser) {
-    updateGlobalMetrics(product)
+  if (usedNewProduct || isNewUser) {
+    updateGlobalMetrics(product, usedNewProduct, isNewUser)
   }
 
-  updateSnapshots(event.block.timestamp, isNewUser, product)
+  updateSnapshots(event.block.timestamp, usedNewProduct, product)
 }

@@ -142,6 +142,46 @@ dataSources:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: onTransfer
+# FURO STREAM
+  - kind: ethereum/contract
+    name: FuroStream
+    network: {{ network }}
+    source:
+      address: '{{ furo.stream.address }}'
+      startBlock: {{ furo.stream.startBlock }}
+      abi: FuroStream
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/furo-stream.ts
+      entities: []
+      abis:
+        - name: FuroStream
+          file: ./node_modules/abi/Furo/FuroStream.json
+      eventHandlers:
+        - event: CreateStream(indexed uint256,indexed address,indexed address,address,uint256,uint256,uint256,bool)
+          handler: onCreateStream
+# FURO VESTING
+  - kind: ethereum/contract
+    name: FuroVesting
+    network: {{ network }}
+    source:
+      address: '{{ furo.vesting.address }}'
+      startBlock: {{ furo.vesting.startBlock }}
+      abi: FuroVesting
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/furo-vesting.ts
+      entities: []
+      abis:
+        - name: FuroVesting
+          file: ./node_modules/abi/Furo/FuroVesting.json
+      eventHandlers:
+        - event: CreateVesting(indexed uint256,address,indexed address,indexed address,uint32,uint32,uint32,uint32,uint128,uint128,bool)
+          handler: onCreateVesting
 templates:
 # SUSHISWAP TEMPLATE
   - kind: ethereum/contract

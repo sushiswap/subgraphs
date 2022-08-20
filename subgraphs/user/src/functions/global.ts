@@ -28,39 +28,44 @@ export function getOrCreateGlobal(): Global {
   return global
 }
 
-export function updateGlobalMetrics(type: string): Global {
+export function updateGlobalMetrics(type: string, usedNewProduct: boolean, isNewUser: boolean): Global {
   let global = getOrCreateGlobal()
 
-  if (type === Product.BENTOBOX) {
-    global.bentoBoxUsers = global.bentoBoxUsers.plus(BIG_INT_ONE)
-  } else if (type === Product.SUSHISWAP) {
-    global.sushiswapUsers = global.sushiswapUsers.plus(BIG_INT_ONE)
-  } else if (type === Product.TRIDENT) {
-    global.tridentUsers = global.tridentUsers.plus(BIG_INT_ONE)
-  } else if (type === Product.SUSHI_X_SWAP) {
-    global.sushiXSwapUsers = global.sushiXSwapUsers.plus(BIG_INT_ONE)
-  } else if (type === Product.MASTER_CHEF_V1) {
-    global.masterChefV1Users = global.masterChefV1Users.plus(BIG_INT_ONE)
-  } else if (type === Product.MASTER_CHEF_V2) {
-    global.masterChefV2Users = global.masterChefV2Users.plus(BIG_INT_ONE)
-  } else if (type === Product.MINI_CHEF) {
-    global.miniChefUsers = global.miniChefUsers.plus(BIG_INT_ONE)
-  } else if (type === Product.SUSHI) {
-    global.sushiUsers = global.sushiUsers.plus(BIG_INT_ONE)
-  } else if (type === Product.XSUSHI) {
-    global.xSushiUsers = global.xSushiUsers.plus(BIG_INT_ONE)
-  } else if (type === Product.FURO) {
-    global.furoUsers = global.furoUsers.plus(BIG_INT_ONE)
-  } else if (type === Product.LIMIT_ORDERS) {
-    global.limitOrderUsers = global.limitOrderUsers.plus(BIG_INT_ONE)
-  } else if (type === Product.KASHI) {
-    global.kashiUsers = global.kashiUsers.plus(BIG_INT_ONE)
-  } else if (type === Product.MISO) {
-    global.misoUsers = global.misoUsers.plus(BIG_INT_ONE)
-  } else {
-    log.warning('An unknown product was defined: {}', [type])
+  if (isNewUser) {
+    global.totalUsers = global.totalUsers.plus(BIG_INT_ONE)
   }
-  global.totalUsers = global.totalUsers.plus(BIG_INT_ONE)
+  if (usedNewProduct) {
+    if (type === Product.BENTOBOX) {
+      global.bentoBoxUsers = global.bentoBoxUsers.plus(BIG_INT_ONE)
+    } else if (type === Product.SUSHISWAP) {
+      global.sushiswapUsers = global.sushiswapUsers.plus(BIG_INT_ONE)
+    } else if (type === Product.TRIDENT) {
+      global.tridentUsers = global.tridentUsers.plus(BIG_INT_ONE)
+    } else if (type === Product.SUSHI_X_SWAP) {
+      global.sushiXSwapUsers = global.sushiXSwapUsers.plus(BIG_INT_ONE)
+    } else if (type === Product.MASTER_CHEF_V1) {
+      global.masterChefV1Users = global.masterChefV1Users.plus(BIG_INT_ONE)
+    } else if (type === Product.MASTER_CHEF_V2) {
+      global.masterChefV2Users = global.masterChefV2Users.plus(BIG_INT_ONE)
+    } else if (type === Product.MINI_CHEF) {
+      global.miniChefUsers = global.miniChefUsers.plus(BIG_INT_ONE)
+    } else if (type === Product.SUSHI) {
+      global.sushiUsers = global.sushiUsers.plus(BIG_INT_ONE)
+    } else if (type === Product.XSUSHI) {
+      global.xSushiUsers = global.xSushiUsers.plus(BIG_INT_ONE)
+    } else if (type === Product.FURO) {
+      global.furoUsers = global.furoUsers.plus(BIG_INT_ONE)
+    } else if (type === Product.LIMIT_ORDERS) {
+      global.limitOrderUsers = global.limitOrderUsers.plus(BIG_INT_ONE)
+    } else if (type === Product.KASHI) {
+      global.kashiUsers = global.kashiUsers.plus(BIG_INT_ONE)
+    } else if (type === Product.MISO) {
+      global.misoUsers = global.misoUsers.plus(BIG_INT_ONE)
+    } else {
+      log.warning('An unknown product was defined: {}', [type])
+    }
+  }
+
   global.save()
 
   return global
