@@ -107,6 +107,8 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     if (!user.usedBentoBox) {
       usedNewProduct = true
       user.usedBentoBox = true
+      user.bentoBoxFirstInteractionAtBlock = event.block.number
+      user.bentoBoxFirstInteractionAtTimestamp = event.block.timestamp
     }
     user.bentoBoxLatestInteractionAtBlock = event.block.number
     user.bentoBoxLatestInteractionAtTimestamp = event.block.timestamp
@@ -117,6 +119,8 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     if (!user.usedSushiswap) {
       usedNewProduct = true
       user.usedSushiswap = true
+      user.sushiswapFirstInteractionAtBlock = event.block.number
+      user.sushiswapFirstInteractionAtTimestamp = event.block.timestamp
     }
     user.sushiswapLatestInteractionAtBlock = event.block.number
     user.sushiswapLatestInteractionAtTimestamp = event.block.timestamp
@@ -127,6 +131,8 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     if (!user.usedTrident) {
       usedNewProduct = true
       user.usedTrident = true
+      user.tridentFirstInteractionAtBlock = event.block.number
+      user.tridentFirstInteractionAtTimestamp = event.block.timestamp
     }
     user.tridentLatestInteractionAtBlock = event.block.number
     user.tridentLatestInteractionAtTimestamp = event.block.timestamp
@@ -137,6 +143,8 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     if (!user.usedSushiXSwap) {
       usedNewProduct = true
       user.usedSushiXSwap = true
+      user.sushiXSwapFirstInteractionAtBlock = event.block.number
+      user.sushiXSwapFirstInteractionAtTimestamp = event.block.timestamp
     }
     user.sushiXSwapLatestInteractionAtBlock = event.block.number
     user.sushiXSwapLatestInteractionAtTimestamp = event.block.timestamp
@@ -147,6 +155,8 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     if (!user.usedMasterChefV1) {
       usedNewProduct = true
       user.usedMasterChefV1 = true
+      user.masterChefV1FirstInteractionAtBlock = event.block.number
+      user.masterChefV1FirstInteractionAtTimestamp = event.block.timestamp
     }
     user.masterChefV1LatestInteractionAtBlock = event.block.number
     user.masterChefV1LatestInteractionAtTimestamp = event.block.timestamp
@@ -157,6 +167,8 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     if (!user.usedMasterChefV2) {
       usedNewProduct = true
       user.usedMasterChefV2 = true
+      user.masterChefV2FirstInteractionAtBlock = event.block.number
+      user.masterChefV2FirstInteractionAtTimestamp = event.block.timestamp
     }
     user.masterChefV2LatestInteractionAtBlock = event.block.number
     user.masterChefV2LatestInteractionAtTimestamp = event.block.timestamp
@@ -167,6 +179,8 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     if (!user.usedMiniChef) {
       usedNewProduct = true
       user.usedMiniChef = true
+      user.miniChefFirstInteractionAtBlock = event.block.number
+      user.miniChefFirstInteractionAtTimestamp = event.block.timestamp
     }
     user.miniChefLatestInteractionAtBlock = event.block.number
     user.miniChefLatestInteractionAtTimestamp = event.block.timestamp
@@ -178,6 +192,8 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     if (!user.usedSushi) {
       usedNewProduct = true
       user.usedSushi = true
+      user.sushiFirstInteractionAtBlock = event.block.number
+      user.sushiFirstInteractionAtTimestamp = event.block.timestamp
     }
     user.sushiLatestInteractionAtBlock = event.block.number
     user.sushiLatestInteractionAtTimestamp = event.block.timestamp
@@ -189,6 +205,8 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     if (!user.usedXSushi) {
       usedNewProduct = true
       user.usedXSushi = true
+      user.xSushiFirstInteractionAtBlock = event.block.number
+      user.xSushiFirstInteractionAtTimestamp = event.block.timestamp
     }
     user.xSushiLatestInteractionAtBlock = event.block.number
     user.xSushiLatestInteractionAtTimestamp = event.block.timestamp
@@ -200,6 +218,8 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     if (!user.usedFuro) {
       usedNewProduct = true
       user.usedFuro = true
+      user.furoFirstInteractionAtBlock = event.block.number
+      user.furoFirstInteractionAtTimestamp = event.block.timestamp
     }
     user.furoLatestInteractionAtBlock = event.block.number
     user.furoLatestInteractionAtTimestamp = event.block.timestamp
@@ -211,6 +231,8 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     if (!user.usedLimitOrder) {
       usedNewProduct = true
       user.usedLimitOrder = true
+      user.limitOrderFirstInteractionAtBlock = event.block.number
+      user.limitOrderFirstInteractionAtTimestamp = event.block.timestamp
     }
     user.limitOrderLatestInteractionAtBlock = event.block.number
     user.limitOrderLatestInteractionAtTimestamp = event.block.timestamp
@@ -221,6 +243,8 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     if (!user.usedKashi) {
       usedNewProduct = true
       user.usedKashi = true
+      user.kashiFirstInteractionAtBlock = event.block.number
+      user.kashiFirstInteractionAtTimestamp = event.block.timestamp
     }
     user.kashiLatestInteractionAtBlock = event.block.number
     user.kashiLatestInteractionAtTimestamp = event.block.timestamp
@@ -231,6 +255,8 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     if (!user.usedMiso) {
       usedNewProduct = true
       user.usedMiso = true
+      user.misoFirstInteractionAtBlock = event.block.number
+      user.misoFirstInteractionAtTimestamp = event.block.timestamp
     }
     user.misoLatestInteractionAtBlock = event.block.number
     user.misoLatestInteractionAtTimestamp = event.block.timestamp
