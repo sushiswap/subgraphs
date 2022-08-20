@@ -57,6 +57,7 @@ function updateHourSnapshot(
     snapshot.kashiTotalUsers = global.kashiUsers
     snapshot.misoTotalUsers = global.misoUsers
     if (isNewUser) {
+        snapshot.newUsers = snapshot.newUsers.plus(BIG_INT_ONE)
         if (product === Product.BENTOBOX) {
             snapshot.newBentoBoxUsers = snapshot.newBentoBoxUsers.plus(BIG_INT_ONE)
         } else if (product === Product.SUSHISWAP) {
@@ -132,6 +133,7 @@ function updateDaySnapshot(
     snapshot.kashiTotalUsers = global.kashiUsers
     snapshot.misoTotalUsers = global.misoUsers
     if (isNewUser) {
+        snapshot.newUsers = snapshot.newUsers.plus(BIG_INT_ONE)
         if (product === Product.BENTOBOX) {
             snapshot.newBentoBoxUsers = snapshot.newBentoBoxUsers.plus(BIG_INT_ONE)
         } else if (product === Product.SUSHISWAP) {
@@ -208,6 +210,7 @@ function updateWeekSnapshot(
     snapshot.kashiTotalUsers = global.kashiUsers
     snapshot.misoTotalUsers = global.misoUsers
     if (isNewUser) {
+        snapshot.newUsers = snapshot.newUsers.plus(BIG_INT_ONE)
         if (product === Product.BENTOBOX) {
             snapshot.newBentoBoxUsers = snapshot.newBentoBoxUsers.plus(BIG_INT_ONE)
         } else if (product === Product.SUSHISWAP) {
