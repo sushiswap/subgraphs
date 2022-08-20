@@ -186,6 +186,26 @@ dataSources:
       eventHandlers:
         - event: CreateVesting(indexed uint256,address,indexed address,indexed address,uint32,uint32,uint32,uint32,uint128,uint128,bool)
           handler: onCreateVesting
+# MISO MARKET
+  - kind: ethereum/contract
+    name: MISOMarket
+    network: {{ network }}
+    source:
+      address: '{{ miso.market.address }}'
+      abi: MISOMarket
+      startBlock: {{ miso.market.startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: MISOMarket
+          file: ./node_modules/abi/Miso/Market.json
+      eventHandlers:
+        - event: MarketCreated(indexed address,indexed address,address)
+          handler: onMarketCreated
+      file: ./src/mappings/market.ts
 templates:
 # SUSHISWAP TEMPLATE
   - kind: ethereum/contract
@@ -229,3 +249,23 @@ templates:
           handler: handleLogAddCollateral
         - event: LogAddAsset(indexed address,indexed address,uint256,uint256)
           handler: handleLogAddAsset
+# MISO AUCTION
+  - kind: ethereum/contract
+    name: MisoAuction
+    network: {{ network }}
+    source:
+      abi: MisoAuction
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/auction.ts
+      entities: []
+      abis:
+        - name: MisoAuction
+          file: ./node_modules/abi/Miso/Auction.json
+      eventHandlers:
+        - event: AddedCommitment(address,uint256)
+          handler: onAddedCommitment
+
+          # event.params.addr.toHex()
