@@ -1,5 +1,5 @@
 import { BigInt } from "@graphprotocol/graph-ts"
-import { DailySnapshot, Global, HourlySnapshot } from "../../generated/schema"
+import { DailySnapshot, Global, HourlySnapshot, WeeklySnapshot } from "../../generated/schema"
 import { BIG_INT_ONE, BIG_INT_ZERO, DAY_IN_SECONDS, HOUR_IN_SECONDS, Product, WEEK_IN_SECONDS } from "../constants"
 import { getOrCreateGlobal } from "./global"
 
@@ -173,10 +173,10 @@ function updateWeekSnapshot(
 ): void {
     let id = getWeeklySnapshotId(timestamp)
 
-    let snapshot = DailySnapshot.load(id)
+    let snapshot = WeeklySnapshot.load(id)
 
     if (snapshot === null) {
-        snapshot = new DailySnapshot(id)
+        snapshot = new WeeklySnapshot(id)
         snapshot.date = getWeeklyStartDate(timestamp)
         snapshot.newUsers = BIG_INT_ZERO
         snapshot.newBentoBoxUsers = BIG_INT_ZERO
