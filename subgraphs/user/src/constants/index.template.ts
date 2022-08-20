@@ -23,7 +23,7 @@ export namespace Product {
     export const XSUSHI = "XSUSHI";
 
     export const FURO = "FURO";
-    export const LIMIT_ORDERS = "LIMIT_ORDERS";
+    export const LIMIT_ORDER = "LIMIT_ORDER";
     export const KASHI = "KASHI";
     export const MISO = "MISO";
 }

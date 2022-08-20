@@ -77,7 +77,7 @@ function updateHourSnapshot(
             snapshot.newXSushiUsers = snapshot.newXSushiUsers.plus(BIG_INT_ONE)
         } else if (product === Product.FURO) {
             snapshot.newFuroUsers = snapshot.newFuroUsers.plus(BIG_INT_ONE)
-        } else if (product === Product.LIMIT_ORDERS) {
+        } else if (product === Product.LIMIT_ORDER) {
             snapshot.newLimitOrderUsers = snapshot.newLimitOrderUsers.plus(BIG_INT_ONE)
         } else if (product === Product.KASHI) {
             snapshot.newKashiUsers = snapshot.newKashiUsers.plus(BIG_INT_ONE)
@@ -152,7 +152,7 @@ function updateDaySnapshot(
             snapshot.newXSushiUsers = snapshot.newXSushiUsers.plus(BIG_INT_ONE)
         } else if (product === Product.FURO) {
             snapshot.newFuroUsers = snapshot.newFuroUsers.plus(BIG_INT_ONE)
-        } else if (product === Product.LIMIT_ORDERS) {
+        } else if (product === Product.LIMIT_ORDER) {
             snapshot.newLimitOrderUsers = snapshot.newLimitOrderUsers.plus(BIG_INT_ONE)
         } else if (product === Product.KASHI) {
             snapshot.newKashiUsers = snapshot.newKashiUsers.plus(BIG_INT_ONE)
@@ -228,7 +228,7 @@ function updateWeekSnapshot(
             snapshot.newXSushiUsers = snapshot.newXSushiUsers.plus(BIG_INT_ONE)
         } else if (product === Product.FURO) {
             snapshot.newFuroUsers = snapshot.newFuroUsers.plus(BIG_INT_ONE)
-        } else if (product === Product.LIMIT_ORDERS) {
+        } else if (product === Product.LIMIT_ORDER) {
             snapshot.newLimitOrderUsers = snapshot.newLimitOrderUsers.plus(BIG_INT_ONE)
         } else if (product === Product.KASHI) {
             snapshot.newKashiUsers = snapshot.newKashiUsers.plus(BIG_INT_ONE)

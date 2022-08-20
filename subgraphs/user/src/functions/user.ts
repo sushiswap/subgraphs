@@ -227,7 +227,7 @@ export function handleUser(id: Address, event: ethereum.Event, product: string):
     user.modifiedAtTimestamp = event.block.timestamp
     user.save()
   }
-  else if (product === Product.LIMIT_ORDERS) {
+  else if (product === Product.LIMIT_ORDER) {
     if (!user.usedLimitOrder) {
       usedNewProduct = true
       user.usedLimitOrder = true

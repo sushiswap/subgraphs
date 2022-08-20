@@ -206,6 +206,28 @@ dataSources:
         - event: MarketCreated(indexed address,indexed address,address)
           handler: onMarketCreated
       file: ./src/mappings/market.ts
+# LIMIT ORDER
+  - kind: ethereum/contract
+    name: LimitOrder
+    network: {{ network }}
+    source:
+      address: '{{ limitOrder.address }}'
+      abi: LimitOrder
+      startBlock: {{ limitOrder.startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: LimitOrder
+          file: ./node_modules/abi/LimitOrder/LimitOrder.json
+      eventHandlers:
+        - event: LogFillOrder(indexed address,indexed bytes32,address,uint256)
+          handler: onFillOrder
+        - event: LogOrderCancelled(indexed address,indexed bytes32)
+          handler: onOrderCancelled
+      file: ./src/mappings/limit-order.ts
 templates:
 # SUSHISWAP TEMPLATE
   - kind: ethereum/contract

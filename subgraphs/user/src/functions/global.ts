@@ -55,7 +55,7 @@ export function updateGlobalMetrics(type: string, usedNewProduct: boolean, isNew
       global.xSushiUsers = global.xSushiUsers.plus(BIG_INT_ONE)
     } else if (type === Product.FURO) {
       global.furoUsers = global.furoUsers.plus(BIG_INT_ONE)
-    } else if (type === Product.LIMIT_ORDERS) {
+    } else if (type === Product.LIMIT_ORDER) {
       global.limitOrderUsers = global.limitOrderUsers.plus(BIG_INT_ONE)
     } else if (type === Product.KASHI) {
       global.kashiUsers = global.kashiUsers.plus(BIG_INT_ONE)
