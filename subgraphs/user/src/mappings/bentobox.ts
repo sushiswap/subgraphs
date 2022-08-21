@@ -20,7 +20,7 @@ export function onLogTransfer(event: LogTransfer): void {
     handleUser(event.params.from, event, Product.BENTOBOX)
 }
 
-export function onLogFlashloan(event: LogFlashLoan): void {
+export function onLogFlashLoan(event: LogFlashLoan): void {
     handleUser(event.params.borrower, event, Product.BENTOBOX)
 }
 
