@@ -19,6 +19,9 @@ module.exports = {
     accessControls: { address: '0x0769fd68dfb93167989c6f7254cd0d766fb2841f', startBlock: 1610232 },
     market: { address: '0x120140d0c1ebc938befc84840575ecdc5fe55afe', startBlock: 1610328 },
   },
+  trident: {
+    constantProductPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
+  },
   legacy: {
     native: { address: '0xf50225a84382c74cbdea10b0c176f71fc3de0c4d' },
     whitelistedTokenAddresses: [
@@ -52,4 +55,5 @@ module.exports = {
   },
   auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+  miniChef: {address: '0x3db01570d97631f69bbb0ba39796865456cf89a5', startBlock: 800950 },
 }

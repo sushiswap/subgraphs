@@ -7,6 +7,7 @@ const USDT_ADDRESS = '0x88eec49252c8cbc039dcdb394c0c2ba2f1637ea0'
 const WBTC_ADDRESS = '0xbaab46e28388d2779e6e31fd00cf0e5ad95e327b'
 const DAI_ADDRESS = '0xe4fe50cdd716522a56204352f00aa110f731932d'
 const DAI2_ADDRESS = '0x90ca507a5d4458a4c6c6249d186b6dcb02a5bccd'
+const SUSHI_ADDRESS = '0x29dfce9c22003a4999930382fd00f9fd6133acd1'
 
 module.exports = {
   network: 'celo',
@@ -14,7 +15,10 @@ module.exports = {
     address: '0x0711b6026068f736bae6b213031fce978d48e026',
     startBlock: 9451612,
   },
-
+  sushi: { address: SUSHI_ADDRESS, startBlock: 10102587 },
+  trident: {
+    constantProductPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
+  },
   legacy: {
     native: {
       address: NATIVE_ADDRESS,
@@ -50,4 +54,5 @@ module.exports = {
     address: '0x0000000000000000000000000000000000000000',
     startBlock: 0,
   },
+  miniChef: {address: '0x8084936982d089130e001b470edf58faca445008', startBlock: 10186627 },
 }

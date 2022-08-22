@@ -7,12 +7,17 @@ const BAO_ADDRESS = '0x82dfe19164729949fd66da1a37bc70dd6c4746ce'
 const WETH2_ADDRESS = '0x6a023ccd1ff6f2045c3309768ead9e68f978f6e1'
 const DAI_ADDRESS = '0x44fa8e6f47987339850636f88629646662444217'
 const USDP_ADDRESS = '0xfe7ed09c4956f7cdb54ec4ffcb9818db2d7025b8'
+const SUSHI_ADDRESS = '0x2995d1317dcd4f0ab89f4ae60f3f020a4f17c7ce'
 
 module.exports = {
   network: 'xdai',
   bentobox: {
     address: '0xe2d7f5dd869fc7c126d21b13a9080e75a4bdb324',
     startBlock: 17002491,
+  },
+  sushi: { address: SUSHI_ADDRESS, startBlock: 11111111111111111111111111111 },
+  trident: {
+    constantProductPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
   },
   legacy: {
     native: { address: NATIVE_ADDRESS },

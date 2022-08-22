@@ -22,6 +22,9 @@ module.exports = {
     accessControls: { address: '0xbbde1d67297329148fe1ed5e6b00114842728e65', startBlock: 629842 },
     market: { address: '0x18350b048ab366ed601ffdbc669110ecb36016f3', startBlock: 629994 },
   },
+  trident: {
+    constantProductPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
+  },
   legacy: {
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [
@@ -55,4 +58,5 @@ module.exports = {
     startBlock: 0,
   },
   minimumNativeLiquidity: 0.1,
+  miniChef: {address: '0x011e52e4e40cf9498c79273329e8827b21e2e581', startBlock: 505060 },
 }

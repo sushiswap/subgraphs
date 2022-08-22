@@ -6,9 +6,11 @@ const USDT_ADDRESS = '0x3c2b8be99c50593081eaa2a724f0b8285f5aba8f'
 const BUSD_ADDRESS = '0xe176ebe47d621b984a73036b9da5d834411ef734'
 const DAI_ADDRESS = '0xef977d2f931c1978db5f6747666fa1eacb0d0339'
 const FRAX_ADDRESS = '0xfa7191d292d5633f702b0bd7e3e3bccc0e633200'
+const SUSHI_ADDRESS = '0xbec775cb42abfa4288de81f387a9b1a3c4bc552a'
 
 module.exports = {
   network: 'harmony',
+  sushi: { address: SUSHI_ADDRESS, startBlock:  5399434 },
   miso: {
     accessControls: { address: '0x863956314860f86f8B45da47c93637af09addB01', startBlock: 22978623 },
     market: { address: '0x00bF5E70805038245BE24fA95164Ca9Dc3791fA4', startBlock: 22981443 },
@@ -23,7 +25,9 @@ module.exports = {
     address: '0x0000000000000000000000000000000000000000',
     startBlock: 0,
   },
-
+  trident: {
+    constantProductPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
+  },
   legacy: {
     // IMPORTANT! The native address must be included for pricing to start
     native: { address: NATIVE_ADDRESS },

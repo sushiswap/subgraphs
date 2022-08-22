@@ -5,6 +5,7 @@ const USDT_ADDRESS = '0x55d398326f99059ff775485246999027b3197955'
 const BUSD_ADDRESS = '0xe9e7cea3dedca5984780bafc599bd69add087d56'
 const DAI_ADDRESS = '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3'
 const ICE_ADDRESS = '0xf16e81dce15b08f326220742020379b855b87df9'
+const SUSHI_ADDRESS = '0x947950bcc74888a40ffa2593c5798f11fc9124c4'
 
 module.exports = {
   network: 'bsc',
@@ -12,9 +13,16 @@ module.exports = {
     address: '0xf5bce5077908a1b7370b9ae04adc565ebd643966',
     startBlock: 5926250,
   },
+  sushi: { address: SUSHI_ADDRESS, startBlock: 4407770 },
+  kashi: {
+    mediumRiskMasterContractAddresses: '0x2cba6ab6574646badc84f0544d05059e57a5dc42',
+  },
   miso: {
     accessControls: { address: '0x0769fd68dfb93167989c6f7254cd0d766fb2841f', startBlock: 16167236 },
     market: { address: '0x7603a35af5cf10b113f167d424eb75bb7062c8ce', startBlock: 16168070 },
+  },
+  trident: {
+    constantProductPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
   },
   legacy: {
     native: { address: NATIVE_ADDRESS },

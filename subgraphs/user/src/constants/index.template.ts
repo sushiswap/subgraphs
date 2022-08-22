@@ -29,5 +29,5 @@ export namespace Product {
 }
 
 
-export const KASHI_MEDIUM_RISK_MASTER_CONTRACT_ADDRESSES = '{{ kashi.medium }}'.split(',')
+export const KASHI_MEDIUM_RISK_MASTER_CONTRACT_ADDRESSES = '{{ kashi.mediumRiskMasterContractAddresses }}'.split(',')
 export const CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS = Address.fromString('{{ trident.constantProductPoolFactory.address }}')

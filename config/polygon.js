@@ -15,7 +15,7 @@ const NDEFI_ADDRESS = '0xd3f07ea86ddf7baebefd49731d7bbd207fedc53b'
 
 module.exports = {
   network: 'matic',
-  sushi: { address: SUSHI_ADDRESS },
+  sushi: { address: SUSHI_ADDRESS, startBlock: 10461221 },
   weth: { address: WETH_ADDRESS },
   wbtc: { address: WBTC_ADDRESS },
   bentobox: {
@@ -117,4 +117,6 @@ module.exports = {
     address: '0x0000000000000000000000000000000000000000',
     startBlock: 0,
   },
+  limitOrder: {address: '0x1adb3bd86bb01797667ec382a0bc6a9854b4005f', startBlock: 15516243 },
+  miniChef: {address: '0x0769fd68dfb93167989c6f7254cd0d766fb2841f', startBlock: 13911377 },
 }

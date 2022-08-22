@@ -42,7 +42,7 @@ module.exports = {
     startBlock: 12094175,
   },
   kashi: {
-    medium: '0x2cba6ab6574646badc84f0544d05059e57a5dc42',
+    mediumRiskMasterContractAddresses: '0x2cba6ab6574646badc84f0544d05059e57a5dc42',
   },
   blocks: {
     address: '0x6e38A457C722C6011B2dfa06d49240e797844d66',

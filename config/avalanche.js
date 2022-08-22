@@ -12,14 +12,20 @@ const SPELL_ADDRESS = '0xce1bffbd5374dac86a2893119683f4911a2f7814'
 const WMEMO_ADDRESS = '0x0da67235dd5787d67955420c84ca1cecd4e5bb3b'
 module.exports = {
   network: 'avalanche',
-
+  sushi: { address: SUSHI_ADDRESS, startBlock: 2749894 },
   bentobox: {
     address: '0x0711b6026068f736bae6b213031fce978d48e026',
     startBlock: 3672722,
   },
+  kashi: {
+    mediumRiskMasterContractAddresses: '0x513037395fa0c9c35e41f89189cedfe3bd42fadb',
+  },
   miso: {
     accessControls: { address: '0x0769fd68dfb93167989c6f7254cd0d766fb2841f', startBlock: 13510155 },
     market: { address: '0x7603a35af5cf10b113f167d424eb75bb7062c8ce', startBlock: 13510645 },
+  },
+  trident: {
+    constantProductPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
   },
   legacy: {
     native: { address: NATIVE_ADDRESS },
@@ -57,4 +63,5 @@ module.exports = {
     address: '0x0000000000000000000000000000000000000000',
     startBlock: 0,
   },
+  limitOrder: {address: '0xf6f9c9db78af5791a296c4bf34d59e0236e990e0', startBlock: 9751547 },
 }
