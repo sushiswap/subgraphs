@@ -166,6 +166,8 @@ dataSources:
       eventHandlers:
         - event: CreateStream(indexed uint256,indexed address,indexed address,address,uint256,uint256,uint256,bool)
           handler: onCreateStream
+        - event: Withdraw(indexed uint256,indexed uint256,indexed address,address,bool)
+          handler: onWithdraw
 # FURO VESTING
   - kind: ethereum/contract
     name: FuroVesting
@@ -186,6 +188,8 @@ dataSources:
       eventHandlers:
         - event: CreateVesting(indexed uint256,address,indexed address,indexed address,uint32,uint32,uint32,uint32,uint128,uint128,bool)
           handler: onCreateVesting
+        - event: Withdraw(indexed uint256,indexed address,indexed uint256,bool)
+          handler: onWithdraw
 # MISO MARKET
   - kind: ethereum/contract
     name: MISOMarket
@@ -249,6 +253,8 @@ templates:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: onTransfer
+        - event: Swap(indexed address,uint256,uint256,uint256,uint256,indexed address)
+          handler: onSwap
 # KASHI TEMPLATE
   - kind: ethereum/contract
     name: KashiPair
@@ -289,5 +295,3 @@ templates:
       eventHandlers:
         - event: AddedCommitment(address,uint256)
           handler: onAddedCommitment
-
-          # event.params.addr.toHex()
