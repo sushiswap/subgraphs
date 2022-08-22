@@ -56,54 +56,75 @@ dataSources:
       eventHandlers:
         - event: PairCreated(indexed address,indexed address,address,uint256)
           handler: onPairCreated
+  - kind: ethereum/contract
+    name: MasterDeployer
+    network: {{ network }}
+    source:
+      address: '{{ trident.masterDeployer.address }}'
+      startBlock: {{ trident.masterDeployer.startBlock }}
+      abi: MasterDeployer
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: MasterDeployer
+          file: ./node_modules/abi/Trident/MasterDeployer.json
+        - name: ConstantProductPool
+          file: ./node_modules/abi/Trident/ConstantProductPool.json
+      eventHandlers:
+        - event: DeployPool(indexed address,indexed address,bytes)
+          handler: onDeployPool
+      file: ./src/mappings/trident-master-deployer.ts
 # # MASTER_CHEF_V1
-#   - kind: ethereum/contract
-#     name: MasterChefV1
-#     network: {{ network }}
-#     source:
-#       address: '{{ masterChefV1.address }}'
-#       abi: MasterChefV1
-#       startBlock: {{ masterChefV1.startBlock }}
-#     mapping:
-#       kind: ethereum/events
-#       apiVersion: 0.0.7
-#       language: wasm/assemblyscript
-#       entities: []
-#       abis:
-#         - name: MasterChefV1
-#           file: ./node_modules/abi/MasterChefV1/MasterChefV1.json
-#       eventHandlers:
-#         - event: Deposit(indexed address,indexed uint256,uint256)
-#           handler: deposit
-#         - event: EmergencyWithdraw(indexed address,indexed uint256,uint256)
-#           handler: emergencyWithdraw
-#         - event: Withdraw(indexed address,indexed uint256,uint256)
-#           handler: withdraw
-#       file: ./src/mappings/masterchef-v1.ts
+  - kind: ethereum/contract
+    name: MasterChefV1
+    network: {{ network }}
+    source:
+      address: '{{ masterChefV1.address }}'
+      abi: MasterChefV1
+      startBlock: {{ masterChefV1.startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: MasterChefV1
+          file: ./node_modules/abi/MasterChefV1/MasterChefV1.json
+      eventHandlers:
+        - event: Deposit(indexed address,indexed uint256,uint256)
+          handler: deposit
+        - event: EmergencyWithdraw(indexed address,indexed uint256,uint256)
+          handler: emergencyWithdraw
+        - event: Withdraw(indexed address,indexed uint256,uint256)
+          handler: withdraw
+      file: ./src/mappings/masterchef-v1.ts
 # # MASTER_CHEF_V2
-#   - kind: ethereum/contract
-#     name: MasterChefV2
-#     network: {{ network }}
-#     source:
-#       address: '{{ masterChefV2.address }}'
-#       abi: MasterChefV2
-#       startBlock: {{ masterChefV2.startBlock }}
-#     mapping:
-#       kind: ethereum/events
-#       apiVersion: 0.0.7
-#       language: wasm/assemblyscript
-#       entities: []
-#       abis:
-#         - name: MasterChefV2
-#           file: ./node_modules/abi/MasterChefV2/MasterChefV2.json
-#       eventHandlers:
-#         - event: Deposit(indexed address,indexed uint256,uint256,indexed address)
-#           handler: deposit
-#         - event: EmergencyWithdraw(indexed address,indexed uint256,uint256,indexed address)
-#           handler: emergencyWithdraw
-#         - event: Withdraw(indexed address,indexed uint256,uint256,indexed address)
-#           handler: withdraw
-#       file: ./src/mappings/masterchef-v2.ts
+  - kind: ethereum/contract
+    name: MasterChefV2
+    network: {{ network }}
+    source:
+      address: '{{ masterChefV2.address }}'
+      abi: MasterChefV2
+      startBlock: {{ masterChefV2.startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: MasterChefV2
+          file: ./node_modules/abi/MasterChefV2/MasterChefV2.json
+      eventHandlers:
+        - event: Deposit(indexed address,indexed uint256,uint256,indexed address)
+          handler: deposit
+        - event: EmergencyWithdraw(indexed address,indexed uint256,uint256,indexed address)
+          handler: emergencyWithdraw
+        - event: Withdraw(indexed address,indexed uint256,uint256,indexed address)
+          handler: withdraw
+      file: ./src/mappings/masterchef-v2.ts
 # MINI_CHEF
   - kind: ethereum/contract
     name: MiniChef
@@ -149,27 +170,27 @@ dataSources:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: onTransfer
 # # XSUSHI
-#   - kind: ethereum/contract
-#     name: xSushi
-#     network: {{ network }}
-#     source:
-#       address: '{{ xSushi.address }}'
-#       startBlock: {{ xSushi.startBlock }}
-#       abi: xSushi
-#     mapping:
-#       kind: ethereum/events
-#       apiVersion: 0.0.7
-#       language: wasm/assemblyscript
-#       file: ./src/mappings/xsushi.ts
-#       entities:
-#         - Transaction
-#         - User
-#       abis:
-#         - name: xSushi
-#           file: ./node_modules/abi/xSUSHI/xSUSHI.json
-#       eventHandlers:
-#         - event: Transfer(indexed address,indexed address,uint256)
-#           handler: onTransfer
+  - kind: ethereum/contract
+    name: xSushi
+    network: {{ network }}
+    source:
+      address: '{{ xSushi.address }}'
+      startBlock: {{ xSushi.startBlock }}
+      abi: xSushi
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/xsushi.ts
+      entities:
+        - Transaction
+        - User
+      abis:
+        - name: xSushi
+          file: ./node_modules/abi/xSUSHI/xSUSHI.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: onTransfer
 # FURO STREAM
   - kind: ethereum/contract
     name: FuroStream
@@ -235,27 +256,27 @@ dataSources:
           handler: onMarketCreated
       file: ./src/mappings/market.ts
 # LIMIT ORDER
-  # - kind: ethereum/contract
-  #   name: LimitOrder
-  #   network: {{ network }}
-  #   source:
-  #     address: '{{ limitOrder.address }}'
-  #     abi: LimitOrder
-  #     startBlock: {{ limitOrder.startBlock }}
-  #   mapping:
-  #     kind: ethereum/events
-  #     apiVersion: 0.0.7
-  #     language: wasm/assemblyscript
-  #     entities: []
-  #     abis:
-  #       - name: LimitOrder
-  #         file: ./node_modules/abi/LimitOrder/LimitOrder.json
-  #     eventHandlers:
-  #       - event: LogFillOrder(indexed address,indexed bytes32,address,uint256)
-  #         handler: onFillOrder
-  #       - event: LogOrderCancelled(indexed address,indexed bytes32)
-  #         handler: onOrderCancelled
-  #     file: ./src/mappings/limit-order.ts
+  - kind: ethereum/contract
+    name: LimitOrder
+    network: {{ network }}
+    source:
+      address: '{{ limitOrder.address }}'
+      abi: LimitOrder
+      startBlock: {{ limitOrder.startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: LimitOrder
+          file: ./node_modules/abi/LimitOrder/LimitOrder.json
+      eventHandlers:
+        - event: LogFillOrder(indexed address,indexed bytes32,address,uint256)
+          handler: onFillOrder
+        - event: LogOrderCancelled(indexed address,indexed bytes32)
+          handler: onOrderCancelled
+      file: ./src/mappings/limit-order.ts
 templates:
 # SUSHISWAP TEMPLATE
   - kind: ethereum/contract
@@ -319,3 +340,24 @@ templates:
       eventHandlers:
         - event: AddedCommitment(address,uint256)
           handler: onAddedCommitment
+  - kind: ethereum/contract
+    name: ConstantProductPool
+    network: {{ network }}
+    source:
+      abi: ConstantProductPool
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/trident-pair.ts
+      entities: []
+      abis:
+        - name: ConstantProductPool
+          file: ./node_modules/abi/Trident/ConstantProductPool.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: onTransfer
+        - event: Swap(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: onSwap
+
+
