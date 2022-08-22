@@ -14,7 +14,7 @@ const MAGIC_ADDRESS = '0x539bde0d7dbd336b79148aa742883198bbf60342'
 
 module.exports = {
   network: 'arbitrum-one',
-  sushi: { address: SUSHI_ADDRESS },
+  sushi: { address: SUSHI_ADDRESS, startBlock: 4196},
   weth: { address: WETH_ADDRESS },
   wbtc: { address: WBTC_ADDRESS },
   bentobox: {
@@ -68,4 +68,5 @@ module.exports = {
     address: '0x0000000000000000000000000000000000000000',
     startBlock: 0,
   },
+  miniChef: { address: '0xf4d73326c13a4fc5fd7a064217e12780e9bd62c3', startBlock: 226981 },
 }
