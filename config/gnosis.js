@@ -15,7 +15,7 @@ module.exports = {
     address: '0xe2d7f5dd869fc7c126d21b13a9080e75a4bdb324',
     startBlock: 17002491,
   },
-  sushi: { address: SUSHI_ADDRESS, startBlock: 11111111111111111111111111111 },
+  sushi: { address: SUSHI_ADDRESS, startBlock: 11300576 },
   trident: {
     constantProductPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
   },
@@ -52,4 +52,5 @@ module.exports = {
     address: '0x0000000000000000000000000000000000000000',
     startBlock: 0,
   },
+  miniChef: {address: '0xddcbf776df3de60163066a5dddf2277cb445e0f3', startBlock: 16655565 },
 }

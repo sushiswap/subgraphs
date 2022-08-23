@@ -127,29 +127,29 @@ dataSources:
           handler: withdraw
       file: ./src/mappings/masterchef-v2.ts
 # MINI_CHEF
-  # - kind: ethereum/contract
-  #   name: MiniChef
-  #   network: {{ network }}
-  #   source:
-  #     address: '{{ miniChef.address }}'
-  #     abi: MiniChef
-  #     startBlock: {{ miniChef.startBlock }}
-  #   mapping:
-  #     kind: ethereum/events
-  #     apiVersion: 0.0.7
-  #     language: wasm/assemblyscript
-  #     entities: []
-  #     abis:
-  #       - name: MiniChef
-  #         file: ./node_modules/abi/MiniChef/MiniChef.json
-  #     eventHandlers:
-  #       - event: Deposit(indexed address,indexed uint256,uint256,indexed address)
-  #         handler: deposit
-  #       - event: EmergencyWithdraw(indexed address,indexed uint256,uint256,indexed address)
-  #         handler: emergencyWithdraw
-  #       - event: Withdraw(indexed address,indexed uint256,uint256,indexed address)
-  #         handler: withdraw
-  #     file: ./src/mappings/minichef.ts
+  - kind: ethereum/contract
+    name: MiniChef
+    network: {{ network }}
+    source:
+      address: '{{ miniChef.address }}'
+      abi: MiniChef
+      startBlock: {{ miniChef.startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: MiniChef
+          file: ./node_modules/abi/MiniChef/MiniChef.json
+      eventHandlers:
+        - event: Deposit(indexed address,indexed uint256,uint256,indexed address)
+          handler: deposit
+        - event: EmergencyWithdraw(indexed address,indexed uint256,uint256,indexed address)
+          handler: emergencyWithdraw
+        - event: Withdraw(indexed address,indexed uint256,uint256,indexed address)
+          handler: withdraw
+      file: ./src/mappings/minichef.ts
 # SUSHI
   - kind: ethereum/contract
     name: Sushi
