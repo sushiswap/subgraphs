@@ -2,7 +2,7 @@ import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { XSushi } from '../../generated/schema'
 import { Transfer as SushiTransferEvent } from '../../generated/sushi/sushi'
 import { Transfer as TransferEvent } from '../../generated/xSushi/xSushi'
-import { BIG_DECIMAL_1E18, BURN, MINT, TRANSFER, XSUSHI_ADDRESS } from '../constants'
+import { BIG_DECIMAL_1E18, BIG_DECIMAL_ZERO, BIG_INT_ONE, BURN, MINT, TRANSFER, XSUSHI_ADDRESS } from '../constants'
 import { getOrCreateFee } from '../functions/fee'
 import { getOrCreateFeeSender } from '../functions/fee-sender'
 import {
@@ -13,6 +13,7 @@ import {
 } from '../functions/transaction'
 import { getOrCreateUser } from '../functions/user'
 import { getOrCreateXSushi } from '../functions/xsushi'
+import { updateSnapshots } from '../functions/xsushi-snapshot'
 
 export function onTransfer(event: TransferEvent): void {
   let sender = getOrCreateUser(event.params.from.toHex(), event)
@@ -45,16 +46,45 @@ export function onTransfer(event: TransferEvent): void {
     transaction.type = MINT
     xSushi.xSushiSupply = xSushi.xSushiSupply.plus(value)
     xSushi.xSushiMinted = xSushi.xSushiMinted.plus(value)
+    xSushi.save()
+    const snapshots = updateSnapshots(event.block.timestamp)
+    snapshots.hour.newTransactions = snapshots.hour.newTransactions.plus(BIG_INT_ONE)
+    snapshots.hour.newXSushiMinted = snapshots.hour.newXSushiMinted.plus(value)
+    snapshots.day.newTransactions = snapshots.day.newTransactions.plus(BIG_INT_ONE)
+    snapshots.day.newXSushiMinted = snapshots.day.newXSushiMinted.plus(value)
+    snapshots.week.newTransactions = snapshots.week.newTransactions.plus(BIG_INT_ONE)
+    snapshots.week.newXSushiMinted = snapshots.week.newXSushiMinted.plus(value)
+    snapshots.hour.save()
+    snapshots.day.save()
+    snapshots.week.save()
   } else if (isBurnTransaction(event)) {
     transaction.type = BURN
     xSushi.xSushiBurned = xSushi.xSushiBurned.plus(value)
     xSushi.xSushiSupply = xSushi.xSushiSupply.minus(value)
     updateRatio(xSushi)
+    xSushi.save()
+
+    const snapshots = updateSnapshots(event.block.timestamp)
+    snapshots.hour.newTransactions = snapshots.hour.newTransactions.plus(BIG_INT_ONE)
+    snapshots.hour.newXSushiBurned = snapshots.hour.newXSushiBurned.plus(value)
+    snapshots.day.newTransactions = snapshots.day.newTransactions.plus(BIG_INT_ONE)
+    snapshots.day.newXSushiBurned = snapshots.day.newXSushiBurned.plus(value)
+    snapshots.week.newTransactions = snapshots.week.newTransactions.plus(BIG_INT_ONE)
+    snapshots.week.newXSushiBurned = snapshots.week.newXSushiBurned.plus(value)
+    snapshots.hour.save()
+    snapshots.day.save()
+    snapshots.week.save()
   } else {
     transaction.type = TRANSFER
+    const snapshots = updateSnapshots(event.block.timestamp)
+    snapshots.hour.newTransactions = snapshots.hour.newTransactions.plus(BIG_INT_ONE)
+    snapshots.day.newTransactions = snapshots.day.newTransactions.plus(BIG_INT_ONE)
+    snapshots.week.newTransactions = snapshots.week.newTransactions.plus(BIG_INT_ONE)
+    snapshots.hour.save()
+    snapshots.day.save()
+    snapshots.week.save()
   }
   transaction.save()
-  xSushi.save()
 }
 
 export function onSushiTransfer(event: SushiTransferEvent): void {
@@ -68,6 +98,14 @@ export function onSushiTransfer(event: SushiTransferEvent): void {
       xSushi.sushiXsushiRatio = xSushi.sushiSupply.div(xSushi.xSushiSupply)
       xSushi.xSushiSushiRatio = xSushi.xSushiSupply.div(xSushi.sushiSupply)
       xSushi.save()
+
+      const snapshots = updateSnapshots(event.block.timestamp)
+      snapshots.hour.newSushiStaked = snapshots.hour.newSushiStaked.plus(value)
+      snapshots.day.newSushiStaked = snapshots.day.newSushiStaked.plus(value)
+      snapshots.week.newSushiStaked = snapshots.week.newSushiStaked.plus(value)
+      snapshots.hour.save()
+      snapshots.day.save()
+      snapshots.week.save()
     }
     // If no transaction exists, it means that the it's a direct transfer (not from enter function in the sushibar contract)
     else {
@@ -84,6 +122,14 @@ export function onSushiTransfer(event: SushiTransferEvent): void {
       xSushi.sushiSupply = xSushi.sushiSupply.plus(value)
       updateRatio(xSushi)
       xSushi.save()
+
+      const snapshots = updateSnapshots(event.block.timestamp)
+      snapshots.hour.newFeeAmount = snapshots.hour.newFeeAmount.plus(value)
+      snapshots.day.newFeeAmount = snapshots.day.newFeeAmount.plus(value)
+      snapshots.week.newFeeAmount = snapshots.week.newFeeAmount.plus(value)
+      snapshots.hour.save()
+      snapshots.day.save()
+      snapshots.week.save()
     }
     // HARVEST
   } else if (event.params.from == XSUSHI_ADDRESS) {
@@ -92,6 +138,14 @@ export function onSushiTransfer(event: SushiTransferEvent): void {
     xSushi.sushiSupply = xSushi.sushiSupply.minus(value)
     updateRatio(xSushi)
     xSushi.save()
+
+    const snapshots = updateSnapshots(event.block.timestamp)
+    snapshots.hour.newSushiHarvested = snapshots.hour.newSushiHarvested.plus(value)
+    snapshots.day.newSushiHarvested = snapshots.day.newSushiHarvested.plus(value)
+    snapshots.week.newSushiHarvested = snapshots.week.newSushiHarvested.plus(value)
+    snapshots.hour.save()
+    snapshots.day.save()
+    snapshots.week.save()
   }
 }
 

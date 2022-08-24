@@ -61,3 +61,75 @@ type Fee @entity {
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
 }
+
+type HourSnapshot @entity {
+  " {hour}-{date} "
+  id: ID! 
+  date: Int!
+  userCount: BigInt!
+  transactionCount: BigInt!
+  sushiSupply: BigDecimal!
+  xSushiSupply: BigDecimal!
+  sushiStaked: BigDecimal!
+  sushiHarvested: BigDecimal!
+  totalFeeAmount: BigDecimal!
+  xSushiBurned: BigDecimal!
+  xSushiMinted: BigDecimal!
+  xSushiSushiRatio: BigDecimal!
+  sushiXsushiRatio: BigDecimal!
+
+  newTransactions: BigInt!
+  newSushiStaked: BigDecimal!
+  newSushiHarvested: BigDecimal!
+  newFeeAmount: BigDecimal!
+  newXSushiBurned: BigDecimal!
+  newXSushiMinted: BigDecimal!
+}
+
+type DaySnapshot @entity {
+  " {day}-{date} "
+  id: ID! 
+  date: Int!
+  userCount: BigInt!
+  transactionCount: BigInt!
+  sushiSupply: BigDecimal!
+  xSushiSupply: BigDecimal!
+  sushiStaked: BigDecimal!
+  sushiHarvested: BigDecimal!
+  totalFeeAmount: BigDecimal!
+  xSushiBurned: BigDecimal!
+  xSushiMinted: BigDecimal!
+  xSushiSushiRatio: BigDecimal!
+  sushiXsushiRatio: BigDecimal!
+
+  newTransactions: BigInt!
+  newSushiStaked: BigDecimal!
+  newSushiHarvested: BigDecimal!
+  newFeeAmount: BigDecimal!
+  newXSushiBurned: BigDecimal!
+  newXSushiMinted: BigDecimal!
+}
+
+type WeekSnapshot @entity {
+  " {week}-{date} "
+  id: ID! 
+  date: Int!
+  userCount: BigInt!
+  transactionCount: BigInt!
+  sushiSupply: BigDecimal!
+  xSushiSupply: BigDecimal!
+  sushiStaked: BigDecimal!
+  sushiHarvested: BigDecimal!
+  totalFeeAmount: BigDecimal!
+  xSushiBurned: BigDecimal!
+  xSushiMinted: BigDecimal!
+  xSushiSushiRatio: BigDecimal!
+  sushiXsushiRatio: BigDecimal!
+  
+  newTransactions: BigInt!
+  newSushiStaked: BigDecimal!
+  newSushiHarvested: BigDecimal!
+  newFeeAmount: BigDecimal!
+  newXSushiBurned: BigDecimal!
+  newXSushiMinted: BigDecimal!
+}
