@@ -17,3 +17,6 @@ export const BIG_INT_ONE = BigInt.fromI32(1)
 export const HOUR_IN_SECONDS = 3600
 export const DAY_IN_SECONDS = HOUR_IN_SECONDS * 24
 export const WEEK_IN_SECONDS = DAY_IN_SECONDS * 7
+
+export const YEAR_IN_SECONDS = 15780000
+export const TRACK_APR_BLOCK = BigInt.fromI32(11980000) // 6 months has passed since the starting block

@@ -1,5 +1,6 @@
 import { FeeSender } from '../../generated/schema'
 import { Transfer as SushiTransferEvent } from '../../generated/sushi/sushi'
+import { BIG_INT_ZERO } from '../constants'
 
 export function getOrCreateFeeSender(event: SushiTransferEvent): FeeSender {
   const id = event.params.from.toHex()
@@ -11,6 +12,7 @@ export function getOrCreateFeeSender(event: SushiTransferEvent): FeeSender {
     feeSender.createdAtTimestamp = event.block.timestamp
     feeSender.modifiedAtBlock = event.block.number
     feeSender.modifiedAtTimestamp = event.block.timestamp
+    feeSender.totalFeeSent = BIG_INT_ZERO
     feeSender.save()
     return feeSender
   }

@@ -1,19 +1,19 @@
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
-import { XSushi } from '../../generated/schema'
+import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
+import { WeekSnapshot, XSushi } from '../../generated/schema'
 import { Transfer as SushiTransferEvent } from '../../generated/sushi/sushi'
 import { Transfer as TransferEvent } from '../../generated/xSushi/xSushi'
-import { BIG_DECIMAL_1E18, BIG_DECIMAL_ZERO, BIG_INT_ONE, BURN, MINT, TRANSFER, XSUSHI_ADDRESS } from '../constants'
+import { BIG_DECIMAL_1E18, BIG_INT_ONE, BURN, MINT, TRACK_APR_BLOCK, TRANSFER, XSUSHI_ADDRESS } from '../constants'
 import { getOrCreateFee } from '../functions/fee'
 import { getOrCreateFeeSender } from '../functions/fee-sender'
 import {
-  getOrCreateTransaction,
+  createTransaction,
   isBurnTransaction,
   isMintTransaction,
-  transactionExists,
+  transactionExists
 } from '../functions/transaction'
 import { getOrCreateUser } from '../functions/user'
 import { getOrCreateXSushi } from '../functions/xsushi'
-import { updateSnapshots } from '../functions/xsushi-snapshot'
+import { getAprSnapshot, updateSnapshots } from '../functions/xsushi-snapshot'
 
 export function onTransfer(event: TransferEvent): void {
   let sender = getOrCreateUser(event.params.from.toHex(), event)
@@ -28,7 +28,7 @@ export function onTransfer(event: TransferEvent): void {
   reciever.modifiedAtTimestamp = event.block.timestamp
   reciever.save()
 
-  const transaction = getOrCreateTransaction(event)
+  const transaction = createTransaction(event)
   const value = event.params.value.divDecimal(BIG_DECIMAL_1E18)
 
   transaction.from = event.params.from.toHex()
@@ -37,8 +37,8 @@ export function onTransfer(event: TransferEvent): void {
   transaction.gasUsed = event.block.gasUsed
   transaction.gasLimit = event.transaction.gasLimit
   transaction.gasPrice = event.transaction.gasPrice
-  transaction.block = event.block.number
-  transaction.timestamp = event.block.timestamp
+  transaction.createdAtBlock = event.block.number
+  transaction.createdAtTimestamp = event.block.timestamp
 
   const xSushi = getOrCreateXSushi()
   xSushi.transactionCount = xSushi.transactionCount.plus(BigInt.fromU32(1))
@@ -62,6 +62,7 @@ export function onTransfer(event: TransferEvent): void {
     xSushi.xSushiBurned = xSushi.xSushiBurned.plus(value)
     xSushi.xSushiSupply = xSushi.xSushiSupply.minus(value)
     updateRatio(xSushi)
+    updateApr(xSushi, event.block.timestamp)
     xSushi.save()
 
     const snapshots = updateSnapshots(event.block.timestamp)
@@ -121,6 +122,7 @@ export function onSushiTransfer(event: SushiTransferEvent): void {
       xSushi.totalFeeAmount = xSushi.totalFeeAmount.plus(value)
       xSushi.sushiSupply = xSushi.sushiSupply.plus(value)
       updateRatio(xSushi)
+      updateApr(xSushi, event.block.timestamp)
       xSushi.save()
 
       const snapshots = updateSnapshots(event.block.timestamp)
@@ -137,6 +139,7 @@ export function onSushiTransfer(event: SushiTransferEvent): void {
     xSushi.sushiHarvested = xSushi.sushiHarvested.plus(value)
     xSushi.sushiSupply = xSushi.sushiSupply.minus(value)
     updateRatio(xSushi)
+    updateApr(xSushi, event.block.timestamp)
     xSushi.save()
 
     const snapshots = updateSnapshots(event.block.timestamp)
@@ -157,4 +160,29 @@ function updateRatio(xSushi: XSushi): void {
     xSushi.sushiXsushiRatio = BigDecimal.fromString('1')
     xSushi.xSushiSushiRatio = BigDecimal.fromString('1')
   }
+}
+
+export function updateApr(xSushi: XSushi, timestamp: BigInt): void {
+  if (timestamp.le(TRACK_APR_BLOCK)) {
+    return // We don't track the apr before the apr tracking block, at least a year must have passed since the starting block
+  }
+  const snapshot = getAprSnapshot(timestamp)
+  if (snapshot == null) {
+    log.debug('no snapshot found, should we set apr to zero?', [])
+    return
+  }
+  xSushi.apr = calculateApr(xSushi, snapshot)
+  xSushi.aprUpdatedAtTimestamp = timestamp
+}
+
+/**
+ * Formula from https://github.com/sushiswap/sushiswap/blob/feature/pool/apps/pool/pages/api/bar.tsx#L17
+ * @param xSushi 
+ * @param snapshot 
+ * @returns 
+ */
+const calculateApr = (xSushi: XSushi, snapshot: WeekSnapshot): BigDecimal => {
+  return xSushi.sushiXsushiRatio.div(snapshot.sushiXsushiRatio)
+    .minus(BigDecimal.fromString('1'))
+    .div(BigDecimal.fromString('100')) // TODO: div 100k?
 }

@@ -1,6 +1,6 @@
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
+import { BigInt } from '@graphprotocol/graph-ts'
 import { DaySnapshot, HourSnapshot, WeekSnapshot, XSushi } from '../../generated/schema'
-import { BIG_DECIMAL_ZERO, BIG_INT_ZERO, DAY_IN_SECONDS, HOUR_IN_SECONDS, WEEK_IN_SECONDS } from '../constants'
+import { BIG_DECIMAL_ZERO, BIG_INT_ZERO, DAY_IN_SECONDS, HOUR_IN_SECONDS, YEAR_IN_SECONDS, WEEK_IN_SECONDS } from '../constants'
 import { getOrCreateXSushi } from './xsushi'
 
 export class Snapshots {
@@ -156,19 +156,15 @@ export function getPairWeeklySnapshotId(timestamp: BigInt): string {
 
 
 /**
- * Get the weekly APR, starting at 6 months from the given timestamp. If no snapshot is found return null. 
+ * Get a weekly snapshot 12 months ago from the given timestamp. If no snapshot is found return null. 
  * @param timestamp 
  * @returns 
  */
 export function getAprSnapshot(timestamp: BigInt): WeekSnapshot | null {
-  // TODO: weekly
-  // for (let i = 23; i <= 47; i++) {
-  //   let startTime = BigInt.fromI32(timestamp.minus(BigInt.fromI32(i * HOUR_IN_SECONDS)).toI32())
-  //   let id = getPairWeeklySnapshotId(startTime)
-  //   let snapshot = PairHourSnapshot.load(id)
-  //   if (snapshot !== null) {
-  //     return snapshot
-  //   }
-  // }
-  return null
+
+  let startTime = BigInt.fromI32(timestamp.minus(BigInt.fromI32(YEAR_IN_SECONDS)).toI32())
+  let id = getPairWeeklySnapshotId(startTime)
+  let snapshot = WeekSnapshot.load(id)
+
+  return snapshot
 }

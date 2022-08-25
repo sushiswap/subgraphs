@@ -1,6 +1,7 @@
 import { BigInt } from '@graphprotocol/graph-ts'
 import { User } from '../../generated/schema'
 import { Transfer as TransferEvent } from '../../generated/xSushi/xSushi'
+import { BIG_INT_ZERO } from '../constants'
 import { getOrCreateXSushi } from './xsushi'
 
 export function createUser(id: string, event: TransferEvent): User {
@@ -9,6 +10,7 @@ export function createUser(id: string, event: TransferEvent): User {
   user.createdAtTimestamp = event.block.timestamp
   user.modifiedAtBlock = event.block.number
   user.modifiedAtTimestamp = event.block.timestamp
+  user.balance = BIG_INT_ZERO
   user.save()
 
   const xSushi = getOrCreateXSushi()

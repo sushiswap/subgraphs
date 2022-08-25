@@ -36,7 +36,7 @@ export function createSushiTransferEvent(from: Address, to: Address, value: BigI
     mockEvent.logType,
     mockEvent.block,
     mockEvent.transaction,
-    mockEvent.parameters
+    mockEvent.parameters,
   )
   event.parameters = new Array()
 
