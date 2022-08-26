@@ -19,7 +19,10 @@ export function getOrCreateXSushi(): XSushi {
     xSushi.sushiXsushiRatio = BIG_DECIMAL_ONE
     xSushi.xSushiSushiRatio = BIG_DECIMAL_ONE
 
-    xSushi.apr = BIG_DECIMAL_ZERO
+    xSushi.apr1m = BIG_DECIMAL_ZERO
+    xSushi.apr3m = BIG_DECIMAL_ZERO
+    xSushi.apr6m = BIG_DECIMAL_ZERO
+    xSushi.apr12m = BIG_DECIMAL_ZERO
     xSushi.aprUpdatedAtTimestamp = BIG_INT_ZERO
 
     xSushi.save()

@@ -22,7 +22,7 @@ function updateHourSnapshot(
   timestamp: BigInt,
   xSushi: XSushi,
 ): HourSnapshot {
-  let id = getPairHourSnapshotId(timestamp)
+  let id = getHourSnapshotId(timestamp)
 
   let snapshot = HourSnapshot.load(id)
 
@@ -48,6 +48,10 @@ function updateHourSnapshot(
   snapshot.xSushiMinted = xSushi.xSushiMinted
   snapshot.xSushiSushiRatio = xSushi.xSushiSushiRatio
   snapshot.sushiXsushiRatio = xSushi.sushiXsushiRatio
+  snapshot.apr1m = xSushi.apr1m
+  snapshot.apr3m = xSushi.apr3m
+  snapshot.apr6m = xSushi.apr6m
+  snapshot.apr12m = xSushi.apr12m
 
   snapshot.save()
   return snapshot
@@ -57,7 +61,7 @@ function updateDaySnapshot(
   timestamp: BigInt,
   xSushi: XSushi
 ): DaySnapshot {
-  let id = getPairDaySnapshotId(timestamp)
+  let id = getDaySnapshotId(timestamp)
   let snapshot = DaySnapshot.load(id)
 
   if (snapshot === null) {
@@ -82,6 +86,10 @@ function updateDaySnapshot(
   snapshot.xSushiMinted = xSushi.xSushiMinted
   snapshot.xSushiSushiRatio = xSushi.xSushiSushiRatio
   snapshot.sushiXsushiRatio = xSushi.sushiXsushiRatio
+  snapshot.apr1m = xSushi.apr1m
+  snapshot.apr3m = xSushi.apr3m
+  snapshot.apr6m = xSushi.apr6m
+  snapshot.apr12m = xSushi.apr12m
 
   snapshot.save()
   return snapshot
@@ -92,7 +100,7 @@ function updateWeeklySnapshot(
   timestamp: BigInt,
   xSushi: XSushi
 ): WeekSnapshot {
-  let id = getPairWeeklySnapshotId(timestamp)
+  let id = getWeekSnapshotId(timestamp)
   let snapshot = WeekSnapshot.load(id)
 
   if (snapshot === null) {
@@ -117,6 +125,10 @@ function updateWeeklySnapshot(
   snapshot.xSushiMinted = xSushi.xSushiMinted
   snapshot.xSushiSushiRatio = xSushi.xSushiSushiRatio
   snapshot.sushiXsushiRatio = xSushi.sushiXsushiRatio
+  snapshot.apr1m = xSushi.apr1m
+  snapshot.apr3m = xSushi.apr3m
+  snapshot.apr6m = xSushi.apr6m
+  snapshot.apr12m = xSushi.apr12m
 
   snapshot.save()
   return snapshot
@@ -139,32 +151,39 @@ function getWeeklyStartDate(timestamp: BigInt): i32 {
 }
 
 
-export function getPairHourSnapshotId(timestamp: BigInt): string {
+export function getHourSnapshotId(timestamp: BigInt): string {
   let startDate = getHourStartDate(timestamp)
   return 'hour-'.concat(BigInt.fromI32(startDate).toString())
 }
 
-export function getPairDaySnapshotId(timestamp: BigInt): string {
+export function getDaySnapshotId(timestamp: BigInt): string {
   let startDate = getDayStartDate(timestamp)
   return 'day-'.concat(BigInt.fromI32(startDate).toString())
 }
 
-export function getPairWeeklySnapshotId(timestamp: BigInt): string {
+export function getWeekSnapshotId(timestamp: BigInt): string {
   let startDate = getWeeklyStartDate(timestamp)
   return 'week-'.concat(BigInt.fromI32(startDate).toString())
 }
 
 
 /**
- * Get a weekly snapshot 12 months ago from the given timestamp. If no snapshot is found return null. 
+ * Get a day snapshot, given a timeframe and timestamp. If no snapshot is found return null. 
+ * Example: 
+ * if timestamp = now, and timeframe = (4 weeks in seconds)
+ * Then we find the snapshot and day after the given timeframe to account for the snapshot duration.  
  * @param timestamp 
+ * @param timeframe 
  * @returns 
  */
-export function getAprSnapshot(timestamp: BigInt): WeekSnapshot | null {
-
-  let startTime = BigInt.fromI32(timestamp.minus(BigInt.fromI32(YEAR_IN_SECONDS)).toI32())
-  let id = getPairWeeklySnapshotId(startTime)
-  let snapshot = WeekSnapshot.load(id)
+export function getAprSnapshot(timestamp: BigInt, timeframe: i32): DaySnapshot | null {
+  let startTime = BigInt.fromI32(timestamp.minus(BigInt.fromI32(timeframe)
+    .plus((BigInt.fromI32(DAY_IN_SECONDS)))
+    )
+    .toI32())
+  let id = getDaySnapshotId(startTime)
+  let snapshot = DaySnapshot.load(id)
 
   return snapshot
 }
+

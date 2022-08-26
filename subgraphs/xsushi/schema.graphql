@@ -11,7 +11,10 @@ type XSushi @entity {
   xSushiMinted: BigDecimal!
   xSushiSushiRatio: BigDecimal!
   sushiXsushiRatio: BigDecimal!
-  apr: BigDecimal!
+  apr1m: BigDecimal!
+  apr3m: BigDecimal!
+  apr6m: BigDecimal!
+  apr12m: BigDecimal!
   aprUpdatedAtTimestamp: BigInt!
 }
 
@@ -79,12 +82,18 @@ type HourSnapshot @entity {
   xSushiSushiRatio: BigDecimal!
   sushiXsushiRatio: BigDecimal!
 
+  apr1m: BigDecimal!
+  apr3m: BigDecimal!
+  apr6m: BigDecimal!
+  apr12m: BigDecimal!
+
   newTransactions: BigInt!
   newSushiStaked: BigDecimal!
   newSushiHarvested: BigDecimal!
   newFeeAmount: BigDecimal!
   newXSushiBurned: BigDecimal!
   newXSushiMinted: BigDecimal!
+  
 }
 
 type DaySnapshot @entity {
@@ -102,6 +111,11 @@ type DaySnapshot @entity {
   xSushiMinted: BigDecimal!
   xSushiSushiRatio: BigDecimal!
   sushiXsushiRatio: BigDecimal!
+  
+  apr1m: BigDecimal!
+  apr3m: BigDecimal!
+  apr6m: BigDecimal!
+  apr12m: BigDecimal!
 
   newTransactions: BigInt!
   newSushiStaked: BigDecimal!
@@ -127,6 +141,11 @@ type WeekSnapshot @entity {
   xSushiSushiRatio: BigDecimal!
   sushiXsushiRatio: BigDecimal!
   
+  apr1m: BigDecimal!
+  apr3m: BigDecimal!
+  apr6m: BigDecimal!
+  apr12m: BigDecimal!
+
   newTransactions: BigInt!
   newSushiStaked: BigDecimal!
   newSushiHarvested: BigDecimal!

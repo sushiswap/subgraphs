@@ -1,8 +1,8 @@
-import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
-import { WeekSnapshot, XSushi } from '../../generated/schema'
+import { BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { XSushi } from '../../generated/schema'
 import { Transfer as SushiTransferEvent } from '../../generated/sushi/sushi'
 import { Transfer as TransferEvent } from '../../generated/xSushi/xSushi'
-import { BIG_DECIMAL_1E18, BIG_INT_ONE, BURN, MINT, TRACK_APR_BLOCK, TRANSFER, XSUSHI_ADDRESS } from '../constants'
+import { BIG_DECIMAL_1E18, BIG_DECIMAL_ZERO, BIG_INT_ONE, BURN, MINT, TRANSFER, WEEK_IN_SECONDS, XSUSHI_ADDRESS } from '../constants'
 import { getOrCreateFee } from '../functions/fee'
 import { getOrCreateFeeSender } from '../functions/fee-sender'
 import {
@@ -62,7 +62,7 @@ export function onTransfer(event: TransferEvent): void {
     xSushi.xSushiBurned = xSushi.xSushiBurned.plus(value)
     xSushi.xSushiSupply = xSushi.xSushiSupply.minus(value)
     updateRatio(xSushi)
-    updateApr(xSushi, event.block.timestamp)
+    updateApr(xSushi, event)
     xSushi.save()
 
     const snapshots = updateSnapshots(event.block.timestamp)
@@ -122,7 +122,7 @@ export function onSushiTransfer(event: SushiTransferEvent): void {
       xSushi.totalFeeAmount = xSushi.totalFeeAmount.plus(value)
       xSushi.sushiSupply = xSushi.sushiSupply.plus(value)
       updateRatio(xSushi)
-      updateApr(xSushi, event.block.timestamp)
+      updateApr(xSushi, event)
       xSushi.save()
 
       const snapshots = updateSnapshots(event.block.timestamp)
@@ -139,7 +139,7 @@ export function onSushiTransfer(event: SushiTransferEvent): void {
     xSushi.sushiHarvested = xSushi.sushiHarvested.plus(value)
     xSushi.sushiSupply = xSushi.sushiSupply.minus(value)
     updateRatio(xSushi)
-    updateApr(xSushi, event.block.timestamp)
+    updateApr(xSushi, event)
     xSushi.save()
 
     const snapshots = updateSnapshots(event.block.timestamp)
@@ -162,17 +162,13 @@ function updateRatio(xSushi: XSushi): void {
   }
 }
 
-export function updateApr(xSushi: XSushi, timestamp: BigInt): void {
-  if (timestamp.le(TRACK_APR_BLOCK)) {
-    return // We don't track the apr before the apr tracking block, at least a year must have passed since the starting block
-  }
-  const snapshot = getAprSnapshot(timestamp)
-  if (snapshot == null) {
-    log.debug('no snapshot found, should we set apr to zero?', [])
-    return
-  }
-  xSushi.apr = calculateApr(xSushi, snapshot)
-  xSushi.aprUpdatedAtTimestamp = timestamp
+export function updateApr(xSushi: XSushi, event: ethereum.Event): void {
+  const apr = getApr(xSushi, event.block.timestamp)
+  xSushi.apr1m = apr._1m
+  xSushi.apr3m = apr._3m
+  xSushi.apr6m = apr._6m
+  xSushi.apr12m = apr._12m
+  xSushi.aprUpdatedAtTimestamp = event.block.timestamp
 }
 
 /**
@@ -181,8 +177,38 @@ export function updateApr(xSushi: XSushi, timestamp: BigInt): void {
  * @param snapshot 
  * @returns 
  */
-const calculateApr = (xSushi: XSushi, snapshot: WeekSnapshot): BigDecimal => {
-  return xSushi.sushiXsushiRatio.div(snapshot.sushiXsushiRatio)
-    .minus(BigDecimal.fromString('1'))
-    .div(BigDecimal.fromString('100')) // TODO: div 100k?
+function getApr(xSushi: XSushi, timestamp: BigInt): APR {
+  const oneMonthSnapshot = getAprSnapshot(timestamp, WEEK_IN_SECONDS * 4)
+  const oneMonthApr = oneMonthSnapshot
+    ? xSushi.sushiXsushiRatio.div(oneMonthSnapshot.sushiXsushiRatio).minus(BigDecimal.fromString('1'))
+    : BIG_DECIMAL_ZERO
+
+  const threeMonthSnapshot = getAprSnapshot(timestamp, WEEK_IN_SECONDS * 13)
+  const threeMonthApr = threeMonthSnapshot
+    ? xSushi.sushiXsushiRatio.div(threeMonthSnapshot.sushiXsushiRatio).minus(BigDecimal.fromString('1'))
+    : BIG_DECIMAL_ZERO
+
+  const sixMonthSnapshot = getAprSnapshot(timestamp, WEEK_IN_SECONDS * 26)
+  const sixMonthApr = sixMonthSnapshot
+    ? xSushi.sushiXsushiRatio.div(sixMonthSnapshot.sushiXsushiRatio).minus(BigDecimal.fromString('1'))
+    : BIG_DECIMAL_ZERO
+
+  const oneYearSnapshot = getAprSnapshot(timestamp, WEEK_IN_SECONDS * 52)
+  const oneYearApr = oneYearSnapshot
+    ? xSushi.sushiXsushiRatio.div(oneYearSnapshot.sushiXsushiRatio).minus(BigDecimal.fromString('1'))
+    : BIG_DECIMAL_ZERO
+
+  return {
+    _1m: oneMonthApr,
+    _3m: threeMonthApr,
+    _6m: sixMonthApr,
+    _12m: oneYearApr,
+  }
+}
+
+class APR {
+  _1m: BigDecimal
+  _3m: BigDecimal
+  _6m: BigDecimal
+  _12m: BigDecimal
 }
