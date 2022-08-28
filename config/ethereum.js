@@ -129,5 +129,9 @@ module.exports = {
   xswap: {
     address: '0x011e52e4e40cf9498c79273329e8827b21e2e581',
     startBlock: 15187118,
+  },
+  stargate: {
+    usdcPool: { address: '0xdf0770df86a8034b3efef0a1bb3c889b8332ff56', startBlock: 14403393 },
+    usdtPool: { address: '0x38ea452219524bb87e18de1c24d3bb59510bd783', startBlock: 14403402 },
   }
 }

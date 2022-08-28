@@ -1,3 +1,5 @@
+import { Address } from "@graphprotocol/graph-ts"
+
 export const ACTIONS = new Map<i32,string>()
 
 ACTIONS.set(0, "APPROVAL: Master contract approval")
@@ -27,6 +29,8 @@ ACTIONS.set(11, "BRIDGE: Token Transfer")
 // ])
 
 export const UNKNOWN_ACTION = "Unknown action"
+
+export const XSWAP_ADDRESS = Address.fromString("{{ xswap.address }}")
 
 
 export namespace PayloadType {

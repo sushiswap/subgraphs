@@ -72,6 +72,8 @@ module.exports = {
   },
   stargate: {
     address: '0x66A71Dcef29A0fFBDBE3c6a460a3B5BC225Cd675',
-    startBlock: 7920342
+    startBlock: 7920342,
+    usdcPool: { address: '0x892785f33cdee22a30aef750f285e18c18040c3e', startBlock: 8041115 },
+    usdtPool: { address: '0xb6cfcf89a7b22988bfc96632ac2a9d6dab60d641', startBlock: 8041122 },
   }
 }

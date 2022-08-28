@@ -3,45 +3,65 @@ type Global @entity {
   swapCount: BigInt!
 }
 
-enum PayloadType {
-  SOURCE
-  DESTINATION
-}
-
-type Source @entity {
+type Pool @entity {
   id: ID!
-  sourcePayload: Payload!
-  # destinationPayload: Payload!
-  createdAtBlock: BigInt!
-  createdAtTimestamp: BigInt!
-}
-
-
-type Payload @entity { 
-  id: ID!
-  " Type, SOURCE or DESTINATION"
-  type: PayloadType! 
-  operations: [Operation!]!
-  operationCount: Int!
-}
-
-type Operation @entity(immutable: true) {
-  " txHash:global.operationCount"
-  id: ID!
-  action: Action!
-  value: BigInt!
-  data: Bytes!
-}
-
-type Action @entity(immutable: true) {
-  " Action type, e.g. '1' "
-  id: ID! 
   name: String!
+  swapCount: BigInt!
+  volume: BigDecimal!
+  token: Token!
 }
 
-type Destination @entity {
+# enum PayloadType {
+#   SOURCE
+#   DESTINATION
+# }
+
+# type Source @entity {
+#   id: ID!
+#   sourcePayload: Payload!
+#   # destinationPayload: Payload!
+#   createdAtBlock: BigInt!
+#   createdAtTimestamp: BigInt!
+# }
+
+
+# type Payload @entity { 
+#   id: ID!
+#   " Type, SOURCE or DESTINATION"
+#   type: PayloadType! 
+#   operations: [Operation!]!
+#   operationCount: Int!
+# }
+
+# type Operation @entity(immutable: true) {
+#   " txHash:global.operationCount"
+#   id: ID!
+#   action: Action!
+#   value: BigInt!
+#   data: Bytes!
+# }
+
+# type Action @entity(immutable: true) {
+#   " Action type, e.g. '1' "
+#   id: ID! 
+#   name: String!
+# }
+
+# type Destination @entity {
+#   id: ID!
+#   failed: Boolean!
+#   createdAtBlock: BigInt!
+#   createdAtTimestamp: BigInt!
+# }
+
+type Token @entity {
   id: ID!
-  failed: Boolean!
+  symbol: String!
+  symbolSuccess: Boolean!
+  name: String!
+  nameSuccess: Boolean!
+  decimals: BigInt!
+  decimalsSuccess: Boolean!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
 }
