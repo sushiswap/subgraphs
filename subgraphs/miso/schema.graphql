@@ -5,6 +5,12 @@
 #   SMART_CONTRACT # 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6
 # }
 
+enum AuctionType {
+  CROWDSALE # template id 1
+  DUTCH # template id 2
+  BATCH # template id 3
+  HYBERBOLIC # template id 4
+}
 
 type Role @entity {
   id: ID!
@@ -26,6 +32,7 @@ type Factory @entity {
 
 type Template @entity {
   id: ID!
+  type: AuctionType!
   factory: Factory!
   auctions: [Auction!] @derivedFrom(field: "template")
   removed: Boolean!
