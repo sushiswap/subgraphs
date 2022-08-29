@@ -52,6 +52,12 @@ module.exports = {
     accessControls: { address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4', startBlock: 14598164 },
     market: { address: '0x281bd3a3f96ae7c96049493a7ba9449df2c5b0fe', startBlock: 14598240 },
   },
+  miso_0_1: {
+    market: { address: '0x9d6c60d26B8f776B85d5731AD56b88973C3D370b', startBlock: 12453632 },
+  },
+  miso_0_2: {
+    market: { address: '0x9a40B4497b62607ED9014e8E14284b21095a572C', startBlock: 13405590 },
+  },
   legacy: {
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [

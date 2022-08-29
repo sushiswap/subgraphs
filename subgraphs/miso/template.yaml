@@ -56,6 +56,54 @@ dataSources:
         - event: MarketCreated(indexed address,indexed address,address)
           handler: onMarketCreated
       file: ./src/mappings/market.ts
+      
+  - kind: ethereum/contract
+    name: MISOMarket0_1
+    network: {{ network }}
+    source:
+      address: '{{ miso_0_1.market.address }}'
+      abi: MISOMarket
+      startBlock: {{ miso_0_1.market.startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: MISOMarket
+          file: ./node_modules/@sushiswap/miso/artifacts/contracts/MISOMarket.sol/MISOMarket.json
+      eventHandlers:
+        - event: AuctionTemplateAdded(address,uint256)
+          handler: onAuctionTemplateAdded
+        - event: AuctionTemplateRemoved(address,uint256)
+          handler: onAuctionTemplateRemoved
+        - event: MarketCreated(indexed address,indexed address,address)
+          handler: onMarketCreated
+      file: ./src/mappings/market.ts
+      
+  - kind: ethereum/contract
+    name: MISOMarket0_2
+    network: {{ network }}
+    source:
+      address: '{{ miso_0_2.market.address }}'
+      abi: MISOMarket
+      startBlock: {{ miso_0_2.market.startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: MISOMarket
+          file: ./node_modules/@sushiswap/miso/artifacts/contracts/MISOMarket.sol/MISOMarket.json
+      eventHandlers:
+        - event: AuctionTemplateAdded(address,uint256)
+          handler: onAuctionTemplateAdded
+        - event: AuctionTemplateRemoved(address,uint256)
+          handler: onAuctionTemplateRemoved
+        - event: MarketCreated(indexed address,indexed address,address)
+          handler: onMarketCreated
+      file: ./src/mappings/market.ts
 
 templates:
   - kind: ethereum/contract
