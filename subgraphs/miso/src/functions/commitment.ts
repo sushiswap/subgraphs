@@ -3,6 +3,7 @@ import { Commitment } from '../../generated/schema'
 import { AddedCommitment } from '../../generated/templates/MisoAuction/MisoAuction'
 import { getOrCreateParticipant } from './participant'
 
+
 export function createCommitment(event: AddedCommitment): Commitment {
   const commitment = new Commitment(getCommitmentId(event))
 

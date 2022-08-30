@@ -45,10 +45,6 @@ dataSources:
           file: ./node_modules/@sushiswap/miso/artifacts/contracts/MISOMarket.sol/MISOMarket.json
         - name: BatchAuction
           file: ./abis/BatchAuction.json
-        - name: CrowdsaleAuction
-          file: ./abis/CrowdsaleAuction.json
-        - name: DutchAuction
-          file: ./abis/DutchAuction.json
       eventHandlers:
         - event: AuctionTemplateAdded(address,uint256)
           handler: onAuctionTemplateAdded
@@ -117,9 +113,7 @@ templates:
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/mappings/auction.ts
-      entities:
-        - AuctionUser
-        - Commitment
+      entities: []
       abis:
         - name: MisoAuction
           file: ./abis/MisoAuction.json
@@ -131,3 +125,61 @@ templates:
           handler: onAuctionFinalized
         - event: AuctionCancelled()
           handler: onAuctionCancelled
+          
+  - kind: ethereum/contract
+    name: DutchAuction
+    network: {{ network }}
+    source:
+      abi: DutchAuction
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/dutch.ts
+      entities: []
+      abis:
+        - name: DutchAuction
+          file: ./abis/DutchAuction.json
+      callHandlers:
+        - function: setDocument(string,string)
+          handler: onSetDocument
+        - function: setDocuments(string[],string[])
+          handler: onSetDocuments    
+  - kind: ethereum/contract
+    name: CrowdsaleAuction
+    network: {{ network }}
+    source:
+      abi: CrowdsaleAuction
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/crowdsale.ts
+      entities: []
+      abis:
+        - name: CrowdsaleAuction
+          file: ./abis/CrowdsaleAuction.json
+      callHandlers:
+        - function: setDocument(string,string)
+          handler: onSetDocument
+        - function: setDocuments(string[],string[])
+          handler: onSetDocuments  
+  - kind: ethereum/contract
+    name: BatchAuction
+    network: {{ network }}
+    source:
+      abi: BatchAuction
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/batch.ts
+      entities: []
+      abis:
+        - name: BatchAuction
+          file: ./abis/BatchAuction.json
+      callHandlers:
+        - function: setDocument(string,string)
+          handler: onSetDocument
+        - function: setDocuments(string[],string[])
+          handler: onSetDocuments

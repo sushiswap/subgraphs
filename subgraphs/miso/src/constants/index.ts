@@ -18,4 +18,47 @@ export namespace AuctionType {
     export const HYBERBOLIC = "HYBERBOLIC"
   }
 
+  
+//   const socials = [
+//     {
+//       key: 'twitter',
+//     },
+//     {
+//       key: 'github',
+//     },
+//     {
+//       key: 'telegram',
+//     },
+//     {
+//       key: 'wechat',
+//     },
+//     {
+//       key: 'discord',
+//     },
+//     {
+//       key: 'reddit',
+//     },
+//     {
+//       key: 'medium',
+//     },
+//   ]
+export namespace DocumentType {
+    export const WEBSITE = "website"
+    export const WHITE_PAPER = "whitepaper"
+    export const TOKENOMICS = "tokenomics"
+    export const CATEGORY = "category"
+    export const ICON = "icon"
+    export const DESKTOP_BANNER = "desktopBanner"
+    export const MOBILE_BANNER = "mobileBanner"
+    export const DESCRIPTION = "description"
+    export const TWITTER = "twitter"
+    export const GITHUB = "github"
+    export const TELEGRAM = "telegram"
+    export const WECHAT = "wechat"
+    export const DISCORD = "discord"
+    export const REDDIT = "reddit"
+    export const MEDIUM = "medium"
+  }
+
+
 export * from './roles'
