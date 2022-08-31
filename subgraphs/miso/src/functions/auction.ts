@@ -33,11 +33,6 @@ export function createAuction(event: MarketCreated): Auction {
   auction.save()
   updateDocument(auctionId, auctionDetails.documentNames, auctionDetails.documentValues)
 
-
-
-
-  // TODO: create token read off base info
-
   return auction as Auction
 }
 
@@ -64,7 +59,7 @@ class AuctionDetails {
 function getAuctionDetails(address: Address): AuctionDetails {
   const contract = DutchAuction.bind(address)
   const baseInfo = contract.getBaseInformation()
-  const bidToken = contract.auctionToken()
+  const bidToken = contract.paymentCurrency()
   const marketInfo = contract.marketInfo()
   const try_priceDrop = contract.try_priceDrop()
   const priceDrop = try_priceDrop.reverted ? BigInt.fromI32(0) : try_priceDrop.value
