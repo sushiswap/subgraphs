@@ -90,14 +90,14 @@ export function createLiquidityPositions(event: TransferEvent): void {
     return
   }
 
-  if (isBurn(event)) {
+  if (event.params.sender != ADDRESS_ZERO && event.params.sender != event.address) {
     const fromUserLiquidityPosition = getOrCreateLiquidityPosition(event.params.sender, event.address, event.block)
     fromUserLiquidityPosition.balance = fromUserLiquidityPosition.balance.minus(event.params.amount)
     fromUserLiquidityPosition.save()
     createLiquidityPositionSnapshot(fromUserLiquidityPosition, event.block)
   }
 
-  if (isMint(event)) {
+  if (event.params.recipient != ADDRESS_ZERO && event.params.recipient != event.address) {
     const toUserLiquidityPosition = getOrCreateLiquidityPosition(event.params.recipient, event.address, event.block)
     toUserLiquidityPosition.balance = toUserLiquidityPosition.balance.plus(event.params.amount)
     toUserLiquidityPosition.save()
