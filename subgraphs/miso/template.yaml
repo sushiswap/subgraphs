@@ -43,8 +43,14 @@ dataSources:
       abis:
         - name: MISOMarket
           file: ./node_modules/@sushiswap/miso/artifacts/contracts/MISOMarket.sol/MISOMarket.json
-        - name: BatchAuction
-          file: ./abis/BatchAuction.json
+        - name: DutchAuction
+          file: ./abis/DutchAuction.json
+        - name: ERC20
+          file: ./node_modules/abi/ERC20/ERC20.json
+        - name: SymbolBytes32
+          file: ./node_modules/abi/ERC20/SymbolBytes32.json
+        - name: NameBytes32
+          file: ./node_modules/abi/ERC20/NameBytes32.json
       eventHandlers:
         - event: AuctionTemplateAdded(address,uint256)
           handler: onAuctionTemplateAdded

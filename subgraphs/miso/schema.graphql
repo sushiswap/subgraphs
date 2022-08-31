@@ -41,14 +41,22 @@ type Auction @entity {
   factory: Factory!
   type: AuctionType!
   template: Template!
+  startTime: BigInt!
+  endTime: BigInt!
+
+  token: Token!
+  totalTokens: BigInt!
+  priceDrop: BigInt!
+  priceRate: BigInt!
+  priceGoal: BigInt!
+  bidToken: Token!
+  documents: DocumentCollection!
+
   participants: [Participant!] @derivedFrom(field: "auction")
   participantCount: BigInt!
   commitments: [Commitment!] @derivedFrom(field: "auction")
   commitmentCount: BigInt!
   committed: BigInt!
-
-  " Documents "
-  documents: DocumentCollection!
 
   deploymentTimestamp: BigInt!
   finalized: Boolean!
@@ -76,6 +84,18 @@ type DocumentCollection @entity {
   discord: String
   reddit: String
   medium: String
+}
+
+type Token @entity {
+  id: ID!
+  symbol: String!
+  symbolSuccess: Boolean!
+  name: String!
+  nameSuccess: Boolean!
+  decimals: BigInt!
+  decimalsSuccess: Boolean!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
 }
 
 type Participant @entity {

@@ -1,14 +1,14 @@
 import { AuctionTemplateAdded } from '../../generated/MISOMarket/MISOMarket'
 import { Template } from '../../generated/schema'
-import { BatchAuction } from '../../generated/MISOMarket/BatchAuction'
+import { DutchAuction } from '../../generated/MISOMarket/DutchAuction'
 import { AuctionType, BATCH_AUCTION_TEMPLATE_ID, CROWDSALE_AUCTION_TEMPLATE_ID, DUTCH_AUCTION_TEMPLATE_ID, HYPERBOLIC_AUCTION_TEMPLATE_ID } from '../constants'
 
 export function createTemplate(event: AuctionTemplateAdded): Template {
   const template = new Template(event.params.newAuction.toHex())
   
-  // There are several auction types, but they all have marketTemplate function, therefore the generated method should be is the same 
-  // and we can use only one template to get the marketTemplate
-  const contract = BatchAuction.bind(event.params.newAuction) 
+  // There are several auction types, but they all have marketTemplate function, therefore the generated method should be the same 
+  // and we can use only one of the template
+  const contract = DutchAuction.bind(event.params.newAuction) 
   template.templateId = contract.marketTemplate()
 
   template.factory = event.address.toHex()
