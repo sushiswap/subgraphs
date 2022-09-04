@@ -15,8 +15,8 @@ import {
 import { getKashiPair, getRebase, toBase } from '../functions'
 import { BigInt, log } from '@graphprotocol/graph-ts'
 import { getInterestPerYear, takeFee } from '../helpers/interest'
-import { getKashiPairKpi } from '../functions/kashi-pair-kpi'
 import { getKashiPairAccrueInfo } from '../functions/kashi-pair-accrue-info'
+import { updateKashiPairSnapshots } from '../functions/kashi-pair-snapshot'
 
 // TODO: add callHandler for liquidate function on KashiPairs
 
@@ -27,6 +27,7 @@ export function handleLogExchangeRate(event: LogExchangeRate): void {
   pair.block = event.block.number
   pair.timestamp = event.block.timestamp
   pair.save()
+  updateKashiPairSnapshots(event.block.timestamp, pair)
 }
 
 export function handleLogAccrue(event: LogAccrue): void {
@@ -57,23 +58,22 @@ export function handleLogAccrue(event: LogAccrue): void {
   accrueInfo.lastAccrued = event.block.timestamp
   accrueInfo.save()
 
-  const kpi = getKashiPairKpi(pair.id)
   const borrowAPR = getInterestPerYear(
     totalBorrow.base,
     accrueInfo.interestPerSecond,
     accrueInfo.lastAccrued,
     event.block.timestamp,
-    kpi.utilization
+    pair.utilization
   )
-  const supplyAPR = takeFee(borrowAPR.times(kpi.utilization)).div(BigInt.fromString('1000000000000000000'))
-  kpi.supplyAPR = supplyAPR
-  kpi.borrowAPR = borrowAPR
-  kpi.utilization = event.params.utilization
-  kpi.save()
-
+  const supplyAPR = takeFee(borrowAPR.times(pair.utilization)).div(BigInt.fromString('1000000000000000000'))
+  pair.supplyAPR = supplyAPR
+  pair.borrowAPR = borrowAPR
+  pair.utilization = event.params.utilization
   pair.block = event.block.number
   pair.timestamp = event.block.timestamp
   pair.save()
+  
+  updateKashiPairSnapshots(event.block.timestamp, pair)
 }
 
 export function handleLogAddCollateral(event: LogAddCollateral): void {
@@ -85,6 +85,7 @@ export function handleLogAddCollateral(event: LogAddCollateral): void {
   const pair = getKashiPair(event.address, event.block)
   pair.totalCollateralShare = pair.totalCollateralShare.plus(event.params.share)
   pair.save()
+  updateKashiPairSnapshots(event.block.timestamp, pair)
 }
 
 export function handleLogRemoveCollateral(event: LogRemoveCollateral): void {
@@ -99,7 +100,7 @@ export function handleLogRemoveCollateral(event: LogRemoveCollateral): void {
   const pair = getKashiPair(event.address, event.block)
   pair.totalCollateralShare = pair.totalCollateralShare.minus(share)
   pair.save()
-
+  updateKashiPairSnapshots(event.block.timestamp, pair)
   // const poolPercentage = share.div(pair.totalCollateralShare).times(BigInt.fromI32(100))
 }
 
@@ -224,13 +225,15 @@ export function handleLogWithdrawFees(event: LogWithdrawFees): void {
     event.params.feesEarnedFraction.toString(),
   ])
 
-  const kashiPairKpi = getKashiPairKpi(event.address.toHex())
-  kashiPairKpi.totalFeesEarnedFraction = kashiPairKpi.totalFeesEarnedFraction.plus(event.params.feesEarnedFraction)
-  kashiPairKpi.save()
+  const pair = getKashiPair(event.address, event.block)
+  pair.totalFeesEarnedFraction = pair.totalFeesEarnedFraction.plus(event.params.feesEarnedFraction)
+  pair.save()
 
   const kashiPairAccrueInfo = getKashiPairAccrueInfo(event.address.toHex())
   kashiPairAccrueInfo.feesEarnedFraction = BigInt.fromI32(0)
   kashiPairAccrueInfo.save()
+
+  updateKashiPairSnapshots(event.block.timestamp, pair)
 }
 
 export function handleApproval(event: Approval): void {
