@@ -361,25 +361,6 @@ type PairDaySnapshot @entity {
   transactionCount: BigInt!
 }
 
-type PairWeeklySnapshot @entity {
-  " {pairId}-weekly-{timestamp} "
-  id: ID!
-  pair: Pair!
-  date: Int!
-  volumeUSD: BigDecimal!
-  volumeNative: BigDecimal!
-  untrackedVolumeUSD: BigDecimal!
-  volumeToken0: BigDecimal!
-  volumeToken1: BigDecimal!
-  liquidity: BigDecimal!
-  liquidityNative: BigDecimal!
-  liquidityUSD: BigDecimal!
-  feesNative: BigDecimal!
-  feesUSD: BigDecimal!
-  apr: BigDecimal!
-  transactionCount: BigInt!
-}
-
 type TokenDaySnapshot @entity {
   " {tokenId}-day-{timestamp} "
   id: ID!
