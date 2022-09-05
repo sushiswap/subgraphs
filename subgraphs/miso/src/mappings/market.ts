@@ -1,3 +1,4 @@
+import { log } from '@graphprotocol/graph-ts'
 import { AuctionTemplateAdded, AuctionTemplateRemoved, MarketCreated } from '../../generated/MISOMarket/MISOMarket'
 import { BatchAuction, CrowdsaleAuction, DutchAuction } from '../../generated/templates'
 import { AuctionType } from '../constants'
@@ -15,7 +16,10 @@ export function onAuctionTemplateRemoved(event: AuctionTemplateRemoved): void {
 }
 
 export function onMarketCreated(event: MarketCreated): void {
-  createAuction(event)
+  const auction = createAuction(event)
+  if (!auction) {
+    log.warning("auction return null, ignore.", [])
+  }
   const template = getTemplate(event.params.marketTemplate.toHex())
   if (template.type == AuctionType.CROWDSALE) {
     CrowdsaleAuction.create(event.params.addr)

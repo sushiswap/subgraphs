@@ -44,11 +44,21 @@ type Auction @entity {
   startTime: BigInt!
   endTime: BigInt!
 
-  token: Token!
+  auctionToken: Token!
   totalTokens: BigInt!
   priceDrop: BigInt!
+
+  # Only used for Crowdsale
   priceRate: BigInt!
   priceGoal: BigInt!
+
+  # Only used for Dutch
+  startPrice: BigInt!
+  minimumPrice: BigInt!
+
+  # Only used for Batch
+  minimumRaised: BigInt!
+
   bidToken: Token!
   documents: DocumentCollection!
 

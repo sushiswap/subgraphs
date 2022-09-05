@@ -19,6 +19,9 @@ export function updateDocument(auctionId: string, documents: string[], values: s
     for (let i = 0; i < documents.length; i++) {
         const documentName = documents[i]
         const documentValue = values[i]
+        if (documentName.includes(DocumentType.WEBSITE)) {
+            documentCollection.website = documentValue
+        }
         if (documentName.includes(DocumentType.WHITE_PAPER)) {
             documentCollection.whitepaper = documentValue
         }
