@@ -68,14 +68,14 @@ export function updateApr(event: SwapEvent): void {
 /**
  * 
  * Formula source: https://github.com/sushiswap/sushiswap-interface/blob/437586a4e659f5eddeedd167b3cfe89e0c5f9c3c/src/features/trident/pools/usePoolsTableData.tsx#L84-L98
-* @param pair 
+ * @param pair 
  * @param snapshot 
  */
-const calculateApr = (pair: Pair, snapshot: PairHourSnapshot): BigDecimal => {
+ const calculateApr = (pair: Pair, snapshot: PairHourSnapshot): BigDecimal => {
   return pair.volumeUSD.minus(snapshot.volumeUSD)
     .times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
     .times(BigDecimal.fromString('365')) // One year
     .div(BigDecimal.fromString('100'))
     .div(pair.liquidityUSD)
+    .div(BigDecimal.fromString('100'))
 }
-

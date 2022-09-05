@@ -1,11 +1,6 @@
 specVersion: 0.0.6
 description: Sushiswap
 repository: https://github.com/sushiswap/sushiswap-subgraph
-# features:
-#   - grafting
-# graft:
-#   base: 'QmRAszzPKrHZjTcN1oXpMFDkofUAVMvvwY6YEGPyd6pxRC'
-#   block: 722835
 schema:
   file: ./schema.graphql
 dataSources:
@@ -21,8 +16,7 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/factory.ts
-      entities:
-        - Factory
+      entities: []
       abis:
         - name: Factory
           file: ./node_modules/abi/Uniswap/UniswapV2Factory.json
@@ -50,8 +44,7 @@ templates:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/pair.ts
-      entities:
-        - Bundle
+      entities: []
       abis:
         - name: Factory
           file: ./node_modules/abi/Uniswap/UniswapV2Factory.json
@@ -68,12 +61,9 @@ templates:
           handler: onSync
         - event: Transfer(indexed address,indexed address,uint256)
           handler: onTransfer
-          receipt: true
         - event: Mint(indexed address,uint256,uint256)
           handler: onMint
         - event: Burn(indexed address,uint256,uint256,indexed address)
           handler: onBurn
-          receipt: true
         - event: Swap(indexed address,uint256,uint256,uint256,uint256,indexed address)
           handler: onSwap
-          receipt: true
