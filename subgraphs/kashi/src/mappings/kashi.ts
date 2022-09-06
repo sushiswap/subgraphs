@@ -72,7 +72,7 @@ export function handleLogAccrue(event: LogAccrue): void {
   pair.block = event.block.number
   pair.timestamp = event.block.timestamp
   pair.save()
-  
+
   updateKashiPairSnapshots(event.block.timestamp, pair)
 }
 

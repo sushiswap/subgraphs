@@ -16,13 +16,7 @@ dataSources:
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/mappings/bentobox.ts
-      entities:
-        - BentoBox
-        - MasterContract
-        - MasterContractApproval
-        - Clone
-        - Rebase
-        - Token
+      entities: []
       abis:
         - name: BentoBox
           file: ./node_modules/abi/BentoBox/BentoBox.json
@@ -65,15 +59,7 @@ templates:
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/mappings/kashi.ts
-      entities:
-        - KashiPair
-        - KashiPairAccrueInfo
-        - KashiPairKpi
-        - Swapper
-        - Token
-        - Rebase
-        - User
-        - Balance
+      entities: []
       abis:
         - name: BentoBox
           file: ./node_modules/abi/BentoBox/BentoBox.json

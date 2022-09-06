@@ -17,7 +17,8 @@
     "remove-local": "graph remove --node http://localhost:8020/ sushiswap/kashi-local",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/kashi-local",
     "deploy-polygon": "graph deploy --product hosted-service sushiswap/kashi-polygon",
-    "deploy-arbitrum": "graph deploy --product hosted-service sushiswap/kashi-arbitrum"
+    "deploy-arbitrum": "graph deploy --product hosted-service sushiswap/kashi-arbitrum",
+    "deploy-avalanche": "graph deploy --product hosted-service sushiswap/kashi-avalanche"
   },
   "devDependencies": {
     "abi": "workspace:*",

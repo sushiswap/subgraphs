@@ -9,9 +9,9 @@ export const BIG_INT_ONE = BigInt.fromI32(1)
 export const HOUR_IN_SECONDS = 3600
 export const DAY_IN_SECONDS = 24 * HOUR_IN_SECONDS
 
-export const BENTOBOX_ADDRESS = Address.fromString('0x74c764d41b77dbbb4fe771dab1939b00b146894a')
+export const BENTOBOX_ADDRESS = Address.fromString('0x0711b6026068f736bae6b213031fce978d48e026')
 
-export const KASHI_MEDIUM_RISK_MASTER_CONTRACT_ADDRESSES = '0xa010ee0226cd071bebd8919a1f675cae1f1f5d3e'.split(',')
+export const KASHI_MEDIUM_RISK_MASTER_CONTRACT_ADDRESSES = '0x513037395fa0c9c35e41f89189cedfe3bd42fadb'.split(',')
 
 // MEDIUM RISK PAIR CONFIGURATION
 export const MINIMUM_TARGET_UTILIZATION = BigInt.fromString('700000000000000000') // 70%
