@@ -49,6 +49,7 @@ function updatePairHourSnapshot(
   snapshot.liquidity = convertTokenToDecimal(pair.liquidity, BigInt.fromU32(18))
   snapshot.liquidityNative = pair.liquidityNative
   snapshot.liquidityUSD = pair.liquidityUSD
+  snapshot.cumulativeVolumeUSD = pair.volumeUSD
   snapshot.volumeToken0 = snapshot.volumeToken0.plus(volume.amount0Total)
   snapshot.volumeToken1 = snapshot.volumeToken1.plus(volume.amount1Total)
   snapshot.volumeUSD = snapshot.volumeUSD.plus(volume.volumeUSD)
@@ -85,6 +86,7 @@ function updatePairDaySnapshot(
   snapshot.liquidity = convertTokenToDecimal(pair.liquidity, BigInt.fromU32(18))
   snapshot.liquidityNative = pair.liquidityNative
   snapshot.liquidityUSD = pair.liquidityUSD
+  snapshot.cumulativeVolumeUSD = pair.volumeUSD
   snapshot.volumeToken0 = snapshot.volumeToken0.plus(volume.amount0Total)
   snapshot.volumeToken1 = snapshot.volumeToken1.plus(volume.amount1Total)
   snapshot.volumeUSD = snapshot.volumeUSD.plus(volume.volumeUSD)
