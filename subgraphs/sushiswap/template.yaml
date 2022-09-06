@@ -1,11 +1,11 @@
 specVersion: 0.0.6
 description: Sushiswap
 repository: https://github.com/sushiswap/sushiswap-subgraph
-features:
-  - grafting
-graft:
-  base: '{{ legacy.graft.base }}'
-  block: {{ legacy.graft.block }}
+# features:
+#   - grafting
+# graft:
+#   base: '{{ legacy.graft.base }}'
+#   block: {{ legacy.graft.block }}
 schema:
   file: ./schema.graphql
 dataSources:
