@@ -57,8 +57,8 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   bundle.nativePrice = getNativePriceInUSD()
   bundle.save()
 
-  const token0Price = updateTokenPrice(token0.id, bundle.nativePrice)
-  const token1Price = updateTokenPrice(token1.id, bundle.nativePrice)
+  const token0Price = updateTokenPrice(token0.id, bundle.nativePrice, event.block.timestamp)
+  const token1Price = updateTokenPrice(token1.id, bundle.nativePrice, event.block.timestamp)
 
 
   // get tracked liquidity - will be 0 if neither is in whitelist
