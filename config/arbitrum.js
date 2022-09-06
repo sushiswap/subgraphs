@@ -32,6 +32,10 @@ module.exports = {
     market: { address: '0x351447fc9bd20a917783e159e61e86edda0b0187', startBlock: 9931078 },
   },
   legacy: {
+    graft: {
+      base: 'QmNPagYYHtWt2eMhSmcyF1o2wt8haZASa8HdE1PP7qgKX2',
+      block: 23226059
+    },
     base: 'QmfKgxN71Bc7TKzQi8yccRunpiWupFdWA4638yZRxve3q1',
     startBlock: 16548328,
     native: { address: NATIVE_ADDRESS },

@@ -335,7 +335,7 @@ type PairHourSnapshot @entity {
   pair: Pair!
   date: Int!
   " Used to calculate apr "
-  cumulativeVolumeUSD: BigDecimal!
+  cumulativeVolumeUSD: BigDecimal
   volumeUSD: BigDecimal!
   volumeNative: BigDecimal!
   untrackedVolumeUSD: BigDecimal!
@@ -356,7 +356,7 @@ type PairDaySnapshot @entity {
   pair: Pair!
   date: Int!
   " Used to calculate apr "
-  cumulativeVolumeUSD: BigDecimal!
+  cumulativeVolumeUSD: BigDecimal
   volumeUSD: BigDecimal!
   volumeNative: BigDecimal!
   untrackedVolumeUSD: BigDecimal!
@@ -377,7 +377,7 @@ type PairWeeklySnapshot @entity {
   pair: Pair!
   date: Int!
   " Used to calculate apr "
-  cumulativeVolumeUSD: BigDecimal!
+  cumulativeVolumeUSD: BigDecimal
   volumeUSD: BigDecimal!
   volumeNative: BigDecimal!
   untrackedVolumeUSD: BigDecimal!

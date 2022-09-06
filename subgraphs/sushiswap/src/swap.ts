@@ -73,7 +73,10 @@ export function updateApr(event: SwapEvent): void {
  * @param snapshot 
  */
 const calculateApr = (pair: Pair, snapshot: PairHourSnapshot): BigDecimal => {
-  return pair.volumeUSD.minus(snapshot.cumulativeVolumeUSD)
+  if (snapshot.cumulativeVolumeUSD === null) {  
+    return BIG_DECIMAL_ZERO
+  }
+  return pair.volumeUSD.minus(snapshot.cumulativeVolumeUSD!)
     .times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
     .times(BigDecimal.fromString('365')) // One year
     .div(BigDecimal.fromString('100'))

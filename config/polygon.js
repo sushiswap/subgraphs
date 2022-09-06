@@ -77,6 +77,10 @@ module.exports = {
     minimum_usd_threshold_new_pairs: '3000',
   },
   legacy: {
+    graft: {
+      base: 'QmT3h6RJvw5zJ6Gq6v6xt1sNExxHcUXEXc4y9rGHjYmPFj',
+      block: 17852582
+    },
     native: { address: WETH_ADDRESS },
     whitelistedTokenAddresses: [
       // IMPORTANT! The native address must be included for pricing to start

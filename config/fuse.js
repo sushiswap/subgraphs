@@ -12,6 +12,10 @@ module.exports = {
     startBlock: 12943648,
   },
   legacy: {
+    graft: {
+      base: '',
+      block: 0
+    },
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [
       // IMPORTANT! The native address must be included for pricing to start
