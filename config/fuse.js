@@ -13,8 +13,8 @@ module.exports = {
   },
   legacy: {
     graft: {
-      base: '',
-      block: 0
+      base: 'QmRfQMyhEK5zBLzNXNs28G6hUFPrAVoGxyiMxpB7ukkH2T',
+      block: 18937660
     },
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [

@@ -25,7 +25,7 @@ module.exports = {
   legacy: {
     graft: {
       base: 'QmdWBTQ3gUkxHnhoZeyHibXrS8oXeMbj87DV17dbq61ubV',
-      block: 1812526
+      block: 1787643
     },
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [

@@ -27,7 +27,7 @@ module.exports = {
   legacy: {
     graft: {
       base: 'Qmd4DC9QZvgw2ooHD1TTbEaRYV8xrZ4F9nTW9MJvKkjKqk',
-      block: 31003096
+      block: 30847576
     },
     // IMPORTANT! The native address must be included for pricing to start
     native: { address: NATIVE_ADDRESS },
