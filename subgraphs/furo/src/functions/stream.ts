@@ -29,6 +29,8 @@ export function createStream(event: CreateStreamEvent): Stream {
   stream.recipient = recipient.id
   stream.initialShares = initialShares
   stream.initialAmount = initialAmount
+  stream.initialSharesExtended = BigInt.fromU32(0)
+  stream.withdrawnAmountAfterExtension = BigInt.fromU32(0)
   stream.extendedShares = BigInt.fromU32(0)
   stream.remainingShares = initialShares
   stream.withdrawnAmount = BigInt.fromU32(0)
@@ -56,9 +58,12 @@ export function updateStream(remainingShares: BigInt, withdrawnShares: BigInt, e
   let stream = getStream(event.params.streamId)
   let rebase = getOrCreateRebase(stream.token)
   const topUpShares = toBase(rebase, event.params.topUpAmount, true)
+  const withdrawnAmount = toElastic(rebase, withdrawnShares, true)
   stream.extendedShares = stream.extendedShares.plus(topUpShares)
   stream.remainingShares = remainingShares
-  stream.withdrawnAmount = stream.withdrawnAmount.plus(toElastic(rebase, withdrawnShares, true))
+  stream.initialSharesExtended = remainingShares
+  stream.withdrawnAmountAfterExtension = BigInt.fromU32(0)
+  stream.withdrawnAmount = stream.withdrawnAmount.plus(withdrawnAmount)
   stream.expiresAt = stream.expiresAt.plus(event.params.extendTime)
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
@@ -85,7 +90,11 @@ export function cancelStream(event: CancelStreamEvent): Stream {
 export function withdrawFromStream(event: WithdrawEvent): Stream {
   const stream = getStream(event.params.streamId)
   let rebase = getOrCreateRebase(stream.token)
-  stream.withdrawnAmount = stream.withdrawnAmount.plus(toElastic(rebase, event.params.sharesToWithdraw, true))
+  const withdrawnAmount = toElastic(rebase, event.params.sharesToWithdraw, true)
+  stream.withdrawnAmount = stream.withdrawnAmount.plus(withdrawnAmount)
+  if (!stream.extendedAtTimestamp.equals(BigInt.fromU32(0))) {
+    stream.withdrawnAmountAfterExtension = stream.withdrawnAmountAfterExtension.plus(withdrawnAmount)
+  }
   stream.remainingShares = stream.remainingShares.minus(event.params.sharesToWithdraw)
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp

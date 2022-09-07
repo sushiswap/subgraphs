@@ -27,6 +27,10 @@ type Stream @entity {
   initialAmount: BigInt!
   " Extended shares, increases for each time the stream is updated with a top up amount "
   extendedShares: BigInt!
+  " Set when a stream is extended, useful to keep track of how much many shares a stream contained after extending "
+  initialSharesExtended: BigInt!
+  " Amount that has been withdrawn after extending the stream "
+  withdrawnAmountAfterExtension: BigInt!
   " Remaining shares "
   remainingShares: BigInt!
   " Withdrawn amount "
