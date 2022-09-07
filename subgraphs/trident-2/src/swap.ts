@@ -75,7 +75,5 @@ export function updateApr(event: SwapEvent): void {
   return pair.volumeUSD.minus(snapshot.cumulativeVolumeUSD)
     .times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
     .times(BigDecimal.fromString('365')) // One year
-    .div(BigDecimal.fromString('100'))
     .div(pair.liquidityUSD)
-    .div(BigDecimal.fromString('100'))
 }
