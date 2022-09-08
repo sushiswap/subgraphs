@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum, log } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal, BigInt, ethereum, log } from '@graphprotocol/graph-ts'
 import { BatchAuction } from '../../generated/templates/BatchAuction/BatchAuction'
 import { DutchAuction } from '../../generated/templates/DutchAuction/DutchAuction'
 import { CrowdsaleAuction } from '../../generated/templates/CrowdsaleAuction/CrowdsaleAuction'
@@ -8,6 +8,7 @@ import { createDocumentcollection, updateDocument } from './document-collection'
 import { getTemplate } from './template'
 import { getOrCreateToken } from './token'
 import { AuctionType } from '../constants'
+import { toDecimal } from './number-converter'
 
 export function createAuction(event: MarketCreated): Auction | null {
   const auctionId = event.params.addr.toHex()
@@ -49,7 +50,13 @@ export function createAuction(event: MarketCreated): Auction | null {
   auction.priceGoal = auctionDetails.priceGoal
   auction.startPrice = auctionDetails.startPrice
   auction.minimumPrice = auctionDetails.minimumPrice
-  auction.minimumRaised = auctionDetails.minimumRaised
+  // if (auction.type != AuctionType.BATCH && auctionDetails.minimumPrice.gt(BigInt.fromI32(0))) {
+  //   auction.minimumRaised = auctionDetails.totalTokens.div(auctionDetails.minimumPrice)
+  // } else {
+  //   auction.minimumRaised = auctionDetails.minimumRaised
+  // }
+  // auction.minimumRaised = auctionDetails.minimumRaised
+  auction.amountRaised = BigInt.fromI32(0)
   auction.save()
   updateDocument(auctionId, auctionDetails.documentNames, auctionDetails.documentValues)
 
@@ -60,7 +67,6 @@ export function getAuction(id: string): Auction {
   const auction = Auction.load(id)
   return auction as Auction
 }
-
 
 
 class AuctionDetails {

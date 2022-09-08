@@ -57,7 +57,8 @@ type Auction @entity {
   minimumPrice: BigInt!
 
   # Only used for Batch
-  minimumRaised: BigInt!
+  # minimumRaised: BigInt!
+  amountRaised: BigInt!
 
   bidToken: Token!
   documents: DocumentCollection!

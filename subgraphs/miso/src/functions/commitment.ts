@@ -1,6 +1,8 @@
+import { AuctionType } from '../constants'
 import { getParticipantId } from '.'
 import { Commitment } from '../../generated/schema'
 import { AddedCommitment } from '../../generated/templates/MisoAuction/MisoAuction'
+import { getAuction } from './auction'
 import { getOrCreateParticipant } from './participant'
 
 
@@ -18,6 +20,12 @@ export function createCommitment(event: AddedCommitment): Commitment {
   commitment.timestamp = event.block.timestamp
 
   commitment.save()
+
+  const auction = getAuction(event.address.toHex())
+  auction.amountRaised = auction.amountRaised.plus(event.params.commitment)
+
+
+  auction.save()
 
   return commitment as Commitment
 }
