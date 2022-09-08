@@ -4,6 +4,7 @@ import { Factory as FactoryContract } from '../generated/templates/Pair/Factory'
 import {
   BIG_DECIMAL_ONE,
   BIG_DECIMAL_ZERO,
+  BIG_INT_ZERO,
   FACTORY_ADDRESS,
   MINIMUM_NATIVE_LIQUIDITY,
   NATIVE_ADDRESS,
@@ -79,6 +80,10 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal, 
     return currentTokenPrice
   }
 
+  if (currentTokenPrice.pricedOffPairUpdatedAtTimestamp === null) {
+    currentTokenPrice.pricedOffPairUpdatedAtTimestamp = BIG_INT_ZERO
+  }
+  
   if (currentTokenPrice.pricedOffPair !== null && currentTokenPrice.pricedOffPairUpdatedAtTimestamp!.plus(BigInt.fromI32(86400)).le(now)) {
 
     const pair = Pair.load(currentTokenPrice.pricedOffPair!) as Pair
