@@ -45,6 +45,7 @@ type Auction @entity {
   endTime: BigInt!
 
   auctionToken: Token!
+  bidToken: Token!
   totalTokens: BigInt!
   priceDrop: BigInt!
 
@@ -60,7 +61,8 @@ type Auction @entity {
   # minimumRaised: BigInt!
   amountRaised: BigInt!
 
-  bidToken: Token!
+  pointList: PointList
+  usePointList: Boolean!
   documents: DocumentCollection!
 
   participants: [Participant!] @derivedFrom(field: "auction")
@@ -132,4 +134,20 @@ type Commitment @entity {
   transactionHash: Bytes!
   block: BigInt!
   timestamp: BigInt!
+}
+
+type PointList @entity {
+  " auction address : pointList address "
+  id: ID!
+  auction: Auction!
+  points: [Point!] @derivedFrom(field: "pointList")
+}
+
+type Point @entity {
+  "user address : pointList address"
+  id: ID!
+  pointList: PointList!
+  auction: Auction!
+  user: User!
+  amount: BigInt!
 }

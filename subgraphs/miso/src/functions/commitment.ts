@@ -24,7 +24,6 @@ export function createCommitment(event: AddedCommitment): Commitment {
   const auction = getAuction(event.address.toHex())
   auction.amountRaised = auction.amountRaised.plus(event.params.commitment)
 
-
   auction.save()
 
   return commitment as Commitment

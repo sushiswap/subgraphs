@@ -3,8 +3,8 @@
 # TODO
 
 - [ ] Auction.participantCount
-- [ ] Point list, call handler for setList, create template, field auction.listEnabled.
-
+- [ ] Restrictions, countries
+- [ ] Point list, all whitelisted users? Needed? call handler for setList, create template, field auction.listEnabled.
 
 # Unit testing
 
