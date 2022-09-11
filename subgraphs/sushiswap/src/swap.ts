@@ -1,4 +1,4 @@
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { Pair, PairHourSnapshot, Swap } from '../generated/schema'
 import { Swap as SwapEvent } from '../generated/templates/Pair/Pair'
 import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO } from './constants'
@@ -6,6 +6,7 @@ import {
   convertTokenToDecimal, getAprSnapshot, getOrCreateToken,
   getOrCreateTransaction,
   getPair,
+  getTokenPrice,
   increaseFactoryTransactionCount
 } from './functions'
 
@@ -54,7 +55,17 @@ export function handleSwap(event: SwapEvent, volumeUSD: BigDecimal): Swap {
 export function updateApr(event: SwapEvent): void {
   const pair = getPair(event.address.toHex())
   const snapshot = getAprSnapshot(event.address.toHex(), event.block.timestamp)
-  if (snapshot == null || pair.liquidityUSD.equals(BIG_DECIMAL_ZERO)) {
+
+  const token0Price = getTokenPrice(pair.token0)
+  const token1Price = getTokenPrice(pair.token1)
+  const token0NativeLiquidity = pair.reserve0.toBigDecimal().times(token0Price.derivedNative)
+  const token1NativeLiquidity = pair.reserve1.toBigDecimal().times(token1Price.derivedNative)
+  let isImbalancedPair = false // Testing if this can ignore  hide arb bots causing apr to explode
+  if (token0NativeLiquidity.gt(BIG_DECIMAL_ZERO) && token1NativeLiquidity.gt(BIG_DECIMAL_ZERO)) {
+    const balance = token0NativeLiquidity.div(token1NativeLiquidity)
+    isImbalancedPair = balance.gt(BigDecimal.fromString('0.90')) || balance.lt(BigDecimal.fromString('0.1'))
+  }
+  if (snapshot == null || pair.liquidityUSD.equals(BIG_DECIMAL_ZERO) || isImbalancedPair) {
     pair.apr = BIG_DECIMAL_ZERO
     pair.aprUpdatedAtTimestamp = event.block.timestamp
     pair.save()
@@ -73,7 +84,7 @@ export function updateApr(event: SwapEvent): void {
  * @param snapshot 
  */
 const calculateApr = (pair: Pair, snapshot: PairHourSnapshot): BigDecimal => {
-  if (snapshot.cumulativeVolumeUSD === null) {  
+  if (snapshot.cumulativeVolumeUSD === null) {
     return BIG_DECIMAL_ZERO
   }
   return pair.volumeUSD.minus(snapshot.cumulativeVolumeUSD!)
