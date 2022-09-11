@@ -1,7 +1,7 @@
 import { AuctionType } from '../constants'
 import { getParticipantId } from '.'
 import { Commitment } from '../../generated/schema'
-import { AddedCommitment } from '../../generated/templates/MisoAuction/MisoAuction'
+import { AddedCommitment } from '../../generated/templates/CrowdsaleAuction/CrowdsaleAuction'
 import { getAuction } from './auction'
 import { getOrCreateParticipant } from './participant'
 

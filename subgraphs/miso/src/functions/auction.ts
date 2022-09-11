@@ -4,7 +4,7 @@ import { DutchAuction } from '../../generated/templates/DutchAuction/DutchAuctio
 import { CrowdsaleAuction } from '../../generated/templates/CrowdsaleAuction/CrowdsaleAuction'
 import { MarketCreated } from '../../generated/MISOMarket/MISOMarket'
 import { Auction } from '../../generated/schema'
-import { createDocumentcollection, updateDocument } from './document-collection'
+import { createDocumentcollection, updateDocuments } from './document-collection'
 import { getTemplate } from './template'
 import { getOrCreateToken } from './token'
 import { AuctionType } from '../constants'
@@ -16,7 +16,6 @@ export function createAuction(event: MarketCreated): Auction | null {
   const auction = new Auction(auctionId)
   const template = getTemplate(event.params.marketTemplate.toHex())
   auction.type = template.type
-  log.warning("template {}", [event.params.addr.toHex()])
   let auctionDetails: AuctionDetails
   if (auction.type == AuctionType.CROWDSALE) {
     const contract = CrowdsaleAuction.bind(event.params.addr)
@@ -41,7 +40,6 @@ export function createAuction(event: MarketCreated): Auction | null {
 
   const token = getOrCreateToken(auctionDetails.auctionToken.toHex(), event)
   const bidToken = getOrCreateToken(auctionDetails.bidToken.toHex(), event)
-  log.warning("created tokens ",[])
   auction.auctionToken = token.id
   auction.bidToken = bidToken.id
   auction.startTime = auctionDetails.startTime
@@ -52,23 +50,16 @@ export function createAuction(event: MarketCreated): Auction | null {
   auction.priceGoal = auctionDetails.priceGoal
   auction.startPrice = auctionDetails.startPrice
   auction.minimumPrice = auctionDetails.minimumPrice
-  // if (auction.type != AuctionType.BATCH && auctionDetails.minimumPrice.gt(BigInt.fromI32(0))) {
-  //   auction.minimumRaised = auctionDetails.totalTokens.div(auctionDetails.minimumPrice)
-  // } else {
-  //   auction.minimumRaised = auctionDetails.minimumRaised
-  // }
-  // auction.minimumRaised = auctionDetails.minimumRaised
+
   auction.amountRaised = BigInt.fromI32(0)
   auction.usePointList = auctionDetails.usePointList
   if (auctionDetails.pointList != Address.fromString("0x0000000000000000000000000000000000000000")) {
     log.warning("pointlist {} ", [auctionDetails.pointList.toHex()])
       // createPointList(auctionDetails.pointList.toHex())
   }
-  log.warning("save auction ",[])
 
   auction.save()
-  updateDocument(auctionId, auctionDetails.documentNames, auctionDetails.documentValues)
-  log.warning("updateDocument",[])
+  updateDocuments(auctionId, auctionDetails.documentNames, auctionDetails.documentValues)
 
   return auction as Auction
 }
@@ -100,24 +91,12 @@ class AuctionDetails {
 function getAuctionDetails<T>(contract: T): AuctionDetails {
   if (contract instanceof CrowdsaleAuction || contract instanceof DutchAuction || contract instanceof BatchAuction) {
     // CHECK ALL THESE, ADD TRY.
-    let baseInfo = contract.try_getBaseInformation()
-    if (baseInfo.reverted) {
-      throw new Error("getBaseInformation reverted")
-    }
-    let bidToken = contract.try_paymentCurrency()
-    if (bidToken.reverted) {
-      throw new Error("try_paymentCurrency reverted")
-    }
-    const marketInfo = contract.try_marketInfo()
-    if (marketInfo.reverted) {
-      throw new Error("try_marketInfo reverted")
-    }
+    let baseInfo = contract.getBaseInformation()
+    let bidToken = contract.paymentCurrency()
+    const marketInfo = contract.marketInfo()
+    const pointList = contract.pointList()
 
-    log.warning("fetch point list", [])
-    const tryPointList = contract.try_pointList()
-    const pointList = tryPointList.reverted ? Address.fromString("0x0000000000000000000000000000000000000000") : tryPointList.value
-    log.warning("fetched point list {}", [pointList.toHex()])
-    let totalTokens = marketInfo.reverted ? BigInt.fromI32(0) : marketInfo.value.value2
+    let totalTokens =  marketInfo.value2
     let priceDrop = BigInt.fromI32(0)
     let priceRate = BigInt.fromI32(0)
     let priceGoal = BigInt.fromI32(0)
@@ -127,27 +106,21 @@ function getAuctionDetails<T>(contract: T): AuctionDetails {
     let usePointList = false
 
     if (contract instanceof CrowdsaleAuction) {
-      log.warning("cs before market price", [])
       const marketPrice = contract.marketPrice()
       priceRate = marketPrice.value0
       priceGoal = marketPrice.value1
       const marketStatus = contract.marketStatus()
-      log.warning("cs before market status", [])
       usePointList = marketStatus.value2
     }
     if (contract instanceof DutchAuction) {
-      log.warning("d before price drop", [])
       priceDrop = contract.priceDrop()
-      log.warning("d before mp", [])
       const marketPrice = contract.marketPrice()
       startPrice = marketPrice.value0
       minimumPrice = marketPrice.value1
-      log.warning("d before ms", [])
       const marketStatus = contract.marketStatus()
       usePointList = marketStatus.value2
     }
     else if (contract instanceof BatchAuction) {
-      log.warning("b before ms", [])
       const marketStatus = contract.marketStatus()
       minimumRaised = marketStatus.value1
 
@@ -169,10 +142,10 @@ function getAuctionDetails<T>(contract: T): AuctionDetails {
       }
     }
     return {
-      auctionToken: baseInfo.value.value0,
-      bidToken: bidToken.value,
-      startTime: baseInfo.value.value1,
-      endTime: baseInfo.value.value2,
+      auctionToken: baseInfo.value0,
+      bidToken,
+      startTime: baseInfo.value1,
+      endTime: baseInfo.value2,
       totalTokens,
       priceDrop,
       priceRate,

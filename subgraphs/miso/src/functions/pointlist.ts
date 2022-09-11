@@ -1,17 +1,18 @@
 
-// import { Address, log } from '@graphprotocol/graph-ts'
-// import { PointList } from '../../generated/schema'
-// import { PointList as PointListContract } from '../../generated/templates'
+import { Address, log } from '@graphprotocol/graph-ts'
+import { PointList } from '../../generated/schema'
+import { PointList as PointListContract } from '../../generated/templates'
 
-// export function createPointList(pointListAddress: string): PointList {
-//   const pointList = new PointList(pointListAddress)
-//   pointList.save()
-//   log.warning("prepare template", [])
-//   PointListContract.create(Address.fromString(pointListAddress))
-//   log.warning("created template", [])
-//   return pointList
-// }
+export function getOrCreatePointList(pointListAddress: string): PointList {
+    let pointList = PointList.load(pointListAddress)
+    if (pointList == null) {
+        pointList = new PointList(pointListAddress)
+        pointList.save()
+        PointListContract.create(Address.fromString(pointListAddress))
+    }
+    return pointList
+}
 
-// export function getPointList(pointListAddress: string): PointList {
-//   return PointList.load(pointListAddress) as PointList
-// }
+export function getPointList(pointListAddress: string): PointList {
+    return PointList.load(pointListAddress) as PointList
+}

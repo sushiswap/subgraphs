@@ -1,4 +1,4 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigInt, Bytes, crypto } from '@graphprotocol/graph-ts'
 
 export const ADDRESS_ZERO = Address.fromString('0x0000000000000000000000000000000000000000')
 
@@ -59,6 +59,24 @@ export namespace DocumentType {
     export const REDDIT = "reddit"
     export const MEDIUM = "medium"
   }
-
+  
+  export namespace DocumentTypeEncoded {
+    export const WEBSITE = crypto.keccak256(Bytes.fromUTF8(DocumentType.WEBSITE)).toHex()
+    export const WHITE_PAPER = crypto.keccak256(Bytes.fromUTF8(DocumentType.WHITE_PAPER)).toHex()
+    export const TOKENOMICS = crypto.keccak256(Bytes.fromUTF8(DocumentType.TOKENOMICS)).toHex()
+    export const CATEGORY = crypto.keccak256(Bytes.fromUTF8(DocumentType.CATEGORY)).toHex()
+    export const ICON = crypto.keccak256(Bytes.fromUTF8(DocumentType.ICON)).toHex()
+    export const DESKTOP_BANNER = crypto.keccak256(Bytes.fromUTF8(DocumentType.DESKTOP_BANNER)).toHex()
+    export const MOBILE_BANNER = crypto.keccak256(Bytes.fromUTF8(DocumentType.MOBILE_BANNER)).toHex()
+    export const DESCRIPTION = crypto.keccak256(Bytes.fromUTF8(DocumentType.DESCRIPTION)).toHex()
+    export const TWITTER = crypto.keccak256(Bytes.fromUTF8(DocumentType.TWITTER)).toHex()
+    export const GITHUB = crypto.keccak256(Bytes.fromUTF8(DocumentType.GITHUB)).toHex()
+    export const TELEGRAM = crypto.keccak256(Bytes.fromUTF8(DocumentType.TELEGRAM)).toHex()
+    export const WECHAT = crypto.keccak256(Bytes.fromUTF8(DocumentType.WECHAT)).toHex()
+    export const DISCORD = crypto.keccak256(Bytes.fromUTF8(DocumentType.DISCORD)).toHex()
+    export const REDDIT = crypto.keccak256(Bytes.fromUTF8(DocumentType.REDDIT)).toHex()
+    export const MEDIUM = crypto.keccak256(Bytes.fromUTF8(DocumentType.MEDIUM)).toHex()
+  }
+  
 
 export * from './roles'

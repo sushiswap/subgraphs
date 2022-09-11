@@ -140,6 +140,87 @@ dataSources:
 
 templates:
   - kind: ethereum/contract
+    name: DutchAuction
+    network: {{ network }}
+    source:
+      abi: DutchAuction
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/auction.ts
+      entities: []
+      abis:
+        - name: DutchAuction
+          file: ./abis/DutchAuction.json
+      eventHandlers:
+        - event: AddedCommitment(address,uint256)
+          handler: onAddedCommitment
+        - event: AuctionFinalized()
+          handler: onAuctionFinalized
+        - event: AuctionCancelled()
+          handler: onAuctionCancelled
+        - event: DocumentRemoved(indexed string,string)
+          handler: onDocumentRemoved
+        - event: DocumentUpdated(indexed string,string)
+          handler: onDocumentUpdated
+        - event: AuctionPointListUpdated(address,bool)
+          handler: onPointListUpdated
+  - kind: ethereum/contract
+    name: BatchAuction
+    network: {{ network }}
+    source:
+      abi: BatchAuction
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/auction.ts
+      entities: []
+      abis:
+        - name: BatchAuction
+          file: ./abis/BatchAuction.json
+      eventHandlers:
+        - event: AddedCommitment(address,uint256)
+          handler: onAddedCommitment
+        - event: AuctionFinalized()
+          handler: onAuctionFinalized
+        - event: AuctionCancelled()
+          handler: onAuctionCancelled
+        - event: DocumentRemoved(indexed string,string)
+          handler: onDocumentRemoved
+        - event: DocumentUpdated(indexed string,string)
+          handler: onDocumentUpdated
+        - event: AuctionPointListUpdated(address,bool)
+          handler: onPointListUpdated
+  - kind: ethereum/contract
+    name: CrowdsaleAuction
+    network: {{ network }}
+    source:
+      abi: CrowdsaleAuction
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/auction.ts
+      entities: []
+      abis:
+        - name: CrowdsaleAuction
+          file: ./abis/CrowdsaleAuction.json
+      eventHandlers:
+        - event: AddedCommitment(address,uint256)
+          handler: onAddedCommitment
+        - event: AuctionFinalized()
+          handler: onAuctionFinalized
+        - event: AuctionCancelled()
+          handler: onAuctionCancelled
+        - event: DocumentRemoved(indexed string,string)
+          handler: onDocumentRemoved
+        - event: DocumentUpdated(indexed string,string)
+          handler: onDocumentUpdated
+        - event: AuctionPointListUpdated(address,bool)
+          handler: onPointListUpdated
+  - kind: ethereum/contract
     name: MisoAuction
     network: {{ network }}
     source:
@@ -153,7 +234,6 @@ templates:
       abis:
         - name: MisoAuction
           file: ./abis/MisoAuction.json
-          # file: ../../node_modules/@sushiswap/miso/artifacts/contracts/interfaces/IMisoAuction.sol/IMisoAuction.json
       eventHandlers:
         - event: AddedCommitment(address,uint256)
           handler: onAddedCommitment
@@ -161,79 +241,22 @@ templates:
           handler: onAuctionFinalized
         - event: AuctionCancelled()
           handler: onAuctionCancelled
-          
-  - kind: ethereum/contract
-    name: DutchAuction
-    network: {{ network }}
-    source:
-      abi: DutchAuction
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/mappings/dutch.ts
-      entities: []
-      abis:
-        - name: DutchAuction
-          file: ./abis/DutchAuction.json
-      callHandlers:
-        - function: setDocument(string,string)
-          handler: onSetDocument
-        - function: setDocuments(string[],string[])
-          handler: onSetDocuments    
-  - kind: ethereum/contract
-    name: CrowdsaleAuction
-    network: {{ network }}
-    source:
-      abi: CrowdsaleAuction
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/mappings/crowdsale.ts
-      entities: []
-      abis:
-        - name: CrowdsaleAuction
-          file: ./abis/CrowdsaleAuction.json
-      callHandlers:
-        - function: setDocument(string,string)
-          handler: onSetDocument
-        - function: setDocuments(string[],string[])
-          handler: onSetDocuments  
-  - kind: ethereum/contract
-    name: BatchAuction
-    network: {{ network }}
-    source:
-      abi: BatchAuction
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/mappings/batch.ts
-      entities: []
-      abis:
-        - name: BatchAuction
-          file: ./abis/BatchAuction.json
-      callHandlers:
-        - function: setDocument(string,string)
-          handler: onSetDocument
-        - function: setDocuments(string[],string[])
-          handler: onSetDocuments
 
-  # - kind: ethereum/contract
-  #   name: PointList
-  #   network: {{ network }}
-  #   source:
-  #     abi: PointList
-  #   mapping:
-  #     kind: ethereum/events
-  #     apiVersion: 0.0.6
-  #     language: wasm/assemblyscript
-  #     file: ./src/mappings/pointlist.ts
-  #     entities: []
-  #     abis:
-  #       - name: PointList
-  #         file: ./abis/PointList.json
-  #     callHandlers:
-  #       - function: setPoints(address[],uint256[])
-  #         handler: onSetPoints
+
+  - kind: ethereum/contract
+    name: PointList
+    network: {{ network }}
+    source:
+      abi: PointList
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/pointlist.ts
+      entities: []
+      abis:
+        - name: PointList
+          file: ./abis/PointList.json
+      callHandlers:
+        - function: setPoints(address[],uint256[])
+          handler: onSetPoints

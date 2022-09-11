@@ -1,6 +1,6 @@
 import { log } from '@graphprotocol/graph-ts'
 import { AuctionTemplateAdded, AuctionTemplateRemoved, MarketCreated } from '../../generated/MISOMarket/MISOMarket'
-import { BatchAuction, CrowdsaleAuction, DutchAuction, MisoAuction } from '../../generated/templates'
+import { MisoAuction } from '../../generated/templates'
 import { AuctionType } from '../constants'
 import { createAuction, createTemplate, getOrCreateFactory, getTemplate } from '../functions'
 
@@ -20,20 +20,7 @@ export function onMarketCreated(event: MarketCreated): void {
   if (!auction) {
     log.warning("auction return null, ignore.", [])
   }
-  const template = getTemplate(event.params.marketTemplate.toHex())
-  if (template.type == AuctionType.CROWDSALE) {
-    CrowdsaleAuction.create(event.params.addr)
+  else {
+    MisoAuction.create(event.params.addr)
   }
-  else if (template.type == AuctionType.DUTCH) {
-    DutchAuction.create(event.params.addr)
-  }
-  else if (template.type == AuctionType.BATCH) {
-    BatchAuction.create(event.params.addr)
-  }
-  // Also create a template for MisoAuction, this is universal for all auction types which track commitments etc.
-  // NOTE: this could probably be refactored and simplified to only use this one rather than creating the templates above.
-  
-  log.warning("before miso template.", [])
-  MisoAuction.create(event.params.addr)
-  log.warning("after miso template.", [])
 }
