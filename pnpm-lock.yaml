@@ -19,6 +19,12 @@ importers:
   packages/abi:
     specifiers: {}
 
+  packages/math:
+    specifiers:
+      '@graphprotocol/graph-ts': ^0.27.0
+    devDependencies:
+      '@graphprotocol/graph-ts': 0.27.0
+
   subgraphs/auction-maker:
     specifiers:
       '@graphprotocol/graph-cli': ^0.27.0
@@ -37,19 +43,17 @@ importers:
 
   subgraphs/bentobox:
     specifiers:
-      '@graphprotocol/graph-cli': 0.27.0
-      '@graphprotocol/graph-ts': 0.24.1
+      '@graphprotocol/graph-cli': ^0.32.0
+      '@graphprotocol/graph-ts': ^0.27.0
       abi: workspace:*
-      assemblyscript: ^0.19.20
-      matchstick-as: ^0.4.0
-      wabt: 1.0.24
+      matchstick-as: ^0.5.0
+      math: workspace:*
     devDependencies:
-      '@graphprotocol/graph-cli': 0.27.0
-      '@graphprotocol/graph-ts': 0.24.1
+      '@graphprotocol/graph-cli': 0.32.0
+      '@graphprotocol/graph-ts': 0.27.0
       abi: link:../../packages/abi
-      assemblyscript: 0.19.23
-      matchstick-as: 0.4.2
-      wabt: 1.0.24
+      matchstick-as: 0.5.0
+      math: link:../../packages/math
 
   subgraphs/blocks:
     specifiers:
@@ -125,19 +129,17 @@ importers:
 
   subgraphs/kashi:
     specifiers:
-      '@graphprotocol/graph-cli': ^0.27.0
-      '@graphprotocol/graph-ts': ^0.24.1
+      '@graphprotocol/graph-cli': ^0.32.0
+      '@graphprotocol/graph-ts': ^0.27.0
       abi: workspace:*
-      assemblyscript: ^0.19.20
-      matchstick-as: ^0.4.2
-      wabt: 1.0.24
+      matchstick-as: ^0.5.0
+      math: workspace:*
     devDependencies:
-      '@graphprotocol/graph-cli': 0.27.0
-      '@graphprotocol/graph-ts': 0.24.1
+      '@graphprotocol/graph-cli': 0.32.0
+      '@graphprotocol/graph-ts': 0.27.0
       abi: link:../../packages/abi
-      assemblyscript: 0.19.23
-      matchstick-as: 0.4.2
-      wabt: 1.0.24
+      matchstick-as: 0.5.0
+      math: link:../../packages/math
 
   subgraphs/legacy-exchange:
     specifiers:
@@ -187,17 +189,41 @@ importers:
 
   subgraphs/sushi:
     specifiers:
-      '@graphprotocol/graph-cli': ^0.27.0
-      '@graphprotocol/graph-ts': ^0.24.1
+      '@graphprotocol/graph-cli': ^0.33.0
+      '@graphprotocol/graph-ts': ^0.27.0
       assemblyscript: ^0.19.20
       matchstick-as: ^0.4.0
       wabt: 1.0.24
     devDependencies:
-      '@graphprotocol/graph-cli': 0.27.0
-      '@graphprotocol/graph-ts': 0.24.1
+      '@graphprotocol/graph-cli': 0.33.0
+      '@graphprotocol/graph-ts': 0.27.0
       assemblyscript: 0.19.23
       matchstick-as: 0.4.2
       wabt: 1.0.24
+
+  subgraphs/sushiswap:
+    specifiers:
+      '@graphprotocol/graph-cli': ^0.32.0
+      '@graphprotocol/graph-ts': ^0.27.0
+      abi: workspace:*
+      matchstick-as: ^0.5.0
+    devDependencies:
+      '@graphprotocol/graph-cli': 0.32.0
+      '@graphprotocol/graph-ts': 0.27.0
+      abi: link:../../packages/abi
+      matchstick-as: 0.5.0
+
+  subgraphs/sushiswap-minimal:
+    specifiers:
+      '@graphprotocol/graph-cli': ^0.32.0
+      '@graphprotocol/graph-ts': ^0.27.0
+      abi: workspace:*
+      matchstick-as: ^0.5.0
+    devDependencies:
+      '@graphprotocol/graph-cli': 0.32.0
+      '@graphprotocol/graph-ts': 0.27.0
+      abi: link:../../packages/abi
+      matchstick-as: 0.5.0
 
   subgraphs/trident:
     specifiers:
@@ -217,17 +243,45 @@ importers:
       matchstick-as: 0.3.0
       wabt: 1.0.24
 
+  subgraphs/trident-2:
+    specifiers:
+      '@graphprotocol/graph-cli': ^0.32.0
+      '@graphprotocol/graph-ts': ^0.27.0
+      abi: workspace:*
+      matchstick-as: ^0.5.0
+      wabt: 1.0.24
+    devDependencies:
+      '@graphprotocol/graph-cli': 0.32.0
+      '@graphprotocol/graph-ts': 0.27.0
+      abi: link:../../packages/abi
+      matchstick-as: 0.5.0
+      wabt: 1.0.24
+
+  subgraphs/trident-minimal:
+    specifiers:
+      '@graphprotocol/graph-cli': ^0.32.0
+      '@graphprotocol/graph-ts': ^0.27.0
+      abi: workspace:*
+      matchstick-as: ^0.5.0
+      wabt: 1.0.24
+    devDependencies:
+      '@graphprotocol/graph-cli': 0.32.0
+      '@graphprotocol/graph-ts': 0.27.0
+      abi: link:../../packages/abi
+      matchstick-as: 0.5.0
+      wabt: 1.0.24
+
   subgraphs/xsushi:
     specifiers:
-      '@graphprotocol/graph-cli': ^0.27.0
-      '@graphprotocol/graph-ts': ^0.24.1
+      '@graphprotocol/graph-cli': ^0.33.0
+      '@graphprotocol/graph-ts': ^0.27.0
       abi: workspace:*
       assemblyscript: ^0.19.20
       matchstick-as: ^0.4.2
       wabt: 1.0.24
     devDependencies:
-      '@graphprotocol/graph-cli': 0.27.0
-      '@graphprotocol/graph-ts': 0.24.1
+      '@graphprotocol/graph-cli': 0.33.0
+      '@graphprotocol/graph-ts': 0.27.0
       abi: link:../../packages/abi
       assemblyscript: 0.19.23
       matchstick-as: 0.4.2
@@ -489,6 +543,78 @@ packages:
       - supports-color
     dev: true
 
+  /@graphprotocol/graph-cli/0.32.0:
+    resolution: {integrity: sha512-40Kii/Ttype5aNCaQn81AP7utyE6JKB5bI9QtYd6WoaS3oACICqdPA89+5UB1s9t6yXiFbWojK3e7JUokPdYfA==}
+    hasBin: true
+    dependencies:
+      assemblyscript: 0.19.10
+      binary-install-raw: 0.0.13_debug@4.3.1
+      chalk: 3.0.0
+      chokidar: 3.5.1
+      debug: 4.3.1
+      docker-compose: 0.23.4
+      dockerode: 2.5.8
+      fs-extra: 9.0.0
+      glob: 7.1.6
+      gluegun: github.com/edgeandnode/gluegun/b34b9003d7bf556836da41b57ef36eb21570620a_debug@4.3.1
+      graphql: 15.5.0
+      immutable: 3.8.2
+      ipfs-http-client: 34.0.0
+      jayson: 3.6.6
+      js-yaml: 3.13.1
+      node-fetch: 2.6.0
+      pkginfo: 0.4.1
+      prettier: 1.19.1
+      request: 2.88.2
+      semver: 7.3.5
+      sync-request: 6.1.0
+      tmp-promise: 3.0.2
+      web3-eth-abi: 1.7.0
+      which: 2.0.2
+      yaml: 1.9.2
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - supports-color
+      - utf-8-validate
+    dev: true
+
+  /@graphprotocol/graph-cli/0.33.0:
+    resolution: {integrity: sha512-WgitQbOTlPcfFweOXurBI74z59jn5fTfezb80/POTyTJAAIXS48n+jAUi2fxix54yMBQFcN2uZnafuDMis7j9w==}
+    hasBin: true
+    dependencies:
+      assemblyscript: 0.19.10
+      binary-install-raw: 0.0.13_debug@4.3.1
+      chalk: 3.0.0
+      chokidar: 3.5.1
+      debug: 4.3.1
+      docker-compose: 0.23.4
+      dockerode: 2.5.8
+      fs-extra: 9.0.0
+      glob: 7.1.6
+      gluegun: github.com/edgeandnode/gluegun/b34b9003d7bf556836da41b57ef36eb21570620a_debug@4.3.1
+      graphql: 15.5.0
+      immutable: 3.8.2
+      ipfs-http-client: 34.0.0
+      jayson: 3.6.6
+      js-yaml: 3.13.1
+      node-fetch: 2.6.0
+      pkginfo: 0.4.1
+      prettier: 1.19.1
+      request: 2.88.2
+      semver: 7.3.5
+      sync-request: 6.1.0
+      tmp-promise: 3.0.2
+      web3-eth-abi: 1.7.0
+      which: 2.0.2
+      yaml: 1.9.2
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - supports-color
+      - utf-8-validate
+    dev: true
+
   /@graphprotocol/graph-ts/0.23.1:
     resolution: {integrity: sha512-pipofvN1LlwLOXrS7IWy8hSBFZzVyVHdLXDpQskl9nKqdbb3chelj4JoVEzCl7klvomDpP84ngLpW17fBh5vww==}
     dependencies:
@@ -497,6 +623,12 @@ packages:
 
   /@graphprotocol/graph-ts/0.24.1:
     resolution: {integrity: sha512-2vU4m5ZPQIqMlMce/z5vmOtGHRlRmcRhMfemS3NIwxCSxSBGVnX2zb7QBTzzdQKGwsAZdbz6V0okkOtvohELfQ==}
+    dependencies:
+      assemblyscript: 0.19.10
+    dev: true
+
+  /@graphprotocol/graph-ts/0.27.0:
+    resolution: {integrity: sha512-r1SPDIZVQiGMxcY8rhFSM0y7d/xAbQf5vHMWUf59js1KgoyWpM6P3tczZqmQd7JTmeyNsDGIPzd9FeaxllsU4w==}
     dependencies:
       assemblyscript: 0.19.10
     dev: true
@@ -681,6 +813,15 @@ packages:
       - debug
     dev: true
 
+  /apisauce/1.1.5_debug@4.3.1:
+    resolution: {integrity: sha512-gKC8qb/bDJsPsnEXLZnXJ7gVx7dh87CEVNeIwv1dvaffnXoh5GHwac5pWR1P2broLiVj/fqFMQvLDDt/RhjiqA==}
+    dependencies:
+      axios: 0.21.4_debug@4.3.1
+      ramda: 0.25.0
+    transitivePeerDependencies:
+      - debug
+    dev: true
+
   /apisauce/1.1.5_debug@4.3.4:
     resolution: {integrity: sha512-gKC8qb/bDJsPsnEXLZnXJ7gVx7dh87CEVNeIwv1dvaffnXoh5GHwac5pWR1P2broLiVj/fqFMQvLDDt/RhjiqA==}
     dependencies:
@@ -776,6 +917,14 @@ packages:
       - debug
     dev: true
 
+  /axios/0.21.4_debug@4.3.1:
+    resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
+    dependencies:
+      follow-redirects: 1.14.9_debug@4.3.1
+    transitivePeerDependencies:
+      - debug
+    dev: true
+
   /axios/0.21.4_debug@4.3.4:
     resolution: {integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==}
     dependencies:
@@ -818,6 +967,17 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       axios: 0.21.4_debug@4.1.1
+      rimraf: 3.0.2
+      tar: 6.1.11
+    transitivePeerDependencies:
+      - debug
+    dev: true
+
+  /binary-install-raw/0.0.13_debug@4.3.1:
+    resolution: {integrity: sha512-v7ms6N/H7iciuk6QInon3/n2mu7oRX+6knJ9xFPsJ3rQePgAqcR3CRTwUheFd8SLbiq4LL7Z4G/44L9zscdt9A==}
+    engines: {node: '>=10'}
+    dependencies:
+      axios: 0.21.4_debug@4.3.1
       rimraf: 3.0.2
       tar: 6.1.11
     transitivePeerDependencies:
@@ -1265,6 +1425,18 @@ packages:
       ms: 2.1.3
     dev: true
 
+  /debug/4.3.1:
+    resolution: {integrity: sha512-doEwdvm4PCeK4K3RQN2ZC2BYUBaxwLARCqZmMjtF8a51J2Rb0xpVloFRnCODwqjpwnAoao4pelN8l3RJdv3gRQ==}
+    engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+    dependencies:
+      ms: 2.1.2
+    dev: true
+
   /debug/4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
     engines: {node: '>=6.0'}
@@ -1322,8 +1494,8 @@ packages:
     resolution: {integrity: sha512-lVjqCSCIAUDZPAZIeyM125HXfNvOmYYInciphNrLrylUtKyW66meAjSPXWchKVzoIYZx69TPnAepVSSkeawoIw==}
     engines: {node: '>= 0.8'}
     dependencies:
-      debug: 3.2.7
       JSONStream: 1.3.2
+      debug: 3.2.7
       readable-stream: 1.0.34
       split-ca: 1.0.1
     transitivePeerDependencies:
@@ -1549,6 +1721,18 @@ packages:
       debug: 4.1.1
     dev: true
 
+  /follow-redirects/1.14.9_debug@4.3.1:
+    resolution: {integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dependencies:
+      debug: 4.3.1
+    dev: true
+
   /follow-redirects/1.14.9_debug@4.3.4:
     resolution: {integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w==}
     engines: {node: '>=4.0'}
@@ -1623,7 +1807,7 @@ packages:
     dev: true
 
   /fs.realpath/1.0.0:
-    resolution: {integrity: sha1-FQStJSMVjKpA20onh8sBQRmU6k8=}
+    resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
     dev: true
 
   /fsevents/2.3.2:
@@ -1819,7 +2003,7 @@ packages:
     dev: true
 
   /inflight/1.0.6:
-    resolution: {integrity: sha1-Sb1jMdfQLQwJvJEKEHW6gWW1bfk=}
+    resolution: {integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==}
     dependencies:
       once: 1.4.0
       wrappy: 1.0.2
@@ -1983,7 +2167,7 @@ packages:
     dev: true
 
   /is-extglob/2.1.1:
-    resolution: {integrity: sha1-qIwCU1eR8C7TfHahueqXc8gz+MI=}
+    resolution: {integrity: sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ==}
     engines: {node: '>=0.10.0'}
     dev: true
 
@@ -2115,11 +2299,11 @@ packages:
       '@types/express-serve-static-core': 4.17.28
       '@types/lodash': 4.14.181
       '@types/node': 12.20.47
+      JSONStream: 1.3.5
       commander: 2.20.3
       es6-promisify: 5.0.0
       eyes: 0.1.8
       json-stringify-safe: 5.0.1
-      JSONStream: 1.3.5
       lodash: 4.17.21
       uuid: 3.4.0
     dev: true
@@ -2134,13 +2318,13 @@ packages:
       '@types/lodash': 4.14.181
       '@types/node': 12.20.47
       '@types/ws': 7.4.7
+      JSONStream: 1.3.5
       commander: 2.20.3
       delay: 5.0.0
       es6-promisify: 5.0.0
       eyes: 0.1.8
       isomorphic-ws: 4.0.1_ws@7.5.7
       json-stringify-safe: 5.0.1
-      JSONStream: 1.3.5
       lodash: 4.17.21
       uuid: 8.3.2
       ws: 7.5.7
@@ -2434,6 +2618,14 @@ packages:
     resolution: {integrity: sha512-LbLWA9DLMgus/GIsT7fHxP9cdb/oLQFrjpj2dAcHd64X4wxrVs2VIyxoNlha6h+9lQWHBmdT8042Oi+/wh/idg==}
     dependencies:
       '@graphprotocol/graph-ts': 0.24.1
+      assemblyscript: 0.19.23
+      wabt: 1.0.24
+    dev: true
+
+  /matchstick-as/0.5.0:
+    resolution: {integrity: sha512-4K619YDH+so129qt4RB4JCNxaFwJJYLXPc7drpG+/mIj86Cfzg6FKs/bA91cnajmS1CLHdhHl9vt6Kd6Oqvfkg==}
+    dependencies:
+      '@graphprotocol/graph-ts': 0.27.0
       assemblyscript: 0.19.23
       wabt: 1.0.24
     dev: true
@@ -2750,7 +2942,7 @@ packages:
     dev: true
 
   /once/1.4.0:
-    resolution: {integrity: sha1-WDsap3WWHUsROsF9nFC6753Xa9E=}
+    resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
     dependencies:
       wrappy: 1.0.2
     dev: true
@@ -2809,7 +3001,7 @@ packages:
     dev: true
 
   /path-is-absolute/1.0.1:
-    resolution: {integrity: sha1-F0uSaHNVNP+8es5r9TpanhtcX18=}
+    resolution: {integrity: sha512-AVbw3UJ2e9bq64vSaS9Am0fje1Pa8pbGqTTsmXfaIiMpnr5DlDhfJOuLj9Sf95ZPVDAUerDfEk88MPmPe7UCQg==}
     engines: {node: '>=0.10.0'}
     dev: true
 
@@ -2920,6 +3112,7 @@ packages:
     resolution: {integrity: sha512-N9iVG+CGJsI4b4ZGazjwLnxErD2d9Pe4DPvvXSxYA9tFNu8ymXME4Qs5HIQ0LMJpNM7zj+m0NlNnNeqFpKzqnA==}
     deprecated: Unmaintained
     dev: true
+    bundledDependencies: []
 
   /protocol-buffers-schema/3.6.0:
     resolution: {integrity: sha512-TdDRD+/QNdrCGCE7v8340QyuXd4kIWIgapsE2+n/SaGiSSbomYl4TjHlvIoCWRpE7wFt02EpB35VVA2ImcBVqw==}
@@ -3249,7 +3442,7 @@ packages:
     dev: true
 
   /sprintf-js/1.0.3:
-    resolution: {integrity: sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw=}
+    resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
     dev: true
 
   /sshpk/1.17.0:
@@ -3726,7 +3919,7 @@ packages:
     dev: true
 
   /wrappy/1.0.2:
-    resolution: {integrity: sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=}
+    resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
     dev: true
 
   /ws/7.5.7:
@@ -3782,6 +3975,48 @@ packages:
     hasBin: true
     dependencies:
       apisauce: 1.1.5_debug@4.1.1
+      app-module-path: 2.2.0
+      cli-table3: 0.5.1
+      colors: 1.3.3
+      cosmiconfig: 6.0.0
+      cross-spawn: 7.0.3
+      ejs: 2.7.4
+      enquirer: 2.3.4
+      execa: 3.4.0
+      fs-jetpack: 2.4.0
+      lodash.camelcase: 4.3.0
+      lodash.kebabcase: 4.1.1
+      lodash.lowercase: 4.3.0
+      lodash.lowerfirst: 4.3.1
+      lodash.pad: 4.5.1
+      lodash.padend: 4.6.1
+      lodash.padstart: 4.6.1
+      lodash.repeat: 4.1.0
+      lodash.snakecase: 4.1.1
+      lodash.startcase: 4.4.0
+      lodash.trim: 4.5.1
+      lodash.trimend: 4.5.1
+      lodash.trimstart: 4.5.1
+      lodash.uppercase: 4.3.0
+      lodash.upperfirst: 4.3.1
+      ora: 4.1.1
+      pluralize: 8.0.0
+      ramdasauce: 2.1.3
+      semver: 7.3.5
+      which: 2.0.2
+      yargs-parser: 16.1.0
+    transitivePeerDependencies:
+      - debug
+    dev: true
+
+  github.com/edgeandnode/gluegun/b34b9003d7bf556836da41b57ef36eb21570620a_debug@4.3.1:
+    resolution: {tarball: https://codeload.github.com/edgeandnode/gluegun/tar.gz/b34b9003d7bf556836da41b57ef36eb21570620a}
+    id: github.com/edgeandnode/gluegun/b34b9003d7bf556836da41b57ef36eb21570620a
+    name: gluegun
+    version: 4.3.1
+    hasBin: true
+    dependencies:
+      apisauce: 1.1.5_debug@4.3.1
       app-module-path: 2.2.0
       cli-table3: 0.5.1
       colors: 1.3.3

@@ -28,6 +28,7 @@ export function onTransfer(event: TransferEvent): void {
   reciever.modifiedAtTimestamp = event.block.timestamp
   reciever.save()
 
+<<<<<<< HEAD
   const transaction = createTransaction(event)
   const value = event.params.value.divDecimal(BIG_DECIMAL_1E18)
 
@@ -39,11 +40,15 @@ export function onTransfer(event: TransferEvent): void {
   transaction.gasPrice = event.transaction.gasPrice
   transaction.createdAtBlock = event.block.number
   transaction.createdAtTimestamp = event.block.timestamp
+=======
+  const transaction = getOrCreateTransaction(event)
+>>>>>>> master
 
   const xSushi = getOrCreateXSushi()
   xSushi.transactionCount = xSushi.transactionCount.plus(BigInt.fromU32(1))
   if (isMintTransaction(event)) {
     transaction.type = MINT
+<<<<<<< HEAD
     xSushi.xSushiSupply = xSushi.xSushiSupply.plus(value)
     xSushi.xSushiMinted = xSushi.xSushiMinted.plus(value)
     xSushi.save()
@@ -57,10 +62,14 @@ export function onTransfer(event: TransferEvent): void {
     snapshots.hour.save()
     snapshots.day.save()
     snapshots.week.save()
+=======
+    xSushi.xSushiSupply = xSushi.xSushiSupply.plus(event.params.value)
+    xSushi.xSushiMinted = xSushi.xSushiMinted.plus(event.params.value)
+>>>>>>> master
   } else if (isBurnTransaction(event)) {
     transaction.type = BURN
-    xSushi.xSushiBurned = xSushi.xSushiBurned.plus(value)
-    xSushi.xSushiSupply = xSushi.xSushiSupply.minus(value)
+    xSushi.xSushiBurned = xSushi.xSushiBurned.plus(event.params.value)
+    xSushi.xSushiSupply = xSushi.xSushiSupply.minus(event.params.value)
     updateRatio(xSushi)
     updateApr(xSushi, event)
     xSushi.save()
@@ -89,15 +98,15 @@ export function onTransfer(event: TransferEvent): void {
 }
 
 export function onSushiTransfer(event: SushiTransferEvent): void {
-  const value = event.params.value.divDecimal(BIG_DECIMAL_1E18)
+  const value = event.params.value
   if (event.params.to == XSUSHI_ADDRESS) {
     // STAKE
     if (transactionExists(event)) {
       let xSushi = getOrCreateXSushi()
       xSushi.sushiSupply = xSushi.sushiSupply.plus(value)
       xSushi.sushiStaked = xSushi.sushiStaked.plus(value)
-      xSushi.sushiXsushiRatio = xSushi.sushiSupply.div(xSushi.xSushiSupply)
-      xSushi.xSushiSushiRatio = xSushi.xSushiSupply.div(xSushi.sushiSupply)
+      xSushi.sushiXsushiRatio = xSushi.sushiSupply.div(xSushi.xSushiSupply).toBigDecimal()
+      xSushi.xSushiSushiRatio = xSushi.xSushiSupply.div(xSushi.sushiSupply).toBigDecimal()
       xSushi.save()
 
       const snapshots = updateSnapshots(event.block.timestamp)
@@ -153,9 +162,9 @@ export function onSushiTransfer(event: SushiTransferEvent): void {
 }
 
 function updateRatio(xSushi: XSushi): void {
-  if (xSushi.xSushiSupply.gt(BigDecimal.zero()) && xSushi.sushiSupply.gt(BigDecimal.zero())) {
-    xSushi.sushiXsushiRatio = xSushi.sushiSupply.div(xSushi.xSushiSupply)
-    xSushi.xSushiSushiRatio = xSushi.xSushiSupply.div(xSushi.sushiSupply)
+  if (!xSushi.xSushiSupply.isZero() && !xSushi.sushiSupply.isZero()) {
+    xSushi.sushiXsushiRatio = xSushi.sushiSupply.div(xSushi.xSushiSupply).toBigDecimal()
+    xSushi.xSushiSushiRatio = xSushi.xSushiSupply.div(xSushi.sushiSupply).toBigDecimal()
   } else {
     xSushi.sushiXsushiRatio = BigDecimal.fromString('1')
     xSushi.xSushiSushiRatio = BigDecimal.fromString('1')

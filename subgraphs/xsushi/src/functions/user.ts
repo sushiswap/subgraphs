@@ -6,6 +6,7 @@ import { getOrCreateXSushi } from './xsushi'
 
 export function createUser(id: string, event: TransferEvent): User {
   const user = new User(id)
+  user.balance = BigInt.fromU32(0)
   user.createdAtBlock = event.block.number
   user.createdAtTimestamp = event.block.timestamp
   user.modifiedAtBlock = event.block.number
