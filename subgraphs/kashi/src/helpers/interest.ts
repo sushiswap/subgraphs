@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { BigInt } from '@graphprotocol/graph-ts'
 
 import {
   MINIMUM_TARGET_UTILIZATION,

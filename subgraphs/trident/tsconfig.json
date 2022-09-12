@@ -3,6 +3,7 @@
   "include": ["src", "generated", "tests"],
   "compilerOptions": {
     "baseUrl": ".",
+    "lib": ["ES2016"],
     "rootDirs": ["./src", "./generated", "./tests"]
   }
 }

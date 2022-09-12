@@ -1,20 +1,26 @@
+import { Address } from '@graphprotocol/graph-ts'
 import { User } from '../../generated/schema'
+import { BIG_INT_ONE, BIG_INT_ZERO, PairType } from '../constants'
+import { getOrCreateFactory } from './factory'
 
-export function createUser(id: string): User {
-  const user = new User(id)
+export function createUser(address: Address): User {
+
+  const user = new User(address.toHex())
+  user.lpSnapshotsCount = BIG_INT_ZERO
   user.save()
-  return user
+
+  const factory = getOrCreateFactory(PairType.CONSTANT_PRODUCT_POOL)
+  factory.userCount = factory.userCount.plus(BIG_INT_ONE)
+  factory.save()
+
+
+  return user as User
 }
 
-export function getUser(id: string): User {
-  return User.load(id) as User
-}
-
-export function getOrCreateUser(id: string): User {
-  const user = User.load(id)
-
+export function getOrCreateUser(address: Address): User {
+  let user = User.load(address.toHex())
   if (user === null) {
-    return createUser(id)
+    user = createUser(address)
   }
 
   return user as User

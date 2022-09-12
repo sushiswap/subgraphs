@@ -53,6 +53,12 @@ module.exports = {
       // DAI
       DAI_ADDRESS,
     ],
+    // List of STABLE/NATIVE pools to use to price NATIVE in USD
+    stablePoolAddresses: [
+      // USDC/WKAVA/30/FALSE
+      '0x88395b86cf9787e131d2fb5462a22b44056bf574',
+    ],
+    minimum_usd_threshold_new_pairs: '3000',
     minimumNativeLiquidity: '0.1',
   },
   furo: {

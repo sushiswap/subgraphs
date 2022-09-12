@@ -2,13 +2,13 @@ type XSushi @entity {
   id: ID! # Hardcoded to 'xSushi'
   userCount: BigInt!
   transactionCount: BigInt!
-  sushiSupply: BigDecimal!
-  xSushiSupply: BigDecimal!
-  sushiStaked: BigDecimal!
-  sushiHarvested: BigDecimal!
-  totalFeeAmount: BigDecimal!
-  xSushiBurned: BigDecimal!
-  xSushiMinted: BigDecimal!
+  sushiSupply: BigInt!
+  xSushiSupply: BigInt!
+  sushiStaked: BigInt!
+  sushiHarvested: BigInt!
+  totalFeeAmount: BigInt!
+  xSushiBurned: BigInt!
+  xSushiMinted: BigInt!
   xSushiSushiRatio: BigDecimal!
   sushiXsushiRatio: BigDecimal!
 }
@@ -23,7 +23,7 @@ type Transaction @entity {
   id: ID!
   from: User!
   to: User!
-  amount: BigDecimal!
+  amount: BigInt!
   type: TransactionType!
   gasUsed: BigInt!
   gasLimit: BigInt!

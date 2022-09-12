@@ -1,0 +1,16 @@
+{
+  "name": "math",
+  "author": "Matthew Lilley <hello@matthewlilley.com>",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "url": "sushiswap/packages",
+    "directory": "packages/math"
+  },
+  "files": [
+    "index.ts"
+  ],
+  "devDependencies": {
+    "@graphprotocol/graph-ts": "^0.27.0"
+  }
+}

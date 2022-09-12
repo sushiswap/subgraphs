@@ -1,5 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { assert, clearStore, test } from 'matchstick-as'
+import { assert, clearStore, log, test } from 'matchstick-as'
 import { CreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
 import { FURO_STREAM } from './../src/constants'
 import { onCancelStream, onCreateStream, onWithdraw } from '../src/mappings/stream'
