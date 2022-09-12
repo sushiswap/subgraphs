@@ -1,4 +1,4 @@
-specVersion: 0.0.4
+specVersion: 0.0.6
 description: Sushi
 repository: https://github.com/sushiswap/subgraphs
 schema:
@@ -13,7 +13,7 @@ dataSources:
       abi: Sushi
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/sushi.ts
       entities:

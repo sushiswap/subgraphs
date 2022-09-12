@@ -2,8 +2,6 @@ import { Address } from "@graphprotocol/graph-ts"
 
 export const ACTIVE = 'ACTIVE'
 export const CANCELLED = 'CANCELLED'
-export const EXPIRED = 'EXPIRED'
-
 export const DEPOSIT = 'DEPOSIT'
 export const WITHDRAWAL = 'WITHDRAWAL'
 export const DISBURSEMENT = 'DISBURSEMENT'

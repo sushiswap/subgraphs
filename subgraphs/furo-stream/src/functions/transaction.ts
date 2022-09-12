@@ -6,7 +6,7 @@ import {
   Withdraw as WithdrawEvent,
 } from '../../generated/FuroStream/FuroStream'
 import { Stream, Transaction } from '../../generated/schema'
-import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from '../constants/index.template'
+import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from '../constants'
 import { increaseTransactionCount } from './furo-stream'
 import { getOrCreateUser } from './user'
 
@@ -17,6 +17,7 @@ function getOrCreateTransaction(id: string, event: ethereum.Event): Transaction 
     transaction = new Transaction(id)
     transaction.createdAtBlock = event.block.number
     transaction.createdAtTimestamp = event.block.timestamp
+    transaction.txHash = event.transaction.hash.toHex()
     increaseTransactionCount()
     transaction.save()
   }

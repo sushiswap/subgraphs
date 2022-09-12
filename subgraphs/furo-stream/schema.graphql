@@ -1,8 +1,6 @@
 enum StreamStatus {
   ACTIVE
-  EXTENDED
   CANCELLED
-  EXPIRED
 }
 
 enum TransactionType {
@@ -46,6 +44,7 @@ type Transaction @entity {
   to: User!
   token: Token!
   toBentoBox: Boolean!
+  txHash: String!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
 }

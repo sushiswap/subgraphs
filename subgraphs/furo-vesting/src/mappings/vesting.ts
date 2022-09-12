@@ -4,7 +4,6 @@ import {
   Transfer as TransferEvent,
   Withdraw as WithdrawEvent,
 } from '../../generated/FuroVesting/FuroVesting'
-import { createSchedule } from '../functions/schedule'
 import {
   createDepositTransaction,
   createDisbursementTransactions,
@@ -14,7 +13,6 @@ import { cancelVesting, createVesting, transferVesting, withdrawFromVesting } fr
 
 export function onCreateVesting(event: CreateVestingEvent): void {
   const vesting = createVesting(event)
-  createSchedule(vesting)
   createDepositTransaction(vesting, event)
 }
 

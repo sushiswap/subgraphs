@@ -16,8 +16,15 @@ export function getOrCreateTransaction(event: TransferEvent): Transaction {
 function createTransaction(event: TransferEvent): Transaction {
   const id = event.transaction.hash.toHex()
   const transaction = new Transaction(id)
+  transaction.from = event.params.from.toHex()
+  transaction.to = event.params.to.toHex()
+  transaction.amount = event.params.value
+  transaction.gasUsed = event.block.gasUsed
+  transaction.gasLimit = event.transaction.gasLimit
+  transaction.gasPrice = event.transaction.gasPrice
+  transaction.block = event.block.number
+  transaction.timestamp = event.block.timestamp
   transaction.save()
-
   return transaction as Transaction
 }
 

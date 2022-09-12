@@ -7,10 +7,13 @@ const USDT_ADDRESS = '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9'
 const DAI_ADDRESS = '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1'
 const MIM_ADDRESS = '0xfea7a6a0b346362bf88a9e4a88416b77a57d6c2a'
 const FRAX_ADDRESS = '0x17fc002b466eec40dae837fc4be5c67993ddbd6f'
+const ARBY_ADDRESS = '0x09ad12552ec45f82be90b38dfe7b06332a680864'
+const DPX_ADDRESS = '0x6c2c06790b3e3e3c38e12ee22f8183b37a13ee55'
+const GOHM_ADDRESS = '0x8d9ba570d6cb60c7e3e0f31343efe75ab8e65fb1'
+const MAGIC_ADDRESS = '0x539bde0d7dbd336b79148aa742883198bbf60342'
 
 module.exports = {
   network: 'arbitrum-one',
-  native: { address: NATIVE_ADDRESS },
   sushi: { address: SUSHI_ADDRESS },
   weth: { address: WETH_ADDRESS },
   wbtc: { address: WBTC_ADDRESS },
@@ -21,45 +24,34 @@ module.exports = {
   },
   kashi: {
     medium: '0xa010ee0226cd071bebd8919a1f675cae1f1f5d3e',
+
+    mediumRiskMasterContractAddresses: ['0xa010ee0226cd071bebd8919a1f675cae1f1f5d3e'],
   },
-  whitelistedTokenAddresses: [
-    // WNATIVE - This is actually quite important, though uneeded here anymore since
-    // it's now apart of the whitelisted token check in createPair, because the
-    // base should always be whitelisted or pricing never begins.
-    NATIVE_ADDRESS,
-    // WETH
-    // WETH_ADDRESS,
-    // WBTC
-    WBTC_ADDRESS,
-    // USDC
-    USDC_ADDRESS,
-    // USDT
-    USDT_ADDRESS,
-    // DAI
-    DAI_ADDRESS,
-    // MIM
-    MIM_ADDRESS,
-    // FRAX
-    FRAX_ADDRESS,
-  ],
-  stableTokenAddresses: [
-    // USDC
-    USDC_ADDRESS,
-    // USDT
-    USDT_ADDRESS,
-    // DAI
-    DAI_ADDRESS,
-    // MIM
-    MIM_ADDRESS,
-    // FRAX
-    FRAX_ADDRESS,
-  ],
-  minimumNativeLiquidity: 3,
   miso: {
     accessControls: { address: '0x1be211d8da40bc0ae8719c6663307bfc987b1d6c', startBlock: 9930886 },
     market: { address: '0x351447fc9bd20a917783e159e61e86edda0b0187', startBlock: 9931078 },
   },
   legacy: {
+    base: 'QmfKgxN71Bc7TKzQi8yccRunpiWupFdWA4638yZRxve3q1',
+    startBlock: 16548328,
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! The native address must be included for pricing to start
+      NATIVE_ADDRESS,
+      WBTC_ADDRESS,
+      ARBY_ADDRESS,
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      GOHM_ADDRESS,
+      DPX_ADDRESS,
+      MAGIC_ADDRESS,
+      DAI_ADDRESS,
+      MIM_ADDRESS,
+      FRAX_ADDRESS,
+    ],
+    stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, MIM_ADDRESS, FRAX_ADDRESS],
+    minimumNativeLiquidity: 3,
+    minimum_usd_threshold_new_pairs: '3000',
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
@@ -67,8 +59,8 @@ module.exports = {
     },
   },
   furo: {
-    stream: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
-    vesting: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+    stream: { address: '0x4ab2fc6e258a0ca7175d05ff10c5cf798a672cae', startBlock: 13964139 },
+    vesting: { address: '0x0689640d190b10765f09310fcfe9c670ede4e25b', startBlock: 13964169 },
   },
   auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   staking: { address: '0x8db6749c9e8f28a4a9bbc02facb9ba9c58e3c9c5', startBlock: 13883265 },

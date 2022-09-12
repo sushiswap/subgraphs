@@ -18,8 +18,8 @@
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/sushi"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.27.0",
-    "@graphprotocol/graph-ts": "^0.24.1",
+    "@graphprotocol/graph-cli": "^0.33.0",
+    "@graphprotocol/graph-ts": "^0.27.0",
     "matchstick-as": "^0.4.0",
     "assemblyscript": "^0.19.20",
     "wabt": "1.0.24"

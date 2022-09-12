@@ -1,6 +1,5 @@
 {
   "name": "trident",
-  "author": "Matthew Lilley <hello@matthewlilley.com>",
   "license": "MIT",
   "repository": {
     "url": "sushiswap/subgraphs",
@@ -13,21 +12,18 @@
     "generate": "mustache ../../config/$NETWORK.js template.yaml > subgraph.yaml && mustache ../../config/$NETWORK.js src/constants/index.template.ts > src/constants/index.ts && graph codegen",
     "build": "graph build",
     "test": "graph test -r",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ sushiswap/trident",
-    "create-local": "graph create --node http://localhost:8020/ sushiswap/trident",
-    "remove-local": "graph remove --node http://localhost:8020/ sushiswap/trident",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/trident",
-    "deploy-kovan": "graph deploy --product hosted-service sushiswap/trident-kovan",
+    "create-local": "graph create --node http://localhost:8020/ sushiswap/trident-ethereum",
+    "remove-local": "graph remove --node http://localhost:8020/ sushiswap/trident-ethereum",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/trident-ethereum",
     "deploy-polygon": "graph deploy --product hosted-service sushiswap/trident-polygon",
-    "deploy-optimism": "graph deploy --product hosted-service matthewlilley/trident-optimism"
+    "deploy-optimism": "graph deploy --product hosted-service sushiswap/trident-optimism",
+    "deploy-metis": "graph deploy --node https://jsonrpc.andromeda.thegraph.metis.io sushiswap/trident-metis"
   },
   "devDependencies": {
     "abi": "workspace:*",
-    "@graphprotocol/graph-cli": "^0.26.0",
-    "@graphprotocol/graph-ts": "^0.24.1",
-    "@sushiswap/trident": "1.0.0-canary.38",
-    "matchstick-as": "^0.3.0",
-    "assemblyscript": "^0.19.20",
+    "@graphprotocol/graph-cli": "^0.32.0",
+    "@graphprotocol/graph-ts": "^0.27.0",
+    "matchstick-as": "^0.5.0",
     "wabt": "1.0.24"
   }
 }

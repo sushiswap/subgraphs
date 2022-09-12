@@ -28,27 +28,17 @@ export function onTransfer(event: TransferEvent): void {
   reciever.save()
 
   const transaction = getOrCreateTransaction(event)
-  const value = event.params.value.divDecimal(BIG_DECIMAL_1E18)
-
-  transaction.from = event.params.from.toHex()
-  transaction.to = event.params.to.toHex()
-  transaction.amount = value
-  transaction.gasUsed = event.block.gasUsed
-  transaction.gasLimit = event.transaction.gasLimit
-  transaction.gasPrice = event.transaction.gasPrice
-  transaction.block = event.block.number
-  transaction.timestamp = event.block.timestamp
 
   const xSushi = getOrCreateXSushi()
   xSushi.transactionCount = xSushi.transactionCount.plus(BigInt.fromU32(1))
   if (isMintTransaction(event)) {
     transaction.type = MINT
-    xSushi.xSushiSupply = xSushi.xSushiSupply.plus(value)
-    xSushi.xSushiMinted = xSushi.xSushiMinted.plus(value)
+    xSushi.xSushiSupply = xSushi.xSushiSupply.plus(event.params.value)
+    xSushi.xSushiMinted = xSushi.xSushiMinted.plus(event.params.value)
   } else if (isBurnTransaction(event)) {
     transaction.type = BURN
-    xSushi.xSushiBurned = xSushi.xSushiBurned.plus(value)
-    xSushi.xSushiSupply = xSushi.xSushiSupply.minus(value)
+    xSushi.xSushiBurned = xSushi.xSushiBurned.plus(event.params.value)
+    xSushi.xSushiSupply = xSushi.xSushiSupply.minus(event.params.value)
     updateRatio(xSushi)
   } else {
     transaction.type = TRANSFER
@@ -58,15 +48,15 @@ export function onTransfer(event: TransferEvent): void {
 }
 
 export function onSushiTransfer(event: SushiTransferEvent): void {
-  const value = event.params.value.divDecimal(BIG_DECIMAL_1E18)
+  const value = event.params.value
   if (event.params.to == XSUSHI_ADDRESS) {
     // STAKE
     if (transactionExists(event)) {
       let xSushi = getOrCreateXSushi()
       xSushi.sushiSupply = xSushi.sushiSupply.plus(value)
       xSushi.sushiStaked = xSushi.sushiStaked.plus(value)
-      xSushi.sushiXsushiRatio = xSushi.sushiSupply.div(xSushi.xSushiSupply)
-      xSushi.xSushiSushiRatio = xSushi.xSushiSupply.div(xSushi.sushiSupply)
+      xSushi.sushiXsushiRatio = xSushi.sushiSupply.div(xSushi.xSushiSupply).toBigDecimal()
+      xSushi.xSushiSushiRatio = xSushi.xSushiSupply.div(xSushi.sushiSupply).toBigDecimal()
       xSushi.save()
     }
     // If no transaction exists, it means that the it's a direct transfer (not from enter function in the sushibar contract)
@@ -96,9 +86,9 @@ export function onSushiTransfer(event: SushiTransferEvent): void {
 }
 
 function updateRatio(xSushi: XSushi): void {
-  if (xSushi.xSushiSupply.gt(BigDecimal.zero()) && xSushi.sushiSupply.gt(BigDecimal.zero())) {
-    xSushi.sushiXsushiRatio = xSushi.sushiSupply.div(xSushi.xSushiSupply)
-    xSushi.xSushiSushiRatio = xSushi.xSushiSupply.div(xSushi.sushiSupply)
+  if (!xSushi.xSushiSupply.isZero() && !xSushi.sushiSupply.isZero()) {
+    xSushi.sushiXsushiRatio = xSushi.sushiSupply.div(xSushi.xSushiSupply).toBigDecimal()
+    xSushi.xSushiSushiRatio = xSushi.xSushiSupply.div(xSushi.sushiSupply).toBigDecimal()
   } else {
     xSushi.sushiXsushiRatio = BigDecimal.fromString('1')
     xSushi.xSushiSushiRatio = BigDecimal.fromString('1')

@@ -1,7 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
-import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from './constants/index.template'
+import { DEPOSIT, DISBURSEMENT, EXTEND, WITHDRAWAL } from './../src/constants'
 import { onCancelStream, onCreateStream, onUpdateStream, onWithdraw } from '../src/mappings/stream'
 import {
   createCancelStreamEvent,
@@ -41,6 +41,7 @@ test('on create stream event, a transaction entity is created', () => {
   assert.fieldEquals('Transaction', id, 'to', RECIEVER.toHex())
   assert.fieldEquals('Transaction', id, 'token', WETH_ADDRESS.toHex())
   assert.fieldEquals('Transaction', id, 'toBentoBox', 'true')
+  assert.fieldEquals('Transaction', id, 'txHash', streamEvent.transaction.hash.toHex())
   assert.fieldEquals('Transaction', id, 'createdAtBlock', streamEvent.block.number.toString())
   assert.fieldEquals('Transaction', id, 'createdAtTimestamp', streamEvent.block.timestamp.toString())
 
@@ -65,6 +66,7 @@ test('Cancel stream', () => {
   assert.fieldEquals('Transaction', id1, 'to', SENDER.toHex())
   assert.fieldEquals('Transaction', id1, 'token', WETH_ADDRESS.toHex())
   assert.fieldEquals('Transaction', id1, 'toBentoBox', 'true')
+  assert.fieldEquals('Transaction', id1, 'txHash', cancelStreamEvent.transaction.hash.toHex())
   assert.fieldEquals('Transaction', id1, 'createdAtBlock', cancelStreamEvent.block.number.toString())
   assert.fieldEquals('Transaction', id1, 'createdAtTimestamp', cancelStreamEvent.block.timestamp.toString())
 
@@ -75,6 +77,7 @@ test('Cancel stream', () => {
   assert.fieldEquals('Transaction', id2, 'to', RECIEVER.toHex())
   assert.fieldEquals('Transaction', id2, 'token', WETH_ADDRESS.toHex())
   assert.fieldEquals('Transaction', id2, 'toBentoBox', 'true')
+  assert.fieldEquals('Transaction', id2, 'txHash', cancelStreamEvent.transaction.hash.toHex())
   assert.fieldEquals('Transaction', id2, 'createdAtBlock', cancelStreamEvent.block.number.toString())
   assert.fieldEquals('Transaction', id2, 'createdAtTimestamp', cancelStreamEvent.block.timestamp.toString())
   cleanup()
@@ -97,6 +100,7 @@ test('Withdraw from stream creates a Transaction', () => {
   assert.fieldEquals('Transaction', id, 'to', RECIEVER.toHex())
   assert.fieldEquals('Transaction', id, 'token', WETH_ADDRESS.toHex())
   assert.fieldEquals('Transaction', id, 'toBentoBox', 'true')
+  assert.fieldEquals('Transaction', id, 'txHash', withdrawalEvent.transaction.hash.toHex())
   assert.fieldEquals('Transaction', id, 'createdAtBlock', withdrawalEvent.block.number.toString())
   assert.fieldEquals('Transaction', id, 'createdAtTimestamp', withdrawalEvent.block.timestamp.toString())
 
@@ -119,6 +123,7 @@ test('Update stream creates a transaction', () => {
   assert.fieldEquals('Transaction', id, 'to', RECIEVER.toHex())
   assert.fieldEquals('Transaction', id, 'token', WETH_ADDRESS.toHex())
   assert.fieldEquals('Transaction', id, 'toBentoBox', 'true')
+  assert.fieldEquals('Transaction', id, 'txHash', updateStreamEvent.transaction.hash.toHex())
   assert.fieldEquals('Transaction', id, 'createdAtBlock', updateStreamEvent.block.number.toString())
   assert.fieldEquals('Transaction', id, 'createdAtTimestamp', updateStreamEvent.block.timestamp.toString())
 

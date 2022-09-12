@@ -1,7 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
 import { assert, clearStore, test } from 'matchstick-as'
 import { CreateStream as CreateStreamEvent } from '../generated/FuroStream/FuroStream'
-import { ACTIVE, CANCELLED, EXTENDED, ZERO_ADDRESS } from './constants/index.template'
+import { ACTIVE, CANCELLED, ZERO_ADDRESS } from './../src/constants'
 import { onCancelStream, onCreateStream, onTransfer, onUpdateStream, onWithdraw } from '../src/mappings/stream'
 import {
   createCancelStreamEvent,
@@ -102,7 +102,7 @@ test('Update stream', () => {
 
   let expectedAmount = AMOUNT.plus(AMOUNT).toString()
   let expectedExpirationDate = END_TIME.plus(extendTime).toString()
-  assert.fieldEquals('Stream', id, 'status', EXTENDED)
+  assert.fieldEquals('Stream', id, 'status', ACTIVE)
   assert.fieldEquals('Stream', id, 'totalAmount', expectedAmount)
   assert.fieldEquals('Stream', id, 'expiresAt', expectedExpirationDate)
   assert.fieldEquals('Stream', id, 'modifiedAtBlock', updateStreamEvent.block.number.toString())
