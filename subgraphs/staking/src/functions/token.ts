@@ -1,8 +1,9 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { Token } from '../../generated/schema'
 import { ERC20 } from '../../generated/Staking/ERC20'
 import { NameBytes32 } from '../../generated/Staking/NameBytes32'
 import { SymbolBytes32 } from '../../generated/Staking/SymbolBytes32'
+import { getPairInfo, getTokenType } from './token-type'
 
 export function getOrCreateToken(id: string): Token {
   let token = Token.load(id)
@@ -13,7 +14,17 @@ export function getOrCreateToken(id: string): Token {
 
     const decimals = getTokenDecimals(contract)
     const name = getTokenName(contract)
-    const symbol = getTokenSymbol(contract)
+    let symbol = getTokenSymbol(contract)
+
+    if (name.success) {
+      token.type = getTokenType(name.value)
+      const pairInfo = getPairInfo(name, Address.fromString(id))
+      if (pairInfo.symbol.success) {
+        symbol = pairInfo.symbol
+        token.assets = pairInfo.assets
+      }
+    }
+
     token.name = name.value
     token.nameSuccess = name.success
     token.symbol = symbol.value
@@ -26,7 +37,7 @@ export function getOrCreateToken(id: string): Token {
   return token as Token
 }
 
-class Symbol {
+export class Symbol {
   success: boolean
   value: string
 }
@@ -52,7 +63,7 @@ export function getTokenSymbol(contract: ERC20): Symbol {
   return { success: false, value: '???' }
 }
 
-class Name {
+export class Name {
   success: boolean
   value: string
 }

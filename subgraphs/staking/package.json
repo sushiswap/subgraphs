@@ -1,6 +1,6 @@
 {
   "name": "staking",
-  "author": "Matthew Lilley <hello@matthewlilley.com>",
+  "author": "Ola Stenberg <hello@olastenberg.com>",
   "license": "MIT",
   "repository": {
     "url": "sushiswap/subgraphs",
@@ -23,6 +23,7 @@
     "abi": "workspace:*",
     "@graphprotocol/graph-cli": "^0.27.0",
     "@graphprotocol/graph-ts": "^0.24.1",
+    "@sushiswap/core": "1.4.2",
     "matchstick-as": "^0.4.0",
     "assemblyscript": "^0.19.20",
     "wabt": "1.0.24"

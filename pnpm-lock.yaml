@@ -147,6 +147,7 @@ importers:
     specifiers:
       '@graphprotocol/graph-cli': ^0.27.0
       '@graphprotocol/graph-ts': ^0.24.1
+      '@sushiswap/core': 1.4.2
       abi: workspace:*
       assemblyscript: ^0.19.20
       matchstick-as: ^0.4.0
@@ -154,6 +155,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli': 0.27.0
       '@graphprotocol/graph-ts': 0.24.1
+      '@sushiswap/core': 1.4.2
       abi: link:../../packages/abi
       assemblyscript: 0.19.23
       matchstick-as: 0.4.2
