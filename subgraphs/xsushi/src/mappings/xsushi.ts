@@ -28,29 +28,26 @@ export function onTransfer(event: TransferEvent): void {
   reciever.modifiedAtTimestamp = event.block.timestamp
   reciever.save()
 
-<<<<<<< HEAD
   const transaction = createTransaction(event)
   const value = event.params.value.divDecimal(BIG_DECIMAL_1E18)
 
   transaction.from = event.params.from.toHex()
   transaction.to = event.params.to.toHex()
-  transaction.amount = value
+  transaction.amount = event.params.value
   transaction.gasUsed = event.block.gasUsed
   transaction.gasLimit = event.transaction.gasLimit
   transaction.gasPrice = event.transaction.gasPrice
   transaction.createdAtBlock = event.block.number
   transaction.createdAtTimestamp = event.block.timestamp
-=======
-  const transaction = getOrCreateTransaction(event)
->>>>>>> master
+
 
   const xSushi = getOrCreateXSushi()
   xSushi.transactionCount = xSushi.transactionCount.plus(BigInt.fromU32(1))
   if (isMintTransaction(event)) {
     transaction.type = MINT
-<<<<<<< HEAD
-    xSushi.xSushiSupply = xSushi.xSushiSupply.plus(value)
-    xSushi.xSushiMinted = xSushi.xSushiMinted.plus(value)
+
+    xSushi.xSushiSupply = xSushi.xSushiSupply.plus(event.params.value)
+    xSushi.xSushiMinted = xSushi.xSushiMinted.plus(event.params.value)
     xSushi.save()
     const snapshots = updateSnapshots(event.block.timestamp)
     snapshots.hour.newTransactions = snapshots.hour.newTransactions.plus(BIG_INT_ONE)
@@ -62,10 +59,6 @@ export function onTransfer(event: TransferEvent): void {
     snapshots.hour.save()
     snapshots.day.save()
     snapshots.week.save()
-=======
-    xSushi.xSushiSupply = xSushi.xSushiSupply.plus(event.params.value)
-    xSushi.xSushiMinted = xSushi.xSushiMinted.plus(event.params.value)
->>>>>>> master
   } else if (isBurnTransaction(event)) {
     transaction.type = BURN
     xSushi.xSushiBurned = xSushi.xSushiBurned.plus(event.params.value)
@@ -98,13 +91,13 @@ export function onTransfer(event: TransferEvent): void {
 }
 
 export function onSushiTransfer(event: SushiTransferEvent): void {
-  const value = event.params.value
+  const value = event.params.value.divDecimal(BIG_DECIMAL_1E18)
   if (event.params.to == XSUSHI_ADDRESS) {
     // STAKE
     if (transactionExists(event)) {
       let xSushi = getOrCreateXSushi()
-      xSushi.sushiSupply = xSushi.sushiSupply.plus(value)
-      xSushi.sushiStaked = xSushi.sushiStaked.plus(value)
+      xSushi.sushiSupply = xSushi.sushiSupply.plus(event.params.value)
+      xSushi.sushiStaked = xSushi.sushiStaked.plus(event.params.value)
       xSushi.sushiXsushiRatio = xSushi.sushiSupply.div(xSushi.xSushiSupply).toBigDecimal()
       xSushi.xSushiSushiRatio = xSushi.xSushiSupply.div(xSushi.sushiSupply).toBigDecimal()
       xSushi.save()
@@ -128,8 +121,8 @@ export function onSushiTransfer(event: SushiTransferEvent): void {
       getOrCreateFee(event)
 
       let xSushi = getOrCreateXSushi()
-      xSushi.totalFeeAmount = xSushi.totalFeeAmount.plus(value)
-      xSushi.sushiSupply = xSushi.sushiSupply.plus(value)
+      xSushi.totalFeeAmount = xSushi.totalFeeAmount.plus(event.params.value)
+      xSushi.sushiSupply = xSushi.sushiSupply.plus(event.params.value)
       updateRatio(xSushi)
       updateApr(xSushi, event)
       xSushi.save()
@@ -145,8 +138,8 @@ export function onSushiTransfer(event: SushiTransferEvent): void {
     // HARVEST
   } else if (event.params.from == XSUSHI_ADDRESS) {
     let xSushi = getOrCreateXSushi()
-    xSushi.sushiHarvested = xSushi.sushiHarvested.plus(value)
-    xSushi.sushiSupply = xSushi.sushiSupply.minus(value)
+    xSushi.sushiHarvested = xSushi.sushiHarvested.plus(event.params.value)
+    xSushi.sushiSupply = xSushi.sushiSupply.minus(event.params.value)
     updateRatio(xSushi)
     updateApr(xSushi, event)
     xSushi.save()

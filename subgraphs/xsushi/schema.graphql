@@ -72,13 +72,13 @@ type HourSnapshot @entity {
   date: Int!
   userCount: BigInt!
   transactionCount: BigInt!
-  sushiSupply: BigDecimal!
-  xSushiSupply: BigDecimal!
-  sushiStaked: BigDecimal!
-  sushiHarvested: BigDecimal!
-  totalFeeAmount: BigDecimal!
-  xSushiBurned: BigDecimal!
-  xSushiMinted: BigDecimal!
+  sushiSupply: BigInt!
+  xSushiSupply: BigInt!
+  sushiStaked: BigInt!
+  sushiHarvested: BigInt!
+  totalFeeAmount: BigInt!
+  xSushiBurned: BigInt!
+  xSushiMinted: BigInt!
   xSushiSushiRatio: BigDecimal!
   sushiXsushiRatio: BigDecimal!
 
@@ -102,13 +102,13 @@ type DaySnapshot @entity {
   date: Int!
   userCount: BigInt!
   transactionCount: BigInt!
-  sushiSupply: BigDecimal!
-  xSushiSupply: BigDecimal!
-  sushiStaked: BigDecimal!
-  sushiHarvested: BigDecimal!
-  totalFeeAmount: BigDecimal!
-  xSushiBurned: BigDecimal!
-  xSushiMinted: BigDecimal!
+  sushiSupply: BigInt!
+  xSushiSupply: BigInt!
+  sushiStaked: BigInt!
+  sushiHarvested: BigInt!
+  totalFeeAmount: BigInt!
+  xSushiBurned: BigInt!
+  xSushiMinted: BigInt!
   xSushiSushiRatio: BigDecimal!
   sushiXsushiRatio: BigDecimal!
   
@@ -131,13 +131,13 @@ type WeekSnapshot @entity {
   date: Int!
   userCount: BigInt!
   transactionCount: BigInt!
-  sushiSupply: BigDecimal!
-  xSushiSupply: BigDecimal!
-  sushiStaked: BigDecimal!
-  sushiHarvested: BigDecimal!
-  totalFeeAmount: BigDecimal!
-  xSushiBurned: BigDecimal!
-  xSushiMinted: BigDecimal!
+  sushiSupply: BigInt!
+  xSushiSupply: BigInt!
+  sushiStaked: BigInt!
+  sushiHarvested: BigInt!
+  totalFeeAmount: BigInt!
+  xSushiBurned: BigInt!
+  xSushiMinted: BigInt!
   xSushiSushiRatio: BigDecimal!
   sushiXsushiRatio: BigDecimal!
   
