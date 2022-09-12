@@ -1,12 +1,4 @@
-specVersion: 0.0.4
-features:
-  - grafting
-graft:
-  base: '{{ trident.bentobox.base }}'
-  block: {{ trident.masterDeployer.startBlock }}
-  # For grafting on top of itself
-  # base: '{{ trident.graft.base }}'
-  # block: {{ trident.graft.startBlock }}
+specVersion: 0.0.6
 schema:
   file: ./schema.graphql
 dataSources:
@@ -19,11 +11,10 @@ dataSources:
       abi: BentoBox
     mapping:
       kind: ethereun/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/bentobox.ts
-      entities:
-        - Token
+      entities: []
       abis:
         - name: BentoBox
           file: ./node_modules/abi/BentoBox/BentoBox.json
@@ -31,6 +22,8 @@ dataSources:
           file: ./node_modules/abi/ERC20/ERC20.json
         - name: SymbolBytes32
           file: ./node_modules/abi/ERC20/SymbolBytes32.json
+        - name: NameBytes32
+          file: ./node_modules/abi/ERC20/NameBytes32.json
       eventHandlers:
         - event: LogDeposit(indexed address,indexed address,indexed address,uint256,uint256)
           handler: onLogDeposit
@@ -52,37 +45,16 @@ dataSources:
       abi: MasterDeployer
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
-      entities:
-        - MasterDeployer
-        - ConstantProductPoolFactory
-        - ConstantProductPool
-        - ConcentratedLiquidityPoolFactory
-        - ConcentratedLiquidityPool
-        - HybridPoolFactory
-        - HybridPool
-        - IndexPoolFactory
-        - IndexPool
+      entities: []
       abis:
+        - name: BentoBox
+          file: ./node_modules/abi/BentoBox/BentoBox.json
         - name: MasterDeployer
           file: ./abis/MasterDeployer.json
         - name: ConstantProductPool
           file: ./abis/ConstantProductPool.json
-        - name: ConstantProductPoolFactory
-          file: ./abis/ConstantProductPoolFactory.json
-        - name: ConcentratedLiquidityPool
-          file: ./abis/ConcentratedLiquidityPool.json
-        - name: ConcentratedLiquidityPoolFactory
-          file: ./abis/ConcentratedLiquidityPoolFactory.json
-        - name: HybridPool
-          file: ./abis/HybridPool.json
-        - name: HybridPoolFactory
-          file: ./abis/HybridPoolFactory.json
-        - name: IndexPool
-          file: ./abis/IndexPool.json
-        - name: IndexPoolFactory
-          file: ./abis/IndexPoolFactory.json
         - name: ERC20
           file: ./node_modules/abi/ERC20/ERC20.json
         - name: SymbolBytes32
@@ -92,16 +64,6 @@ dataSources:
       eventHandlers:
         - event: DeployPool(indexed address,indexed address,bytes)
           handler: onDeployPool
-        - event: TransferOwner(indexed address,indexed address)
-          handler: onTransferOwner
-        - event: TransferOwnerClaim(indexed address,indexed address)
-          handler: onTransferOwnerClaim
-        - event: AddToWhitelist(indexed address)
-          handler: onAddToWhitelist
-        - event: RemoveFromWhitelist(indexed address)
-          handler: onRemoveFromWhitelist
-        - event: BarFeeUpdated(indexed uint256)
-          handler: onBarFeeUpdated
       file: ./src/mappings/master-deployer.ts
 templates:
   - kind: ethereum/contract
@@ -111,15 +73,10 @@ templates:
       abi: ConstantProductPool
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
-      file: ./src/mappings/constant-product-pool.ts
-      entities:
-        - User
-        - Mint
-        - Burn
-        - Swap
-        - Transaction
+      file: ./src/mappings/pair.ts
+      entities: []
       abis:
         - name: ConstantProductPool
           file: ./abis/ConstantProductPool.json
@@ -138,101 +95,7 @@ templates:
           handler: onBurn
         - event: Sync(uint256,uint256)
           handler: onSync
-        - event: Swap(indexed address,indexed address,indexed address,uint256,uint256)
-          handler: onSwap
-        - event: Approval(indexed address,indexed address,uint256)
-          handler: onApproval
         - event: Transfer(indexed address,indexed address,uint256)
           handler: onTransfer
-  # - kind: ethereum/contract
-  #   name: ConcentratedLiquidityPool
-  #   network: {{ network }}
-  #   source:
-  #     abi: ConcentratedLiquidityPool
-  #   mapping:
-  #     kind: ethereum/events
-  #     apiVersion: 0.0.6
-  #     language: wasm/assemblyscript
-  #     file: ./src/mappings/concentrated-liquidity-pool.ts
-  #     entities:
-  #       - User
-  #     abis:
-  #       - name: ConcentratedLiquidityPool
-  #         file: ./abis/ConcentratedLiquidityPool.json
-  #       - name: ConcentratedLiquidityPoolFactory
-  #         file: ./abis/ConcentratedLiquidityPoolFactory.json
-  #       - name: ERC20
-  #         file: ./node_modules/abi/ERC20/ERC20.json
-  #       - name: SymbolBytes32
-  #         file: ./node_modules/abi/ERC20/SymbolBytes32.json
-  #       - name: NameBytes32
-  #         file: ./node_modules/abi/ERC20/NameBytes32.json
-  #     eventHandlers:
-  #       - event: Mint(indexed address,uint256,uint256)
-  #         handler: onMint
-  #       - event: Burn(indexed address,uint256,uint256)
-  #         handler: onBurn
-  #       - event: Collect(indexed address,uint256,uint256)
-  #         handler: onCollect
-  #       - event: Sync(uint256,uint256)
-  #         handler: onSync
-  #       - event: Swap(indexed address,indexed address,indexed address,uint256,uint256)
-  #         handler: onSwap
-  # - kind: ethereum/contract
-  #   name: HybridPool
-  #   network: {{ network }}
-  #   source:
-  #     abi: HybridPool
-  #   mapping:
-  #     kind: ethereum/events
-  #     apiVersion: 0.0.6
-  #     language: wasm/assemblyscript
-  #     file: ./src/mappings/hybrid-pool.ts
-  #     entities:
-  #       - User
-  #     abis:
-  #       - name: HybridPool
-  #         file: ./abis/HybridPool.json
-  #       - name: HybridPoolFactory
-  #         file: ./abis/HybridPoolFactory.json
-  #     eventHandlers:
-  #       - event: Mint(indexed address,uint256,uint256,indexed address,uint256)
-  #         handler: onMint
-  #       - event: Burn(indexed address,uint256,uint256,indexed address,uint256)
-  #         handler: onBurn
-  #       - event: Sync(uint256,uint256)
-  #         handler: onSync
-  #       - event: Swap(indexed address,indexed address,indexed address,uint256,uint256)
-  #         handler: onSwap
-  #       - event: Approval(indexed address,indexed address,uint256)
-  #         handler: onApproval
-  #       - event: Transfer(indexed address,indexed address,uint256)
-  #         handler: onTransfer
-  # - kind: ethereum/contract
-  #   name: IndexPool
-  #   network: {{ network }}
-  #   source:
-  #     abi: IndexPool
-  #   mapping:
-  #     kind: ethereum/events
-  #     apiVersion: 0.0.6
-  #     language: wasm/assemblyscript
-  #     file: ./src/mappings/index-pool.ts
-  #     entities:
-  #       - User
-  #     abis:
-  #       - name: IndexPool
-  #         file: ./abis/IndexPool.json
-  #       - name: IndexPoolFactory
-  #         file: ./abis/IndexPoolFactory.json
-  #     eventHandlers:
-  #       - event: Mint(indexed address,address,uint256,indexed address)
-  #         handler: onMint
-  #       - event: Burn(indexed address,address,uint256,indexed address)
-  #         handler: onBurn
-  #       - event: Swap(indexed address,indexed address,indexed address,uint256,uint256)
-  #         handler: onSwap
-  #       - event: Approval(indexed address,indexed address,uint256)
-  #         handler: onApproval
-  #       - event: Transfer(indexed address,indexed address,uint256)
-  #         handler: onTransfer
+        - event: Swap(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: onSwap

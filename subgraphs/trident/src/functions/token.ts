@@ -1,73 +1,53 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts'
-import { Token, TokenKpi } from '../../generated/schema'
-import { createRebase, createTokenPrice, getOrCreateTokenPrice } from '.'
-
+import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, PairType } from '../constants'
 import { ERC20 } from '../../generated/MasterDeployer/ERC20'
 import { NameBytes32 } from '../../generated/MasterDeployer/NameBytes32'
 import { SymbolBytes32 } from '../../generated/MasterDeployer/SymbolBytes32'
+import { Token } from '../../generated/schema'
 import { getOrCreateRebase } from './rebase'
-
-export function createTokenKpi(id: string): TokenKpi {
-  const kpi = new TokenKpi(id)
-  kpi.token = id
-  kpi.save()
-  return kpi
-}
-
-export function getTokenKpi(id: string): TokenKpi {
-  return TokenKpi.load(id) as TokenKpi
-}
-
-export function getOrCreateTokenKpi(id: string): TokenKpi {
-  let tokenKpi = TokenKpi.load(id)
-  if (tokenKpi === null) {
-    tokenKpi = createTokenKpi(id)
-  }
-  return tokenKpi as TokenKpi
-}
+import { createTokenPrice } from './token-price'
+import { getOrCreateFactory } from './factory'
 
 export function getOrCreateToken(id: string): Token {
   let token = Token.load(id)
 
   if (token === null) {
     token = new Token(id)
+    createTokenPrice(id)
 
     const contract = ERC20.bind(Address.fromString(id))
 
     const decimals = getTokenDecimals(contract)
     const name = getTokenName(contract)
     const symbol = getTokenSymbol(contract)
-
+    token.price = id
     token.name = name.value
     token.nameSuccess = name.success
     token.symbol = symbol.value
     token.symbolSuccess = symbol.success
     token.decimals = decimals.value
     token.decimalsSuccess = decimals.success
-
-    const price = getOrCreateTokenPrice(id)
-    token.price = price.id
-
-    const kpi = getOrCreateTokenKpi(id)
-    token.kpi = kpi.id
-
+    token.price = id
     const rebase = getOrCreateRebase(id)
     token.rebase = rebase.id
 
-    token.save()
-  }
+    token.liquidity = BIG_INT_ZERO
+    token.liquidityNative = BIG_DECIMAL_ZERO
+    token.liquidityUSD = BIG_DECIMAL_ZERO
+    token.volume = BIG_DECIMAL_ZERO
+    token.volumeNative = BIG_DECIMAL_ZERO
+    token.volumeUSD = BIG_DECIMAL_ZERO
+    token.untrackedVolumeUSD = BIG_DECIMAL_ZERO
+    token.feesNative = BIG_DECIMAL_ZERO
+    token.feesUSD = BIG_DECIMAL_ZERO
+    token.txCount = BIG_INT_ZERO
+    token.pairCount = BIG_INT_ZERO
 
-  // To deal with grafting issues
-  if (token.price === null) {
-    const price = createTokenPrice(id)
-    token.price = price.id
     token.save()
-  }
 
-  if (token.kpi === null) {
-    const kpi = createTokenKpi(id)
-    token.kpi = kpi.id
-    token.save()
+    const factory = getOrCreateFactory(PairType.CONSTANT_PRODUCT_POOL)
+    factory.tokenCount = factory.tokenCount.plus(BIG_INT_ONE)
+    factory.save()
   }
 
   return token as Token
@@ -78,9 +58,8 @@ class Symbol {
   value: string
 }
 
-export function getTokenSymbol(contract: ERC20): Symbol {
+function getTokenSymbol(contract: ERC20): Symbol {
   const symbol = contract.try_symbol()
-
   if (!symbol.reverted) {
     return { success: true, value: symbol.value.toString() }
   }
@@ -104,7 +83,7 @@ class Name {
   value: string
 }
 
-export function getTokenName(contract: ERC20): Name {
+function getTokenName(contract: ERC20): Name {
   const name = contract.try_name()
 
   if (!name.reverted) {
@@ -130,12 +109,20 @@ class Decimal {
   value: BigInt
 }
 
-export function getTokenDecimals(contract: ERC20): Decimal {
+function getTokenDecimals(contract: ERC20): Decimal {
   const decimals = contract.try_decimals()
 
   if (!decimals.reverted) {
-    return { success: true, value: BigInt.fromI32(decimals.value as i32) }
+    return { success: true, value: BigInt.fromI32(decimals.value) }
   }
 
   return { success: false, value: BigInt.fromI32(18) }
+}
+
+const BLACKLIST_EXCHANGE_VOLUME: string[] = [
+  '0x9ea3b5b4ec044b70375236a281986106457b20ef', // DELTA
+]
+
+export function isBlacklistedToken(token: string): boolean {
+  return BLACKLIST_EXCHANGE_VOLUME.includes(token)
 }
