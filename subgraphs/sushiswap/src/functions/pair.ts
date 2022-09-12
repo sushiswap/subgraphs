@@ -38,7 +38,6 @@ export function createPair(event: PairCreated): Pair {
   pair.liquidityUSD = BIG_DECIMAL_ZERO
   pair.volumeNative = BIG_DECIMAL_ZERO
   pair.volumeUSD = BIG_DECIMAL_ZERO
-  pair.untrackedVolumeUSD = BIG_DECIMAL_ZERO
   pair.volumeToken0 = BIG_DECIMAL_ZERO
   pair.volumeToken1 = BIG_DECIMAL_ZERO
   pair.feesNative = BIG_DECIMAL_ZERO

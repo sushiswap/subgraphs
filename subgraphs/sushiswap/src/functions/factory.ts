@@ -9,7 +9,6 @@ export function getOrCreateFactory(id: Address = FACTORY_ADDRESS): Factory {
     factory = new Factory(id.toHex())
     factory.type = PairType.CONSTANT_PRODUCT_POOL
     factory.volumeUSD = BIG_DECIMAL_ZERO
-    factory.untrackedVolumeUSD = BIG_DECIMAL_ZERO
     factory.volumeNative = BIG_DECIMAL_ZERO
     factory.liquidityUSD = BIG_DECIMAL_ZERO
     factory.liquidityNative = BIG_DECIMAL_ZERO

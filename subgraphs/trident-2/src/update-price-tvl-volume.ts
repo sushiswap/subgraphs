@@ -74,7 +74,7 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   // get tracked liquidity - will be 0 if neither is in whitelist
   let trackedLiquidityNative: BigDecimal
   if (bundle.nativePrice.notEqual(BIG_DECIMAL_ZERO)) {
-    trackedLiquidityNative = getTrackedLiquidityUSD(reserve0Decimals, token0Price, reserve1Decimals, token1Price).div(
+    trackedLiquidityNative = getLiquidityUSD(reserve0Decimals, token0Price, reserve1Decimals, token1Price).div(
       bundle.nativePrice
     )
   } else {
@@ -118,7 +118,7 @@ export function updateVolume(event: SwapEvent): Volume {
   const amountOut = convertTokenToDecimal(event.params.amountOut, tokenOut.decimals)
 
   const isFirstToken = pair.token0 == event.params.tokenIn.toHex()
-  const trackedVolumeUSD = getTrackedVolumeUSD(amountIn, amountOut, pair.id, isFirstToken)
+  const volumeUSD = getVolumeUSD(amountIn, amountOut, pair.id, isFirstToken)
   const bundle = getOrCreateBundle()
 
   let volumeNative: BigDecimal
@@ -126,34 +126,29 @@ export function updateVolume(event: SwapEvent): Volume {
   if (bundle.nativePrice.equals(BIG_DECIMAL_ZERO)) {
     volumeNative = BIG_DECIMAL_ZERO
   } else {
-    volumeNative = trackedVolumeUSD.div(bundle.nativePrice)
+    volumeNative = volumeUSD.div(bundle.nativePrice)
   }
 
-
-  const untrackedVolumeUSD = volumeNative.times(bundle.nativePrice)
   const feesNative = volumeNative.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
-  const feesUSD = trackedVolumeUSD.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
+  const feesUSD = volumeUSD.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
 
   tokenIn.volume = tokenIn.volume.plus(amountIn)
   tokenIn.volumeNative = tokenIn.volumeNative.plus(volumeNative)
-  tokenIn.volumeUSD = tokenIn.volumeUSD.plus(trackedVolumeUSD)
-  tokenIn.untrackedVolumeUSD = tokenIn.untrackedVolumeUSD.plus(untrackedVolumeUSD)
+  tokenIn.volumeUSD = tokenIn.volumeUSD.plus(volumeUSD)
   tokenIn.feesNative = tokenIn.feesNative.plus(feesNative)
   tokenIn.feesUSD = tokenIn.feesUSD.plus(feesUSD)
   tokenIn.save()
 
   tokenOut.volume = tokenOut.volume.plus(amountOut)
   tokenOut.volumeNative = tokenOut.volumeNative.plus(volumeNative)
-  tokenOut.volumeUSD = tokenOut.volumeUSD.plus(trackedVolumeUSD)
-  tokenOut.untrackedVolumeUSD = tokenOut.untrackedVolumeUSD.plus(untrackedVolumeUSD)
+  tokenOut.volumeUSD = tokenOut.volumeUSD.plus(volumeUSD)
   tokenOut.feesNative = tokenOut.feesNative.plus(feesNative)
   tokenOut.feesUSD = tokenOut.feesUSD.plus(feesUSD)
   tokenOut.save()
 
 
   pair.volumeNative = pair.volumeNative.plus(volumeNative)
-  pair.volumeUSD = pair.volumeUSD.plus(trackedVolumeUSD)
-  pair.untrackedVolumeUSD = pair.untrackedVolumeUSD.plus(untrackedVolumeUSD)
+  pair.volumeUSD = pair.volumeUSD.plus(volumeUSD)
   pair.volumeToken0 = pair.volumeToken0.plus(amountIn)
   pair.volumeToken1 = pair.volumeToken1.plus(amountOut)
   pair.feesNative = pair.feesNative.plus(feesNative)
@@ -161,17 +156,15 @@ export function updateVolume(event: SwapEvent): Volume {
   pair.save()
 
   const factory = getOrCreateFactory(PairType.CONSTANT_PRODUCT_POOL)
-  factory.volumeUSD = factory.volumeUSD.plus(trackedVolumeUSD)
+  factory.volumeUSD = factory.volumeUSD.plus(volumeUSD)
   factory.volumeNative = factory.volumeNative.plus(volumeNative)
-  factory.untrackedVolumeUSD = factory.untrackedVolumeUSD.plus(untrackedVolumeUSD)
   factory.feesNative = factory.feesNative.plus(feesNative)
   factory.feesUSD = factory.feesUSD.plus(feesUSD)
   factory.save()
 
   return {
-    volumeUSD: trackedVolumeUSD != BIG_DECIMAL_ZERO ? trackedVolumeUSD : untrackedVolumeUSD,
+    volumeUSD,
     volumeNative,
-    untrackedVolumeUSD,
     feesNative,
     feesUSD,
     amount0Total: amountIn,
@@ -198,12 +191,12 @@ export function updateLiquidity(event: TransferEvent): void {
 
 
 /**
- * Accepts tokens and amounts, return tracked amount based on token whitelist
- * If one token on whitelist, return amount in that token converted to USD.
+ * Accepts tokens and amounts, return tracked amount based on if the token is priced
+ * If one token is priced, return amount in that token converted to USD.
  * If both are, return average of two amounts
  * If neither is, return 0
  */
-export function getTrackedVolumeUSD(
+export function getVolumeUSD(
   tokenAmount0: BigDecimal,
   tokenAmount1: BigDecimal,
   pairAddress: string,
@@ -219,40 +212,24 @@ export function getTrackedVolumeUSD(
   const price0 = token0Price.derivedNative.times(bundle.nativePrice)
   const price1 = token1Price.derivedNative.times(bundle.nativePrice)
 
-  const reserve0USD = convertTokenToDecimal(isFirstToken ? pair.reserve0 : pair.reserve1, token0.decimals).times(price0)
-  const reserve1USD = convertTokenToDecimal(!isFirstToken ? pair.reserve0 : pair.reserve1, token1.decimals).times(price1)
-  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
-    if (reserve0USD.plus(reserve1USD).lt(MINIMUM_USD_THRESHOLD_NEW_PAIRS)) {
-      return BIG_DECIMAL_ZERO
-    }
-  }
-  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && !WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
-    if (reserve0USD.times(BigDecimal.fromString('2')).lt(MINIMUM_USD_THRESHOLD_NEW_PAIRS)) {
-      return BIG_DECIMAL_ZERO
-    }
-  }
-  if (!WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
-    if (reserve1USD.times(BigDecimal.fromString('2')).lt(MINIMUM_USD_THRESHOLD_NEW_PAIRS)) {
-      return BIG_DECIMAL_ZERO
-    }
-  }
 
-  // both are whitelist tokens, take average of both amounts
-  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
+  // both tokens are priced, take average of both amounts
+  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
     return tokenAmount0.times(price0).plus(tokenAmount1.times(price1)).div(BigDecimal.fromString('2'))
   }
 
-  // take full value of the whitelisted token amount
-  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && !WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
+  // take full value of the priced token
+  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && !token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
     return tokenAmount0.times(price0)
   }
 
-  // take full value of the whitelisted token amount
-  if (!WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
+  // take full value of the priced token
+  if (!token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
     return tokenAmount1.times(price1)
   }
 
-  // neither token is on white list, tracked volume is 0
+
+  // neither token is priced, tracked volume is 0
   return BIG_DECIMAL_ZERO
 }
 
@@ -262,7 +239,7 @@ export function getTrackedVolumeUSD(
  * If both are, return sum of two amounts
  * If neither is, return 0
  */
-export function getTrackedLiquidityUSD(
+export function getLiquidityUSD(
   tokenAmount0: BigDecimal,
   token0Price: TokenPrice,
   tokenAmount1: BigDecimal,
@@ -272,29 +249,30 @@ export function getTrackedLiquidityUSD(
   const price0 = token0Price.derivedNative.times(bundle.nativePrice)
   const price1 = token1Price.derivedNative.times(bundle.nativePrice)
 
-  // both are whitelist tokens, take average of both amounts
-  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0Price.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1Price.id)) {
+  // both tokens are priced, take average of both amounts
+  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
     return tokenAmount0.times(price0).plus(tokenAmount1.times(price1))
   }
 
-  // take double value of the whitelisted token amount
-  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0Price.id) && !WHITELISTED_TOKEN_ADDRESSES.includes(token1Price.id)) {
+  // take full value of the priced token
+  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && !token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
     return tokenAmount0.times(price0).times(BigDecimal.fromString('2'))
   }
 
-  // take double value of the whitelisted token amount
-  if (!WHITELISTED_TOKEN_ADDRESSES.includes(token0Price.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1Price.id)) {
+  // take full value of the priced token
+  if (!token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
     return tokenAmount1.times(price1).times(BigDecimal.fromString('2'))
   }
 
-  // neither token is on white list, tracked volume is 0
+
+  // neither token is priced, tracked liqudity is 0
   return BIG_DECIMAL_ZERO
 }
+
 
 export class Volume {
   volumeUSD: BigDecimal
   volumeNative: BigDecimal
-  untrackedVolumeUSD: BigDecimal
   feesNative: BigDecimal
   feesUSD: BigDecimal
   amount0Total: BigDecimal

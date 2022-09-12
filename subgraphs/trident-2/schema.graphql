@@ -10,8 +10,6 @@ type Factory @entity {
   type: PairType!
   " Volume USD "
   volumeUSD: BigDecimal!
-  " Untracked Volume USD "
-  untrackedVolumeUSD: BigDecimal!
   " Volume Native "
   volumeNative: BigDecimal!
   " Liquidity USD "
@@ -72,8 +70,6 @@ type Token @entity {
   volumeNative: BigDecimal!
   " Volume in USD "
   volumeUSD: BigDecimal!
-  " Untracked Volume in USD "
-  untrackedVolumeUSD: BigDecimal!
   " Fee in USD "
   feesNative: BigDecimal!
   " Volume in USD "
@@ -153,8 +149,6 @@ type Pair @entity {
   volumeNative: BigDecimal!
   # volume in USD
   volumeUSD: BigDecimal!
-  " Untracked Volume in USD "
-  untrackedVolumeUSD: BigDecimal!
   # volume token0
   volumeToken0: BigDecimal!
   # volume token1
@@ -332,7 +326,6 @@ type PairHourSnapshot @entity {
   cumulativeVolumeUSD: BigDecimal!
   volumeUSD: BigDecimal!
   volumeNative: BigDecimal!
-  untrackedVolumeUSD: BigDecimal!
   volumeToken0: BigDecimal!
   volumeToken1: BigDecimal!
   liquidity: BigDecimal!
@@ -353,7 +346,6 @@ type PairDaySnapshot @entity {
   cumulativeVolumeUSD: BigDecimal!
   volumeUSD: BigDecimal!
   volumeNative: BigDecimal!
-  untrackedVolumeUSD: BigDecimal!
   volumeToken0: BigDecimal!
   volumeToken1: BigDecimal!
   liquidity: BigDecimal!
@@ -390,7 +382,6 @@ type FactoryHourSnapshot @entity {
   date: Int!
   volumeUSD: BigDecimal!
   volumeNative: BigDecimal!
-  untrackedVolumeUSD: BigDecimal!
   liquidityNative: BigDecimal!
   liquidityUSD: BigDecimal!
   feesNative: BigDecimal!
@@ -405,7 +396,6 @@ type FactoryDaySnapshot @entity {
   date: Int!
   volumeUSD: BigDecimal!
   volumeNative: BigDecimal!
-  untrackedVolumeUSD: BigDecimal!
   liquidityNative: BigDecimal!
   liquidityUSD: BigDecimal!
   feesNative: BigDecimal!

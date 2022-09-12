@@ -16,7 +16,6 @@ export function updateTokenDaySnapshots(
     volumeNative: BIG_DECIMAL_ZERO, 
     feesNative: BIG_DECIMAL_ZERO, 
     feesUSD: BIG_DECIMAL_ZERO, 
-    untrackedVolumeUSD: BIG_DECIMAL_ZERO, 
     amount0Total: BIG_DECIMAL_ZERO, 
     amount1Total: BIG_DECIMAL_ZERO 
   }
