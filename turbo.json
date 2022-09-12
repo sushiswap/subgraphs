@@ -6,7 +6,8 @@
         "generated",
         "subgraph.yaml",
         "src/constants/index.ts"
-      ]
+      ],
+      "dependsOn": ["$NETWORK"]
     },
     "build": {
       "outputs": ["build/**"],

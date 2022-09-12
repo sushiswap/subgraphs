@@ -20,33 +20,36 @@ module.exports = {
   wbtc: { address: WBTC_ADDRESS },
   bentobox: {
     address: '0x0319000133d3ada02600f0875d2cf03d442c3367',
-    base: 'QmV5THYVNDYc2PUKZRmmQW8Jus7f2aCHs4DjjEemKCH9sG',
     startBlock: 13952308,
   },
-  masterDeployer: { address: '0x351447fc9bd20a917783e159e61e86edda0b0187', startBlock: 25840876 },
-  concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
-  constantProductPoolFactory: { address: '0x05689fcfee31fce4a67fbc7cab13e74f80a4e288' },
-  hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
-  indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
-
+  kashi: {
+    mediumRiskMasterContractAddresses: ['0xb527c5295c4bc348cbb3a2e96b2494fd292075a7'],
+  },
   trident: {
+    masterDeployer: { address: '0x351447fc9bd20a917783e159e61e86edda0b0187', startBlock: 25840876 },
+    concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
+    constantProductPoolFactory: {
+      address: '0x05689fcfee31fce4a67fbc7cab13e74f80a4e288',
+    },
+    hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
+    indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     native: { address: NATIVE_ADDRESS },
-    // whitelistedTokenAddresses: [
-    //   // WNATIVE - This is actually quite important, though uneeded here anymore since
-    //   // it's now apart of the whitelisted token check in createPair, because the
-    //   // base should always be whitelisted or pricing never begins.
-    //   NATIVE_ADDRESS,
-    //   // WETH
-    //   WETH_ADDRESS,
-    //   // WBTC
-    //   WBTC_ADDRESS,
-    //   // USDC
-    //   USDC_ADDRESS,
-    //   // USDT
-    //   USDT_ADDRESS,
-    //   // DAI
-    //   DAI_ADDRESS,
-    // ],
+    whitelistedTokenAddresses: [
+      // IMPORTANT! The native address must be included for pricing to start
+      WETH_ADDRESS,
+      USDC_ADDRESS,
+      DAI_ADDRESS,
+      USDT_ADDRESS,
+      WBTC_ADDRESS,
+      SUSHI_ADDRESS,
+      AAVE_ADDRESS,
+      FRAX_ADDRESS,
+      BCT_ADDRESS,
+      AURUM_ADDRESS,
+      MSU_ADDRESS,
+      DMAGIC_ADDRESS,
+      NDEFI_ADDRESS,
+    ],
     stableTokenAddresses: [
       // USDC
       USDC_ADDRESS,
@@ -60,17 +63,18 @@ module.exports = {
       // '0x45c32fa6df82ead1e2ef74d17b76547eddfaff89',
     ],
     // // List of STABLE/NATIVE pools to use to price NATIVE in USD
-    // stablePoolAddresses: [
-    //   // USDC/MATIC/5/FALSE
-    //   '0xd5ed08fdedd447a3172449e6d4e2e5265157e6a3',
-    //   // USDC/WMATIC/30/TRUE
-    //   '0x699e820323dd5e51b243003ef74ac812b7f280ed',
-    //   // USDT/WMATIC/30/TRUE
-    //   '0x25d8dfef6f432eb0f7db0b9f61fef352f08b1979',
-    //   // DAI/WMATIC/30/TRUE
-    //   '0x1bd908569c1157417abae2ed3de3cb04c734b984',
-    // ],
+    stablePoolAddresses: [
+      // USDC/MATIC/5/FALSE
+      '0xd5ed08fdedd447a3172449e6d4e2e5265157e6a3',
+      // USDC/WMATIC/30/TRUE
+      '0x699e820323dd5e51b243003ef74ac812b7f280ed',
+      // USDT/WMATIC/30/TRUE
+      '0x25d8dfef6f432eb0f7db0b9f61fef352f08b1979',
+      // DAI/WMATIC/30/TRUE
+      '0x1bd908569c1157417abae2ed3de3cb04c734b984',
+    ],
     minimumNativeLiquidity: 1000,
+    minimum_usd_threshold_new_pairs: '3000',
   },
   legacy: {
     native: { address: WETH_ADDRESS },

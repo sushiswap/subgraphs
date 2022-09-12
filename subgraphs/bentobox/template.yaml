@@ -1,6 +1,12 @@
 specVersion: 0.0.4
 description: BentoBox
 repository: https://github.com/sushiswap/subgraphs
+# features:
+#   - grafting
+#   # - nonFatalErrors
+# graft:
+#   base: '{{ bentobox.graft.base }}'
+#   block: {{ bentobox.graft.startBlock }}
 schema:
   file: ./schema.graphql
 dataSources:
@@ -29,6 +35,7 @@ dataSources:
         - name: NameBytes32
           file: ./node_modules/abi/ERC20/NameBytes32.json
       eventHandlers:
+        # BentoBox
         - event: LogDeposit(indexed address,indexed address,indexed address,uint256,uint256)
           handler: onLogDeposit
         - event: LogWithdraw(indexed address,indexed address,indexed address,uint256,uint256)
@@ -39,6 +46,8 @@ dataSources:
           handler: onLogFlashLoan
         - event: LogStrategyTargetPercentage(indexed address,uint256)
           handler: onLogStrategyTargetPercentage
+        - event: LogStrategyQueued(indexed address,indexed address)
+          handler: onLogStrategyQueued
         - event: LogStrategySet(indexed address,indexed address)
           handler: onLogStrategySet
         - event: LogStrategyInvest(indexed address,uint256)
@@ -49,11 +58,13 @@ dataSources:
           handler: onLogStrategyProfit
         - event: LogStrategyLoss(indexed address,uint256)
           handler: onLogStrategyLoss
+        # MasterContractManager 
         - event: LogWhiteListMasterContract(indexed address,bool)
           handler: onLogWhiteListMasterContract
         - event: LogSetMasterContractApproval(indexed address,indexed address,bool)
           handler: onLogSetMasterContractApproval
         - event: LogRegisterProtocol(indexed address)
           handler: onLogRegisterProtocol
+        # BoringFactory
         - event: LogDeploy(indexed address,bytes,indexed address)
           handler: onLogDeploy
