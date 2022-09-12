@@ -81,20 +81,6 @@ importers:
       '@sushiswap/core': 1.4.2
       matchstick-as: 0.2.3
 
-  subgraphs/exchange:
-    specifiers:
-      '@graphprotocol/graph-cli': ^0.27.0
-      '@graphprotocol/graph-ts': ^0.24.1
-      abi: workspace:*
-      assemblyscript: ^0.19.20
-      matchstick-as: ^0.4.2
-    devDependencies:
-      '@graphprotocol/graph-cli': 0.27.0
-      '@graphprotocol/graph-ts': 0.24.1
-      abi: link:../../packages/abi
-      assemblyscript: 0.19.23
-      matchstick-as: 0.4.2
-
   subgraphs/furo-stream:
     specifiers:
       '@graphprotocol/graph-cli': ^0.27.0
@@ -140,20 +126,6 @@ importers:
       abi: link:../../packages/abi
       matchstick-as: 0.5.0
       math: link:../../packages/math
-
-  subgraphs/legacy-exchange:
-    specifiers:
-      '@graphprotocol/graph-cli': 0.26.0
-      '@graphprotocol/graph-ts': 0.23.1
-      '@sushiswap/core': 1.4.2
-      abi: workspace:*
-      matchstick-as: 0.2.3
-    devDependencies:
-      '@graphprotocol/graph-cli': 0.26.0
-      '@graphprotocol/graph-ts': 0.23.1
-      '@sushiswap/core': 1.4.2
-      abi: link:../../packages/abi
-      matchstick-as: 0.2.3
 
   subgraphs/miso:
     specifiers:
@@ -213,51 +185,7 @@ importers:
       abi: link:../../packages/abi
       matchstick-as: 0.5.0
 
-  subgraphs/sushiswap-minimal:
-    specifiers:
-      '@graphprotocol/graph-cli': ^0.32.0
-      '@graphprotocol/graph-ts': ^0.27.0
-      abi: workspace:*
-      matchstick-as: ^0.5.0
-    devDependencies:
-      '@graphprotocol/graph-cli': 0.32.0
-      '@graphprotocol/graph-ts': 0.27.0
-      abi: link:../../packages/abi
-      matchstick-as: 0.5.0
-
   subgraphs/trident:
-    specifiers:
-      '@graphprotocol/graph-cli': 0.27.0
-      '@graphprotocol/graph-ts': 0.24.1
-      '@sushiswap/trident': 1.0.0-canary.38
-      abi: workspace:*
-      assemblyscript: ^0.19.20
-      matchstick-as: ^0.3.0
-      wabt: 1.0.24
-    devDependencies:
-      '@graphprotocol/graph-cli': 0.27.0
-      '@graphprotocol/graph-ts': 0.24.1
-      '@sushiswap/trident': 1.0.0-canary.38
-      abi: link:../../packages/abi
-      assemblyscript: 0.19.23
-      matchstick-as: 0.3.0
-      wabt: 1.0.24
-
-  subgraphs/trident-2:
-    specifiers:
-      '@graphprotocol/graph-cli': ^0.32.0
-      '@graphprotocol/graph-ts': ^0.27.0
-      abi: workspace:*
-      matchstick-as: ^0.5.0
-      wabt: 1.0.24
-    devDependencies:
-      '@graphprotocol/graph-cli': 0.32.0
-      '@graphprotocol/graph-ts': 0.27.0
-      abi: link:../../packages/abi
-      matchstick-as: 0.5.0
-      wabt: 1.0.24
-
-  subgraphs/trident-minimal:
     specifiers:
       '@graphprotocol/graph-cli': ^0.32.0
       '@graphprotocol/graph-ts': ^0.27.0
@@ -647,10 +575,6 @@ packages:
       prettier: 2.x
     dependencies:
       prettier: 2.6.2
-    dev: true
-
-  /@sushiswap/trident/1.0.0-canary.38:
-    resolution: {integrity: sha512-TnhOhKGevcMmGfj5rbABmmOmus7j0kHmDu2lNbPvnq+z7RB9mEsLG6DiyzEM9t+5SMm3ckTwt1GXhRgYPmy7mQ==}
     dev: true
 
   /@types/bn.js/5.1.0:
@@ -2600,14 +2524,6 @@ packages:
 
   /matchstick-as/0.2.3:
     resolution: {integrity: sha512-Eg/GFoIGSVj4pNJZJwV7azDOIoiADkOyM3VChQlaEbS0NmjsOnREcNT0za0Qyh2RgFbMH/JBPVo+vbHvm2+thg==}
-    dependencies:
-      '@graphprotocol/graph-ts': 0.24.1
-      assemblyscript: 0.19.23
-      wabt: 1.0.24
-    dev: true
-
-  /matchstick-as/0.3.0:
-    resolution: {integrity: sha512-+nxHlchVHzvcJzcNc8WxCV5FpADVqVJwEBuaq3IvZjp29xVoe/RWpodmTvQw+Pk6bRMAPI5grdmTPjR4hGgrcw==}
     dependencies:
       '@graphprotocol/graph-ts': 0.24.1
       assemblyscript: 0.19.23
