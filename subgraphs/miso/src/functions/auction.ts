@@ -1,15 +1,13 @@
-import { Address, BigDecimal, BigInt, ethereum, log } from '@graphprotocol/graph-ts'
-import { BatchAuction } from '../../generated/templates/BatchAuction/BatchAuction'
-import { DutchAuction } from '../../generated/templates/DutchAuction/DutchAuction'
-import { CrowdsaleAuction } from '../../generated/templates/CrowdsaleAuction/CrowdsaleAuction'
+import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { MarketCreated } from '../../generated/MISOMarket/MISOMarket'
 import { Auction } from '../../generated/schema'
+import { BatchAuction } from '../../generated/templates/BatchAuction/BatchAuction'
+import { CrowdsaleAuction } from '../../generated/templates/CrowdsaleAuction/CrowdsaleAuction'
+import { DutchAuction } from '../../generated/templates/DutchAuction/DutchAuction'
+import { AuctionType } from '../constants'
 import { createDocumentcollection, updateDocuments } from './document-collection'
 import { getTemplate } from './template'
 import { getOrCreateToken } from './token'
-import { AuctionType } from '../constants'
-import { toDecimal } from './number-converter'
-// import { createPointList } from './pointlist'
 
 export function createAuction(event: MarketCreated): Auction | null {
   const auctionId = event.params.addr.toHex()
@@ -54,8 +52,7 @@ export function createAuction(event: MarketCreated): Auction | null {
   auction.amountRaised = BigInt.fromI32(0)
   auction.usePointList = auctionDetails.usePointList
   if (auctionDetails.pointList != Address.fromString("0x0000000000000000000000000000000000000000")) {
-    log.warning("pointlist {} ", [auctionDetails.pointList.toHex()])
-      // createPointList(auctionDetails.pointList.toHex())
+    auction.pointList = auctionDetails.pointList.toHex()
   }
 
   auction.save()
@@ -90,13 +87,12 @@ class AuctionDetails {
 
 function getAuctionDetails<T>(contract: T): AuctionDetails {
   if (contract instanceof CrowdsaleAuction || contract instanceof DutchAuction || contract instanceof BatchAuction) {
-    // CHECK ALL THESE, ADD TRY.
     let baseInfo = contract.getBaseInformation()
     let bidToken = contract.paymentCurrency()
     const marketInfo = contract.marketInfo()
     const pointList = contract.pointList()
 
-    let totalTokens =  marketInfo.value2
+    let totalTokens = marketInfo.value2
     let priceDrop = BigInt.fromI32(0)
     let priceRate = BigInt.fromI32(0)
     let priceGoal = BigInt.fromI32(0)
@@ -127,18 +123,16 @@ function getAuctionDetails<T>(contract: T): AuctionDetails {
       usePointList = marketStatus.value3
     }
 
-    log.warning("before getAllDocuments", [])
     const tryDocumentNames = contract.try_getAllDocuments()
     let documentNames: string[] = []
     if (!tryDocumentNames.reverted) {
       documentNames = tryDocumentNames.value
     }
-    log.warning("before getAllDocuments", [])
     const documentValues: string[] = []
     for (let i = 0; i < documentNames.length; i++) {
       const tryDocumentValue = contract.try_getDocument(documentNames[i])
       if (!tryDocumentValue.reverted) {
-      documentValues.push(tryDocumentValue.value.value0)
+        documentValues.push(tryDocumentValue.value.value0)
       }
     }
     return {

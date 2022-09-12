@@ -2,7 +2,7 @@ import { Address, BigInt, Bytes, crypto } from '@graphprotocol/graph-ts'
 
 export const ADDRESS_ZERO = Address.fromString('0x0000000000000000000000000000000000000000')
 
-export const ACCESS_CONTROLS_ADDRESS = Address.fromString('0x0769fd68dfb93167989c6f7254cd0d766fb2841f')
+export const ACCESS_CONTROLS_ADDRESS = Address.fromString('0x6b2a3ff504798886862ca5ce501e080947a506a2')
 
 export const CROWDSALE_AUCTION_TEMPLATE_ID = BigInt.fromI32(1)
 export const DUTCH_AUCTION_TEMPLATE_ID = BigInt.fromI32(2)

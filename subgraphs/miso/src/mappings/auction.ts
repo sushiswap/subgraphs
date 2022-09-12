@@ -1,6 +1,6 @@
-import { Address, BigInt, Bytes, crypto, log } from '@graphprotocol/graph-ts'
-import { AddedCommitment, AuctionCancelled, AuctionFinalized, DocumentRemoved, DocumentUpdated, AuctionPointListUpdated } from '../../generated/templates/CrowdsaleAuction/CrowdsaleAuction'
-import { createCommitment, getAuction, getOrCreatePointList, removeDocument, updateDocument, updateDocuments } from '../functions'
+import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { AddedCommitment, AuctionCancelled, AuctionFinalized, AuctionPointListUpdated, DocumentRemoved, DocumentUpdated } from '../../generated/templates/CrowdsaleAuction/CrowdsaleAuction'
+import { createCommitment, getAuction, removeDocument, updateDocument } from '../functions'
 
 export function onAddedCommitment(event: AddedCommitment): void {
   createCommitment(event)
@@ -37,9 +37,7 @@ export function onPointListUpdated(event: AuctionPointListUpdated): void {
 
   const auction = getAuction(event.address.toHex())
   if (event.params.pointList != Address.fromString("0x0000000000000000000000000000000000000000")) {
-    const pointList = getOrCreatePointList(event.params.pointList.toHex())
-
-    auction.pointList = pointList.id
+    auction.pointList = event.params.pointList.toHex()
   }
   auction.usePointList = event.params.enabled
   auction.pointList = event.params.pointList.toHex()
