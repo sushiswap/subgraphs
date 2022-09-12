@@ -1,0 +1,137 @@
+specVersion: 0.0.4
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Xswap
+    network: {{ network }}
+    source:
+      address: '{{ xswap.address }}'
+      startBlock: {{ xswap.startBlock }}
+      abi: Xswap
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Global
+      abis:
+        - name: Xswap
+          file: ./abis/xswap.json
+        # - name: ERC20
+        #   file: ./node_modules/abi/ERC20/ERC20.json
+        # - name: SymbolBytes32
+        #   file: ./node_modules/abi/ERC20/SymbolBytes32.json
+        # - name: NameBytes32
+        #   file: ./node_modules/abi/ERC20/NameBytes32.json
+      eventHandlers:
+        - event: StargateSushiXSwapDst(indexed bytes32,bool)
+          handler: onDestination
+        - event: StargateSushiXSwapSrc(indexed bytes32)
+          handler: onSource
+      file: ./src/mappings/xswap.ts
+  # - kind: ethereum/contract
+  #   name: Stargate
+  #   network: {{ network }}
+  #   source:
+  #     address: '{{ stargate.address }}'
+  #     startBlock: {{ xswap.startBlock }}
+  #     abi: Stargate
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.6
+  #     language: wasm/assemblyscript
+  #     entities:
+  #       - Global
+  #     abis:
+  #       - name: Stargate
+  #         file: ./abis/stargate.json
+  #       # - name: ERC20
+  #       #   file: ./node_modules/abi/ERC20/ERC20.json
+  #       # - name: SymbolBytes32
+  #       #   file: ./node_modules/abi/ERC20/SymbolBytes32.json
+  #       # - name: NameBytes32
+  #       #   file: ./node_modules/abi/ERC20/NameBytes32.json
+  #     eventHandlers:
+  #       - event: Packet(uint16,bytes)
+  #         handler: onPacket
+  #     file: ./src/mappings/stargate.ts
+  - kind: ethereum/contract
+    name: StargateUSDC
+    network: {{ network }}
+    source:
+      address: '{{ stargate.usdcPool.address }}'
+      startBlock: {{ xswap.startBlock }}
+      abi: StargatePool
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Global
+      abis:
+        - name: StargatePool
+          file: ./abis/stargate-pool.json
+        - name: ERC20
+          file: ./node_modules/abi/ERC20/ERC20.json
+        - name: SymbolBytes32
+          file: ./node_modules/abi/ERC20/SymbolBytes32.json
+        - name: NameBytes32
+          file: ./node_modules/abi/ERC20/NameBytes32.json
+      eventHandlers:
+        - event: Swap(uint16,uint256,address,uint256,uint256,uint256,uint256,uint256)
+          handler: onSwap
+      file: ./src/mappings/pool.ts
+  - kind: ethereum/contract
+    name: StargateUSDT
+    network: {{ network }}
+    source:
+      address: '{{ stargate.usdtPool.address }}'
+      startBlock: {{ xswap.startBlock }}
+      abi: StargatePool
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Global
+      abis:
+        - name: StargatePool
+          file: ./abis/stargate-pool.json
+        - name: ERC20
+          file: ./node_modules/abi/ERC20/ERC20.json
+        - name: SymbolBytes32
+          file: ./node_modules/abi/ERC20/SymbolBytes32.json
+        - name: NameBytes32
+          file: ./node_modules/abi/ERC20/NameBytes32.json
+      eventHandlers:
+        - event: Swap(uint16,uint256,address,uint256,uint256,uint256,uint256,uint256)
+          handler: onSwap
+      file: ./src/mappings/pool.ts
+  # NOTE: ONLY ENABLE FOR BSC
+  # - kind: ethereum/contract
+  #   name: StargateBUSD
+  #   network: {{ network }}
+  #   source:
+  #     address: '{{ stargate.busdPool.address }}'
+  #     startBlock: {{ xswap.startBlock }}
+  #     abi: StargatePool
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.6
+  #     language: wasm/assemblyscript
+  #     entities:
+  #       - Global
+  #     abis:
+  #       - name: StargatePool
+  #         file: ./abis/stargate-pool.json
+  #       - name: ERC20
+  #         file: ./node_modules/abi/ERC20/ERC20.json
+  #       - name: SymbolBytes32
+  #         file: ./node_modules/abi/ERC20/SymbolBytes32.json
+  #       - name: NameBytes32
+  #         file: ./node_modules/abi/ERC20/NameBytes32.json
+  #     eventHandlers:
+  #       - event: Swap(uint16,uint256,address,uint256,uint256,uint256,uint256,uint256)
+  #         handler: onSwap
+  #     file: ./src/mappings/pool.ts

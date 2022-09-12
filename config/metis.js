@@ -59,4 +59,8 @@ module.exports = {
     vesting: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   },
   staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+  xswap: {
+    address: '0x0000000000000000000000000000000000000000',
+    startBlock: 0,
+  }
 }
