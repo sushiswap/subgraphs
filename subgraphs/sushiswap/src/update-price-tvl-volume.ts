@@ -192,8 +192,8 @@ export function updateLiquidity(event: TransferEvent): void {
 }
 
 /**
- * Accepts tokens and amounts, return tracked amount based on token whitelist
- * If one token on whitelist, return amount in that token converted to USD.
+ * Accepts tokens and amounts, return tracked amount based on if the token is priced
+ * If one token is priced, return amount in that token converted to USD.
  * If both are, return average of two amounts
  * If neither is, return 0
  */
@@ -205,53 +205,34 @@ export function getTrackedVolumeUSD(
   const bundle = getOrCreateBundle()
 
   const pair = getPair(pairAddress)
-  const token0 = getOrCreateToken(pair.token0)
-  const token1 = getOrCreateToken(pair.token1)
   const token0Price = getTokenPrice(pair.token0)
   const token1Price = getTokenPrice(pair.token1)
   const price0 = token0Price.derivedNative.times(bundle.nativePrice)
   const price1 = token1Price.derivedNative.times(bundle.nativePrice)
 
-  const reserve0USD = convertTokenToDecimal(pair.reserve0, token0.decimals).times(price0)
-  const reserve1USD = convertTokenToDecimal(pair.reserve1, token1.decimals).times(price1)
-  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
-    if (reserve0USD.plus(reserve1USD).lt(MINIMUM_USD_THRESHOLD_NEW_PAIRS)) {
-      return BIG_DECIMAL_ZERO
-    }
-  }
-  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && !WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
-    if (reserve0USD.times(BigDecimal.fromString('2')).lt(MINIMUM_USD_THRESHOLD_NEW_PAIRS)) {
-      return BIG_DECIMAL_ZERO
-    }
-  }
-  if (!WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
-    if (reserve1USD.times(BigDecimal.fromString('2')).lt(MINIMUM_USD_THRESHOLD_NEW_PAIRS)) {
-      return BIG_DECIMAL_ZERO
-    }
-  }
-
-  // both are whitelist tokens, take average of both amounts
-  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
+  // both tokens are priced, take average of both amounts
+  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
     return tokenAmount0.times(price0).plus(tokenAmount1.times(price1)).div(BigDecimal.fromString('2'))
   }
 
-  // take full value of the whitelisted token amount
-  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && !WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
+  // take full value of the priced token
+  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && !token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
     return tokenAmount0.times(price0)
   }
 
-  // take full value of the whitelisted token amount
-  if (!WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
+  // take full value of the priced token
+  if (!token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
     return tokenAmount1.times(price1)
   }
 
-  // neither token is on white list, tracked volume is 0
+
+  // neither token is priced, tracked volume is 0
   return BIG_DECIMAL_ZERO
 }
 
 /**
- * Accepts tokens and amounts, return tracked amount based on token whitelist
- * If one token on whitelist, return amount in that token converted to USD * 2.
+ * Accepts tokens and amounts, return tracked amount based on if the token is priced
+ * If one token is priced, return amount in that token converted to USD * 2.
  * If both are, return sum of two amounts
  * If neither is, return 0
  */
@@ -265,22 +246,23 @@ export function getTrackedLiquidityUSD(
   const price0 = token0Price.derivedNative.times(bundle.nativePrice)
   const price1 = token1Price.derivedNative.times(bundle.nativePrice)
 
-  // both are whitelist tokens, take average of both amounts
-  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0Price.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1Price.id)) {
+  // both tokens are priced, take average of both amounts
+  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
     return tokenAmount0.times(price0).plus(tokenAmount1.times(price1))
   }
 
-  // take double value of the whitelisted token amount
-  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0Price.id) && !WHITELISTED_TOKEN_ADDRESSES.includes(token1Price.id)) {
+  // take full value of the priced token
+  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && !token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
     return tokenAmount0.times(price0).times(BigDecimal.fromString('2'))
   }
 
-  // take double value of the whitelisted token amount
-  if (!WHITELISTED_TOKEN_ADDRESSES.includes(token0Price.id) && WHITELISTED_TOKEN_ADDRESSES.includes(token1Price.id)) {
+  // take full value of the priced token
+  if (!token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
     return tokenAmount1.times(price1).times(BigDecimal.fromString('2'))
   }
 
-  // neither token is on white list, tracked volume is 0
+
+  // neither token is priced, tracked liqudity is 0
   return BIG_DECIMAL_ZERO
 }
 
