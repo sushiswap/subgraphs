@@ -60,8 +60,6 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   const token0Price = updateTokenPrice(token0.id, bundle.nativePrice)
   const token1Price = updateTokenPrice(token1.id, bundle.nativePrice)
 
-
-  // get tracked liquidity - will be 0 if neither is in whitelist
   let trackedLiquidityNative: BigDecimal
   if (bundle.nativePrice.notEqual(BIG_DECIMAL_ZERO)) {
     trackedLiquidityNative = getTrackedLiquidityUSD(reserve0Decimals, token0Price, reserve1Decimals, token1Price).div(
