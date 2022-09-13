@@ -343,6 +343,24 @@ type PairDaySnapshot @entity {
   transactionCount: BigInt!
 }
 
+type TokenHourSnapshot @entity {
+  " {tokenId}-hour-{timestamp} "
+  id: ID!
+  date: Int!
+  token: Token!
+  liquidity: BigDecimal!
+  liquidityNative: BigDecimal!
+  liquidityUSD: BigDecimal!
+  volume: BigDecimal!
+  volumeNative: BigDecimal!
+  volumeUSD: BigDecimal!
+  priceNative: BigDecimal!
+  priceUSD: BigDecimal!
+  feesNative: BigDecimal!
+  feesUSD: BigDecimal!
+  transactionCount: BigInt!
+}
+
 type TokenDaySnapshot @entity {
   " {tokenId}-day-{timestamp} "
   id: ID!
