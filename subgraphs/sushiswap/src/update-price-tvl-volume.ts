@@ -3,8 +3,6 @@ import { TokenPrice } from '../generated/schema'
 import { Swap as SwapEvent, Sync as SyncEvent, Transfer as TransferEvent } from '../generated/templates/Pair/Pair'
 import {
   BIG_DECIMAL_ZERO, BIG_INT_ZERO,
-  MINIMUM_USD_THRESHOLD_NEW_PAIRS,
-  WHITELISTED_TOKEN_ADDRESSES
 } from './constants'
 import {
   convertTokenToDecimal,
