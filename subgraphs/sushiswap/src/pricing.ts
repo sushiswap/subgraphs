@@ -1,4 +1,4 @@
-import { BigDecimal } from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { Pair, TokenPrice, _TokenPair } from '../generated/schema'
 import { Factory as FactoryContract } from '../generated/templates/Pair/Factory'
 import {
@@ -68,7 +68,7 @@ export function getNativePriceInUSD(): BigDecimal {
  * @param tokenAddress The address of the token to update
  * @returns
  */
-export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal): TokenPrice {
+export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal, now: BigInt): TokenPrice {
   const token = getOrCreateToken(tokenAddress)
   const currentTokenPrice = getTokenPrice(tokenAddress)
   if (token.id == NATIVE_ADDRESS) {
@@ -79,65 +79,107 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal):
     return currentTokenPrice
   }
 
-  let pricedOffToken = ''
-  let pricedOffPair = ''
-  let mostLiquidity = BIG_DECIMAL_ZERO
-  let currentPrice = BIG_DECIMAL_ZERO
 
-  for (let i = 0; i < token.pairCount.toI32(); ++i) {
-    const tokenPairRelationshipId = token.id.concat(':').concat(i.toString())
-    const tokenPairRelationship = _TokenPair.load(tokenPairRelationshipId)
+  if (currentTokenPrice.pricedOffPair !== null && currentTokenPrice.pricedOffPairUpdatedAtTimestamp.plus(BigInt.fromI32(86400)).le(now)) {
 
-    if (tokenPairRelationship === null) {
-      continue // Not created yet
-    }
+    const pair = Pair.load(currentTokenPrice.pricedOffPair!) as Pair
 
-    const pair = Pair.load(tokenPairRelationship.pair)
-    if (pair === null) {
-      continue // Not created yet
-    }
-
-    const pairToken0Price = getTokenPrice(pair.token0)
     const pairToken1Price = getTokenPrice(pair.token1)
-
     if (
       pair.token0 == token.id &&
-      pairToken1Price.pricedOffToken != token.id &&
-      passesLiquidityCheck(pair.liquidityNative, mostLiquidity)
+      pairToken1Price.pricedOffToken != token.id 
     ) {
       const token1 = getOrCreateToken(pair.token1)
       if (token1.decimalsSuccess) {
         const token1Price = getTokenPrice(pair.token1)
-        pricedOffToken = token1Price.id
-        pricedOffPair = pair.id
-        mostLiquidity = pair.liquidityNative
-        currentPrice = pair.token1Price.times(token1Price.derivedNative)
+        currentTokenPrice.pricedOffToken = token1Price.id
+        currentTokenPrice.pricedOffPair = pair.id
+        currentTokenPrice.derivedNative = pair.token1Price.times(token1Price.derivedNative)
+        currentTokenPrice.lastUsdPrice = currentTokenPrice.derivedNative.times(nativePrice)
+        currentTokenPrice.save()
+        return currentTokenPrice
       }
     }
 
+    const pairToken0Price = getTokenPrice(pair.token0)
     if (
       pair.token1 == token.id &&
-      pairToken0Price.pricedOffToken != token.id &&
-      passesLiquidityCheck(pair.liquidityNative, mostLiquidity)
+      pairToken0Price.pricedOffToken != token.id 
     ) {
       const token0 = getOrCreateToken(pair.token0)
       if (token0.decimalsSuccess) {
         const token0Price = getTokenPrice(pair.token0)
-        pricedOffToken = token0Price.id
-        pricedOffPair = pair.id
-        mostLiquidity = pair.liquidityNative
-        currentPrice = pair.token0Price.times(token0Price.derivedNative)
+        currentTokenPrice.pricedOffToken = token0Price.id
+        currentTokenPrice.pricedOffPair = pair.id
+        currentTokenPrice.derivedNative = pair.token0Price.times(token0Price.derivedNative)
+        currentTokenPrice.lastUsdPrice = currentTokenPrice.derivedNative.times(nativePrice)
+        currentTokenPrice.save()
+        return currentTokenPrice
       }
     }
   }
 
-  currentTokenPrice.pricedOffToken = pricedOffToken
-  currentTokenPrice.pricedOffPair = pricedOffPair
-  currentTokenPrice.derivedNative = currentPrice
-  currentTokenPrice.lastUsdPrice = currentPrice.times(nativePrice)
-  currentTokenPrice.save()
 
-  return currentTokenPrice
+let pricedOffToken = ''
+let pricedOffPair = ''
+let mostLiquidity = BIG_DECIMAL_ZERO
+let currentPrice = BIG_DECIMAL_ZERO
+
+for (let i = 0; i < token.pairCount.toI32(); ++i) {
+  const tokenPairRelationshipId = token.id.concat(':').concat(i.toString())
+  const tokenPairRelationship = _TokenPair.load(tokenPairRelationshipId)
+
+  if (tokenPairRelationship === null) {
+    continue // Not created yet
+  }
+
+  const pair = Pair.load(tokenPairRelationship.pair)
+  if (pair === null) {
+    continue // Not created yet
+  }
+
+  const pairToken0Price = getTokenPrice(pair.token0)
+  const pairToken1Price = getTokenPrice(pair.token1)
+
+  if (
+    pair.token0 == token.id &&
+    pairToken1Price.pricedOffToken != token.id &&
+    passesLiquidityCheck(pair.liquidityNative, mostLiquidity)
+  ) {
+    const token1 = getOrCreateToken(pair.token1)
+    if (token1.decimalsSuccess) {
+      const token1Price = getTokenPrice(pair.token1)
+      pricedOffToken = token1Price.id
+      pricedOffPair = pair.id
+      mostLiquidity = pair.liquidityNative
+      currentPrice = pair.token1Price.times(token1Price.derivedNative)
+    }
+  }
+
+  if (
+    pair.token1 == token.id &&
+    pairToken0Price.pricedOffToken != token.id &&
+    passesLiquidityCheck(pair.liquidityNative, mostLiquidity)
+  ) {
+    const token0 = getOrCreateToken(pair.token0)
+    if (token0.decimalsSuccess) {
+      const token0Price = getTokenPrice(pair.token0)
+      pricedOffToken = token0Price.id
+      pricedOffPair = pair.id
+      mostLiquidity = pair.liquidityNative
+      currentPrice = pair.token0Price.times(token0Price.derivedNative)
+    }
+  }
+}
+
+currentTokenPrice.pricedOffToken = pricedOffToken
+currentTokenPrice.pricedOffPair = pricedOffPair
+currentTokenPrice.derivedNative = currentPrice
+currentTokenPrice.lastUsdPrice = currentPrice.times(nativePrice)
+currentTokenPrice.pricedOffPairUpdatedAtTimestamp = now
+currentTokenPrice.save()
+
+return currentTokenPrice
 }
 
 function passesLiquidityCheck(reserveNative: BigDecimal, mostReseveEth: BigDecimal): boolean {

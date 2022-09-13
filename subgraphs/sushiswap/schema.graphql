@@ -93,6 +93,8 @@ type TokenPrice @entity {
   pricedOffToken: Token
   " Which pair this price is based on "
   pricedOffPair: Pair
+  " Timestamp pricedOffPair was last updated "
+  pricedOffPairUpdatedAtTimestamp: BigInt!
 }
 
 type _TokenPair @entity(immutable: true) {
