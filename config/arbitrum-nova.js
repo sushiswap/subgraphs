@@ -8,6 +8,10 @@ const BRICK_ADDRESS = '0x6dcb98f460457fe4952e12779ba852f82ecc62c1'
 
 module.exports = {
   network: 'arbitrum-nova',
+  blocks: {
+    address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
+    startBlock: 721,
+  },
   legacy: {
     startBlock: 16548328,
     native: { address: NATIVE_ADDRESS },
