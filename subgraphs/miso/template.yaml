@@ -220,24 +220,4 @@ templates:
           handler: onDocumentUpdated
         - event: AuctionPointListUpdated(address,bool)
           handler: onPointListUpdated
-  - kind: ethereum/contract
-    name: MisoAuction
-    network: {{ network }}
-    source:
-      abi: MisoAuction
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/mappings/auction.ts
-      entities: []
-      abis:
-        - name: MisoAuction
-          file: ./abis/MisoAuction.json
-      eventHandlers:
-        - event: AddedCommitment(address,uint256)
-          handler: onAddedCommitment
-        - event: AuctionFinalized()
-          handler: onAuctionFinalized
-        - event: AuctionCancelled()
-          handler: onAuctionCancelled
+

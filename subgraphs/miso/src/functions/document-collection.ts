@@ -73,7 +73,6 @@ export function updateDocuments(auctionId: string, documents: string[], values: 
 
 export function updateDocument(auctionId: string, name: string, value: string): void {
     const documentCollection = getDocumentCollection(auctionId)
-
     if (name == DocumentType.WEBSITE || name == DocumentTypeEncoded.WEBSITE) {
         documentCollection.website = value
     }
