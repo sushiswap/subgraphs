@@ -4,7 +4,7 @@ import {
   CreateStream as CreateStreamEvent, FuroStream, Transfer as TransferEvent, UpdateStream as UpdateStreamEvent, Withdraw as WithdrawEvent
 } from '../../generated/FuroStream/FuroStream'
 import { Stream } from '../../generated/schema'
-import { ACTIVE, CANCELLED, FURO_STREAM_ADDRESS, ZERO_ADDRESS } from '../constants'
+import { ACTIVE, BIG_INT_ZERO, CANCELLED, FURO_STREAM_ADDRESS, ZERO_ADDRESS } from '../constants'
 import { increaseStreamCount } from './global'
 import { getOrCreateRebase, toBase, toElastic } from './rebase'
 import { getOrCreateToken } from './token'
@@ -26,6 +26,9 @@ export function createStream(event: CreateStreamEvent): Stream {
   let token = getOrCreateToken(event.params.token.toHex(), event)
   let initialShares = event.params.amount
   let initialAmount = toElastic(rebase, event.params.amount, false)
+
+  token.liquidityShares = token.liquidityShares.plus(initialShares)
+  token.save()
   stream.recipient = recipient.id
   stream.initialShares = initialShares
   stream.initialAmount = initialAmount
@@ -51,6 +54,7 @@ export function createStream(event: CreateStreamEvent): Stream {
   stream.save()
   increaseStreamCount()
 
+
   return stream
 }
 
@@ -71,18 +75,30 @@ export function updateStream(remainingShares: BigInt, withdrawnShares: BigInt, e
   stream.extendedAtTimestamp = event.block.timestamp
   stream.save()
 
+
+  const token = getOrCreateToken(stream.token, event)
+  token.liquidityShares = token.liquidityShares.minus(withdrawnShares).plus(topUpShares)
+  token.save()
+
+
   return stream
 }
 
 export function cancelStream(event: CancelStreamEvent): Stream {
   let stream = getStream(event.params.streamId)
   let rebase = getOrCreateRebase(stream.token)
+
+  
+  const token = getOrCreateToken(stream.token, event)
+  token.liquidityShares = token.liquidityShares.minus(stream.remainingShares)
+  token.save()
   stream.status = CANCELLED
   stream.withdrawnAmount = stream.withdrawnAmount.plus(toElastic(rebase, event.params.recipientBalance, true))
   stream.remainingShares = BigInt.fromU32(0)
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
   stream.save()
+
 
   return stream
 }
@@ -99,6 +115,11 @@ export function withdrawFromStream(event: WithdrawEvent): Stream {
   stream.modifiedAtBlock = event.block.number
   stream.modifiedAtTimestamp = event.block.timestamp
   stream.save()
+
+  
+  const token = getOrCreateToken(stream.token, event)
+  token.liquidityShares = token.liquidityShares.minus(event.params.sharesToWithdraw)
+  token.save()
 
   return stream
 }

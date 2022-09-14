@@ -1,4 +1,4 @@
-import { BigInt } from '@graphprotocol/graph-ts'
+import { BigInt, log } from '@graphprotocol/graph-ts'
 import {
   CancelVesting as CancelVestingEvent,
   CreateVesting as CreateVestingEvent,
@@ -27,6 +27,9 @@ export function createVesting(event: CreateVestingEvent): Vesting {
   let token = getOrCreateToken(event.params.token.toHex(), event)
   let rebase = getOrCreateRebase(event.params.token.toHex())
   let initialShares = calculateTotalShares(event.params.steps, event.params.stepShares, event.params.cliffShares)
+  
+  token.liquidityShares = token.liquidityShares.plus(initialShares)
+  token.save()
   vesting.recipient = recipient.id
   vesting.createdBy = createdBy.id
   vesting.token = token.id
@@ -58,6 +61,10 @@ export function createVesting(event: CreateVestingEvent): Vesting {
 export function cancelVesting(event: CancelVestingEvent): Vesting {
   let rebase = getOrCreateRebase(event.params.token.toHex())
   let vesting = getVesting(event.params.vestId)
+  const token = getOrCreateToken(vesting.token, event)
+  token.liquidityShares = token.liquidityShares.minus(vesting.remainingShares)
+  token.save()
+
   vesting.status = CANCELLED
   vesting.withdrawnAmount = toElastic(rebase, vesting.withdrawnAmount.plus(event.params.recipientAmount), true)
   vesting.remainingShares = BigInt.fromU32(0)
@@ -78,6 +85,10 @@ export function withdrawFromVesting(event: WithdrawEvent): Vesting {
   vesting.modifiedAtBlock = event.block.number
   vesting.modifiedAtTimestamp = event.block.timestamp
   vesting.save()
+
+  const token = getOrCreateToken(vesting.token, event)
+  token.liquidityShares = token.liquidityShares.minus(event.params.amount)
+  token.save()
 
   return vesting
 }
