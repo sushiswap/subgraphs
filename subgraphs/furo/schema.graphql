@@ -1,0 +1,131 @@
+enum FuroStatus {
+  ACTIVE
+  CANCELLED
+}
+
+enum TransactionType {
+  DEPOSIT
+  EXTEND
+  WITHDRAWAL
+  DISBURSEMENT # Payment to a sender and reciever when stream/vest is cancelled
+}
+
+type Global @entity {
+  id: ID! # Hardcoded to '1'
+  vestingCount: BigInt!
+  streamCount: BigInt!
+  userCount: BigInt!
+  transactionCount: BigInt!
+}
+
+type Stream @entity {
+  id: ID! # starts at 1001
+  recipient: User!
+  " Initial shares "
+  initialShares: BigInt!
+  " Initial amount "
+  initialAmount: BigInt!
+  " Extended shares, increases for each time the stream is updated with a top up amount "
+  extendedShares: BigInt!
+  " Set when a stream is extended, useful to keep track of how much many shares a stream contained after extending "
+  initialSharesExtended: BigInt!
+  " Amount that has been withdrawn after extending the stream "
+  withdrawnAmountAfterExtension: BigInt!
+  " Remaining shares "
+  remainingShares: BigInt!
+  " Withdrawn amount "
+  withdrawnAmount: BigInt!
+  token: Token!
+  status: FuroStatus!
+  createdBy: User!
+  fromBentoBox: Boolean!
+  startedAt: BigInt!
+  expiresAt: BigInt!
+  txHash: String!
+  transactionCount: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+  extendedAtBlock: BigInt!
+  extendedAtTimestamp: BigInt!
+  modifiedAtBlock: BigInt!
+  modifiedAtTimestamp: BigInt!
+}
+
+type Vesting @entity {
+  id: ID! # starts at 1
+  recipient: User!
+  cliffDuration: BigInt!
+  stepDuration: BigInt!
+  steps: BigInt!
+  cliffShares: BigInt!
+  stepShares: BigInt!
+  " shares remaining, decreases on withdrawal "
+  remainingShares: BigInt!
+  " Initial shares "
+  initialShares: BigInt!
+  " Initial amount "
+  initialAmount: BigInt!
+  " Withdrawn amount "
+  withdrawnAmount: BigInt!
+  token: Token!
+  status: FuroStatus!
+  createdBy: User!
+  fromBentoBox: Boolean!
+  startedAt: BigInt!
+  expiresAt: BigInt!
+  txHash: String!
+  transactionCount: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+  modifiedAtBlock: BigInt!
+  modifiedAtTimestamp: BigInt!
+  cancelledAtBlock: BigInt
+  cancelledAtTimestamp: BigInt
+}
+
+type Transaction @entity(immutable: true) {
+  id: ID!
+  type: TransactionType!
+  stream: Stream
+  vesting: Vesting
+  amount: BigInt!
+  to: User!
+  token: Token!
+  toBentoBox: Boolean!
+  txHash: String!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+type Token @entity(immutable: true) {
+  id: ID!
+  symbol: String!
+  symbolSuccess: Boolean!
+  name: String!
+  nameSuccess: Boolean!
+  decimals: BigInt!
+  decimalsSuccess: Boolean!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+type User @entity(immutable: true) {
+  id: ID!
+  incomingStreams: [Stream!]! @derivedFrom(field: "recipient")
+  outgoingStreams: [Stream!]! @derivedFrom(field: "createdBy")
+  incomingVestings: [Vesting!]! @derivedFrom(field: "recipient")
+  outgoingVestings: [Vesting!]! @derivedFrom(field: "createdBy")
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+type Rebase @entity {
+  " Token address "
+  id: ID!
+  " Token this rebase belongs to "
+  token: Token!
+  " Base (Share) "
+  base: BigInt!
+  " Elastic (Amount) "
+  elastic: BigInt!
+}

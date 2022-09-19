@@ -95,7 +95,7 @@ function getHourStartDate(timestamp: BigInt): i32 {
 }
 
 function generateFactoryHourSnapshotId(timestamp: BigInt): string {
-  let startDate = getDayStartDate(timestamp)
+  let startDate = getHourStartDate(timestamp)
   return FACTORY_ADDRESS.toHex().concat('-hour-').concat(BigInt.fromI32(startDate).toString())
 }
 
