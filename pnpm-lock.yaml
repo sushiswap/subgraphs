@@ -81,7 +81,7 @@ importers:
       '@sushiswap/core': 1.4.2
       matchstick-as: 0.2.3
 
-  subgraphs/furo-stream:
+  subgraphs/furo:
     specifiers:
       '@graphprotocol/graph-cli': ^0.32.0
       '@graphprotocol/graph-ts': ^0.27.0
@@ -95,38 +95,6 @@ importers:
       abi: link:../../packages/abi
       assemblyscript: 0.19.23
       matchstick-as: 0.5.0
-      wabt: 1.0.24
-
-  subgraphs/furo-stream:
-    specifiers:
-      '@graphprotocol/graph-cli': ^0.27.0
-      '@graphprotocol/graph-ts': ^0.24.1
-      abi: workspace:*
-      assemblyscript: ^0.19.20
-      matchstick-as: ^0.4.2
-      wabt: 1.0.24
-    devDependencies:
-      '@graphprotocol/graph-cli': 0.27.0
-      '@graphprotocol/graph-ts': 0.24.1
-      abi: link:../../packages/abi
-      assemblyscript: 0.19.23
-      matchstick-as: 0.4.2
-      wabt: 1.0.24
-
-  subgraphs/furo-vesting:
-    specifiers:
-      '@graphprotocol/graph-cli': ^0.27.0
-      '@graphprotocol/graph-ts': ^0.24.1
-      abi: workspace:*
-      assemblyscript: ^0.19.20
-      matchstick-as: ^0.4.2
-      wabt: 1.0.24
-    devDependencies:
-      '@graphprotocol/graph-cli': 0.27.0
-      '@graphprotocol/graph-ts': 0.24.1
-      abi: link:../../packages/abi
-      assemblyscript: 0.19.23
-      matchstick-as: 0.4.2
       wabt: 1.0.24
 
   subgraphs/kashi:
@@ -231,6 +199,20 @@ importers:
       abi: link:../../packages/abi
       assemblyscript: 0.19.23
       matchstick-as: 0.4.2
+      wabt: 1.0.24
+
+  subgraphs/xswap:
+    specifiers:
+      '@graphprotocol/graph-cli': ^0.32.0
+      '@graphprotocol/graph-ts': ^0.27.0
+      abi: workspace:*
+      matchstick-as: ^0.5.0
+      wabt: 1.0.24
+    devDependencies:
+      '@graphprotocol/graph-cli': 0.32.0
+      '@graphprotocol/graph-ts': 0.27.0
+      abi: link:../../packages/abi
+      matchstick-as: 0.5.0
       wabt: 1.0.24
 
 packages:
@@ -487,6 +469,78 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
+    dev: true
+
+  /@graphprotocol/graph-cli/0.32.0:
+    resolution: {integrity: sha512-40Kii/Ttype5aNCaQn81AP7utyE6JKB5bI9QtYd6WoaS3oACICqdPA89+5UB1s9t6yXiFbWojK3e7JUokPdYfA==}
+    hasBin: true
+    dependencies:
+      assemblyscript: 0.19.10
+      binary-install-raw: 0.0.13_debug@4.3.1
+      chalk: 3.0.0
+      chokidar: 3.5.1
+      debug: 4.3.1
+      docker-compose: 0.23.4
+      dockerode: 2.5.8
+      fs-extra: 9.0.0
+      glob: 7.1.6
+      gluegun: github.com/edgeandnode/gluegun/b34b9003d7bf556836da41b57ef36eb21570620a_debug@4.3.1
+      graphql: 15.5.0
+      immutable: 3.8.2
+      ipfs-http-client: 34.0.0
+      jayson: 3.6.6
+      js-yaml: 3.13.1
+      node-fetch: 2.6.0
+      pkginfo: 0.4.1
+      prettier: 1.19.1
+      request: 2.88.2
+      semver: 7.3.5
+      sync-request: 6.1.0
+      tmp-promise: 3.0.2
+      web3-eth-abi: 1.7.0
+      which: 2.0.2
+      yaml: 1.9.2
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - supports-color
+      - utf-8-validate
+    dev: true
+
+  /@graphprotocol/graph-cli/0.33.0:
+    resolution: {integrity: sha512-WgitQbOTlPcfFweOXurBI74z59jn5fTfezb80/POTyTJAAIXS48n+jAUi2fxix54yMBQFcN2uZnafuDMis7j9w==}
+    hasBin: true
+    dependencies:
+      assemblyscript: 0.19.10
+      binary-install-raw: 0.0.13_debug@4.3.1
+      chalk: 3.0.0
+      chokidar: 3.5.1
+      debug: 4.3.1
+      docker-compose: 0.23.4
+      dockerode: 2.5.8
+      fs-extra: 9.0.0
+      glob: 7.1.6
+      gluegun: github.com/edgeandnode/gluegun/b34b9003d7bf556836da41b57ef36eb21570620a_debug@4.3.1
+      graphql: 15.5.0
+      immutable: 3.8.2
+      ipfs-http-client: 34.0.0
+      jayson: 3.6.6
+      js-yaml: 3.13.1
+      node-fetch: 2.6.0
+      pkginfo: 0.4.1
+      prettier: 1.19.1
+      request: 2.88.2
+      semver: 7.3.5
+      sync-request: 6.1.0
+      tmp-promise: 3.0.2
+      web3-eth-abi: 1.7.0
+      which: 2.0.2
+      yaml: 1.9.2
+    transitivePeerDependencies:
+      - bufferutil
+      - encoding
+      - supports-color
+      - utf-8-validate
     dev: true
 
   /@graphprotocol/graph-ts/0.23.1:

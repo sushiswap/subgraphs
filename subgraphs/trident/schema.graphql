@@ -10,11 +10,6 @@ type Factory @entity {
   type: PairType!
   " Volume USD "
   volumeUSD: BigDecimal!
-<<<<<<< HEAD
-=======
-  " Untracked Volume USD "
-  untrackedVolumeUSD: BigDecimal!
->>>>>>> master
   " Volume Native "
   volumeNative: BigDecimal!
   " Liquidity USD "
@@ -75,11 +70,6 @@ type Token @entity {
   volumeNative: BigDecimal!
   " Volume in USD "
   volumeUSD: BigDecimal!
-<<<<<<< HEAD
-=======
-  " Untracked Volume in USD "
-  untrackedVolumeUSD: BigDecimal!
->>>>>>> master
   " Fee in USD "
   feesNative: BigDecimal!
   " Volume in USD "
@@ -159,11 +149,6 @@ type Pair @entity {
   volumeNative: BigDecimal!
   # volume in USD
   volumeUSD: BigDecimal!
-<<<<<<< HEAD
-=======
-  " Untracked Volume in USD "
-  untrackedVolumeUSD: BigDecimal!
->>>>>>> master
   # volume token0
   volumeToken0: BigDecimal!
   # volume token1
@@ -341,10 +326,6 @@ type PairHourSnapshot @entity {
   cumulativeVolumeUSD: BigDecimal!
   volumeUSD: BigDecimal!
   volumeNative: BigDecimal!
-<<<<<<< HEAD
-=======
-  untrackedVolumeUSD: BigDecimal!
->>>>>>> master
   volumeToken0: BigDecimal!
   volumeToken1: BigDecimal!
   liquidity: BigDecimal!
@@ -365,7 +346,6 @@ type PairDaySnapshot @entity {
   cumulativeVolumeUSD: BigDecimal!
   volumeUSD: BigDecimal!
   volumeNative: BigDecimal!
-<<<<<<< HEAD
   volumeToken0: BigDecimal!
   volumeToken1: BigDecimal!
   liquidity: BigDecimal!
@@ -392,17 +372,6 @@ type TokenHourSnapshot @entity {
   priceUSD: BigDecimal!
   feesNative: BigDecimal!
   feesUSD: BigDecimal!
-=======
-  untrackedVolumeUSD: BigDecimal!
-  volumeToken0: BigDecimal!
-  volumeToken1: BigDecimal!
-  liquidity: BigDecimal!
-  liquidityNative: BigDecimal!
-  liquidityUSD: BigDecimal!
-  feesNative: BigDecimal!
-  feesUSD: BigDecimal!
-  apr: BigDecimal!
->>>>>>> master
   transactionCount: BigInt!
 }
 
@@ -431,10 +400,6 @@ type FactoryHourSnapshot @entity {
   date: Int!
   volumeUSD: BigDecimal!
   volumeNative: BigDecimal!
-<<<<<<< HEAD
-=======
-  untrackedVolumeUSD: BigDecimal!
->>>>>>> master
   liquidityNative: BigDecimal!
   liquidityUSD: BigDecimal!
   feesNative: BigDecimal!
@@ -449,10 +414,6 @@ type FactoryDaySnapshot @entity {
   date: Int!
   volumeUSD: BigDecimal!
   volumeNative: BigDecimal!
-<<<<<<< HEAD
-=======
-  untrackedVolumeUSD: BigDecimal!
->>>>>>> master
   liquidityNative: BigDecimal!
   liquidityUSD: BigDecimal!
   feesNative: BigDecimal!

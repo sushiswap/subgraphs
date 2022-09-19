@@ -1,13 +1,9 @@
 {
-<<<<<<< HEAD
-  "name": "trident-2",
-=======
   "name": "trident",
->>>>>>> master
   "license": "MIT",
   "repository": {
     "url": "sushiswap/subgraphs",
-    "directory": "subgraphs/trident-2"
+    "directory": "subgraphs/trident"
   },
   "files": [
     "generated"

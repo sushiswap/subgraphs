@@ -1,6 +1,6 @@
 import { BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts'
-import { Burn } from '../schema'
-import { Burn as BurnEvent, Transfer as TransferEvent } from '../templates/ConstantProductPool/ConstantProductPool'
+import { Burn } from '../../generated/schema'
+import { Burn as BurnEvent, Transfer as TransferEvent } from '../../generated/templates/ConstantProductPool/ConstantProductPool'
 import { BIG_DECIMAL_ZERO } from '../constants'
 
 export function getOrCreateBurn<T extends ethereum.Event>(event: T, burnCount: i32): Burn {
