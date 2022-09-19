@@ -63,9 +63,19 @@ module.exports = {
     vesting: { address: '0x0689640d190b10765f09310fcfe9c670ede4e25b', startBlock: 13964169 },
   },
   auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
-  staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+  staking: { address: '0x8db6749c9e8f28a4a9bbc02facb9ba9c58e3c9c5', startBlock: 13883265 },
   blocks: {
     address: '0x0000000000000000000000000000000000000000',
     startBlock: 0,
   },
+  xswap: {
+    address: '0x53b08dbd70327b7ba3b7886fc9987bc985d27262',
+    startBlock: 18221456,
+  },
+  stargate: {
+    address: '0x66A71Dcef29A0fFBDBE3c6a460a3B5BC225Cd675',
+    startBlock: 7920342,
+    usdcPool: { address: '0x892785f33cdee22a30aef750f285e18c18040c3e', startBlock: 8041115 },
+    usdtPool: { address: '0xb6cfcf89a7b22988bfc96632ac2a9d6dab60d641', startBlock: 8041122 },
+  }
 }

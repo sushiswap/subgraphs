@@ -10,7 +10,11 @@ export * from './pair'
 export * from './pair-snapshot'
 export * from './rebase'
 export * from './token'
+<<<<<<< HEAD
 export * from './token-snapshot'
+=======
+export * from './token-day-snapshot'
+>>>>>>> master
 export * from './token-pair'
 export * from './token-price'
 export * from './transaction'

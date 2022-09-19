@@ -1,22 +1,32 @@
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { XSushi } from '../../generated/schema'
-import { XSUSHI } from '../constants'
+import { BIG_DECIMAL_ONE, BIG_DECIMAL_ZERO, BIG_INT_ZERO, XSUSHI } from '../constants'
 
 export function getOrCreateXSushi(): XSushi {
   let xSushi = XSushi.load(XSUSHI)
 
   if (xSushi === null) {
     xSushi = new XSushi(XSUSHI)
-    xSushi.userCount = BigInt.fromU32(0)
-    xSushi.transactionCount = BigInt.fromU32(0)
-    xSushi.sushiSupply = BigInt.fromU32(0)
-    xSushi.xSushiSupply = BigInt.fromU32(0)
-    xSushi.sushiStaked = BigInt.fromU32(0)
-    xSushi.sushiHarvested = BigInt.fromU32(0)
-    xSushi.xSushiBurned = BigInt.fromU32(0)
-    xSushi.xSushiMinted = BigInt.fromU32(0)
-    xSushi.sushiXsushiRatio = BigDecimal.fromString('1')
-    xSushi.xSushiSushiRatio = BigDecimal.fromString('1')
+
+    xSushi.userCount = BIG_INT_ZERO
+    xSushi.transactionCount = BIG_INT_ZERO
+    xSushi.sushiSupply = BIG_INT_ZERO
+    xSushi.xSushiSupply = BIG_INT_ZERO
+    xSushi.sushiStaked = BIG_INT_ZERO
+    xSushi.sushiHarvested = BIG_INT_ZERO
+    xSushi.totalFeeAmount = BIG_INT_ZERO
+    xSushi.xSushiBurned = BIG_INT_ZERO
+    xSushi.xSushiMinted = BIG_INT_ZERO
+
+    xSushi.sushiXsushiRatio = BIG_DECIMAL_ONE
+    xSushi.xSushiSushiRatio = BIG_DECIMAL_ONE
+
+    xSushi.apr1m = BIG_DECIMAL_ZERO
+    xSushi.apr3m = BIG_DECIMAL_ZERO
+    xSushi.apr6m = BIG_DECIMAL_ZERO
+    xSushi.apr12m = BIG_DECIMAL_ZERO
+    xSushi.aprUpdatedAtTimestamp = BIG_INT_ZERO
+
+
     xSushi.save()
     return xSushi
   }

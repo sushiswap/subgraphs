@@ -55,4 +55,8 @@ module.exports = {
     startBlock: 0,
   },
   minimumNativeLiquidity: 0.1,
+  xswap: {
+    address: '0x0000000000000000000000000000000000000000',
+    startBlock: 0,
+  }
 }

@@ -11,6 +11,11 @@ type XSushi @entity {
   xSushiMinted: BigInt!
   xSushiSushiRatio: BigDecimal!
   sushiXsushiRatio: BigDecimal!
+  apr1m: BigDecimal!
+  apr3m: BigDecimal!
+  apr6m: BigDecimal!
+  apr12m: BigDecimal!
+  aprUpdatedAtTimestamp: BigInt!
 }
 
 enum TransactionType {
@@ -28,8 +33,8 @@ type Transaction @entity {
   gasUsed: BigInt!
   gasLimit: BigInt!
   gasPrice: BigInt!
-  block: BigInt!
-  timestamp: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
 }
 
 type User @entity {
@@ -57,7 +62,94 @@ type Fee @entity {
   id: ID!
   sender: FeeSender!
   amount: BigInt!
-  block: BigInt!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
+}
+
+type HourSnapshot @entity {
+  " {hour}-{date} "
+  id: ID! 
+  date: Int!
+  userCount: BigInt!
+  transactionCount: BigInt!
+  sushiSupply: BigInt!
+  xSushiSupply: BigInt!
+  sushiStaked: BigInt!
+  sushiHarvested: BigInt!
+  totalFeeAmount: BigInt!
+  xSushiBurned: BigInt!
+  xSushiMinted: BigInt!
+  xSushiSushiRatio: BigDecimal!
+  sushiXsushiRatio: BigDecimal!
+
+  apr1m: BigDecimal!
+  apr3m: BigDecimal!
+  apr6m: BigDecimal!
+  apr12m: BigDecimal!
+
+  newTransactions: BigInt!
+  newSushiStaked: BigDecimal!
+  newSushiHarvested: BigDecimal!
+  newFeeAmount: BigDecimal!
+  newXSushiBurned: BigDecimal!
+  newXSushiMinted: BigDecimal!
+  
+}
+
+type DaySnapshot @entity {
+  " {day}-{date} "
+  id: ID! 
+  date: Int!
+  userCount: BigInt!
+  transactionCount: BigInt!
+  sushiSupply: BigInt!
+  xSushiSupply: BigInt!
+  sushiStaked: BigInt!
+  sushiHarvested: BigInt!
+  totalFeeAmount: BigInt!
+  xSushiBurned: BigInt!
+  xSushiMinted: BigInt!
+  xSushiSushiRatio: BigDecimal!
+  sushiXsushiRatio: BigDecimal!
+  
+  apr1m: BigDecimal!
+  apr3m: BigDecimal!
+  apr6m: BigDecimal!
+  apr12m: BigDecimal!
+
+  newTransactions: BigInt!
+  newSushiStaked: BigDecimal!
+  newSushiHarvested: BigDecimal!
+  newFeeAmount: BigDecimal!
+  newXSushiBurned: BigDecimal!
+  newXSushiMinted: BigDecimal!
+}
+
+type WeekSnapshot @entity {
+  " {week}-{date} "
+  id: ID! 
+  date: Int!
+  userCount: BigInt!
+  transactionCount: BigInt!
+  sushiSupply: BigInt!
+  xSushiSupply: BigInt!
+  sushiStaked: BigInt!
+  sushiHarvested: BigInt!
+  totalFeeAmount: BigInt!
+  xSushiBurned: BigInt!
+  xSushiMinted: BigInt!
+  xSushiSushiRatio: BigDecimal!
+  sushiXsushiRatio: BigDecimal!
+  
+  apr1m: BigDecimal!
+  apr3m: BigDecimal!
+  apr6m: BigDecimal!
+  apr12m: BigDecimal!
+
+  newTransactions: BigInt!
+  newSushiStaked: BigDecimal!
+  newSushiHarvested: BigDecimal!
+  newFeeAmount: BigDecimal!
+  newXSushiBurned: BigDecimal!
+  newXSushiMinted: BigDecimal!
 }
