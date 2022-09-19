@@ -69,7 +69,7 @@ function updatePairDaySnapshot(
 
   if (snapshot === null) {
     snapshot = new PairDaySnapshot(id)
-    snapshot.date = getHourStartDate(timestamp)
+    snapshot.date = getDayStartDate(timestamp)
     snapshot.pair = pair.id
     snapshot.transactionCount = BIG_INT_ZERO
     snapshot.volumeToken0 = BIG_DECIMAL_ZERO

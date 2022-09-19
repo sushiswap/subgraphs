@@ -1,27 +1,27 @@
+import { Address, ethereum } from '@graphprotocol/graph-ts'
 import { LiquidityPosition } from '../../generated/schema'
-import { log } from '@graphprotocol/graph-ts'
+import { BIG_INT_ZERO } from '../constants'
 
-export function createLiquidityPosition(id: string): LiquidityPosition {
-  const position = new LiquidityPosition(id)
-  const split = id.split(':')
-  const pool = split[0]
-  const user = split[1]
-  position.pool = pool
-  position.user = user
-  position.save()
-  return position
-}
+export function getOrCreateLiquidityPosition(user: Address, pair: Address, block: ethereum.Block): LiquidityPosition {
+  const pairAddress = pair.toHex()
 
-export function getLiquidityPosition(id: string): LiquidityPosition {
-  return LiquidityPosition.load(id) as LiquidityPosition
-}
+  const userAddress = user.toHex()
 
-export function getOrCreateLiquidityPosition(id: string): LiquidityPosition {
-  const position = LiquidityPosition.load(id)
+  const id = pairAddress.concat('-').concat(userAddress)
 
-  if (position === null) {
-    return createLiquidityPosition(id)
+  let liquidityPosition = LiquidityPosition.load(id)
+
+  if (liquidityPosition === null) {
+    liquidityPosition = new LiquidityPosition(id)
+
+    liquidityPosition.user = userAddress
+    liquidityPosition.pair = pairAddress
+    liquidityPosition.balance = BIG_INT_ZERO
+    liquidityPosition.createdAtBlock = block.number
+    liquidityPosition.createdAtTimestamp = block.timestamp
+
+    liquidityPosition.save()
   }
 
-  return position as LiquidityPosition
+  return liquidityPosition as LiquidityPosition
 }

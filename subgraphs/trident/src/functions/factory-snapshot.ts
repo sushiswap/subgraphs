@@ -97,7 +97,7 @@ function getHourStartDate(timestamp: BigInt): i32 {
 }
 
 function generateFactoryHourSnapshotId(factoryId: string, timestamp: BigInt): string {
-  let startDate = getDayStartDate(timestamp)
+  let startDate = getHourStartDate(timestamp)
   return factoryId.concat('-hour-').concat(BigInt.fromI32(startDate).toString())
 }
 
