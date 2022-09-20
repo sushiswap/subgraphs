@@ -16,6 +16,9 @@ module.exports = {
     accessControls: { address: '0x0769fd68dfb93167989c6f7254cd0d766fb2841f', startBlock: 16167236 },
     market: { address: '0x7603a35af5cf10b113f167d424eb75bb7062c8ce', startBlock: 16168070 },
   },
+  kashi: {
+    mediumRiskMasterContractAddresses: ['0x2cba6ab6574646badc84f0544d05059e57a5dc42'],
+  },
   legacy: {
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [
