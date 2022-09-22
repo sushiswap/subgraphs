@@ -14,7 +14,6 @@ export function updatePairSnapshots(
     volumeNative: BIG_DECIMAL_ZERO, 
     feesNative: BIG_DECIMAL_ZERO, 
     feesUSD: BIG_DECIMAL_ZERO, 
-    untrackedVolumeUSD: BIG_DECIMAL_ZERO, 
     amount0Total: BIG_DECIMAL_ZERO, 
     amount1Total: BIG_DECIMAL_ZERO 
   }
@@ -42,7 +41,6 @@ function updatePairHourSnapshot(
     snapshot.volumeToken1 = BIG_DECIMAL_ZERO
     snapshot.volumeNative = BIG_DECIMAL_ZERO
     snapshot.volumeUSD = BIG_DECIMAL_ZERO
-    snapshot.untrackedVolumeUSD = BIG_DECIMAL_ZERO
     snapshot.feesNative = BIG_DECIMAL_ZERO
     snapshot.feesUSD = BIG_DECIMAL_ZERO
   }
@@ -54,7 +52,6 @@ function updatePairHourSnapshot(
   snapshot.volumeToken1 = snapshot.volumeToken1.plus(volume.amount1Total)
   snapshot.volumeUSD = snapshot.volumeUSD.plus(volume.volumeUSD)
   snapshot.volumeNative = snapshot.volumeNative.plus(volume.volumeNative)
-  snapshot.untrackedVolumeUSD = snapshot.untrackedVolumeUSD.plus(volume.untrackedVolumeUSD)
   snapshot.feesNative = snapshot.feesNative.plus(pair.feesNative)
   snapshot.feesUSD = snapshot.feesUSD.plus(volume.feesUSD)
   snapshot.apr = pair.apr
@@ -72,14 +69,13 @@ function updatePairDaySnapshot(
 
   if (snapshot === null) {
     snapshot = new PairDaySnapshot(id)
-    snapshot.date = getHourStartDate(timestamp)
+    snapshot.date = getDayStartDate(timestamp)
     snapshot.pair = pair.id
     snapshot.transactionCount = BIG_INT_ZERO
     snapshot.volumeToken0 = BIG_DECIMAL_ZERO
     snapshot.volumeToken1 = BIG_DECIMAL_ZERO
     snapshot.volumeNative = BIG_DECIMAL_ZERO
     snapshot.volumeUSD = BIG_DECIMAL_ZERO
-    snapshot.untrackedVolumeUSD = BIG_DECIMAL_ZERO
     snapshot.feesNative = BIG_DECIMAL_ZERO
     snapshot.feesUSD = BIG_DECIMAL_ZERO
   }
@@ -91,7 +87,6 @@ function updatePairDaySnapshot(
   snapshot.volumeToken1 = snapshot.volumeToken1.plus(volume.amount1Total)
   snapshot.volumeUSD = snapshot.volumeUSD.plus(volume.volumeUSD)
   snapshot.volumeNative = snapshot.volumeNative.plus(volume.volumeNative)
-  snapshot.untrackedVolumeUSD = snapshot.untrackedVolumeUSD.plus(volume.untrackedVolumeUSD)
   snapshot.feesNative = snapshot.feesNative.plus(pair.feesNative)
   snapshot.feesUSD = snapshot.feesUSD.plus(volume.feesUSD)
   snapshot.apr = pair.apr

@@ -15,7 +15,6 @@ export function updateFactorySnapshots(
     volumeNative: BIG_DECIMAL_ZERO,
     feesNative: BIG_DECIMAL_ZERO,
     feesUSD: BIG_DECIMAL_ZERO,
-    untrackedVolumeUSD: BIG_DECIMAL_ZERO,
     amount0Total: BIG_DECIMAL_ZERO,
     amount1Total: BIG_DECIMAL_ZERO
   }
@@ -46,7 +45,6 @@ function updateFactoryDaySnapshot(
     snapshot.liquidityUSD = BIG_DECIMAL_ZERO
     snapshot.volumeNative = BIG_DECIMAL_ZERO
     snapshot.volumeUSD = BIG_DECIMAL_ZERO
-    snapshot.untrackedVolumeUSD = BIG_DECIMAL_ZERO
     snapshot.feesNative = BIG_DECIMAL_ZERO
     snapshot.feesUSD = BIG_DECIMAL_ZERO
   }
@@ -55,7 +53,6 @@ function updateFactoryDaySnapshot(
   snapshot.liquidityUSD = factory.liquidityUSD
   snapshot.volumeUSD = snapshot.volumeUSD.plus(volume.volumeUSD)
   snapshot.volumeNative = snapshot.volumeNative.plus(volume.volumeNative)
-  snapshot.untrackedVolumeUSD = snapshot.untrackedVolumeUSD.plus(volume.untrackedVolumeUSD)
   snapshot.feesNative = snapshot.feesNative.plus(volume.feesNative)
   snapshot.feesUSD = snapshot.feesUSD.plus(volume.feesUSD)
   snapshot.transactionCount = snapshot.transactionCount.plus(BIG_INT_ONE)
@@ -79,7 +76,6 @@ function updateFactoryHourSnapshot(
     snapshot.liquidityUSD = BIG_DECIMAL_ZERO
     snapshot.volumeNative = BIG_DECIMAL_ZERO
     snapshot.volumeUSD = BIG_DECIMAL_ZERO
-    snapshot.untrackedVolumeUSD = BIG_DECIMAL_ZERO
     snapshot.feesNative = BIG_DECIMAL_ZERO
     snapshot.feesUSD = BIG_DECIMAL_ZERO
   }
@@ -88,7 +84,6 @@ function updateFactoryHourSnapshot(
   snapshot.liquidityUSD = factory.liquidityUSD
   snapshot.volumeUSD = snapshot.volumeUSD.plus(volume.volumeUSD)
   snapshot.volumeNative = snapshot.volumeNative.plus(volume.volumeNative)
-  snapshot.untrackedVolumeUSD = snapshot.untrackedVolumeUSD.plus(volume.untrackedVolumeUSD)
   snapshot.feesNative = snapshot.feesNative.plus(volume.feesNative)
   snapshot.feesUSD = snapshot.feesUSD.plus(volume.feesUSD)
   snapshot.transactionCount = snapshot.transactionCount.plus(BIG_INT_ONE)
@@ -102,7 +97,7 @@ function getHourStartDate(timestamp: BigInt): i32 {
 }
 
 function generateFactoryHourSnapshotId(factoryId: string, timestamp: BigInt): string {
-  let startDate = getDayStartDate(timestamp)
+  let startDate = getHourStartDate(timestamp)
   return factoryId.concat('-hour-').concat(BigInt.fromI32(startDate).toString())
 }
 

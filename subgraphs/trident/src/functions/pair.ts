@@ -1,8 +1,9 @@
-import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { DeployPool } from '../../generated/MasterDeployer/MasterDeployer'
 import { Pair } from '../../generated/schema'
 import { ConstantProductPool } from '../../generated/templates'
-import { BIG_DECIMAL_ZERO, BIG_INT_ZERO, TRIDENT } from '../constants'
+import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, TRIDENT } from '../constants'
+import { getOrCreateFactory } from './factory'
 import { getOrCreateToken } from './token'
 import { createTokenPair } from './token-pair'
 
@@ -46,7 +47,6 @@ export function createPair(event: DeployPool, type: string): Pair {
   pair.liquidityUSD = BIG_DECIMAL_ZERO
   pair.volumeNative = BIG_DECIMAL_ZERO
   pair.volumeUSD = BIG_DECIMAL_ZERO
-  pair.untrackedVolumeUSD = BIG_DECIMAL_ZERO
   pair.volumeToken0 = BIG_DECIMAL_ZERO
   pair.volumeToken1 = BIG_DECIMAL_ZERO
   pair.feesNative = BIG_DECIMAL_ZERO
@@ -56,6 +56,9 @@ export function createPair(event: DeployPool, type: string): Pair {
   pair.txCount = BIG_INT_ZERO
   pair.save()
 
+  const factory = getOrCreateFactory(type)
+  factory.pairCount = factory.pairCount.plus(BIG_INT_ONE)
+  factory.save()
   // create the tracked contract based on the template
   ConstantProductPool.create(event.params.pool)
 
