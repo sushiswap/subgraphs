@@ -1,4 +1,5 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { BIG_INT_ZERO } from '../constants'
 import { ERC20 } from '../../generated/FuroStream/ERC20'
 import { NameBytes32 } from '../../generated/FuroStream/NameBytes32'
 import { SymbolBytes32 } from '../../generated/FuroStream/SymbolBytes32'
@@ -15,7 +16,7 @@ export function getOrCreateToken(id: string, event: ethereum.Event): Token {
     const decimals = getTokenDecimals(contract)
     const name = getTokenName(contract)
     const symbol = getTokenSymbol(contract)
-
+    token.liquidityShares = BIG_INT_ZERO
     token.name = name.value
     token.nameSuccess = name.success
     token.symbol = symbol.value
