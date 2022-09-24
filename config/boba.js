@@ -43,11 +43,11 @@ module.exports = {
     factory: {
       address: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
-      startBlock: 0,
+      startBlock: 822561,
     },
   },
   blocks: {
-    address: '0x0000000000000000000000000000000000000000',
-    startBlock: 0,
+    address: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
+    startBlock: 822561,
   },
 }
