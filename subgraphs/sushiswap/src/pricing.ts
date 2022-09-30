@@ -101,17 +101,17 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal):
     const pairToken1Price = getTokenPrice(pair.token1)
 
     
-    const token0NativeLiquidity = pair.reserve0.toBigDecimal().times(pairToken0Price.derivedNative)
-    const token1NativeLiquidity = pair.reserve1.toBigDecimal().times(pairToken1Price.derivedNative)
-    let isImbalancedPair = false
-    if (token0NativeLiquidity.gt(BIG_DECIMAL_ZERO) && token1NativeLiquidity.gt(BIG_DECIMAL_ZERO)) {
-      const balance = token0NativeLiquidity.div(token1NativeLiquidity)
-      isImbalancedPair = balance.gt(BigDecimal.fromString('2')) || balance.lt(BigDecimal.fromString('0.5'))
-    }
-    if (isImbalancedPair) {
-      log.info('token: {}, isImbalancedPair, ignoring: {}', [token.id, pair.id])
-      continue
-    }
+    // const token0NativeLiquidity = pair.reserve0.toBigDecimal().times(pairToken0Price.derivedNative)
+    // const token1NativeLiquidity = pair.reserve1.toBigDecimal().times(pairToken1Price.derivedNative)
+    // let isImbalancedPair = false
+    // if (token0NativeLiquidity.gt(BIG_DECIMAL_ZERO) && token1NativeLiquidity.gt(BIG_DECIMAL_ZERO)) {
+    //   const balance = token0NativeLiquidity.div(token1NativeLiquidity)
+    //   isImbalancedPair = balance.gt(BigDecimal.fromString('2')) || balance.lt(BigDecimal.fromString('0.5'))
+    // }
+    // if (isImbalancedPair) {
+    //   log.info('token: {}, isImbalancedPair, ignoring: {}', [token.id, pair.id])
+    //   continue
+    // }
 
     if (
       pair.token0 == token.id &&
