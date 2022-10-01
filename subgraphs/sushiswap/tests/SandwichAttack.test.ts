@@ -1,37 +1,21 @@
 import { Address, BigDecimal, BigInt, Bytes, log } from '@graphprotocol/graph-ts'
-import { assert, newMockEvent, test } from 'matchstick-as/assembly/index'
-import {
-  ADDRESS_ZERO, FACTORY_ADDRESS, WHITELISTED_TOKEN_ADDRESSES
-} from '../src/constants'
+import { test } from 'matchstick-as/assembly/index'
 
+import { Factory, Pair, Swap, Token } from '../generated/schema'
 import {
   createPairEvent,
   createSwapEvent,
   createSyncEvent,
   createTransferEvent, getOrCreateTokenMock
 } from './mocks'
-import { Factory, Pair, Token } from '../generated/schema'
 
 import { clearStore, logStore } from 'matchstick-as/assembly/store'
-import { getOrCreateBundle, getOrCreateFactory, getOrCreateToken, getPair, getTokenPrice } from '../src/functions'
+import { getOrCreateBundle, getOrCreateFactory, getPair, getTokenPrice } from '../src/functions'
 import { onPairCreated } from '../src/mappings/factory'
 import { onSwap, onSync, onTransfer } from '../src/mappings/pair'
 
-const BIGINT_ETH_AMOUNT = BigInt.fromString('1000000000000000001')
-const BIGINT_USD_AMOUNT = BigInt.fromString('3000000001')
-const ETH_AMOUNT = '1.000000000000000001'
-const USD_AMOUNT = '3000.000001'
 
-const DAI_ADDRESS = WHITELISTED_TOKEN_ADDRESSES[2]
-const UDSC_ADDRESS = WHITELISTED_TOKEN_ADDRESSES[1]
-let poolAddress = Address.fromString('0x0000000000000000000000000000000000000420')
-let factoryAddress = FACTORY_ADDRESS.toHexString()
 let factory: Factory
-let alice = Address.fromString('0x0000000000000000000000000000000000080085')
-
-const TIMESTAMP1 = BigInt.fromString('1644011546') // Equivalent to	Fri Feb 04 2022 21:52:26 GMT+0000
-const TIMESTAMP2 = BigInt.fromString('1644094346') // One day later than previous, Sat Feb 05 2022 20:52:26 GMT+0000
-const TIMESTAMP3 = BigInt.fromString('1644097946') // One hour later than previous, Sat Feb 05 2022 21:52:26 GMT+0000
 
 function setup(): void {
   clearStore()
@@ -46,6 +30,7 @@ function cleanup(): void {
 test('When a Sandwich attack happens, the targeted pool is imbalanced and ignored from pricing.', () => {
   setup()
 
+  // Given: the state before the sandwich attack
   const sushiSakePair = deployPair({
     token0: Address.fromString("0x6b3595068778dd592e39a122f4f5a5cf09c90fe2"),
     token0Decimals: 18,
@@ -68,6 +53,20 @@ test('When a Sandwich attack happens, the targeted pool is imbalanced and ignore
   sushiPrice.derivedNative = BigDecimal.fromString("0.003322015199611230641120784654015971")
   sushiPrice.save()
 
+
+  const sakePrice = getTokenPrice("0xe9f84de264e91529af07fa2c746e934397810334")
+  sakePrice.derivedNative = BigDecimal.fromString("4.308216571649326694087664014313883")
+  sakePrice.save()
+
+  
+  const usdcPrice = getTokenPrice("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48")
+  usdcPrice.derivedNative = BigDecimal.fromString("0.000251653167698132225290878366555734")
+  usdcPrice.save()
+
+  const wethPrice = getTokenPrice("0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2")
+  wethPrice.derivedNative = BigDecimal.fromString("1")
+  wethPrice.save()
+
   const usdcSakePair = deployPair({
     token0: Address.fromString("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"),
     token0Decimals: 6,
@@ -84,6 +83,8 @@ test('When a Sandwich attack happens, the targeted pool is imbalanced and ignore
   usdcSakePair.liquidityUSD = BigDecimal.fromString("411228.2037213843937012352510149107")
   usdcSakePair.liquidityNative = BigDecimal.fromString("102.4831973686247477008989405045703")
   usdcSakePair.liquidity = BigInt.fromString("1486566850594110")
+  usdcSakePair.token0Price = BigDecimal.fromString("17280.20741392153276741045046801718")
+  usdcSakePair.token1Price = BigDecimal.fromString("0.00005786967575368137148375353009445506")
   usdcSakePair.save()
 
 
@@ -103,111 +104,23 @@ test('When a Sandwich attack happens, the targeted pool is imbalanced and ignore
   wethSakePair.liquidityUSD = BigDecimal.fromString("12060.58506417676684580276080944156")
   wethSakePair.liquidityNative = BigDecimal.fromString("3.174595261022564095788426862243385")
   wethSakePair.liquidity = BigInt.fromString("686631563275258344")
+  wethSakePair.token0Price = BigDecimal.fromString("4.865590303023851220502317347103956")
+  wethSakePair.token1Price = BigDecimal.fromString("0.2055249081244105685849411660884587")
   wethSakePair.save()
 
   // all above mimics the state of block 13153838
   const blockNumber = BigInt.fromString("13153839")
 
-  let temp = getTokenPrice("0xe9f84de264e91529af07fa2c746e934397810334")
-  let pricedOffPair = ""
-  
-  // MEV: Imbalance the pool 🍞🍞🍞🍞🍞🍞🍞, WETH -> SAK3 -> USDC
-  // https://etherscan.io/tx/0x9c4b943e4968018807d90d4816ef0a813c53111e2bff06ffab783d6a65b3725a
   const MEV_BOT = "0x00000000003b3cc22aF3aE1EAc0440BcEe416B40"
-  // WETH->SAK3
-  transfer({
-    txHash: Bytes.fromHexString("0x9c4b943e4968018807d90d4816ef0a813c53111e2bff06ffab783d6a65b3725a"),
-    blockNumber,
-    pair: usdcSakePair.id,
-    from: MEV_BOT,
-    to: usdcSakePair.id,
-    transferAmount: BigInt.fromString("5487288092"),
-  })
-  syncSwap({
-    txHash: Bytes.fromHexString("0x9c4b943e4968018807d90d4816ef0a813c53111e2bff06ffab783d6a65b3725a"),
-    blockNumber,
-    pair: usdcSakePair.id,
-    from: MEV_BOT,
-    to: wethSakePair.id,
-    reserve0: BigInt.fromString("190440982146"),
-    reserve1: BigInt.fromString("12841324275621429790"),
-    amount0In: BigInt.fromString("5487288092"),
-    amount1In: BigInt.fromString("0"),
-    amount0Out: BigInt.fromString("0"),
-    amount1Out: BigInt.fromString("379839148415534212")
-  })
-  temp = getTokenPrice("0xe9f84de264e91529af07fa2c746e934397810334")
-  pricedOffPair = temp.pricedOffPair ? temp.pricedOffPair! : "none"
-  log.debug("MEV WETH->SAK3 priced off: {}", [pricedOffPair])
-  // SAK3->USDC
-  syncSwap({
-    txHash: Bytes.fromHexString("0x9c4b943e4968018807d90d4816ef0a813c53111e2bff06ffab783d6a65b3725a"),
-    blockNumber,
-    pair: wethSakePair.id,
-    from: MEV_BOT,
-    to: MEV_BOT,
-    reserve0: BigInt.fromString("1388335986953113719"),
-    reserve1: BigInt.fromString("381584683477799751"),
-    amount0In: BigInt.fromString("0"),
-    amount1In: BigInt.fromString("379839148415534212"),
-    amount0Out: BigInt.fromString("301204104854545030923"),
-    amount1Out: BigInt.fromString("0")
-  })
-  temp = getTokenPrice("0xe9f84de264e91529af07fa2c746e934397810334")
-  pricedOffPair = temp.pricedOffPair ? temp.pricedOffPair! : "none"
-  log.debug("MEV SAK3->USDC priced off: {}", [pricedOffPair])
-
-  // User: trade 🧀🥬🍖, SAK3 -> USDC -> WETH
-  // https://etherscan.io/tx/0x76813a0c6fc439a280723842fc08d256cd6ca84da484c92af350415c5c720b4e
   const USER = "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F"
   const usdcWethPair = getPair("0x397ff1542f962076d0bfe58ea045ffa2d347aca0")
-  // SAK3 -> USDC 
-  transfer({
-    txHash: Bytes.fromHexString("0x76813a0c6fc439a280723842fc08d256cd6ca84da484c92af350415c5c720b4e"),
-    blockNumber,
-    pair: usdcWethPair.id,
-    from: usdcSakePair.id,
-    to: usdcWethPair.id,
-    transferAmount: BigInt.fromString("15088484342"),
-  })
-  syncSwap({
-    txHash: Bytes.fromHexString("0x76813a0c6fc439a280723842fc08d256cd6ca84da484c92af350415c5c720b4e"),
-    blockNumber,
-    pair: usdcSakePair.id,
-    from: USER,
-    to: usdcWethPair.id,
-    reserve0: BigInt.fromString("184953694054"),
-    reserve1: BigInt.fromString("13221163424036964002"),
-    amount0In: BigInt.fromString("0"),
-    amount1In: BigInt.fromString("1000000000000000000"),
-    amount0Out: BigInt.fromString("15088484342"),
-    amount1Out: BigInt.fromString("0")
-  })
-  temp = getTokenPrice("0xe9f84de264e91529af07fa2c746e934397810334")
-  pricedOffPair = temp.pricedOffPair ? temp.pricedOffPair! : "none"
-  log.debug("USER SAK3 -> USDC  priced off: {}", [pricedOffPair])
-  
-
-  // USDC -> WETH
-  syncSwap({
-    txHash: Bytes.fromHexString("0x76813a0c6fc439a280723842fc08d256cd6ca84da484c92af350415c5c720b4e"),
-    blockNumber,
-    pair: usdcWethPair.id,
-    from: USER,
-    to: USER,
-    reserve0: BigInt.fromString("234447256797413"),
-    reserve1: BigInt.fromString("58991812335546585603938"),
-    amount0In: BigInt.fromString("15088484342"),
-    amount1In: BigInt.fromString("0"),
-    amount0Out: BigInt.fromString("0"),
-    amount1Out: BigInt.fromString("3785430779430386089")
-  })
-  temp = getTokenPrice("0xe9f84de264e91529af07fa2c746e934397810334")
-  pricedOffPair = temp.pricedOffPair ? temp.pricedOffPair! : "none"
-  log.debug("USER USDC -> WETH priced off: {}", [pricedOffPair])
+  const bundle = getOrCreateBundle()
+  bundle.nativePrice = BigDecimal.fromString("3971.883690798685479000638956680192")
+  bundle.save()
   // MEV: Balance the pool back again 🍞🍞🍞🍞🍞🍞🍞, WETH -> SAK3 -> USDC
   // https://etherscan.io/tx/0x804671d6b042702e484167f0ecc0fd82d751c7247da123971b2d8427112ec036
 
+  // When: 
 
   // WETH -> SAK3
   syncSwap({
@@ -223,18 +136,11 @@ test('When a Sandwich attack happens, the targeted pool is imbalanced and ignore
     amount0Out: BigInt.fromString("0"),
     amount1Out: BigInt.fromString("327239840549282419")
   })
-  temp = getTokenPrice("0xe9f84de264e91529af07fa2c746e934397810334")
-  pricedOffPair = temp.pricedOffPair ? temp.pricedOffPair! : "none"
-  log.debug("MEV WETH -> SAK3 priced off: {}", [pricedOffPair])
+  logInfo("MEV", "WETH -> SAK3", "0x804671d6b042702e484167f0ecc0fd82d751c7247da123971b2d8427112ec036-0",
+    "600578.1546608524922944788664288655")
+
   // SAK3 -> USDC
-    transfer({
-    txHash: Bytes.fromHexString("0x804671d6b042702e484167f0ecc0fd82d751c7247da123971b2d8427112ec036"),
-    blockNumber,
-    pair: usdcSakePair.id,
-    from: usdcSakePair.id,
-    to: MEV_BOT,
-    transferAmount: BigInt.fromString("5487288092"),
-  })
+
   syncSwap({
     txHash: Bytes.fromHexString("0x804671d6b042702e484167f0ecc0fd82d751c7247da123971b2d8427112ec036"),
     blockNumber,
@@ -248,23 +154,96 @@ test('When a Sandwich attack happens, the targeted pool is imbalanced and ignore
     amount0Out: BigInt.fromString("5487288092"),
     amount1Out: BigInt.fromString("0")
   })
-  
-  temp = getTokenPrice("0xe9f84de264e91529af07fa2c746e934397810334")
-  pricedOffPair = temp.pricedOffPair ? temp.pricedOffPair! : "none"
-  log.debug("MEV SAK3 -> USDC priced off: {}", [pricedOffPair])
-   logStore()
-   cleanup()
+
+  logInfo("MEV", "SAK3 -> USDC", "0x804671d6b042702e484167f0ecc0fd82d751c7247da123971b2d8427112ec036-1"
+    , "112660783.865422808782476532681439"
+  )
+
+
+  // User: trade 🧀🥬🍖, SAK3 -> USDC -> WETH
+  // https://etherscan.io/tx/0x76813a0c6fc439a280723842fc08d256cd6ca84da484c92af350415c5c720b4e
+  // SAK3 -> USDC 
+
+  syncSwap({
+    txHash: Bytes.fromHexString("0x76813a0c6fc439a280723842fc08d256cd6ca84da484c92af350415c5c720b4e"),
+    blockNumber,
+    pair: usdcSakePair.id,
+    from: USER,
+    to: usdcWethPair.id,
+    reserve0: BigInt.fromString("184953694054"),
+    reserve1: BigInt.fromString("13221163424036964002"),
+    amount0In: BigInt.fromString("0"),
+    amount1In: BigInt.fromString("1000000000000000000"),
+    amount0Out: BigInt.fromString("15088484342"),
+    amount1Out: BigInt.fromString("0")
+  })
+  logInfo("USER", "SAK3 -> USDC", "0x76813a0c6fc439a280723842fc08d256cd6ca84da484c92af350415c5c720b4e-0",
+    "715587467.368843125056464413188662"
+  )
+
+  // USDC -> WETH
+  syncSwap({
+    txHash: Bytes.fromHexString("0x76813a0c6fc439a280723842fc08d256cd6ca84da484c92af350415c5c720b4e"),
+    blockNumber,
+    pair: usdcWethPair.id,
+    from: USER,
+    to: USER,
+    reserve0: BigInt.fromString("234447256797413"),
+    reserve1: BigInt.fromString("58991812335546585603938"),
+    amount0In: BigInt.fromString("15088484342"),
+    amount1In: BigInt.fromString("0"),
+    amount0Out: BigInt.fromString("0"),
+    amount1Out: BigInt.fromString("3785430779430386089")
+  })
+  logInfo("USER", "USDC -> WETH", "0x76813a0c6fc439a280723842fc08d256cd6ca84da484c92af350415c5c720b4e-1",
+    "371348083.5817556339849966192117748")
+
+
+  // MEV: Imbalance the pool 🍞🍞🍞🍞🍞🍞🍞, USDC -> SAK3 -> WETH
+  // https://etherscan.io/tx/0x9c4b943e4968018807d90d4816ef0a813c53111e2bff06ffab783d6a65b3725a
+  // USDC->SAK3
+
+  syncSwap({
+    txHash: Bytes.fromHexString("0x9c4b943e4968018807d90d4816ef0a813c53111e2bff06ffab783d6a65b3725a"),
+    blockNumber,
+    pair: usdcSakePair.id,
+    from: MEV_BOT,
+    to: wethSakePair.id,
+    reserve0: BigInt.fromString("190440982146"),
+    reserve1: BigInt.fromString("12841324275621429790"),
+    amount0In: BigInt.fromString("5487288092"),
+    amount1In: BigInt.fromString("0"),
+    amount0Out: BigInt.fromString("0"),
+    amount1Out: BigInt.fromString("379839148415534212")
+  })
+
+  logInfo("MEV", "USDC -> SAK3", "0x9c4b943e4968018807d90d4816ef0a813c53111e2bff06ffab783d6a65b3725a-0",
+    "5557.23284048194775034344454984282")
+  // SAK3-> WETH
+  syncSwap({
+    txHash: Bytes.fromHexString("0x9c4b943e4968018807d90d4816ef0a813c53111e2bff06ffab783d6a65b3725a"),
+    blockNumber,
+    pair: wethSakePair.id,
+    from: MEV_BOT,
+    to: MEV_BOT,
+    reserve0: BigInt.fromString("1388335986953113719"),
+    reserve1: BigInt.fromString("381584683477799751"),
+    amount0In: BigInt.fromString("0"),
+    amount1In: BigInt.fromString("379839148415534212"),
+    amount0Out: BigInt.fromString("301204104854545030923"),
+    amount1Out: BigInt.fromString("0")
+  })
+  logInfo("MEV", "SAK3 -> WETH", "0x9c4b943e4968018807d90d4816ef0a813c53111e2bff06ffab783d6a65b3725a-1",
+   "600951.710994098505485254261896356")
+  // logStore()
+
+
+  cleanup()
 })
 
 
-function transfer(args: TransferArgs): void {
-  const transferEvent = createTransferEvent(args.txHash, Address.fromString(args.pair), args.blockNumber, Address.fromString(args.from), Address.fromString(args.to), args.transferAmount)
-  onTransfer(transferEvent)
-}
-
-
 function syncSwap(args: TransferSyncSwapArgs): void {
-   const syncEvent = createSyncEvent(args.txHash, args.blockNumber, Address.fromString(args.pair), args.reserve0, args.reserve1)
+  const syncEvent = createSyncEvent(args.txHash, args.blockNumber, Address.fromString(args.pair), args.reserve0, args.reserve1)
   const swapEvent = createSwapEvent(args.txHash, args.blockNumber, Address.fromString(args.pair), Address.fromString(args.from),
     args.amount0In, args.amount1In, args.amount0Out, args.amount1Out, Address.fromString(args.to))
   onSync(syncEvent)
@@ -272,7 +251,19 @@ function syncSwap(args: TransferSyncSwapArgs): void {
 }
 
 
-
+function logInfo(user: string, swap: string, txHash: string, expectedSwapAmount: string): void {
+  log.debug("{}: {}", [user, swap])
+  let temp = getTokenPrice("0xe9f84de264e91529af07fa2c746e934397810334")
+  if (temp.pricedOffPair) {
+    const pair = getPair(temp.pricedOffPair!)
+    log.debug("Priced off pair: {}", [pair.name])
+  }
+  log.debug("lastUsdPrice: {}", [temp.lastUsdPrice.toString()])
+  const swapTx = Swap.load(txHash)!
+  log.debug("swap.amountUSD: {}", [swapTx.amountUSD.toString()])
+  log.debug("expected amountUSD: {}", [expectedSwapAmount])
+  log.debug("----------------------------------------", [])
+}
 
 
 
@@ -322,10 +313,10 @@ function setupStablePairs(): void {
 
 function deployPair(args: DeployPairArgs): Pair {
   if (Token.load(args.token0.toHex()) == null) {
-  getOrCreateTokenMock(args.token0.toHex(), args.token0Decimals, args.token0Name, args.token0Symbol)
+    getOrCreateTokenMock(args.token0.toHex(), args.token0Decimals, args.token0Name, args.token0Symbol)
   }
   if (Token.load(args.token1.toHex()) == null) {
-  getOrCreateTokenMock(args.token1.toHex(), args.token1Decimals, args.token1Name, args.token1Symbol)
+    getOrCreateTokenMock(args.token1.toHex(), args.token1Decimals, args.token1Name, args.token1Symbol)
   }
   const pairCreatedEvent = createPairEvent(args.token0, args.token1, args.pairAddress)
   onPairCreated(pairCreatedEvent)

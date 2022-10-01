@@ -82,7 +82,6 @@ export function createBurnEvent(
 
 export function createSyncEvent(txHash: Bytes, blockNumber: BigInt, pair: Address, reserve0: BigInt, reserve1: BigInt): SyncEvent {
   let mockEvent = newMockEvent()
-  mockEvent.block.number = blockNumber
   let event = new SyncEvent(
     pair,
     mockEvent.logIndex,
@@ -93,6 +92,7 @@ export function createSyncEvent(txHash: Bytes, blockNumber: BigInt, pair: Addres
     mockEvent.parameters,
     mockEvent.receipt
   )
+  event.block.number = blockNumber
   event.transaction.hash = txHash
   event.parameters = new Array()
   let reserve0Param = new ethereum.EventParam('reserve0', ethereum.Value.fromUnsignedBigInt(reserve0))
@@ -113,8 +113,7 @@ export function createTransferEvent(
   value: BigInt
 ): TransferEvent {
   let mockEvent = newMockEvent()
-  mockEvent.block.number = blockNumber
-  mockEvent.transaction.hash = txHash
+
   let event = new TransferEvent(
     pair,
     mockEvent.logIndex,
@@ -126,6 +125,8 @@ export function createTransferEvent(
     mockEvent.receipt
   )
   event.parameters = new Array()
+  event.block.number = blockNumber
+  event.transaction.hash = txHash
 
   let fromParam = new ethereum.EventParam('from', ethereum.Value.fromAddress(from))
   let toParam = new ethereum.EventParam('to', ethereum.Value.fromAddress(to))
@@ -150,8 +151,6 @@ export function createSwapEvent(
   to: Address,
 ): SwapEvent {
   let mockEvent = newMockEvent()
-  mockEvent.block.number = blockNumber
-  mockEvent.transaction.hash = txHash
   let event = new SwapEvent(
     pair,
     mockEvent.logIndex,
@@ -162,6 +161,8 @@ export function createSwapEvent(
     mockEvent.parameters,
     mockEvent.receipt
   )
+  event.block.number = blockNumber
+  event.transaction.hash = txHash
   event.parameters = new Array()
   let senderParam = new ethereum.EventParam('sender', ethereum.Value.fromAddress(sender))
   let amount0InParam = new ethereum.EventParam('amount0In', ethereum.Value.fromUnsignedBigInt(amount0In))
