@@ -30,6 +30,8 @@ export function getNativePriceInUSD(): BigDecimal {
     if (stablePair === null) {
       continue
     }
+    // Technically one of the reserves could be wrong below because we are using nativeToken.decimals, however, 
+    // since we are only using the reserve for the native, it doesn't matter
     const reserve0 = convertTokenToDecimal(stablePair.reserve0, nativeToken.decimals)
     const reserve1 = convertTokenToDecimal(stablePair.reserve1, nativeToken.decimals)
     if (
@@ -97,33 +99,41 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal):
       continue // Not created yet
     }
 
+    const token0 = getOrCreateToken(pair.token0)
+    const token1 = getOrCreateToken(pair.token1)
     const pairToken0Price = getTokenPrice(pair.token0)
     const pairToken1Price = getTokenPrice(pair.token1)
 
-    
-    // const token0NativeLiquidity = pair.reserve0.toBigDecimal().times(pairToken0Price.derivedNative)
-    // const token1NativeLiquidity = pair.reserve1.toBigDecimal().times(pairToken1Price.derivedNative)
-    // let isImbalancedPair = false
-    // if (token0NativeLiquidity.gt(BIG_DECIMAL_ZERO) && token1NativeLiquidity.gt(BIG_DECIMAL_ZERO)) {
-    //   const balance = token0NativeLiquidity.div(token1NativeLiquidity)
-    //   isImbalancedPair = balance.gt(BigDecimal.fromString('2')) || balance.lt(BigDecimal.fromString('0.5'))
-    // }
-    // if (isImbalancedPair) {
-    //   log.info('token: {}, isImbalancedPair, ignoring: {}', [token.id, pair.id])
-    //   continue
-    // }
+    const token0NativeLiquidity = convertTokenToDecimal(pair.reserve0, token0.decimals).times(pairToken0Price.derivedNative)
+    const token1NativeLiquidity = convertTokenToDecimal(pair.reserve1, token1.decimals).times(pairToken1Price.derivedNative)
+
+    // NOTE: We have to calculate this because the pair.nativeLiquidity field is being updated after this function is called
+    const pairLiquidityNative = token0NativeLiquidity.plus(token1NativeLiquidity) 
+
+    let balance = BIG_DECIMAL_ZERO
+    if (token0NativeLiquidity.gt(BIG_DECIMAL_ZERO) && token1NativeLiquidity.gt(BIG_DECIMAL_ZERO)) {
+      balance = token0NativeLiquidity.div(token1NativeLiquidity)
+      if (balance.gt(BigDecimal.fromString('1.25')) || balance.lt(BigDecimal.fromString('0.75'))) {
+        log.debug('NOT BALANCED, balance: {}, pair: {} {}', [balance.toString(), pair.name, pair.id])
+        continue
+      } 
+      // If we get here, the pair is balanced
+    } else {
+      // NOT BALANCED, one of the tokens has no liquidityNative
+      continue
+    }
+
 
     if (
       pair.token0 == token.id &&
       pairToken1Price.pricedOffToken != token.id &&
-      passesLiquidityCheck(pair.liquidityNative, mostLiquidity)
+      passesLiquidityCheck(pairLiquidityNative, mostLiquidity)
     ) {
-      const token1 = getOrCreateToken(pair.token1)
       if (token1.decimalsSuccess) {
         const token1Price = getTokenPrice(pair.token1)
         pricedOffToken = token1Price.id
         pricedOffPair = pair.id
-        mostLiquidity = pair.liquidityNative
+        mostLiquidity = pairLiquidityNative
         currentPrice = pair.token1Price.times(token1Price.derivedNative)
       }
     }
@@ -131,14 +141,13 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal):
     if (
       pair.token1 == token.id &&
       pairToken0Price.pricedOffToken != token.id &&
-      passesLiquidityCheck(pair.liquidityNative, mostLiquidity)
+      passesLiquidityCheck(pairLiquidityNative, mostLiquidity)
     ) {
-      const token0 = getOrCreateToken(pair.token0)
       if (token0.decimalsSuccess) {
         const token0Price = getTokenPrice(pair.token0)
         pricedOffToken = token0Price.id
         pricedOffPair = pair.id
-        mostLiquidity = pair.liquidityNative
+        mostLiquidity = pairLiquidityNative
         currentPrice = pair.token0Price.times(token0Price.derivedNative)
       }
     }
@@ -156,3 +165,4 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal):
 function passesLiquidityCheck(reserveNative: BigDecimal, mostReseveEth: BigDecimal): boolean {
   return reserveNative.gt(MINIMUM_NATIVE_LIQUIDITY) && reserveNative.gt(mostReseveEth)
 }
+

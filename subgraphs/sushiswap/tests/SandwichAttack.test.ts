@@ -1,5 +1,5 @@
 import { Address, BigDecimal, BigInt, Bytes, log } from '@graphprotocol/graph-ts'
-import { test } from 'matchstick-as/assembly/index'
+import { assert, test } from 'matchstick-as/assembly/index'
 
 import { Factory, Pair, Swap, Token } from '../generated/schema'
 import {
@@ -29,24 +29,27 @@ function cleanup(): void {
 
 test('When a Sandwich attack happens, the targeted pool is imbalanced and ignored from pricing.', () => {
   setup()
-
+  const SAKE_ADDRESS = Address.fromString("0xe9f84de264e91529af07fa2c746e934397810334")
   // Given: the state before the sandwich attack
   const sushiSakePair = deployPair({
     token0: Address.fromString("0x6b3595068778dd592e39a122f4f5a5cf09c90fe2"),
     token0Decimals: 18,
     token0Symbol: "Sushi",
     token0Name: "SushiToken",
-    token1: Address.fromString("0xe9f84de264e91529af07fa2c746e934397810334"),
+    token1: SAKE_ADDRESS,
     token1Decimals: 18,
     token1Symbol: "SAK3",
     token1Name: "Sake",
     pairAddress: Address.fromString("0x255ed38500577a0c85cf8108c0097da80a76c5e1")
   })
+
   sushiSakePair.reserve0 = BigInt.fromString("208519723083897106271")
   sushiSakePair.reserve1 = BigInt.fromString("174912960380911300")
   sushiSakePair.liquidityUSD = BigDecimal.fromString("5696.744779944808496914026050079535")
   sushiSakePair.liquidityNative = BigDecimal.fromString("1.515376047360042156168771795370342")
   sushiSakePair.liquidity = BigInt.fromString("5967017207026917816")
+  sushiSakePair.token0Price = BigDecimal.fromString("1192.134205663203665510901705656786")
+  sushiSakePair.token1Price = BigDecimal.fromString("0.0008388317315697553706850324562159755")
   sushiSakePair.save()
 
   const sushiPrice = getTokenPrice("0x6b3595068778dd592e39a122f4f5a5cf09c90fe2")
@@ -54,11 +57,11 @@ test('When a Sandwich attack happens, the targeted pool is imbalanced and ignore
   sushiPrice.save()
 
 
-  const sakePrice = getTokenPrice("0xe9f84de264e91529af07fa2c746e934397810334")
+  const sakePrice = getTokenPrice(SAKE_ADDRESS.toHex())
   sakePrice.derivedNative = BigDecimal.fromString("4.308216571649326694087664014313883")
   sakePrice.save()
 
-  
+
   const usdcPrice = getTokenPrice("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48")
   usdcPrice.derivedNative = BigDecimal.fromString("0.000251653167698132225290878366555734")
   usdcPrice.save()
@@ -72,7 +75,7 @@ test('When a Sandwich attack happens, the targeted pool is imbalanced and ignore
     token0Decimals: 6,
     token0Symbol: "USDC",
     token0Name: "USD Coin",
-    token1: Address.fromString("0xe9f84de264e91529af07fa2c746e934397810334"),
+    token1: SAKE_ADDRESS,
     token1Decimals: 18,
     token1Symbol: "SAK3",
     token1Name: "Sake",
@@ -93,7 +96,7 @@ test('When a Sandwich attack happens, the targeted pool is imbalanced and ignore
     token0Decimals: 18,
     token0Symbol: "WETH",
     token0Name: "Wrapped Ether",
-    token1: Address.fromString("0xe9f84de264e91529af07fa2c746e934397810334"),
+    token1: SAKE_ADDRESS,
     token1Decimals: 18,
     token1Symbol: "SAK3",
     token1Name: "Sake",
@@ -136,8 +139,7 @@ test('When a Sandwich attack happens, the targeted pool is imbalanced and ignore
     amount0Out: BigInt.fromString("0"),
     amount1Out: BigInt.fromString("327239840549282419")
   })
-  logInfo("MEV", "WETH -> SAK3", "0x804671d6b042702e484167f0ecc0fd82d751c7247da123971b2d8427112ec036-0",
-    "600578.1546608524922944788664288655")
+  logInfo("MEV", "300 WETH -> 0.32 SAK3", "0x804671d6b042702e484167f0ecc0fd82d751c7247da123971b2d8427112ec036-0")
 
   // SAK3 -> USDC
 
@@ -155,9 +157,7 @@ test('When a Sandwich attack happens, the targeted pool is imbalanced and ignore
     amount1Out: BigInt.fromString("0")
   })
 
-  logInfo("MEV", "SAK3 -> USDC", "0x804671d6b042702e484167f0ecc0fd82d751c7247da123971b2d8427112ec036-1"
-    , "112660783.865422808782476532681439"
-  )
+  logInfo("MEV", "0.327 SAK3 -> 5487 USDC", "0x804671d6b042702e484167f0ecc0fd82d751c7247da123971b2d8427112ec036-1")
 
 
   // User: trade 🧀🥬🍖, SAK3 -> USDC -> WETH
@@ -177,9 +177,7 @@ test('When a Sandwich attack happens, the targeted pool is imbalanced and ignore
     amount0Out: BigInt.fromString("15088484342"),
     amount1Out: BigInt.fromString("0")
   })
-  logInfo("USER", "SAK3 -> USDC", "0x76813a0c6fc439a280723842fc08d256cd6ca84da484c92af350415c5c720b4e-0",
-    "715587467.368843125056464413188662"
-  )
+  logInfo("USER", "1 SAK3 -> 15088 USDC", "0x76813a0c6fc439a280723842fc08d256cd6ca84da484c92af350415c5c720b4e-0",)
 
   // USDC -> WETH
   syncSwap({
@@ -195,8 +193,7 @@ test('When a Sandwich attack happens, the targeted pool is imbalanced and ignore
     amount0Out: BigInt.fromString("0"),
     amount1Out: BigInt.fromString("3785430779430386089")
   })
-  logInfo("USER", "USDC -> WETH", "0x76813a0c6fc439a280723842fc08d256cd6ca84da484c92af350415c5c720b4e-1",
-    "371348083.5817556339849966192117748")
+  logInfo("USER", "15088 USDC -> 3.79 WETH", "0x76813a0c6fc439a280723842fc08d256cd6ca84da484c92af350415c5c720b4e-1")
 
 
   // MEV: Imbalance the pool 🍞🍞🍞🍞🍞🍞🍞, USDC -> SAK3 -> WETH
@@ -217,8 +214,7 @@ test('When a Sandwich attack happens, the targeted pool is imbalanced and ignore
     amount1Out: BigInt.fromString("379839148415534212")
   })
 
-  logInfo("MEV", "USDC -> SAK3", "0x9c4b943e4968018807d90d4816ef0a813c53111e2bff06ffab783d6a65b3725a-0",
-    "5557.23284048194775034344454984282")
+  logInfo("MEV", "5487 USDC -> 0.38 SAK3", "0x9c4b943e4968018807d90d4816ef0a813c53111e2bff06ffab783d6a65b3725a-0")
   // SAK3-> WETH
   syncSwap({
     txHash: Bytes.fromHexString("0x9c4b943e4968018807d90d4816ef0a813c53111e2bff06ffab783d6a65b3725a"),
@@ -233,10 +229,10 @@ test('When a Sandwich attack happens, the targeted pool is imbalanced and ignore
     amount0Out: BigInt.fromString("301204104854545030923"),
     amount1Out: BigInt.fromString("0")
   })
-  logInfo("MEV", "SAK3 -> WETH", "0x9c4b943e4968018807d90d4816ef0a813c53111e2bff06ffab783d6a65b3725a-1",
-   "600951.710994098505485254261896356")
-  // logStore()
+  logInfo("MEV", "0.38 SAK3 -> 301.2 WETH", "0x9c4b943e4968018807d90d4816ef0a813c53111e2bff06ffab783d6a65b3725a-1")
 
+  assert.fieldEquals('TokenPrice', SAKE_ADDRESS.toHex(), 'pricedOffPair', usdcSakePair.id)
+  log.info("SAK3 is priced off the expected pair: {}", [usdcSakePair.name])
 
   cleanup()
 })
@@ -251,18 +247,17 @@ function syncSwap(args: TransferSyncSwapArgs): void {
 }
 
 
-function logInfo(user: string, swap: string, txHash: string, expectedSwapAmount: string): void {
-  log.debug("{}: {}", [user, swap])
+function logInfo(user: string, swap: string, txHash: string): void {
+  log.info("*** {}: {}", [user, swap])
   let temp = getTokenPrice("0xe9f84de264e91529af07fa2c746e934397810334")
   if (temp.pricedOffPair) {
     const pair = getPair(temp.pricedOffPair!)
-    log.debug("Priced off pair: {}", [pair.name])
+    log.info("Priced off pair: {}", [pair.name])
   }
-  log.debug("lastUsdPrice: {}", [temp.lastUsdPrice.toString()])
+  log.info("lastUsdPrice: {}", [temp.lastUsdPrice.toString()])
   const swapTx = Swap.load(txHash)!
-  log.debug("swap.amountUSD: {}", [swapTx.amountUSD.toString()])
-  log.debug("expected amountUSD: {}", [expectedSwapAmount])
-  log.debug("----------------------------------------", [])
+  log.info("swap.amountUSD: {}", [swapTx.amountUSD.toString()])
+  log.info("----------------------------------------", [])
 }
 
 
