@@ -130,6 +130,10 @@ type Pair @entity {
   reserve0: BigInt!
   " Liquidity of second token "
   reserve1: BigInt!
+  " product of reserve0 and reserve1, this is k in x*y=k formula "
+  _k: BigDecimal
+  " which block _k was saved "
+  _kUpdatedAtBlock: BigInt
   " Liquidity, Total supply of all LP in this pool "
   liquidity: BigInt!
   " USD liquidity"

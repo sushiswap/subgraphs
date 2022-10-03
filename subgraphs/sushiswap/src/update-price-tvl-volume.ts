@@ -34,7 +34,16 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
 
   factory.liquidityNative = factory.liquidityNative.minus(pair.trackedLiquidityNative)
 
-
+  // before updating reserve, set product of current reserves for the first transaction for every block, used to detect sandwich attacks
+  if (pair._kUpdatedAtBlock) {
+    if (!pair._kUpdatedAtBlock!.equals(event.block.number)) {
+    pair._k = pair.reserve1.gt(BIG_INT_ZERO) ? pair.reserve0.divDecimal(pair.reserve1.toBigDecimal()) : BIG_DECIMAL_ZERO
+    pair._kUpdatedAtBlock = event.block.number
+    }
+  } else {
+      pair._k = pair.reserve1.gt(BIG_INT_ZERO) ? pair.reserve0.divDecimal(pair.reserve1.toBigDecimal()) : BIG_DECIMAL_ZERO
+      pair._kUpdatedAtBlock = event.block.number
+  }
   pair.reserve0 = event.params.reserve0
   pair.reserve1 = event.params.reserve1
   const reserve0Decimals = convertTokenToDecimal(pair.reserve0, token0.decimals)
@@ -57,8 +66,8 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   bundle.nativePrice = getNativePriceInUSD()
   bundle.save()
 
-  const token0Price = updateTokenPrice(token0.id, bundle.nativePrice)
-  const token1Price = updateTokenPrice(token1.id, bundle.nativePrice)
+  const token0Price = updateTokenPrice(token0.id, bundle.nativePrice, event.block.number)
+  const token1Price = updateTokenPrice(token1.id, bundle.nativePrice, event.block.number)
 
 
   // get tracked liquidity - will be 0 if neither is in whitelist
@@ -204,17 +213,17 @@ export function getVolumeUSD(
   const price1 = token1Price.derivedNative.times(bundle.nativePrice)
 
   // both tokens are priced, take average of both amounts
-  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
+  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
     return tokenAmount0.times(price0).plus(tokenAmount1.times(price1)).div(BigDecimal.fromString('2'))
   }
 
   // take full value of the priced token
-  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && !token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
+  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && !token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
     return tokenAmount0.times(price0)
   }
 
   // take full value of the priced token
-  if (!token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
+  if (!token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
     return tokenAmount1.times(price1)
   }
 
@@ -240,17 +249,17 @@ export function getLiquidityUSD(
   const price1 = token1Price.derivedNative.times(bundle.nativePrice)
 
   // both tokens are priced, take average of both amounts
-  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
+  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
     return tokenAmount0.times(price0).plus(tokenAmount1.times(price1))
   }
 
   // take full value of the priced token
-  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && !token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
+  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && !token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
     return tokenAmount0.times(price0).times(BigDecimal.fromString('2'))
   }
 
   // take full value of the priced token
-  if (!token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
+  if (!token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
     return tokenAmount1.times(price1).times(BigDecimal.fromString('2'))
   }
 
