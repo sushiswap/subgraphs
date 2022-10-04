@@ -106,20 +106,21 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal, 
 
     const currentProduct = pair.reserve1.gt(BIG_INT_ZERO) ? pair.reserve0.divDecimal(pair.reserve1.toBigDecimal()) : BIG_DECIMAL_ZERO
 
+    let isSandwichAttack = false
     if (pair._kUpdatedAtBlock && pair._k) {
       if (pair._kUpdatedAtBlock!.equals(blockNumber) && pair._k!.gt(BIG_DECIMAL_ZERO) && currentProduct.gt(BIG_DECIMAL_ZERO)) {
         const change = currentProduct.div(pair._k!)
         if (change.gt(BigDecimal.fromString("1000")) || change.lt(BigDecimal.fromString("0.001"))) {
-          log.debug("skipping pair {} {} because of drastic reserve change. Change: {}", [pair.name, pair.id, change.toString()])
-          continue
+          log.debug("Possible sandwhich attack on pair {} {} change: {}% block {}", [pair.name, pair.id, change.times(BigDecimal.fromString("100")).toString(), blockNumber.toString()])
+          isSandwichAttack = true
         }
       }
     }
 
     const pairToken0Price = getTokenPrice(pair.token0)
     const pairToken1Price = getTokenPrice(pair.token1)
-    const token0NativeLiquidity = convertTokenToDecimal(pair.reserve0, token0.decimals).times(pairToken0Price.derivedNative)
-    const token1NativeLiquidity = convertTokenToDecimal(pair.reserve1, token1.decimals).times(pairToken1Price.derivedNative)
+    const token0NativeLiquidity = convertTokenToDecimal(!isSandwichAttack ? pair.reserve0 : pair._cache_reserve0!, token0.decimals).times(pairToken0Price.derivedNative)
+    const token1NativeLiquidity = convertTokenToDecimal(!isSandwichAttack ? pair.reserve1 : pair._cache_reserve0!, token1.decimals).times(pairToken1Price.derivedNative)
 
     // NOTE: We have to calculate this because the pair.nativeLiquidity field is being updated after this function is called
     // e.g. if we used pair.liquidityNative, it would still have the inflated value from the attackers swap
