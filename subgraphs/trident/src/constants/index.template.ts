@@ -97,6 +97,7 @@ export const MINIMUM_USD_THRESHOLD_NEW_PAIRS = BigDecimal.fromString(
 export namespace PairType {
   export const CONSTANT_PRODUCT_POOL = "CONSTANT_PRODUCT_POOL";
   export const STABLE_POOL = "STABLE_POOL";
+  export const CONCENTRATED_LIQUIDITY_POOL = "CONCENTRATED_LIQUIDITY_POOL";
 }
 
 export * from './id'

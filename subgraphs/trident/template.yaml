@@ -134,3 +134,34 @@ templates:
           handler: onTransfer
         - event: Swap(indexed address,indexed address,indexed address,uint256,uint256)
           handler: onSwap
+  - kind: ethereum/contract
+    name: ConcentratedLiquidityPool
+    network: {{ network }}
+    source:
+      abi: ConcentratedLiquidityPool
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/concentrated-liquidity-pool.ts
+      entities: []
+      abis:
+        - name: ConcentratedLiquidityPool
+          file: ./abis/ConcentratedLiquidityPool.json
+        - name: ConcentratedLiquidityPoolFactory
+          file: ./abis/ConcentratedLiquidityPoolFactory.json
+        - name: ERC20
+          file: ./node_modules/abi/ERC20/ERC20.json
+        - name: SymbolBytes32
+          file: ./node_modules/abi/ERC20/SymbolBytes32.json
+        - name: NameBytes32
+          file: ./node_modules/abi/ERC20/NameBytes32.json
+      eventHandlers:
+        - event: Mint(indexed address,uint256,uint256)  
+          handler: onMint
+        - event: Burn(indexed address,uint256,uint256)
+          handler: onBurn
+        - event: Swap(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: onSwap
+        - event: Collect(indexed address,uint256,uint256)
+          handler: onCollect

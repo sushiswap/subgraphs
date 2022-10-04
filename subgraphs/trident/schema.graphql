@@ -1,6 +1,7 @@
 
 enum PairType {
   CONSTANT_PRODUCT_POOL
+  CONCENTRATED_LIQUIDITY_POOL
   STABLE_POOL
 }
 
@@ -130,6 +131,9 @@ type Pair @entity {
   " When this pair was created "
   createdAtTimestamp: BigInt!
 
+  " Concentrated Liquidity Info entity, null if pair is not a CL "
+  concentratedLiquidityInfo: ConcentratedLiquidityInfo
+
   " Liquidity of first token "
   reserve0: BigInt!
   " Liquidity of second token "
@@ -175,6 +179,13 @@ type Pair @entity {
   daySnapshots: [PairDaySnapshot!]! @derivedFrom(field: "pair")
 }
 
+
+type ConcentratedLiquidityInfo @entity {
+  " Pair address (contract address) "
+  id: ID!
+  " Pair "
+  tickSpacing: BigInt!
+}
 
 type Rebase @entity {
   " Token address "

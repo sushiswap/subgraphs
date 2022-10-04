@@ -1,8 +1,9 @@
 import { BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { DeployPool } from '../../generated/MasterDeployer/MasterDeployer'
 import { Pair } from '../../generated/schema'
-import { ConstantProductPool, StablePool } from '../../generated/templates'
+import { ConcentratedLiquidityPool, ConstantProductPool, StablePool } from '../../generated/templates'
 import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, TRIDENT, PairType } from '../constants'
+import { createConcentratedLiquidityInfo } from './concentrated-liquidity-info'
 import { getOrCreateFactory } from './factory'
 import { getOrCreateToken } from './token'
 import { createTokenPair } from './token-pair'
@@ -67,6 +68,13 @@ export function createPair(event: DeployPool, type: string): Pair {
     StablePool.create(event.params.pool)
   }
 
+  if (type === PairType.CONCENTRATED_LIQUIDITY_POOL) {
+    ConcentratedLiquidityPool.create(event.params.pool)
+    createConcentratedLiquidityInfo(event.params.pool, decoded[4].toBigInt() as BigInt)
+    pair.concentratedLiquidityInfo = event.params.pool.toHex()
+    pair.save()
+  }
+
   return pair as Pair
 }
 
@@ -77,9 +85,17 @@ function decodeDeployData(event: DeployPool, type: string): ethereum.Tuple {
     const decode = ethereum.decode('(address,address,uint256)', event.params.deployData)!.toTuple()
     decode.push(ethereum.Value.fromBoolean(false))
     return decode
+  } else if (type === PairType.CONCENTRATED_LIQUIDITY_POOL) {
+    const decode = ethereum.decode('(address,address,uint24,uint24)', event.params.deployData)!.toTuple()
+    // remove tickSpacing, add twapEnabled false to match the other pools format
+    const tickSpacing = decode.pop()
+    decode.push(ethereum.Value.fromBoolean(false))
+    decode.push(tickSpacing)
+    // the returned format will now be (token, token, swapFee, twapEnabled, tickSpacing)
+    return decode
   } else {
     throw new Error(
-      `Unknown pair type: ${type}, currently available: ${PairType.CONSTANT_PRODUCT_POOL} and ${PairType.STABLE_POOL}. Did you forget to add it to the list of supported pairs?`
+      `Unknown factory type: ${type}, currently available: ${PairType.CONSTANT_PRODUCT_POOL}, ${PairType.CONCENTRATED_LIQUIDITY_POOL} and ${PairType.STABLE_POOL}. Did you forget to add it to the list of supported factories?`
     )
   }
 }
