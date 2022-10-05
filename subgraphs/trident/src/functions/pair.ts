@@ -17,8 +17,8 @@ export function createPair(event: DeployPool, type: string): Pair {
   const swapFee = decoded[2].toBigInt() as BigInt
   const twapEnabled = decoded[3].toBoolean() as boolean
 
-  let token0 = getOrCreateToken(token0Address)
-  let token1 = getOrCreateToken(token1Address)
+  let token0 = getOrCreateToken(token0Address, type)
+  let token1 = getOrCreateToken(token1Address, type)
 
   const pair = new Pair(id)
 
@@ -54,9 +54,14 @@ export function createPair(event: DeployPool, type: string): Pair {
   pair.txCount = BIG_INT_ZERO
   pair.save()
 
+  const globalFactory = getOrCreateFactory(PairType.ALL)
+  globalFactory.pairCount = globalFactory.pairCount.plus(BIG_INT_ONE)
+  globalFactory.save()
+
   const factory = getOrCreateFactory(type)
   factory.pairCount = factory.pairCount.plus(BIG_INT_ONE)
   factory.save()
+
   // create the tracked contract based on the template
 
   if (type === PairType.CONSTANT_PRODUCT_POOL) {

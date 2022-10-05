@@ -30,6 +30,7 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   const pair = getPair(pairId)
   const token0 = getOrCreateToken(pair.token0)
   const token1 = getOrCreateToken(pair.token1)
+  const globalFactory = getOrCreateFactory(PairType.ALL)
   const factory = getOrCreateFactory(pair.type)
 
   // Reset token liquidity, will be updated again later when price is updated
@@ -37,6 +38,7 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   token1.liquidity = token1.liquidity.minus(pair.reserve1)
   token0.save()
   token1.save()
+  globalFactory.liquidityNative = factory.liquidityNative.minus(pair.trackedLiquidityNative)
   factory.liquidityNative = factory.liquidityNative.minus(pair.trackedLiquidityNative)
 
   const rebase0 = getRebase(token0.id)
@@ -104,10 +106,14 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   pair.liquidityUSD = pair.liquidityNative.times(bundle.nativePrice)
   pair.save()
 
+
+  globalFactory.liquidityNative = globalFactory.liquidityNative.plus(trackedLiquidityNative)
+  globalFactory.liquidityUSD = globalFactory.liquidityNative.times(bundle.nativePrice)
+  globalFactory.save()
+
   factory.liquidityNative = factory.liquidityNative.plus(trackedLiquidityNative)
   factory.liquidityUSD = factory.liquidityNative.times(bundle.nativePrice)
   factory.save()
-
 }
 
 export function updateVolume(event: SwapEvent): Volume {
@@ -161,6 +167,13 @@ export function updateVolume(event: SwapEvent): Volume {
   factory.feesNative = factory.feesNative.plus(feesNative)
   factory.feesUSD = factory.feesUSD.plus(feesUSD)
   factory.save()
+  
+  const globalFactory = getOrCreateFactory(pair.type)
+  globalFactory.volumeUSD = globalFactory.volumeUSD.plus(volumeUSD)
+  globalFactory.volumeNative = globalFactory.volumeNative.plus(volumeNative)
+  globalFactory.feesNative = globalFactory.feesNative.plus(feesNative)
+  globalFactory.feesUSD = globalFactory.feesUSD.plus(feesUSD)
+  globalFactory.save()
 
   return {
     volumeUSD,

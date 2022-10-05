@@ -3,12 +3,13 @@ import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, PairType } from '../consta
 import { ERC20 } from '../../generated/MasterDeployer/ERC20'
 import { NameBytes32 } from '../../generated/MasterDeployer/NameBytes32'
 import { SymbolBytes32 } from '../../generated/MasterDeployer/SymbolBytes32'
-import { Token } from '../../generated/schema'
+import { Token, _FactoryToken } from '../../generated/schema'
 import { getOrCreateRebase } from './rebase'
 import { createTokenPrice } from './token-price'
 import { getOrCreateFactory } from './factory'
 
-export function getOrCreateToken(id: string): Token {
+
+export function getOrCreateToken(id: string, type: string = PairType.ALL): Token {
   let token = Token.load(id)
 
   if (token === null) {
@@ -44,9 +45,21 @@ export function getOrCreateToken(id: string): Token {
 
     token.save()
 
-    const factory = getOrCreateFactory(PairType.CONSTANT_PRODUCT_POOL)
-    factory.tokenCount = factory.tokenCount.plus(BIG_INT_ONE)
-    factory.save()
+    const globalFactory = getOrCreateFactory(PairType.ALL)
+    globalFactory.tokenCount = globalFactory.tokenCount.plus(BIG_INT_ONE)
+    globalFactory.save()
+  } else {
+    if (type !== PairType.ALL) {
+      let factoryToken = _FactoryToken.load(type.concat(":").concat(id))
+      if (factoryToken === null) {
+        factoryToken = new _FactoryToken(type.concat(":").concat(id))
+        factoryToken.save()
+
+        const factory = getOrCreateFactory(type)
+        factory.tokenCount = factory.tokenCount.plus(BIG_INT_ONE)
+        factory.save()
+      }
+    }
   }
 
   return token as Token

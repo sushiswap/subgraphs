@@ -23,9 +23,15 @@ export function updateFactorySnapshots(
   if (isBlacklistedToken(pair.token0) || isBlacklistedToken(pair.token1)) {
     return
   }
+  const globalFactory = getOrCreateFactory(PairType.ALL)
+  updateFactoryHourSnapshot(event, globalFactory, volume)
+  updateFactoryDaySnapshot(event, globalFactory, volume)
+  
   const factory = getOrCreateFactory(pair.type)
   updateFactoryHourSnapshot(event, factory, volume)
   updateFactoryDaySnapshot(event, factory, volume)
+
+  
 }
 
 
