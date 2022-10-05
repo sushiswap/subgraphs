@@ -43,6 +43,6 @@ export function handleBurn(event: BurnEvent): Burn {
   token1.txCount = token1.txCount.plus(BIG_INT_ONE)
   token1.save()
 
-  increaseFactoryTransactionCount(PairType.CONSTANT_PRODUCT_POOL)
+  increaseFactoryTransactionCount(pair.type)
   return burn
 }

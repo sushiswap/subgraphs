@@ -30,7 +30,7 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   const pair = getPair(pairId)
   const token0 = getOrCreateToken(pair.token0)
   const token1 = getOrCreateToken(pair.token1)
-  const factory = getOrCreateFactory(PairType.CONSTANT_PRODUCT_POOL)
+  const factory = getOrCreateFactory(pair.type)
 
   // Reset token liquidity, will be updated again later when price is updated
   token0.liquidity = token0.liquidity.minus(pair.reserve0)
@@ -155,7 +155,7 @@ export function updateVolume(event: SwapEvent): Volume {
   pair.feesUSD = pair.feesUSD.plus(feesUSD)
   pair.save()
 
-  const factory = getOrCreateFactory(PairType.CONSTANT_PRODUCT_POOL)
+  const factory = getOrCreateFactory(pair.type)
   factory.volumeUSD = factory.volumeUSD.plus(volumeUSD)
   factory.volumeNative = factory.volumeNative.plus(volumeNative)
   factory.feesNative = factory.feesNative.plus(feesNative)
