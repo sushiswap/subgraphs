@@ -76,9 +76,9 @@ export function createPair(event: DeployPool, type: string): Pair {
 }
 
 function decodeDeployData(event: DeployPool, type: string): ethereum.Tuple {
-  if (type === PairType.CONSTANT_PRODUCT_POOL) {
+  if (type == PairType.CONSTANT_PRODUCT_POOL) {
     return ethereum.decode('(address,address,uint256,bool)', event.params.deployData)!.toTuple()
-  } else if (type === PairType.STABLE_POOL) {
+  } else if (type == PairType.STABLE_POOL) {
     const decode = ethereum.decode('(address,address,uint256)', event.params.deployData)!.toTuple()
     decode.push(ethereum.Value.fromBoolean(false))
     return decode

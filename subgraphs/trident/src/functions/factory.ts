@@ -38,13 +38,13 @@ export function increaseFactoryTransactionCount(type: string): void {
 }
 
 function getFactoryId(type: string): string {
-  if (type === PairType.CONSTANT_PRODUCT_POOL) {
+  if (type == PairType.CONSTANT_PRODUCT_POOL) {
     return CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS.toHex()
   }
-  else if (type === PairType.STABLE_POOL) {
+  else if (type == PairType.STABLE_POOL) {
     return STABLE_POOL_FACTORY_ADDRESS.toHex()
   }
-  else if (type === PairType.ALL) {
+  else if (type == PairType.ALL) {
     return PairType.ALL
   }
   else {
