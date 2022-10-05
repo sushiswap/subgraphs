@@ -168,7 +168,7 @@ export function updateVolume(event: SwapEvent): Volume {
   factory.feesUSD = factory.feesUSD.plus(feesUSD)
   factory.save()
   
-  const globalFactory = getOrCreateFactory(pair.type)
+  const globalFactory = getOrCreateFactory(PairType.ALL)
   globalFactory.volumeUSD = globalFactory.volumeUSD.plus(volumeUSD)
   globalFactory.volumeNative = globalFactory.volumeNative.plus(volumeNative)
   globalFactory.feesNative = globalFactory.feesNative.plus(feesNative)
