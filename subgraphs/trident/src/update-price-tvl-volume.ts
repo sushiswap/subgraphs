@@ -25,12 +25,12 @@ import {
 import { getNativePriceInUSD, updateTokenPrice } from './pricing'
 import { isBurn, isInitialTransfer, isMint } from './transfer'
 
-export function updateTvlAndTokenPrices(event: SyncEvent): void {
+export function updateTvlAndTokenPrices(event: SyncEvent, type: string): void {
   const pairId = event.address.toHex()
   const pair = getPair(pairId)
   const token0 = getOrCreateToken(pair.token0)
   const token1 = getOrCreateToken(pair.token1)
-  const factory = getOrCreateFactory(PairType.CONSTANT_PRODUCT_POOL)
+  const factory = getOrCreateFactory(type)
 
   // Reset token liquidity, will be updated again later when price is updated
   token0.liquidity = token0.liquidity.minus(pair.reserve0)

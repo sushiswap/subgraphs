@@ -1,4 +1,5 @@
 import { Address } from '@graphprotocol/graph-ts'
+import { PairType } from 'src/constants'
 import {
   Burn as BurnEvent,
   Mint as MintEvent,
@@ -22,7 +23,7 @@ import { createLiquidityPositions, handleTransferMintBurn as handleTransfer } fr
 import { updateLiquidity, updateTvlAndTokenPrices, updateVolume } from '../update-price-tvl-volume'
 
 export function onSync(event: SyncEvent): void {
-  updateTvlAndTokenPrices(event)
+  updateTvlAndTokenPrices(event.params.reserve0, event.params.reserve1, PairType.CONSTANT_PRODUCT_POOL)
 }
 
 export function onTransfer(event: TransferEvent): void {

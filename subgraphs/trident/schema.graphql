@@ -183,8 +183,39 @@ type Pair @entity {
 type ConcentratedLiquidityInfo @entity {
   " Pair address (contract address) "
   id: ID!
-  " Pair "
-  tickSpacing: BigInt!
+  " tick "
+  tick: BigInt!
+  # current price tracker
+  sqrtPrice: BigInt!
+  # tracker for global fee growth
+  feeGrowthGlobal0X128: BigInt!
+  # tracker for global fee growth
+  feeGrowthGlobal1X128: BigInt!
+  # current observation index
+  observationIndex: BigInt!
+}
+
+type Tick @entity {
+  # format: <pool address>#<tick index>
+  id: ID!
+  # pool address
+  poolAddress: String
+  # tick index
+  tickIdx: BigInt!
+  # created time
+  createdAtTimestamp: BigInt!
+  # created block
+  createdAtBlockNumber: BigInt!
+  # pointer to pair
+  pair: Pair!
+  # total liquidity pool has as tick lower or upper
+  liquidityGross: BigInt!
+  # how much liquidity changes when tick crossed
+  liquidityNet: BigInt!
+  # calculated price of token0 of tick within this pool - constant
+  price0: BigDecimal!
+  # calculated price of token1 of tick within this pool - constant
+  price1: BigDecimal!
 }
 
 type Rebase @entity {
@@ -236,6 +267,12 @@ type Mint @entity {
   # optional fee fields, if a Transfer event is fired in _mintFee
   feeTo: Bytes
   feeLiquidity: BigDecimal
+
+  " Only populated if this is a concentrated liquidity mint "
+  # lower tick of the position
+  tickLower: BigInt
+  # upper tick of the position
+  tickUpper: BigInt
 }
 
 type Burn @entity {
@@ -263,6 +300,12 @@ type Burn @entity {
   # optional fee fields, if a Transfer event is fired in _mintFee
   feeTo: String
   feeLiquidity: BigDecimal
+
+  " Only populated if this is a concentrated liquidity mint "
+  # lower tick of the position
+  tickLower: BigInt
+  # upper tick of the position
+  tickUpper: BigInt
 }
 
 type Swap @entity {
@@ -283,6 +326,36 @@ type Swap @entity {
 
   # derived info
   amountUSD: BigDecimal!
+
+  # The sqrt(price) of the pool after the swap, as a Q64.96
+  sqrtPriceX96: BigInt!
+  # the tick after the swap
+  tick: BigInt!
+}
+
+type Collect @entity {
+  # transaction hash + "#" + index in collect Transaction array
+  id: ID!
+  # pointer to txn
+  transaction: Transaction!
+  # timestamp of event
+  timestamp: BigInt!
+  # pool collect occured within
+  pair: Pair!
+  # owner of position collect was performed on
+  owner: Bytes
+  # amount of token0 collected
+  amount0: BigDecimal!
+  # amount of token1 collected
+  amount1: BigDecimal!
+  # derived amount based on available prices of tokens
+  amountUSD: BigDecimal
+  # lower tick of position
+  tickLower: BigInt!
+  # uppper tick of position
+  tickUpper: BigInt!
+  # index within the txn
+  logIndex: BigInt
 }
 
 
@@ -296,6 +369,10 @@ type Transaction @entity {
   mints: [Mint!]! 
   burns: [Burn!]!
   swaps: [Swap!]!
+
+  " Only exists if this is a concentrated liquidity tx "
+  collects: [Collect!] @derivedFrom(field: "transaction")
+
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
 }
