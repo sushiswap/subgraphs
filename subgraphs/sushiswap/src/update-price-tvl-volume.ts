@@ -39,14 +39,14 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
     if (!pair._kUpdatedAtBlock!.equals(event.block.number)) {
     pair._k = pair.reserve1.gt(BIG_INT_ZERO) ? pair.reserve0.divDecimal(pair.reserve1.toBigDecimal()) : BIG_DECIMAL_ZERO
     pair._cache_reserve0 = pair.reserve0
-    pair._cache_reserve0 = pair.reserve1
+    pair._cache_reserve1 = pair.reserve1
     pair._kUpdatedAtBlock = event.block.number
     }
   } else {
       pair._k = pair.reserve1.gt(BIG_INT_ZERO) ? pair.reserve0.divDecimal(pair.reserve1.toBigDecimal()) : BIG_DECIMAL_ZERO
       pair._kUpdatedAtBlock = event.block.number
       pair._cache_reserve0 = pair.reserve0
-      pair._cache_reserve0 = pair.reserve1
+      pair._cache_reserve1 = pair.reserve1
   }
 
   pair.reserve0 = event.params.reserve0
