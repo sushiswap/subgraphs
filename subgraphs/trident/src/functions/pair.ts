@@ -17,8 +17,8 @@ export function createPair(event: DeployPool, type: string): Pair {
   const swapFee = decoded[2].toBigInt() as BigInt
   const twapEnabled = decoded[3].toBoolean() as boolean
 
-  let token0 = getOrCreateToken(token0Address, type)
-  let token1 = getOrCreateToken(token1Address, type)
+  let token0 = getOrCreateToken(token0Address, type, true)
+  let token1 = getOrCreateToken(token1Address, type, true)
 
   const pair = new Pair(id)
 
