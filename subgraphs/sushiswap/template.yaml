@@ -5,7 +5,7 @@ features:
   - grafting
   # - nonFatalErrors
 graft:
-  base: 'QmTzfoAgbRHeAuP1UAZ1GbykMNaBjRXLp6Tb4UaLduKTkF'
+  base: 'QmNZqg8oogJh8HiHyXXdzcnexDFDxNaZ3Mu5adnAsFXj4X'
   block: 12419917
 schema:
   file: ./schema.graphql
