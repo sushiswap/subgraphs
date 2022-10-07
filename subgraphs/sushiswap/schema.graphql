@@ -139,6 +139,10 @@ type Pair @entity {
   _cache_reserve0: BigInt
   " Liquidity of second token, this is only updated for the first transaction in a block "
   _cache_reserve1: BigInt
+  " Price of the first token in this pair, this is only updated for the first transaction in a block "
+  _cache_token0Price: BigDecimal
+  " Price of the second token in this pair, this is only updated for the first transaction in a block "
+  _cache_token1Price: BigDecimal
 
   " Liquidity, Total supply of all LP in this pool "
   liquidity: BigInt!

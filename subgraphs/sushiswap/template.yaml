@@ -6,7 +6,7 @@ features:
   # - nonFatalErrors
 graft:
   base: 'QmTzfoAgbRHeAuP1UAZ1GbykMNaBjRXLp6Tb4UaLduKTkF'
-  block: 13153830
+  block: 12419917
 schema:
   file: ./schema.graphql
 dataSources:

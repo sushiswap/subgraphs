@@ -111,7 +111,7 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal, 
       if (pair._kUpdatedAtBlock!.equals(blockNumber) && pair._k!.gt(BIG_DECIMAL_ZERO) && currentProduct.gt(BIG_DECIMAL_ZERO)) {
         const diff = currentProduct.div(pair._k!)
         if (diff.gt(BigDecimal.fromString("1000")) || diff.lt(BigDecimal.fromString("0.001"))) {
-          log.debug("Possible sandwhich attack on pair {} {} change: {}% block {}", [pair.name, pair.id, diff.toString(), blockNumber.toString()])
+          log.debug("Possible sandwich attack on pair {} {} change: {}% block {}", [pair.name, pair.id, diff.toString(), blockNumber.toString()])
           isSandwichAttack = true
         }
       }
@@ -136,7 +136,7 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal, 
         pricedOffToken = token1Price.id
         pricedOffPair = pair.id
         mostLiquidity = pairLiquidityNative
-        currentPrice = pair.token1Price.times(token1Price.derivedNative)
+        currentPrice = !isSandwichAttack ? pair.token1Price.times(token1Price.derivedNative) : pair._cache_token1Price!.times(token1Price.derivedNative)
       }
     }
 
@@ -150,7 +150,8 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal, 
         pricedOffToken = token0Price.id
         pricedOffPair = pair.id
         mostLiquidity = pairLiquidityNative
-        currentPrice = pair.token0Price.times(token0Price.derivedNative)
+        
+        currentPrice = !isSandwichAttack ? pair.token0Price.times(token0Price.derivedNative) : pair._cache_token0Price!.times(token0Price.derivedNative)
       }
     }
   }
