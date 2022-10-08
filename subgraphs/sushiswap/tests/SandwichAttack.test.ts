@@ -713,6 +713,124 @@ test('#2 When a Sandwich attack happens, the targeted pool is imbalanced and ign
   cleanup()
 })
 
+
+
+test('When a false positive is triggered, use the lower price.', () => {
+  setup()
+
+  let usdcWethPair = deployPair({
+    token0: Address.fromString("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"),
+    token0Decimals: 6,
+    token0Symbol: "USDC",
+    token0Name: "USD Coin",
+    token1: Address.fromString("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"),
+    token1Decimals: 18,
+    token1Symbol: "WETH",
+    token1Name: "Wrapped Ether",
+    pairAddress: Address.fromString("0x397ff1542f962076d0bfe58ea045ffa2d347aca0")
+  })
+  usdcWethPair.reserve0 = BigInt.fromString("155647950612038")
+  usdcWethPair.reserve1 = BigInt.fromString("58063745987771889031274")
+  usdcWethPair.token0Price = BigDecimal.fromString("2680.639148649092550397838524243443")
+  usdcWethPair.token1Price = BigDecimal.fromString("0.0003730453614034361013340540329102197")
+  usdcWethPair.liquidityUSD = BigDecimal.fromString("312114190.9652510375572245615946636")
+  usdcWethPair.liquidityNative = BigDecimal.fromString("116127.491975543778062548")
+  usdcWethPair.liquidity = BigInt.fromString("2212304642560604697")
+  usdcWethPair.save()
+
+  const wethUsdtPair = deployPair({
+    token0: Address.fromString("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"),
+    token0Decimals: 18,
+    token0Symbol: "WETH",
+    token0Name: "Wrapped Ether",
+    token1: Address.fromString("0xdac17f958d2ee523a2206206994597c13d831ec7"),
+    token1Decimals: 6,
+    token1Symbol: "USDT",
+    token1Name: "USD Tether",
+    pairAddress: Address.fromString("0x06da0fd433c1a5d7a4faa01111c044910a184553")
+  })
+  wethUsdtPair.reserve0 = BigInt.fromString("42160959567302735945226")
+  wethUsdtPair.reserve1 = BigInt.fromString("113249059872499")
+  wethUsdtPair.token0Price = BigDecimal.fromString("0.000372285294154048459520647082080346")
+  wethUsdtPair.token1Price = BigDecimal.fromString("2686.112010608210010750242567012104")
+  wethUsdtPair.liquidityUSD = BigDecimal.fromString("226678494.9849786240499101801724845")
+  wethUsdtPair.liquidityNative = BigDecimal.fromString("84321.91913460547189045200000000001")
+  wethUsdtPair.liquidity = BigInt.fromString("1622656990119285453")
+  wethUsdtPair.save()
+
+  const LUCK_ADDRESS = Address.fromString("0x0955a73d014f0693ac7b53cfe77706dab02b3ef9")
+  // Given: the state before the sandwich attack
+  const luckWethPair = deployPair({
+    token0: LUCK_ADDRESS,
+    token0Decimals: 18,
+    token0Symbol: "LUCK",
+    token0Name: "Lady Luck",
+    token1: Address.fromString("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"),
+    token1Decimals: 18,
+    token1Symbol: "WETH",
+    token1Name: "Wrapped Ether",
+    pairAddress: Address.fromString("0x9a367a38429d509f00e062b3a6143c1ad0c1250a")
+  })
+
+  luckWethPair.reserve0 = BigInt.fromString("279238647890285339211867343")
+  luckWethPair.reserve1 = BigInt.fromString("17235679684269785254")
+  luckWethPair.token0Price = BigDecimal.fromString("16201197.34211199414117758524040205")
+  luckWethPair.token1Price = BigDecimal.fromString("0.00000006172383305280075220795140477964181")
+  luckWethPair.liquidityUSD = BigDecimal.fromString("93869.74872683029695977280926611257")
+  luckWethPair.liquidityNative = BigDecimal.fromString("34.471359368539570508")
+  luckWethPair.liquidity = BigInt.fromString("65341308566161519905683")
+  luckWethPair.save()
+
+  const luckPrice = getTokenPrice(LUCK_ADDRESS.toHex())
+  luckPrice.derivedNative = BigDecimal.fromString("0.00000006172383305280075220795140477964181")
+  luckPrice.save()
+
+
+  const usdcPrice = getTokenPrice(Address.fromString("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48").toHex())
+  usdcPrice.derivedNative = BigDecimal.fromString("0.0003730453614034361013340540329102197")
+  usdcPrice.save()
+
+  const wethPrice = getTokenPrice(Address.fromString("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2").toHex())
+  wethPrice.derivedNative = BigDecimal.fromString("1")
+  wethPrice.save()
+
+
+  // all above mimics the state of block 12465847
+  const blockNumber = BigInt.fromString("12465848")
+
+  // const MEV_BOT = "0x00000000003b3cc22aF3aE1EAc0440BcEe416B40"
+  const USER = "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F"
+  usdcWethPair = getPair("0x397ff1542f962076d0bfe58ea045ffa2d347aca0")
+  const bundle = getOrCreateBundle()
+  bundle.nativePrice = BigDecimal.fromString("2687.685625992694940183514157831612")
+  bundle.save()
+
+  // // User: trade 🧀🥬🍖, LUCK -> WETH
+  // // https://etherscan.io/tx/0x0deb96d9a5278eb8a9b1f1bfff5e3d8aea52da4b9b0189639dd05d1663bace3b
+
+  syncSwap({
+    txHash: Bytes.fromHexString("0x706c60c2818dfe984f1ec9d36f8feeea0e8991a59d9f2830e0e09e17b62fc0e3"),
+    blockNumber,
+    pair: luckWethPair.id,
+    from: USER,
+    to: "0x53455f3B566d6968e9282d982dD1e038E78033ac", // Another dex 
+    reserve0: BigInt.fromString("7102340871822879581410121127478"),
+    reserve1: BigInt.fromString("679684269785254"),
+    amount0In: BigInt.fromString("7102061633174989296070909260135"),
+    amount1In: BigInt.fromString("0"),
+    amount0Out: BigInt.fromString("0"),
+    amount1Out: BigInt.fromString("17235000000000000000")
+  })
+  logInfo(LUCK_ADDRESS, "USER", "7,102,061,633,174 LUCK -> 17.235 WETH", "0x706c60c2818dfe984f1ec9d36f8feeea0e8991a59d9f2830e0e09e17b62fc0e3-0")
+
+
+  assert.fieldEquals('TokenPrice', LUCK_ADDRESS.toHex(), 'pricedOffPair', luckWethPair.id)
+  assert.fieldEquals('TokenPrice', LUCK_ADDRESS.toHex(), 'derivedNative', "0.00000000000000009569862698110783957728500542666224")
+  log.info("LUCK is priced off the expected pair: {}", [luckWethPair.name])
+  cleanup()
+})
+
+
 function syncSwap(args: TransferSyncSwapArgs): void {
   const syncEvent = createSyncEvent(args.txHash, args.blockNumber, Address.fromString(args.pair), args.reserve0, args.reserve1)
   const swapEvent = createSwapEvent(args.txHash, args.blockNumber, Address.fromString(args.pair), Address.fromString(args.from),
