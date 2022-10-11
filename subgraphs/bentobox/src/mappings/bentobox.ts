@@ -45,6 +45,7 @@ import {
 } from '../functions'
 import { getOrCreateHarvest } from '../functions/harvest'
 import { getOrCreateMasterContract } from '../functions/master-contract'
+import { getOrCreateProtocol } from '../functions/protocol'
 import {
   decreaseTokenKpiLiquidity,
   getOrCreateTokenKpi,
@@ -165,11 +166,7 @@ export function onLogSetMasterContractApproval(event: LogSetMasterContractApprov
 }
 
 export function onLogRegisterProtocol(event: LogRegisterProtocol): void {
-  const registeredProtocol = new Protocol(event.params.protocol.toHex())
-  registeredProtocol.bentoBox = event.address.toHex()
-  registeredProtocol.save()
-
-  increaseProtocolCount(event.block.timestamp)
+  getOrCreateProtocol(event)
 }
 
 export function onLogDeploy(event: LogDeploy): void {
