@@ -130,3 +130,23 @@ type Rebase @entity {
   " Elastic (Amount) "
   elastic: BigInt!
 }
+
+type TokenHourSnapshot @entity {
+  " {tokenId}-hour-{timestamp} "
+  id: ID!
+  date: Int!
+  token: Token!
+  cumulativeLiquidityShares: BigInt!
+  cumulativeLiquidityAmount: BigInt!
+  transactionCount: BigInt!
+}
+
+type TokenDaySnapshot @entity {
+  " {tokenId}-day-{timestamp} "
+  id: ID!
+  date: Int!
+  token: Token!
+  cumulativeLiquidityShares: BigInt!
+  cumulativeLiquidityAmount: BigInt!
+  transactionCount: BigInt!
+}

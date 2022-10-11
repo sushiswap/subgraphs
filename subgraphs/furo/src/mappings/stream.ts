@@ -7,17 +7,19 @@ import {
   Withdraw as WithdrawEvent,
 } from '../../generated/FuroStream/FuroStream'
 import { cancelStream, createStream, getStream, transferStream, updateStream, withdrawFromStream } from '../functions/stream'
-import { createRebase, createStreamTransaction, toBase, toElastic } from '../functions'
+import { createRebase, createStreamTransaction, toBase, toElastic, updateTokenSnapshots } from '../functions'
 import { FURO_STREAM_ADDRESS } from '../constants'
 
 export function onCreateStream(event: CreateStreamEvent): void {
   const stream = createStream(event)
   createStreamTransaction(stream, event)
+  updateTokenSnapshots(event, stream.token)
 }
 
 export function onCancelStream(event: CancelStreamEvent): void {
   const stream = cancelStream(event)
   createStreamTransaction(stream, event)
+  updateTokenSnapshots(event, stream.token)
 }
 
 export function onUpdateStream(event: UpdateStreamEvent): void {
@@ -29,14 +31,16 @@ export function onUpdateStream(event: UpdateStreamEvent): void {
   const topUpShares = toBase(rebase, event.params.topUpAmount, false) // have to convert to share, bug in contract where it emits amount
   const withdrawnShares = remainingShares.minus(streamBeforeUpdate.remainingShares).minus(topUpShares).abs() // calculate balance sent to bentobox 
   const withdrawnAmount = toElastic(rebase, withdrawnShares, true)
-  
+
   const stream = updateStream(remainingShares, withdrawnShares, event)
   createStreamTransaction(stream, event, withdrawnAmount)
+  updateTokenSnapshots(event, stream.token)
 }
 
 export function onWithdrawStream(event: WithdrawEvent): void {
   const stream = withdrawFromStream(event)
   createStreamTransaction(stream, event)
+  updateTokenSnapshots(event, stream.token)
 }
 
 export function onTransferStream(event: TransferEvent): void {

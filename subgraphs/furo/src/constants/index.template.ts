@@ -20,7 +20,7 @@ export const BIG_DECIMAL_ZERO = BigDecimal.fromString('0')
 export const BIG_DECIMAL_ONE = BigDecimal.fromString('1')
 export const BIG_INT_ONE = BigInt.fromI32(1)
 
-const HOUR = 60 * 60
-const DAY = 24 * HOUR
+export const HOUR = 60 * 60
+export const DAY = 24 * HOUR
 export const WEEK = 7 * DAY
 export const YEAR = 365 * DAY
