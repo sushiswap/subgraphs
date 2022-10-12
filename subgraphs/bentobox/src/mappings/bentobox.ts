@@ -134,6 +134,8 @@ export function onLogTransfer(event: LogTransfer): void {
 export function onLogFlashLoan(event: LogFlashLoan): void {
   const tokenAddress = event.params.token.toHex()
 
+  increaseTokenKpiLiquidity(tokenAddress, event.params.feeAmount, event.block.timestamp)
+
   const rebase = getOrCreateRebase(tokenAddress)
   rebase.elastic = rebase.elastic.plus(event.params.feeAmount)
   rebase.save()
@@ -323,6 +325,8 @@ export function onLogStrategyProfit(event: LogStrategyProfit): void {
 
   const token = getToken(tokenAddress)
 
+  increaseTokenKpiLiquidity(tokenAddress, event.params.amount, event.block.timestamp)
+
   const tokenStrategy = getTokenStrategy(tokenAddress)
 
   const strategyData = getStrategyData(tokenAddress)
@@ -384,6 +388,8 @@ export function onLogStrategyLoss(event: LogStrategyLoss): void {
   const tokenAddress = event.params.token.toHex()
 
   const token = getToken(tokenAddress)
+
+  decreaseTokenKpiLiquidity(tokenAddress, event.params.amount, event.block.timestamp)
 
   const tokenStrategy = getTokenStrategy(tokenAddress)
 
