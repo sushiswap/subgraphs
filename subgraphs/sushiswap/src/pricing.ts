@@ -110,7 +110,7 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal, 
     if (pair._kUpdatedAtBlock && pair._k) {
       if (pair._kUpdatedAtBlock!.equals(blockNumber) && pair._k!.gt(BIG_DECIMAL_ZERO) && currentProduct.gt(BIG_DECIMAL_ZERO)) {
         const diff = currentProduct.div(pair._k!)
-        if (diff.gt(BigDecimal.fromString("1000")) || diff.lt(BigDecimal.fromString("0.001"))) {
+        if (diff.gt(BigDecimal.fromString("50")) || diff.lt(BigDecimal.fromString("0.02"))) {
           log.debug("Possible sandwich attack on pair {} {} change: {} block {}", [pair.name, pair.id, diff.toString(), blockNumber.toString()])
           isSandwichAttack = true
         }

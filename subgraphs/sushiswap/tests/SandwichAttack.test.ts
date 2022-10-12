@@ -831,6 +831,139 @@ test('When a false positive is triggered, use the lower price.', () => {
 })
 
 
+
+
+test('Sandwich attack happening on another dex, but for the MEV bot to get enough tokens, trades are being made on sushi.' + 
+' Since this is more like a borrow, the _k changes  ', () => {
+  setup()
+
+  let usdcWethPair = deployPair({
+    token0: Address.fromString("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"),
+    token0Decimals: 6,
+    token0Symbol: "USDC",
+    token0Name: "USD Coin",
+    token1: Address.fromString("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"),
+    token1Decimals: 18,
+    token1Symbol: "WETH",
+    token1Name: "Wrapped Ether",
+    pairAddress: Address.fromString("0x397ff1542f962076d0bfe58ea045ffa2d347aca0")
+  })
+  usdcWethPair.reserve0 = BigInt.fromString("227336035127911")
+  usdcWethPair.reserve1 = BigInt.fromString("63236141285253517478316")
+  usdcWethPair.token0Price = BigDecimal.fromString("3595.033322833774742989256560294906")
+  usdcWethPair.token1Price = BigDecimal.fromString("0.0002781615384893714581087068199366511")
+  usdcWethPair.liquidityUSD = BigDecimal.fromString("454634104.1291802476151574161285748")
+  usdcWethPair.liquidityNative = BigDecimal.fromString("126472.282570507034956632")
+  usdcWethPair.liquidity = BigInt.fromString("2601952949580508749")
+  usdcWethPair.save()
+
+  const wethUsdtPair = deployPair({
+    token0: Address.fromString("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"),
+    token0Decimals: 18,
+    token0Symbol: "WETH",
+    token0Name: "Wrapped Ether",
+    token1: Address.fromString("0xdac17f958d2ee523a2206206994597c13d831ec7"),
+    token1Decimals: 6,
+    token1Symbol: "USDT",
+    token1Name: "USD Tether",
+    pairAddress: Address.fromString("0x06da0fd433c1a5d7a4faa01111c044910a184553")
+  })
+  wethUsdtPair.reserve0 = BigInt.fromString("33208598443366831614764")
+  wethUsdtPair.reserve1 = BigInt.fromString("119479376119182")
+  wethUsdtPair.token0Price = BigDecimal.fromString("0.0002779441902194139943954327424673153")
+  wethUsdtPair.token1Price = BigDecimal.fromString("3597.844586032118707589141080660419")
+  wethUsdtPair.liquidityUSD = BigDecimal.fromString("238733542.144885959651613750989334")
+  wethUsdtPair.liquidityNative = BigDecimal.fromString("66417.196886733663229528")
+  wethUsdtPair.liquidity = BigInt.fromString("1390430189325999067")
+  wethUsdtPair.save()
+
+  const LCX_ADDRESS = Address.fromString("0x037a54aab062628c9bbae1fdb1583c195585fe41")
+  // Given: the state before the sandwich attack
+  const lcxWethPair = deployPair({
+    token0: LCX_ADDRESS,
+    token0Decimals: 18,
+    token0Symbol: "LCX",
+    token0Name: "LCX",
+    token1: Address.fromString("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"),
+    token1Decimals: 18,
+    token1Symbol: "WETH",
+    token1Name: "Wrapped Ether",
+    pairAddress: Address.fromString("0x9a367a38429d509f00e062b3a6143c1ad0c1250a")
+  })
+
+  lcxWethPair.reserve0 = BigInt.fromString("514570412198251749745452")
+  lcxWethPair.reserve1 = BigInt.fromString("18677238848798964246")
+  lcxWethPair.token0Price = BigDecimal.fromString("27550.66829545530427346267278374382")
+  lcxWethPair.token1Price = BigDecimal.fromString("0.00003629676018294473571410894434101007")
+  lcxWethPair.liquidityUSD = BigDecimal.fromString("129210.4226103403538812369518711845")
+  lcxWethPair.liquidityNative = BigDecimal.fromString("37.354477697597928492")
+  lcxWethPair.liquidity = BigInt.fromString("2751037085869617547400")
+  lcxWethPair.save()
+
+  const lcxPrice = getTokenPrice(LCX_ADDRESS.toHex())
+  lcxPrice.derivedNative = BigDecimal.fromString("0.00003629676018294473571410894434101007")
+  lcxPrice.save()
+
+
+  const usdcPrice = getTokenPrice(Address.fromString("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48").toHex())
+  usdcPrice.derivedNative = BigDecimal.fromString("0.0002781615384893714581087068199366511")
+  usdcPrice.save()
+
+  const wethPrice = getTokenPrice(Address.fromString("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2").toHex())
+  wethPrice.derivedNative = BigDecimal.fromString("1")
+  wethPrice.save()
+
+
+  // all above mimics the state of block 13413297
+  const blockNumber = BigInt.fromString("13413298")
+
+  const MEV_BOT = "0x00000000003b3cc22aF3aE1EAc0440BcEe416B40"
+  // const USER = "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F"
+  usdcWethPair = getPair("0x397ff1542f962076d0bfe58ea045ffa2d347aca0")
+  const bundle = getOrCreateBundle()
+  bundle.nativePrice = BigDecimal.fromString("3594.453745948004522775103507357431")
+  bundle.save()
+
+
+  syncSwap({
+    txHash: Bytes.fromHexString("0x06b3b60310fa6840f08c431414fd68fa721955968f6d0668acd96ec94f4675a6"),
+    blockNumber,
+    pair: lcxWethPair.id,
+    from: MEV_BOT,
+    to: MEV_BOT, 
+    reserve0: BigInt.fromString("22206250413669551622079"),
+    reserve1: BigInt.fromString("434041107157645435737"),
+    amount0In: BigInt.fromString("0"),
+    amount1In: BigInt.fromString("415363868308846471491"),
+    amount0Out: BigInt.fromString("492364161784582198123373"),
+    amount1Out: BigInt.fromString("0")
+  })
+  logInfo(LCX_ADDRESS, "MEV", "415.3 WETH -> 492,364 LCX", "0x06b3b60310fa6840f08c431414fd68fa721955968f6d0668acd96ec94f4675a6-0")
+
+
+  syncSwap({
+    txHash: Bytes.fromHexString("0xcd18330c23ba51da48581d11d43db76fe3c4502af0a49dc7667a9b65c2546c9f"),
+    blockNumber,
+    pair: lcxWethPair.id,
+    from: MEV_BOT,
+    to: MEV_BOT, 
+    reserve0: BigInt.fromString("530715835979447723926935"),
+    reserve1: BigInt.fromString("18213533739785567176"),
+    amount0In: BigInt.fromString("508509585565778172304856"),
+    amount1In: BigInt.fromString("0"),
+    amount0Out: BigInt.fromString("0"),
+    amount1Out: BigInt.fromString("415827573417859868561")
+  })
+  logInfo(LCX_ADDRESS, "MEV", "508,509 LCX -> 415.8 WETH ", "0xcd18330c23ba51da48581d11d43db76fe3c4502af0a49dc7667a9b65c2546c9f-0")
+
+  assert.fieldEquals('TokenPrice', LCX_ADDRESS.toHex(), 'pricedOffPair', lcxWethPair.id)
+  assert.fieldEquals('TokenPrice', LCX_ADDRESS.toHex(), 'derivedNative', "0.0000343188058561924968608895779294154")
+  log.info("LCX is priced off the expected pair: {}", [lcxWethPair.name])
+  // TODO: could use better assertions everywhere, but that would require another field on pair entity
+  cleanup()
+})
+
+
 function syncSwap(args: TransferSyncSwapArgs): void {
   const syncEvent = createSyncEvent(args.txHash, args.blockNumber, Address.fromString(args.pair), args.reserve0, args.reserve1)
   const swapEvent = createSwapEvent(args.txHash, args.blockNumber, Address.fromString(args.pair), Address.fromString(args.from),
