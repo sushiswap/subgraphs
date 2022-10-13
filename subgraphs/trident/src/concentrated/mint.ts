@@ -1,15 +1,13 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
-import { getOrCreateMint, getOrCreateTransaction } from 'src/functions'
-import { Mint, Transaction } from '../../generated/schema'
+import { Mint } from '../../generated/schema'
 import { Mint as MintEvent } from '../../generated/templates/ConcentratedLiquidityPool/ConcentratedLiquidityPool'
 import { BIG_DECIMAL_ZERO, BIG_INT_ONE, PairType } from '../constants'
 import {
   convertTokenToDecimal,
   getOrCreateBundle,
-  getOrCreateToken,
-  getPair,
+  getOrCreateToken, getOrCreateTransaction, getPair,
   getTokenPrice,
-  increaseFactoryTransactionCount as increaseFactoryTransactionCount
+  increaseFactoryTransactionCount
 } from '../functions'
 
 export function handleMint(event: MintEvent): Mint | null {
@@ -18,7 +16,7 @@ export function handleMint(event: MintEvent): Mint | null {
 
   const pair = getPair(event.address.toHex())
 
-  const id = event.transaction.hash.toHex().concat('-cl-').concat(BigInt.fromI32(pair.txCount).toString())
+  const id = event.transaction.hash.toHex().concat('-cl-').concat(pair.txCount.toString().toString())
 
 
   const token0 = getOrCreateToken(pair.token0)

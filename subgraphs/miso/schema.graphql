@@ -1,10 +1,11 @@
-# enum Role {
-#   ADMIN # 0x0000000000000000000000000000000000000000000000000000000000000000
-#   MINTER # 0x97667070c54ef182b0f5858b034beac1b6f3089aa2d3188bb1e8929f4fa9b929
-#   OPERATOR # 0x9d49f397ae9ef1a834b569acb967799a367061e305932181a44f5773da873bfd
-#   SMART_CONTRACT # 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6
-# }
 
+" These are based on the contracts public variable 'marketTemplate', not to be confused with the id returned from the event AuctionTemplateAdded (which is just an index) "
+enum AuctionType {
+  CROWDSALE # template id 1
+  DUTCH # template id 2
+  BATCH # template id 3
+  HYBERBOLIC # template id 4
+}
 
 type Role @entity {
   id: ID!
@@ -26,6 +27,8 @@ type Factory @entity {
 
 type Template @entity {
   id: ID!
+  templateId: BigInt!
+  type: AuctionType!
   factory: Factory!
   auctions: [Auction!] @derivedFrom(field: "template")
   removed: Boolean!
@@ -33,30 +36,35 @@ type Template @entity {
   timestamp: BigInt!
 }
 
-
-# type Organization @entity {
-#   id: ID!
-#   name: String!
-#   members: [UserOrganization]! @derivedFrom(field: "user")
-# }
-
-# type User @entity {
-#   id: ID!
-#   name: String!
-#   organizations: [UserOrganization!] @derivedFrom(field: "organization")
-# }
-
-# type UserOrganization @entity {
-#   id: ID! # Set to `${user.id}-${organization.id}`
-#   user: User!
-#   organization: Organization!
-# }
-
-
 type Auction @entity {
   id: ID!
   factory: Factory!
+  type: AuctionType!
   template: Template!
+  startTime: BigInt!
+  endTime: BigInt!
+
+  auctionToken: Token!
+  bidToken: Token!
+  totalTokens: BigInt!
+  priceDrop: BigInt!
+
+  # Only used for Crowdsale
+  priceRate: BigInt!
+  priceGoal: BigInt!
+
+  # Only used for Dutch
+  startPrice: BigInt!
+  minimumPrice: BigInt!
+
+  # Only used for Batch
+  # minimumRaised: BigInt!
+  amountRaised: BigInt!
+
+  pointList: PointList
+  usePointList: Boolean!
+  documents: DocumentCollection!
+
   participants: [Participant!] @derivedFrom(field: "auction")
   participantCount: BigInt!
   commitments: [Commitment!] @derivedFrom(field: "auction")
@@ -70,6 +78,38 @@ type Auction @entity {
   cancelledTimestamp: BigInt
 }
 
+" collection of documents, including website, whitepaper, social media, logos etc."
+type DocumentCollection @entity {
+  " Same as auction id "
+  id: ID!
+  website: String
+  whitepaper: String
+  tokenomics: String
+  category: String
+  icon: String
+  desktopBanner: String
+  mobileBanner: String
+  description: String
+  twitter: String
+  github: String
+  telegram: String
+  wechat: String
+  discord: String
+  reddit: String
+  medium: String
+}
+
+type Token @entity {
+  id: ID!
+  symbol: String!
+  symbolSuccess: Boolean!
+  name: String!
+  nameSuccess: Boolean!
+  decimals: BigInt!
+  decimalsSuccess: Boolean!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
 
 type Participant @entity {
   id: ID!
@@ -94,4 +134,20 @@ type Commitment @entity {
   transactionHash: Bytes!
   block: BigInt!
   timestamp: BigInt!
+}
+
+type PointList @entity {
+  " auction address : pointList address "
+  id: ID!
+  auction: Auction!
+  points: [Point!] @derivedFrom(field: "pointList")
+}
+
+type Point @entity {
+  "user address : pointList address"
+  id: ID!
+  pointList: PointList!
+  auction: Auction!
+  user: User!
+  amount: BigInt!
 }

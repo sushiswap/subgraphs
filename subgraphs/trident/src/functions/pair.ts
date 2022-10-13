@@ -18,8 +18,8 @@ export function createPair(event: DeployPool, type: string): Pair {
   const swapFee = decoded[2].toBigInt() as BigInt
   const twapEnabled = decoded[3].toBoolean() as boolean
 
-  let token0 = getOrCreateToken(token0Address)
-  let token1 = getOrCreateToken(token1Address)
+  let token0 = getOrCreateToken(token0Address, type, true)
+  let token1 = getOrCreateToken(token1Address, type, true)
 
   const pair = new Pair(id)
 
@@ -55,9 +55,14 @@ export function createPair(event: DeployPool, type: string): Pair {
   pair.txCount = BIG_INT_ZERO
   pair.save()
 
+  const globalFactory = getOrCreateFactory(PairType.ALL)
+  globalFactory.pairCount = globalFactory.pairCount.plus(BIG_INT_ONE)
+  globalFactory.save()
+
   const factory = getOrCreateFactory(type)
   factory.pairCount = factory.pairCount.plus(BIG_INT_ONE)
   factory.save()
+
   // create the tracked contract based on the template
 
   if (type === PairType.CONSTANT_PRODUCT_POOL) {
@@ -79,9 +84,9 @@ export function createPair(event: DeployPool, type: string): Pair {
 }
 
 function decodeDeployData(event: DeployPool, type: string): ethereum.Tuple {
-  if (type === PairType.CONSTANT_PRODUCT_POOL) {
+  if (type == PairType.CONSTANT_PRODUCT_POOL) {
     return ethereum.decode('(address,address,uint256,bool)', event.params.deployData)!.toTuple()
-  } else if (type === PairType.STABLE_POOL) {
+  } else if (type == PairType.STABLE_POOL) {
     const decode = ethereum.decode('(address,address,uint256)', event.params.deployData)!.toTuple()
     decode.push(ethereum.Value.fromBoolean(false))
     return decode

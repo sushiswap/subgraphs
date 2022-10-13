@@ -26,11 +26,13 @@ module.exports = {
     mediumRiskMasterContractAddresses: ['0xb527c5295c4bc348cbb3a2e96b2494fd292075a7'],
   },
   trident: {
-    masterDeployer: { address: '0x351447fc9bd20a917783e159e61e86edda0b0187', startBlock: 25840876 },
+    masterDeployer: { address: '0x2f28678432edF5243955054cC04a32B18ca63c97', startBlock: 34188953 },
     concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     constantProductPoolFactory: {
-      address: '0x05689fcfee31fce4a67fbc7cab13e74f80a4e288',
+      address: '0x28890e3C0aA9B4b48b1a716f46C9abc9B12abfab',
+      initCodeHash: '0x3172d82413be467c1130709f7479a07def9b99caf8e0059f248c131081e4ea09',
     },
+    stablePoolFactory: { address: '0x2A0Caa28331bC6a18FF195f06694f90671dE70f2' },
     hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     native: { address: NATIVE_ADDRESS },

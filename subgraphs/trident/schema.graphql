@@ -3,6 +3,7 @@ enum PairType {
   CONSTANT_PRODUCT_POOL
   CONCENTRATED_LIQUIDITY_POOL
   STABLE_POOL
+  ALL # This is a special value for the factory to use, it is not a valid value for a pool. Needed to track all factories as one.
 }
 
 type Factory @entity {
@@ -30,6 +31,17 @@ type Factory @entity {
   tokenCount: BigInt!
   " User count "
   userCount: BigInt!
+}
+
+
+type _FactoryToken @entity(immutable: true) {
+  " id is created by combining factory type and token id, e.g. STABLE_POOL:0x..00 "
+  id: ID!
+}
+
+type _FactoryUser @entity(immutable: true) {
+  " id is created by combining factory type and user id, e.g. STABLE_POOL:0x..00 "
+  id: ID!
 }
 
 " Bundle - should only ever be one created"

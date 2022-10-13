@@ -3,10 +3,8 @@ import { Pair, _TokenPair, TokenPrice } from '../generated/schema'
 import {
   BIG_DECIMAL_ONE,
   BIG_DECIMAL_ZERO,
-  INIT_CODE_HASH,
   MINIMUM_NATIVE_LIQUIDITY,
   NATIVE_ADDRESS,
-  PRESET_STABLE_POOL_ADDRESSES,
   STABLE_POOL_ADDRESSES,
   STABLE_TOKEN_ADDRESSES
 } from './constants'
@@ -20,14 +18,10 @@ export function getNativePriceInUSD(): BigDecimal {
   let stablePrices: BigDecimal[] = []
   let nativeReserves: BigDecimal[] = []
 
-  // NOTE: if no initCodeHash is added to the configuration, we will use a preset pool list instead. The reason for this criteria is that
-  // polygon has a bug that makes addresses non deterministic.
-  const stablePoolAddresses = INIT_CODE_HASH != '' ? STABLE_POOL_ADDRESSES : PRESET_STABLE_POOL_ADDRESSES
-
   const nativeToken = getOrCreateToken(NATIVE_ADDRESS)
 
-  for (let i = 0; i < stablePoolAddresses.length; i++) {
-    const address = stablePoolAddresses[i]
+  for (let i = 0; i < STABLE_POOL_ADDRESSES.length; i++) {
+    const address = STABLE_POOL_ADDRESSES[i]
 
     const stablePair = Pair.load(address)
     if (stablePair === null) {
