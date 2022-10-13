@@ -1,15 +1,15 @@
 import { Address } from '@graphprotocol/graph-ts'
 import { Factory } from '../../generated/schema'
 import {
-  BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS, PairType
+  BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS, STABLE_POOL_FACTORY_ADDRESS, PairType
 } from '../constants'
 
 export function getOrCreateFactory(type: string): Factory {
-  let id = getFactoryAddress(type)
-  let factory = Factory.load(id.toHex())
+  let id = getFactoryId(type)
+  let factory = Factory.load(id)
 
   if (factory === null) {
-    factory = new Factory(id.toHex())
+    factory = new Factory(id)
     factory.type = type
     factory.volumeUSD = BIG_DECIMAL_ZERO
     factory.volumeNative = BIG_DECIMAL_ZERO
@@ -28,17 +28,27 @@ export function getOrCreateFactory(type: string): Factory {
 }
 
 export function increaseFactoryTransactionCount(type: string): void {
+  const globalFactory = getOrCreateFactory(PairType.ALL)
+  globalFactory.transactionCount = globalFactory.transactionCount.plus(BIG_INT_ONE)
+  globalFactory.save()
+
   const factory = getOrCreateFactory(type)
   factory.transactionCount = factory.transactionCount.plus(BIG_INT_ONE)
   factory.save()
 }
 
-function getFactoryAddress(type: string): Address {
-  if (type === PairType.CONSTANT_PRODUCT_POOL) {
-    return CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS
-  } else {
+function getFactoryId(type: string): string {
+  if (type == PairType.CONSTANT_PRODUCT_POOL) {
+    return CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS.toHex()
+  }
+  else if (type == PairType.STABLE_POOL) {
+    return STABLE_POOL_FACTORY_ADDRESS.toHex()
+  }
+  else if (type == PairType.ALL) {
+    return PairType.ALL
+  }
+  else {
     throw new Error(
-      `Unknown factory type: ${type}, currently available: ${PairType.CONSTANT_PRODUCT_POOL}. Did you forget to add it to the list of supported factories?`
-    )
+      `Unknown factory type: ${type}, currently available: ${PairType.ALL}, ${PairType.CONSTANT_PRODUCT_POOL} and ${PairType.STABLE_POOL}. Did you forget to add it to the list of supported factories?`    )
   }
 }

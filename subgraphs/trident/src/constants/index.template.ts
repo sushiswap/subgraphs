@@ -52,6 +52,8 @@ export const MASTER_DEPLOYER_ADDRESS = Address.fromString('{{ trident.masterDepl
 
 export const CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS = Address.fromString('{{ trident.constantProductPoolFactory.address }}')
 
+export const STABLE_POOL_FACTORY_ADDRESS = Address.fromString('{{ trident.stablePoolFactory.address }}')
+
 export const HYBRID_POOL_FACTORY_ADDRESS = Address.fromString('{{ trident.hybridPoolFactory.address }}')
 
 export const INDEX_POOL_FACTORY_ADDRESS = Address.fromString('{{ trident.indexPoolFactory.address }}')
@@ -93,7 +95,9 @@ export const MINIMUM_USD_THRESHOLD_NEW_PAIRS = BigDecimal.fromString(
 )
 
 export namespace PairType {
+  export const ALL = "ALL";
   export const CONSTANT_PRODUCT_POOL = "CONSTANT_PRODUCT_POOL";
+  export const STABLE_POOL = "STABLE_POOL";
 }
 
 export * from './id'

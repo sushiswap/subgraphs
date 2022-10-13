@@ -1,4 +1,4 @@
-import { BigDecimal } from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { TokenPrice } from '../generated/schema'
 import {
   Swap as SwapEvent,
@@ -30,20 +30,28 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   const pair = getPair(pairId)
   const token0 = getOrCreateToken(pair.token0)
   const token1 = getOrCreateToken(pair.token1)
-  const factory = getOrCreateFactory(PairType.CONSTANT_PRODUCT_POOL)
+  const globalFactory = getOrCreateFactory(PairType.ALL)
+  const factory = getOrCreateFactory(pair.type)
 
   // Reset token liquidity, will be updated again later when price is updated
   token0.liquidity = token0.liquidity.minus(pair.reserve0)
   token1.liquidity = token1.liquidity.minus(pair.reserve1)
   token0.save()
   token1.save()
+  globalFactory.liquidityNative = globalFactory.liquidityNative.minus(pair.trackedLiquidityNative)
   factory.liquidityNative = factory.liquidityNative.minus(pair.trackedLiquidityNative)
 
-  const rebase0 = getRebase(token0.id)
-  const rebase1 = getRebase(token1.id)
-
-  const reserve0 = toElastic(rebase0, event.params.reserve0, false)
-  const reserve1 = toElastic(rebase1, event.params.reserve1, false)
+  let reserve0: BigInt
+  let reserve1: BigInt
+  if (pair.type == PairType.CONSTANT_PRODUCT_POOL) {
+    const rebase0 = getRebase(token0.id)
+    const rebase1 = getRebase(token1.id)
+    reserve0 = toElastic(rebase0, event.params.reserve0, false)
+    reserve1 = toElastic(rebase1, event.params.reserve1, false)
+  } else {
+    reserve0 = event.params.reserve0
+    reserve1 = event.params.reserve1
+  }
 
   pair.reserve0 = reserve0
   pair.reserve1 = reserve1
@@ -104,10 +112,14 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   pair.liquidityUSD = pair.liquidityNative.times(bundle.nativePrice)
   pair.save()
 
+
+  globalFactory.liquidityNative = globalFactory.liquidityNative.plus(trackedLiquidityNative)
+  globalFactory.liquidityUSD = globalFactory.liquidityNative.times(bundle.nativePrice)
+  globalFactory.save()
+
   factory.liquidityNative = factory.liquidityNative.plus(trackedLiquidityNative)
   factory.liquidityUSD = factory.liquidityNative.times(bundle.nativePrice)
   factory.save()
-
 }
 
 export function updateVolume(event: SwapEvent): Volume {
@@ -155,12 +167,19 @@ export function updateVolume(event: SwapEvent): Volume {
   pair.feesUSD = pair.feesUSD.plus(feesUSD)
   pair.save()
 
-  const factory = getOrCreateFactory(PairType.CONSTANT_PRODUCT_POOL)
+  const factory = getOrCreateFactory(pair.type)
   factory.volumeUSD = factory.volumeUSD.plus(volumeUSD)
   factory.volumeNative = factory.volumeNative.plus(volumeNative)
   factory.feesNative = factory.feesNative.plus(feesNative)
   factory.feesUSD = factory.feesUSD.plus(feesUSD)
   factory.save()
+  
+  const globalFactory = getOrCreateFactory(PairType.ALL)
+  globalFactory.volumeUSD = globalFactory.volumeUSD.plus(volumeUSD)
+  globalFactory.volumeNative = globalFactory.volumeNative.plus(volumeNative)
+  globalFactory.feesNative = globalFactory.feesNative.plus(feesNative)
+  globalFactory.feesUSD = globalFactory.feesUSD.plus(feesUSD)
+  globalFactory.save()
 
   return {
     volumeUSD,
