@@ -1,8 +1,8 @@
-const NATIVE_ADDRESS = '0x0000000000000000000000000000000000001010'
-const CLOE_ADDRESS = '0x1eaa43544daa399b87eecfcc6fa579d5ea4a6187'
-const BUSDT_ADDRESS = '0xbf6c50889d3a620eb42C0F188b65aDe90De958c4'
-const BNB_ADDRESS = '0xcc78d0a86b0c0a3b32debd773ec815130f9527cf'
-const WETH_ADDRESS = '0xcc00860947035a26ffe24ecb1301ffad3a89f910'
+const NATIVE_ADDRESS = '0x23181f21dea5936e24163ffaba4ea3b316b57f3c'
+const BUSD_ADDRESS = '0xde47772ac041a4ccf3c865632131d1093e51c02d'
+const USDT_B_ADDRESS = '0x9b5f27f6ea9bbd753ce3793a07cba3c74644330d'
+const USDT_T_ADDRESS = '0xdb28719f7f938507dbfe4f0eae55668903d34a15'
+const WETH_ADDRESS = '0x1249c65afb11d179ffb3ce7d4eedd1d9b98ad006'
 
 module.exports = {
   network: 'bttc',
@@ -13,26 +13,26 @@ module.exports = {
     startBlock: 0,
   },
   blocks: {
-    address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
-    startBlock: 3030672,
+    address: '0xb8c7aa0f2b3ddcc5340b5706d81eefaded74e5ac',
+    startBlock: 12938709,
   },
   legacy: {
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [
       // IMPORTANT! The native address must be included for pricing to start
       NATIVE_ADDRESS,
-      CLOE_ADDRESS,
-      BUSDT_ADDRESS,
-      BNB_ADDRESS,
+      BUSD_ADDRESS,
+      USDT_B_ADDRESS,
+      USDT_T_ADDRESS,
       WETH_ADDRESS,
     ],
-    stableTokenAddresses: [BUSDT_ADDRESS],
+    stableTokenAddresses: [BUSD_ADDRESS, USDT_B_ADDRESS, USDT_T_ADDRESS],
     minimumNativeLiquidity: 1000000000,
     minimum_usd_threshold_new_pairs: '3000',
     factory: {
-      address: '0xbf6c50889d3a620eb42c0f188b65ade90de958c4',
-      initCodeHash: '0xe410ea0a25ce340e309f2f0fe9d58d787bb87dd63d02333e8a9a747230f61758',
-      startBlock: 3035123,
+      address: '0xb8c7aa0f2b3ddcc5340b5706d81eefaded74e5ac',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 12938709,
     },
   },
   // trident: {
