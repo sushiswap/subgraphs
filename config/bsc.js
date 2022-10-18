@@ -7,6 +7,7 @@ const DAI_ADDRESS = '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3'
 const ICE_ADDRESS = '0xf16e81dce15b08f326220742020379b855b87df9'
 
 module.exports = {
+  chainId: 56,
   network: 'bsc',
   bentobox: {
     address: '0xf5bce5077908a1b7370b9ae04adc565ebd643966',
@@ -18,6 +19,7 @@ module.exports = {
   },
   kashi: {
     mediumRiskMasterContractAddresses: ['0x2cba6ab6574646badc84f0544d05059e57a5dc42'],
+    depreciated: ['0x2cba6ab6574646badc84f0544d05059e57a5dc42'],
   },
   legacy: {
     native: { address: NATIVE_ADDRESS },

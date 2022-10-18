@@ -8,6 +8,7 @@ const UST_ADDRESS = '0x085416975fe14c2a731a97ec38b9bf8135231f62'
 const FRAX_ADDRESS = '0x322e86852e492a7ee17f28a78c663da38fb33bfb'
 
 module.exports = {
+  chainId: 1284,
   network: 'moonbeam',
   native: { address: '0xacc15dc74880c9944775448304b263d191c6077f' },
   sushi: { address: '0x2c78f1b70ccf63cdee49f9233e9faa99d43aa07e' },

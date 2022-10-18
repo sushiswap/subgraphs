@@ -6,6 +6,7 @@ const DAI_ADDRESS = '0x765277eebeca2e31912c9946eae1021199b39c61'
 const WETH_ADDRESS = '0xe3f5a90f9cb311505cd691a46596599aa1a0ad7d'
 
 module.exports = {
+  chainId: 2222,
   network: 'kava-evm',
   bentobox: {
     address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',

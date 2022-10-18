@@ -9,6 +9,7 @@ const DAI_ADDRESS = '0xe4fe50cdd716522a56204352f00aa110f731932d'
 const DAI2_ADDRESS = '0x90ca507a5d4458a4c6c6249d186b6dcb02a5bccd'
 
 module.exports = {
+  chainId: 42220,
   network: 'celo',
   bentobox: {
     address: '0x0711b6026068f736bae6b213031fce978d48e026',

@@ -4,6 +4,7 @@ import { NameBytes32 } from '../../generated/BentoBox/NameBytes32'
 import { SymbolBytes32 } from '../../generated/BentoBox/SymbolBytes32'
 import { Token } from '../../generated/schema'
 import { createRebase } from './rebase'
+import { createTokenPrice } from './token-price'
 
 export function getToken(id: string): Token {
   return Token.load(id) as Token
@@ -30,6 +31,9 @@ export function getOrCreateToken(id: string): Token {
 
     const rebase = createRebase(id)
     token.rebase = rebase.id
+
+    const price = createTokenPrice(id)
+    token.price = price.id
 
     token.save()
   }

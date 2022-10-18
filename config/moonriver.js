@@ -9,6 +9,7 @@ const FRAX_ADDRESS = '0x1a93b23281cc1cde4c4741353f3064709a16197d'
 const MIM_ADDRESS = '0x0cae51e1032e8461f4806e26332c030e34de3adb'
 
 module.exports = {
+  chainId: 1285,
   network: 'moonriver',
 
   bentobox: {

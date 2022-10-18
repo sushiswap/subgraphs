@@ -9,6 +9,7 @@ const DAI_ADDRESS = '0x44fa8e6f47987339850636f88629646662444217'
 const USDP_ADDRESS = '0xfe7ed09c4956f7cdb54ec4ffcb9818db2d7025b8'
 
 module.exports = {
+  chainId: 100,
   network: 'xdai',
   bentobox: {
     address: '0xe2d7f5dd869fc7c126d21b13a9080e75a4bdb324',

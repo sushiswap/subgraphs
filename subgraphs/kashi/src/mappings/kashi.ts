@@ -20,6 +20,8 @@ import { updateKashiPairSnapshots } from '../functions/kashi-pair-snapshot'
 
 // TODO: add callHandler for liquidate function on KashiPairs
 
+// class ChainlinkPriceFeedRegistry {}
+
 export function handleLogExchangeRate(event: LogExchangeRate): void {
   log.info('[BentoBox:KashiPair] Log Exchange Rate {}', [event.params.rate.toString()])
   const pair = getKashiPair(event.address, event.block)
@@ -73,6 +75,12 @@ export function handleLogAccrue(event: LogAccrue): void {
   pair.timestamp = event.block.timestamp
   pair.save()
 
+  // Temp, for querying
+  pair.feesEarnedFraction = accrueInfo.feesEarnedFraction
+  pair.interestPerSecond = accrueInfo.interestPerSecond
+  pair.lastAccrued = accrueInfo.lastAccrued
+  pair.save()
+
   updateKashiPairSnapshots(event.block.timestamp, pair)
 }
 
@@ -113,6 +121,8 @@ export function handleLogAddAsset(event: LogAddAsset): void {
   ])
   // elastic = BentoBox shares held by the KashiPair, base = Total fractions held by asset suppliers
 
+  const pair = getKashiPair(event.address, event.block)
+
   const share = event.params.share
   const fraction = event.params.fraction
 
@@ -120,6 +130,10 @@ export function handleLogAddAsset(event: LogAddAsset): void {
   totalAsset.elastic = totalAsset.elastic.plus(share)
   totalAsset.base = totalAsset.base.plus(fraction)
   totalAsset.save()
+
+  pair.totalAssetBase = totalAsset.base
+  pair.totalAssetElastic = totalAsset.elastic
+  pair.save()
 }
 
 export function handleLogRemoveAsset(event: LogRemoveAsset): void {
@@ -130,6 +144,7 @@ export function handleLogRemoveAsset(event: LogRemoveAsset): void {
     event.params.fraction.toString(),
   ])
   // elastic = BentoBox shares held by the KashiPair, base = Total fractions held by asset suppliers
+  const pair = getKashiPair(event.address, event.block)
 
   const share = event.params.share
   const fraction = event.params.fraction
@@ -142,6 +157,11 @@ export function handleLogRemoveAsset(event: LogRemoveAsset): void {
   totalAsset.save()
 
   //TODO: maybe update user and check if solvent
+
+  // Temp, for querying
+  pair.totalAssetBase = totalAsset.base
+  pair.totalAssetElastic = totalAsset.elastic
+  pair.save()
 }
 
 export function handleLogBorrow(event: LogBorrow): void {
@@ -181,6 +201,12 @@ export function handleLogBorrow(event: LogBorrow): void {
 
   totalAsset.elastic = totalAsset.elastic.minus(share)
   totalAsset.save()
+
+  // Temp, for querying
+  pair.totalBorrowBase = totalBorrow.base
+  pair.totalBorrowElastic = totalBorrow.elastic
+  pair.totalAssetElastic = totalAsset.elastic
+  pair.save()
 }
 
 export function handleLogRepay(event: LogRepay): void {
@@ -207,6 +233,12 @@ export function handleLogRepay(event: LogRepay): void {
   totalAsset.elastic = totalAsset.elastic.plus(share)
   totalAsset.save()
 
+  // Temp, for querying
+  pair.totalBorrowBase = totalBorrow.base
+  pair.totalBorrowElastic = totalBorrow.elastic
+  pair.totalAssetElastic = totalAsset.elastic
+  pair.save()
+
   // const poolPercentage = part.div(pair.totalBorrowBase).times(BigInt.fromI32(100))
 }
 
@@ -232,6 +264,10 @@ export function handleLogWithdrawFees(event: LogWithdrawFees): void {
   const kashiPairAccrueInfo = getKashiPairAccrueInfo(event.address.toHex())
   kashiPairAccrueInfo.feesEarnedFraction = BigInt.fromI32(0)
   kashiPairAccrueInfo.save()
+
+  // Temp, for querying
+  pair.feesEarnedFraction = kashiPairAccrueInfo.feesEarnedFraction
+  pair.save()
 
   updateKashiPairSnapshots(event.block.timestamp, pair)
 }

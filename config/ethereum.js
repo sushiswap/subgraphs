@@ -33,6 +33,7 @@ const FRAX_ADDRESS = '0x853d955acef822db058eb8505911ed77f175b99e'
 const UST_ADDRESS = '0xa47c8bf37f92abed4a126bda807a7b7498661acd'
 
 module.exports = {
+  chainId: 1,
   network: 'mainnet',
   sushi: { address: '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2' },
   weth: { address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2' },
@@ -43,6 +44,7 @@ module.exports = {
   },
   kashi: {
     mediumRiskMasterContractAddresses: ['0x2cba6ab6574646badc84f0544d05059e57a5dc42'],
+    depreciated: ['0x2cba6ab6574646badc84f0544d05059e57a5dc42'],
   },
   blocks: {
     address: '0x6e38A457C722C6011B2dfa06d49240e797844d66',

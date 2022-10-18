@@ -1,6 +1,5 @@
 import { Address, BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 
-
 export const BIG_INT_ZERO = BigInt.fromI32(0)
 export const BIG_DECIMAL_ZERO = BigDecimal.fromString('0')
 export const BIG_DECIMAL_ONE = BigDecimal.fromString('1')
@@ -9,9 +8,13 @@ export const BIG_INT_ONE = BigInt.fromI32(1)
 export const HOUR_IN_SECONDS = 3600
 export const DAY_IN_SECONDS = 24 * HOUR_IN_SECONDS
 
+export const CHAIN_ID = BigInt.fromString('{{ chainId }}')
+
 export const BENTOBOX_ADDRESS = Address.fromString('{{ bentobox.address }}')
 
 export const KASHI_MEDIUM_RISK_MASTER_CONTRACT_ADDRESSES = '{{ kashi.mediumRiskMasterContractAddresses }}'.split(',')
+
+export const DEPRECIATED_ADDRESSES = '{{ kashi.depreciated }}'.split(',')
 
 // MEDIUM RISK PAIR CONFIGURATION
 export const MINIMUM_TARGET_UTILIZATION = BigInt.fromString('700000000000000000') // 70%
@@ -36,12 +39,13 @@ export const MINIMUM_INTEREST_PER_YEAR = BigInt.fromI32(79274480)
   .times(BigInt.fromI32(24))
   .times(BigInt.fromI32(365)) // approx 0.25% APR
 
-
 export const MAXIMUM_INTEREST_PER_YEAR = STARTING_INTEREST_PER_YEAR.times(BigInt.fromI32(1000)) // approx 1000% APR
 
 export const INTEREST_ELASTICITY = BigInt.fromString('28800000000000000000000000000000000000000') // Half or double in 28800 seconds (8 hours) if linear
 
 export const FACTOR_PRECISION = BigInt.fromString('1000000000000000000')
+
+export const ADDRESS_ZERO = Address.fromString('0x0000000000000000000000000000000000000000')
 
 class KashiActions {
   PAIR_ADD_COLLATERAL: string

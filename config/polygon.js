@@ -14,6 +14,7 @@ const DMAGIC_ADDRESS = '0x61daecab65ee2a1d5b6032df030f3faa3d116aa7'
 const NDEFI_ADDRESS = '0xd3f07ea86ddf7baebefd49731d7bbd207fedc53b'
 
 module.exports = {
+  chainId: 137,
   network: 'matic',
   sushi: { address: SUSHI_ADDRESS },
   weth: { address: WETH_ADDRESS },
@@ -28,6 +29,7 @@ module.exports = {
   },
   kashi: {
     mediumRiskMasterContractAddresses: ['0xb527c5295c4bc348cbb3a2e96b2494fd292075a7'],
+    depreciated: ['0xb527c5295c4bc348cbb3a2e96b2494fd292075a7'],
   },
   masterDeployer: { address: '0x351447fc9bd20a917783e159e61e86edda0b0187', startBlock: 25840876 },
   concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },

@@ -5,6 +5,7 @@ const USDT_ADDRESS = '0x94b008aa00579c1307b0ef2c499ad98a8ce58e58'
 const DAI_ADDRESS = '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1'
 
 module.exports = {
+  chainId: 10,
   network: 'optimism',
   bentobox: {
     address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',

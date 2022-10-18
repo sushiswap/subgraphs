@@ -90,18 +90,40 @@ type KashiPair @entity {
   oracle: Bytes!
   " Oracle data "
   oracleData: Bytes!
+  " Oracle multiply "
+  oracleMultiply: Bytes!
+  " Oracle divide "
+  oracleDivide: Bytes!
+  " Oracle decimals "
+  oracleDecimals: BigInt!
+  " Oracle validated "
+  oracleValidated: Boolean!
  " Total collateral share of this pair "
   totalCollateralShare: BigInt!
- " Total asset rebase of this pair "
+  " Total asset rebase of this pair "
   totalAsset: Rebase!
   " Total borrow rebase of this pair "
   totalBorrow: Rebase!
+ " Total asset base "
+  totalAssetBase: BigInt!
+ " Total asset elastic "
+  totalAssetElastic: BigInt!
+ " Total borrow base "
+  totalBorrowBase: BigInt!
+ " Total borrow elastic "
+  totalBorrowElastic: BigInt!
   " Balances which belong to this pair "
   balances: [Balance!] @derivedFrom(field: "pair")
   " KashiPair cached exchange rate "
   exchangeRate: BigInt!
   " AccrueInfo for this pair"
   accrueInfo: KashiPairAccrueInfo!
+  " Interest per second "  
+  interestPerSecond: BigInt!
+  " Last accrued timestamp "
+  lastAccrued: BigInt!
+  " Fees earned fraction "
+  feesEarnedFraction: BigInt!
   " KashiPair name "
   name: String!
   " KashiPair symbol "
@@ -118,6 +140,8 @@ type KashiPair @entity {
   utilization: BigInt!
   " Total fees earned fraction "
   totalFeesEarnedFraction: BigInt!
+  " Depreciated flag "
+  depreciated: Boolean!
   " Block number of this pair "
   block: BigInt!
   " Timestamp of this pair "
@@ -137,6 +161,12 @@ type KashiPairHourSnapshot @entity {
   exchangeRate: BigInt!
   " KashiPair totalSupply "
   totalSupply: BigInt!
+  " Interest per second "  
+  interestPerSecond: BigInt!
+  " Last accrued timestamp "
+  lastAccrued: BigInt!
+  " Fees earned fraction "
+  feesEarnedFraction: BigInt!
   " Supply APR "
   supplyAPR: BigInt!
   " Borrow APR "
@@ -145,6 +175,14 @@ type KashiPairHourSnapshot @entity {
   utilization: BigInt!
   " Total fees earned fraction "
   totalFeesEarnedFraction: BigInt!
+ " Total asset base "
+  totalAssetBase: BigInt!
+ " Total asset elastic "
+  totalAssetElastic: BigInt!
+ " Total borrow base "
+  totalBorrowBase: BigInt!
+ " Total borrow elastic "
+  totalBorrowElastic: BigInt!
 }
 
 type KashiPairDaySnapshot @entity {
@@ -160,6 +198,12 @@ type KashiPairDaySnapshot @entity {
   exchangeRate: BigInt!
   " KashiPair totalSupply "
   totalSupply: BigInt!
+  " Interest per second "  
+  interestPerSecond: BigInt!
+  " Last accrued timestamp "
+  lastAccrued: BigInt!
+  " Fees earned fraction "
+  feesEarnedFraction: BigInt!
   " Supply APR "
   supplyAPR: BigInt!
   " Borrow APR "
@@ -168,6 +212,14 @@ type KashiPairDaySnapshot @entity {
   utilization: BigInt!
   " Total fees earned fraction "
   totalFeesEarnedFraction: BigInt!
+ " Total asset base "
+  totalAssetBase: BigInt!
+ " Total asset elastic "
+  totalAssetElastic: BigInt!
+ " Total borrow base "
+  totalBorrowBase: BigInt!
+ " Total borrow elastic "
+  totalBorrowElastic: BigInt!
 }
 
 type KashiPairAccrueInfo @entity {
@@ -193,6 +245,8 @@ type Token @entity(immutable: true) {
   id: ID!
   " The Rebase that belongs to this token "
   rebase: Rebase!
+  " The Price that belongs to this token "
+  price: Price!
   " Token symbol, if fetched successfully, else default to ??? "
   symbol: String!
   " If the symbol was succesfully fetched "
@@ -218,6 +272,34 @@ type Rebase @entity {
   base: BigInt!
   " Elastic (Amount) "
   elastic: BigInt!
+}
+
+type Price @entity {
+  " Token address "
+  id: ID!
+  " BentoBox this price belongs to "
+  bentoBox: BentoBox!
+  " Token this price belongs to "
+  token: Token!
+  " ETH "
+  eth: BigInt!
+  " USD "
+  usd: BigInt!
+}
+
+type Oracle @entity {
+  " Oracle address "
+  id: ID!
+  " BentoBox this oracle belongs to "
+  bentoBox: BentoBox!
+  " KashiPair this oracle belongs to "
+  pair: KashiPair!
+  " Multiply "
+  multiply: Bytes!
+  " Divide "
+  divide: Bytes!
+  " Decimals "
+  decimals: BigInt!
 }
 
 type User @entity(immutable: true) {

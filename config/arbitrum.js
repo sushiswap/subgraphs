@@ -13,6 +13,7 @@ const GOHM_ADDRESS = '0x8d9ba570d6cb60c7e3e0f31343efe75ab8e65fb1'
 const MAGIC_ADDRESS = '0x539bde0d7dbd336b79148aa742883198bbf60342'
 
 module.exports = {
+  chainId: 42161,
   network: 'arbitrum-one',
   sushi: { address: SUSHI_ADDRESS },
   weth: { address: WETH_ADDRESS },
@@ -26,6 +27,8 @@ module.exports = {
     medium: '0xa010ee0226cd071bebd8919a1f675cae1f1f5d3e',
 
     mediumRiskMasterContractAddresses: ['0xa010ee0226cd071bebd8919a1f675cae1f1f5d3e'],
+
+    depreciated: ['0xa010ee0226cd071bebd8919a1f675cae1f1f5d3e'],
   },
   miso: {
     accessControls: { address: '0x1be211d8da40bc0ae8719c6663307bfc987b1d6c', startBlock: 9930886 },

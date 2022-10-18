@@ -11,6 +11,7 @@ const TIME_ADDRESS = '0xb54f16fb19478766a268f172c9480f8da1a7c9c3'
 const SPELL_ADDRESS = '0xce1bffbd5374dac86a2893119683f4911a2f7814'
 const WMEMO_ADDRESS = '0x0da67235dd5787d67955420c84ca1cecd4e5bb3b'
 module.exports = {
+  chainId: 43114,
   network: 'avalanche',
 
   bentobox: {
@@ -20,6 +21,7 @@ module.exports = {
   kashi: {
     medium: '0x513037395fa0c9c35e41f89189cedfe3bd42fadb',
     mediumRiskMasterContractAddresses: ['0x513037395fa0c9c35e41f89189cedfe3bd42fadb'],
+    depreciated: ['0x513037395fa0c9c35e41f89189cedfe3bd42fadb'],
   },
   miso: {
     accessControls: { address: '0x0769fd68dfb93167989c6f7254cd0d766fb2841f', startBlock: 13510155 },

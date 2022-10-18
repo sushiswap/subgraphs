@@ -8,6 +8,7 @@ const DAI_ADDRESS = '0xef977d2f931c1978db5f6747666fa1eacb0d0339'
 const FRAX_ADDRESS = '0xfa7191d292d5633f702b0bd7e3e3bccc0e633200'
 
 module.exports = {
+  chainId: 1666600000,
   network: 'harmony',
   miso: {
     accessControls: { address: '0x863956314860f86f8B45da47c93637af09addB01', startBlock: 22978623 },
@@ -34,7 +35,7 @@ module.exports = {
       USDT_ADDRESS,
       BUSD_ADDRESS,
       DAI_ADDRESS,
-      FRAX_ADDRESS
+      FRAX_ADDRESS,
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, BUSD_ADDRESS, DAI_ADDRESS, FRAX_ADDRESS],
     minimumNativeLiquidity: 50000,
@@ -64,6 +65,6 @@ module.exports = {
       '0xef977d2f931c1978db5f6747666fa1eacb0d0339',
     ],
     minimumNativeLiquidity: 50000,
-    minimumUsdThresholdNewPairs: 1000
+    minimumUsdThresholdNewPairs: 1000,
   },
 }
