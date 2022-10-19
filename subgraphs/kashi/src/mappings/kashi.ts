@@ -18,7 +18,7 @@ import { getInterestPerYear, takeFee } from '../functions/interest'
 import { getKashiPairAccrueInfo } from '../functions/kashi-pair-accrue-info'
 import { updateKashiPairSnapshots } from '../functions/kashi-pair-snapshot'
 import { getTokenPrice } from '../functions/token-price'
-import { ADDRESS_ZERO } from '../constants'
+import { ADDRESS_ZERO, BTC_ADDRESSES, ETH_ADDRESSES, NATIVE_ADDRESS, STABLE_ADDRESSES } from '../constants'
 
 // TODO: add callHandler for liquidate function on KashiPairs
 
@@ -33,8 +33,8 @@ export function handleLogExchangeRate(event: LogExchangeRate): void {
 
   const asset = getToken(pair.asset)
   const collateral = getToken(pair.collateral)
-  // const assetPrice = getTokenPrice(pair.asset)
-  // const collateralPrice = getTokenPrice(pair.collateral)
+  const assetPrice = getTokenPrice(pair.asset)
+  const collateralPrice = getTokenPrice(pair.collateral)
 
   // Figure out if priced against BTC/ETH/USD
 
@@ -83,6 +83,38 @@ export function handleLogExchangeRate(event: LogExchangeRate): void {
           .toBigDecimal()
       )
     )
+
+    if (STABLE_ADDRESSES.includes(pair.collateral)) {
+      assetPrice.usd = pair.assetPrice
+      assetPrice.save()
+    } else if (STABLE_ADDRESSES.includes(pair.asset)) {
+      collateralPrice.usd = pair.collateralPrice
+      collateralPrice.save()
+    }
+
+    if (ETH_ADDRESSES.includes(pair.collateral)) {
+      assetPrice.eth = pair.assetPrice
+      assetPrice.save()
+    } else if (ETH_ADDRESSES.includes(pair.asset)) {
+      collateralPrice.eth = pair.collateralPrice
+      collateralPrice.save()
+    }
+
+    if (BTC_ADDRESSES.includes(pair.collateral)) {
+      assetPrice.btc = pair.assetPrice
+      assetPrice.save()
+    } else if (BTC_ADDRESSES.includes(pair.asset)) {
+      collateralPrice.btc = pair.collateralPrice
+      collateralPrice.save()
+    }
+
+    if (NATIVE_ADDRESS == pair.collateral) {
+      assetPrice.native = pair.assetPrice
+      assetPrice.save()
+    } else if (NATIVE_ADDRESS == pair.asset) {
+      collateralPrice.native = pair.collateralPrice
+      collateralPrice.save()
+    }
   }
 
   pair.save()
@@ -137,6 +169,26 @@ export function handleLogAccrue(event: LogAccrue): void {
   pair.feesEarnedFraction = accrueInfo.feesEarnedFraction
   pair.interestPerSecond = accrueInfo.interestPerSecond
   pair.lastAccrued = accrueInfo.lastAccrued
+
+  pair.totalAssetBase = totalAsset.base
+  pair.totalBorrowElastic = totalBorrow.elastic
+
+  const asset = getToken(pair.asset)
+  const assetPrice = getTokenPrice(pair.asset)
+  pair.totalAssetUSD = assetPrice.usd.times(
+    totalAsset.elastic.divDecimal(
+      BigInt.fromI32(10)
+        .pow(asset.decimals.toI32() as u8)
+        .toBigDecimal()
+    )
+  )
+  pair.totalBorrowUSD = assetPrice.usd.times(
+    totalBorrow.elastic.divDecimal(
+      BigInt.fromI32(10)
+        .pow(asset.decimals.toI32() as u8)
+        .toBigDecimal()
+    )
+  )
   pair.save()
 
   updateKashiPairSnapshots(event.block.timestamp, pair)
@@ -191,6 +243,17 @@ export function handleLogAddAsset(event: LogAddAsset): void {
 
   pair.totalAssetBase = totalAsset.base
   pair.totalAssetElastic = totalAsset.elastic
+
+  const asset = getToken(pair.asset)
+  const assetPrice = getTokenPrice(pair.asset)
+  pair.totalAssetUSD = assetPrice.usd.times(
+    totalAsset.elastic.divDecimal(
+      BigInt.fromI32(10)
+        .pow(asset.decimals.toI32() as u8)
+        .toBigDecimal()
+    )
+  )
+
   pair.save()
 }
 
@@ -219,6 +282,17 @@ export function handleLogRemoveAsset(event: LogRemoveAsset): void {
   // Temp, for querying
   pair.totalAssetBase = totalAsset.base
   pair.totalAssetElastic = totalAsset.elastic
+
+  const asset = getToken(pair.asset)
+  const assetPrice = getTokenPrice(pair.asset)
+  pair.totalAssetUSD = assetPrice.usd.times(
+    totalAsset.elastic.divDecimal(
+      BigInt.fromI32(10)
+        .pow(asset.decimals.toI32() as u8)
+        .toBigDecimal()
+    )
+  )
+
   pair.save()
 }
 
@@ -264,6 +338,24 @@ export function handleLogBorrow(event: LogBorrow): void {
   pair.totalBorrowBase = totalBorrow.base
   pair.totalBorrowElastic = totalBorrow.elastic
   pair.totalAssetElastic = totalAsset.elastic
+
+  const asset = getToken(pair.asset)
+  const assetPrice = getTokenPrice(pair.asset)
+  pair.totalAssetUSD = assetPrice.usd.times(
+    totalAsset.elastic.divDecimal(
+      BigInt.fromI32(10)
+        .pow(asset.decimals.toI32() as u8)
+        .toBigDecimal()
+    )
+  )
+  pair.totalBorrowUSD = assetPrice.usd.times(
+    totalBorrow.elastic.divDecimal(
+      BigInt.fromI32(10)
+        .pow(asset.decimals.toI32() as u8)
+        .toBigDecimal()
+    )
+  )
+
   pair.save()
 }
 
@@ -295,6 +387,24 @@ export function handleLogRepay(event: LogRepay): void {
   pair.totalBorrowBase = totalBorrow.base
   pair.totalBorrowElastic = totalBorrow.elastic
   pair.totalAssetElastic = totalAsset.elastic
+
+  const asset = getToken(pair.asset)
+  const assetPrice = getTokenPrice(pair.asset)
+  pair.totalAssetUSD = assetPrice.usd.times(
+    totalAsset.elastic.divDecimal(
+      BigInt.fromI32(10)
+        .pow(asset.decimals.toI32() as u8)
+        .toBigDecimal()
+    )
+  )
+  pair.totalBorrowUSD = assetPrice.usd.times(
+    totalBorrow.elastic.divDecimal(
+      BigInt.fromI32(10)
+        .pow(asset.decimals.toI32() as u8)
+        .toBigDecimal()
+    )
+  )
+
   pair.save()
 
   // const poolPercentage = part.div(pair.totalBorrowBase).times(BigInt.fromI32(100))

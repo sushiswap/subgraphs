@@ -65,6 +65,26 @@ export const ACTIONS: KashiActions = {
   PAIR_REPAY: 'repay',
 }
 
+export const NATIVE_ADDRESS = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+
+export const BTC_ADDRESSES = [
+  // wbtc
+  '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+]
+export const ETH_ADDRESSES = [
+  // weth9
+  '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+]
+
+export const STABLE_ADDRESSES = [
+  // usdc
+  '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  // usdt
+  '0xdac17f958d2ee523a2206206994597c13d831ec7',
+  // dai
+  '0x6b175474e89094c44da98b954eedeac495271d0f',
+]
+
 // TODO: Pricing...
 export const baseLookupTable = new TypedMap<string, string>()
 baseLookupTable.set('0x0000000000000000000000000000000000000001', 'USD')
@@ -93,7 +113,7 @@ chainlinkPriceFeedLookupTable.set('0x72AFAECF99C9d9C8215fF44C77B94B99C28741e8'.t
 // 1INCH / USD
 chainlinkPriceFeedLookupTable.set('0xc929ad75B72593967DE83E7F7Cda0493458261D9'.toLowerCase(), {
   from: Address.fromString('0x111111111117dC0aa78b770fA6A738034120C302'),
-  to: Address.fromString('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'),
+  to: Address.fromString('0x0000000000000000000000000000000000000001'),
   decimals: BigInt.fromU32(8),
   fromDecimals: BigInt.fromU32(18),
   toDecimals: BigInt.fromU32(8),

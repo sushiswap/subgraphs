@@ -117,6 +117,10 @@ type KashiPair @entity {
   totalBorrowBase: BigInt!
  " Total borrow elastic "
   totalBorrowElastic: BigInt!
+ " Total asset usd "
+  totalAssetUSD: BigDecimal!
+ " Total borrow usd "
+  totalBorrowUSD: BigDecimal!
   " Balances which belong to this pair "
   balances: [Balance!] @derivedFrom(field: "pair")
   " KashiPair cached exchange rate "
@@ -287,11 +291,14 @@ type Price @entity {
   " Token this price belongs to "
   token: Token!
   " BTC "
-  btc: BigInt!
+  btc: BigDecimal!
   " ETH "
-  eth: BigInt!
+  eth: BigDecimal!
   " USD "
   usd: BigDecimal!
+  " Native "
+  native: BigDecimal!
+
 }
 
 # type Oracle @entity {

@@ -108,6 +108,9 @@ export function createKashiPair(event: LogDeploy): KashiPair {
   pair.assetPrice = BigDecimal.fromString('0')
   pair.collateralPrice = BigDecimal.fromString('0')
 
+  pair.totalAssetUSD = BigDecimal.fromString('0')
+  pair.totalBorrowUSD = BigDecimal.fromString('0')
+
   pair.block = event.block.number
   pair.timestamp = event.block.timestamp
 
