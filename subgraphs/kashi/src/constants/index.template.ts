@@ -496,6 +496,7 @@ chainlinkPriceFeedLookupTable.set('0xeE636E1f7A0A846EEc2385E729CeA7D1b339D40D'.t
 //   fromDecimals: 18,
 //   toDecimals: 18,
 // },
+
 // DOGE / USD
 chainlinkPriceFeedLookupTable.set('0x2465CefD3b488BE410b941b1d4b2767088e2A028'.toLowerCase(), {
   from: Address.fromString('0x3832d2F059E55934220881F831bE501D180671A7'),

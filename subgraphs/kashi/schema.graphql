@@ -87,6 +87,10 @@ type KashiPair @entity {
   collateral: Token!
   " Asset "
   asset: Token!
+  " Asset price "
+  assetPrice: BigDecimal!
+  " Collateral price "
+  collateralPrice: BigDecimal!
   " Oracle address "
   oracle: Bytes!
   " Oracle data "

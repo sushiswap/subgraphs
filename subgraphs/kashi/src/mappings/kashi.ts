@@ -12,7 +12,7 @@ import {
   LogWithdrawFees,
   Transfer,
 } from '../../generated/templates/KashiPair/KashiPair'
-import { getKashiPair, getRebase, toBase } from '../functions'
+import { getKashiPair, getRebase, getToken, toBase } from '../functions'
 import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 import { getInterestPerYear, takeFee } from '../functions/interest'
 import { getKashiPairAccrueInfo } from '../functions/kashi-pair-accrue-info'
@@ -30,10 +30,11 @@ export function handleLogExchangeRate(event: LogExchangeRate): void {
   pair.exchangeRate = event.params.rate
   pair.block = event.block.number
   pair.timestamp = event.block.timestamp
-  pair.save()
 
-  const assetPrice = getTokenPrice(pair.asset)
-  const collateralPrice = getTokenPrice(pair.collateral)
+  const asset = getToken(pair.asset)
+  const collateral = getToken(pair.collateral)
+  // const assetPrice = getTokenPrice(pair.asset)
+  // const collateralPrice = getTokenPrice(pair.collateral)
 
   // Figure out if priced against BTC/ETH/USD
 
@@ -43,6 +44,48 @@ export function handleLogExchangeRate(event: LogExchangeRate): void {
   //   assetPrice.btc = pair.exchangeRate.toBigDecimal().div(BigDecimal.fromString('1e18'))
   //   assetPrice.save()
   // }
+
+  if (pair.oracleValidated) {
+    const needed = collateral.decimals.plus(BigInt.fromU32(18)).minus(asset.decimals)
+    // const divider = BigInt.fromU32(10).pow(decimals.minus(needed).toU32() as u8)
+
+    log.debug(
+      'Asset price... collateral decimals: {} asset decimals: {} needed: {} rate: {} divider: {} rate/divider: {}',
+      [
+        collateral.decimals.toString(),
+        asset.decimals.toString(),
+        needed.toString(),
+        event.params.rate.toString(),
+        BigInt.fromI32(10)
+          .pow(needed.toI32() as u8)
+          .toBigDecimal()
+          .toString(),
+        event.params.rate
+          .divDecimal(
+            BigInt.fromI32(10)
+              .pow(needed.toI32() as u8)
+              .toBigDecimal()
+          )
+          .toString(),
+      ]
+    )
+    // Price of asset in terms of collateral
+    pair.assetPrice = event.params.rate.divDecimal(
+      BigInt.fromI32(10)
+        .pow(needed.toI32() as u8)
+        .toBigDecimal()
+    )
+    // Price of collateral in terms of asset
+    pair.collateralPrice = BigDecimal.fromString('1').div(
+      event.params.rate.divDecimal(
+        BigInt.fromI32(10)
+          .pow(needed.toI32() as u8)
+          .toBigDecimal()
+      )
+    )
+  }
+
+  pair.save()
 
   updateKashiPairSnapshots(event.block.timestamp, pair)
 }

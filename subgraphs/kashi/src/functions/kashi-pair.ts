@@ -1,4 +1,4 @@
-import { Address, BigInt, Bytes, ethereum, log } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal, BigInt, Bytes, ethereum, log } from '@graphprotocol/graph-ts'
 
 import { KashiPair } from '../../generated/schema'
 import { LogDeploy } from '../../generated/BentoBox/BentoBox'
@@ -67,7 +67,9 @@ export function createKashiPair(event: LogDeploy): KashiPair {
 
   pair.totalCollateralShare = pairContract.totalCollateralShare()
 
-  pair.exchangeRate = pairContract.exchangeRate()
+  const exchangeRate = pairContract.exchangeRate()
+
+  pair.exchangeRate = exchangeRate
 
   pair.name = pairContract.name()
   pair.symbol = pairContract.symbol()
@@ -95,8 +97,16 @@ export function createKashiPair(event: LogDeploy): KashiPair {
   pair.totalBorrowBase = totalBorrow.base
   pair.totalBorrowElastic = totalBorrow.elastic
 
+  // Total Available flat
+  pair.totalBorrow = totalBorrow.id
+  pair.totalBorrowBase = totalBorrow.base
+  pair.totalBorrowElastic = totalBorrow.elastic
+
   // Depreciated
   pair.depreciated = DEPRECIATED_ADDRESSES.includes(event.params.masterContract.toHex())
+
+  pair.assetPrice = BigDecimal.fromString('0')
+  pair.collateralPrice = BigDecimal.fromString('0')
 
   pair.block = event.block.number
   pair.timestamp = event.block.timestamp
