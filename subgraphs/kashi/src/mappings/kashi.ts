@@ -13,10 +13,12 @@ import {
   Transfer,
 } from '../../generated/templates/KashiPair/KashiPair'
 import { getKashiPair, getRebase, toBase } from '../functions'
-import { BigInt, log } from '@graphprotocol/graph-ts'
-import { getInterestPerYear, takeFee } from '../helpers/interest'
+import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
+import { getInterestPerYear, takeFee } from '../functions/interest'
 import { getKashiPairAccrueInfo } from '../functions/kashi-pair-accrue-info'
 import { updateKashiPairSnapshots } from '../functions/kashi-pair-snapshot'
+import { getTokenPrice } from '../functions/token-price'
+import { ADDRESS_ZERO } from '../constants'
 
 // TODO: add callHandler for liquidate function on KashiPairs
 
@@ -29,6 +31,19 @@ export function handleLogExchangeRate(event: LogExchangeRate): void {
   pair.block = event.block.number
   pair.timestamp = event.block.timestamp
   pair.save()
+
+  const assetPrice = getTokenPrice(pair.asset)
+  const collateralPrice = getTokenPrice(pair.collateral)
+
+  // Figure out if priced against BTC/ETH/USD
+
+  // if (pair.oracleMultiply == ADDRESS_ZERO) {
+  //   assetPrice.usd = pair.exchangeRate.toBigDecimal().div(BigDecimal.fromString('1e18'))
+  //   assetPrice.eth = pair.exchangeRate.toBigDecimal().div(BigDecimal.fromString('1e18'))
+  //   assetPrice.btc = pair.exchangeRate.toBigDecimal().div(BigDecimal.fromString('1e18'))
+  //   assetPrice.save()
+  // }
+
   updateKashiPairSnapshots(event.block.timestamp, pair)
 }
 

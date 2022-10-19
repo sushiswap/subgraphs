@@ -71,6 +71,7 @@ type Kashi @entity {
   marketCount: BigInt!
 }
 
+
 type KashiPair @entity {
   " KashiPair address "
   id: ID!
@@ -281,11 +282,23 @@ type Price @entity {
   bentoBox: BentoBox!
   " Token this price belongs to "
   token: Token!
+  " BTC "
+  btc: BigInt!
   " ETH "
   eth: BigInt!
   " USD "
-  usd: BigInt!
+  usd: BigDecimal!
 }
+
+# type Oracle @entity {
+#   id: ID!
+#   data: Bytes!
+#   multiply: Bytes!
+#   divide: Bytes!
+#   decimals: BigInt!
+#   validated: Boolean!
+# }
+
 
 type Oracle @entity {
   " Oracle address "

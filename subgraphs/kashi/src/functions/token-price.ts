@@ -1,4 +1,4 @@
-import { BigInt, log } from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 import { BENTOBOX_ADDRESS } from '../constants'
 import { Price } from '../../generated/schema'
 
@@ -7,7 +7,8 @@ export function createTokenPrice(token: string): Price {
   price.token = token
   price.bentoBox = BENTOBOX_ADDRESS.toHex()
   price.eth = BigInt.fromU32(0)
-  price.usd = BigInt.fromU32(0)
+  price.btc = BigInt.fromU32(0)
+  price.usd = BigDecimal.fromString('0')
   price.save()
   return price as Price
 }
@@ -24,4 +25,10 @@ export function getOrCreateTokenPrice(token: string): Price {
   }
 
   return price
+}
+
+export function updateTokenPrice(token: string): Price {
+  const price = Price.load(token)
+  // TODO:
+  return price as Price
 }
