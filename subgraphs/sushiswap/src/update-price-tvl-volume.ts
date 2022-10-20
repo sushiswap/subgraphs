@@ -34,23 +34,12 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
 
   factory.liquidityNative = factory.liquidityNative.minus(pair.trackedLiquidityNative)
 
-  // before updating reserve, set product of current reserves for the first transaction for every block, used to detect sandwich attacks
-  if (pair._kUpdatedAtBlock) {
-    if (!pair._kUpdatedAtBlock!.equals(event.block.number)) {
-    pair._k = pair.reserve1.gt(BIG_INT_ZERO) ? pair.reserve0.divDecimal(pair.reserve1.toBigDecimal()) : BIG_DECIMAL_ZERO
-    pair._kUpdatedAtBlock = event.block.number
+  if (!pair._cacheUpdatedAtBlock.equals(event.block.number)) {
+    pair._cacheUpdatedAtBlock = event.block.number
     pair._cache_reserve0 = pair.reserve0
     pair._cache_reserve1 = pair.reserve1
     pair._cache_token0Price = pair.token0Price
     pair._cache_token1Price = pair.token1Price
-    }
-  } else {
-      pair._k = pair.reserve1.gt(BIG_INT_ZERO) ? pair.reserve0.divDecimal(pair.reserve1.toBigDecimal()) : BIG_DECIMAL_ZERO
-      pair._kUpdatedAtBlock = event.block.number
-      pair._cache_reserve0 = pair.reserve0
-      pair._cache_reserve1 = pair.reserve1
-      pair._cache_token0Price = pair.token0Price
-      pair._cache_token1Price = pair.token1Price
   }
 
   pair.reserve0 = event.params.reserve0

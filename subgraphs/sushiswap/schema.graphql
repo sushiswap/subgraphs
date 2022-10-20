@@ -131,18 +131,17 @@ type Pair @entity {
   " Liquidity of second token "
   reserve1: BigInt!
 
-  " product of reserve0 and reserve1, this is k in x*y=k formula, this is only updated for the first transaction in a block "
-  _k: BigDecimal
+
   " which block _k was saved "
-  _kUpdatedAtBlock: BigInt
+  _cacheUpdatedAtBlock: BigInt!
   " Liquidity of first token, this is only updated for the first transaction in a block "
-  _cache_reserve0: BigInt
+  _cache_reserve0: BigInt!
   " Liquidity of second token, this is only updated for the first transaction in a block "
-  _cache_reserve1: BigInt
+  _cache_reserve1: BigInt!
   " Price of the first token in this pair, this is only updated for the first transaction in a block "
-  _cache_token0Price: BigDecimal
+  _cache_token0Price: BigDecimal!
   " Price of the second token in this pair, this is only updated for the first transaction in a block "
-  _cache_token1Price: BigDecimal
+  _cache_token1Price: BigDecimal!
 
   " Liquidity, Total supply of all LP in this pool "
   liquidity: BigInt!

@@ -46,6 +46,12 @@ export function createPair(event: PairCreated): Pair {
   pair.aprUpdatedAtTimestamp = BIG_INT_ZERO
   pair.txCount = BIG_INT_ZERO
 
+  pair._cache_reserve0 = BIG_INT_ZERO
+  pair._cache_reserve1 = BIG_INT_ZERO
+  pair._cache_token0Price = BIG_DECIMAL_ZERO
+  pair._cache_token1Price = BIG_DECIMAL_ZERO
+  pair._cacheUpdatedAtBlock = event.block.number
+ 
   pair.save()
 
   const factory = getOrCreateFactory()

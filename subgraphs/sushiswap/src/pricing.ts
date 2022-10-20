@@ -104,27 +104,17 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal, 
     const token0 = getOrCreateToken(pair.token0)
     const token1 = getOrCreateToken(pair.token1)
 
-    const currentProduct = pair.reserve1.gt(BIG_INT_ZERO) ? pair.reserve0.divDecimal(pair.reserve1.toBigDecimal()) : BIG_DECIMAL_ZERO
-
-    let isSandwichAttack = false
-    if (pair._kUpdatedAtBlock && pair._k) {
-      if (pair._kUpdatedAtBlock!.equals(blockNumber) && pair._k!.gt(BIG_DECIMAL_ZERO) && currentProduct.gt(BIG_DECIMAL_ZERO)) {
-        const diff = currentProduct.div(pair._k!)
-        if (diff.gt(BigDecimal.fromString("50")) || diff.lt(BigDecimal.fromString("0.02"))) {
-          log.debug("Possible sandwich attack on pair {} {} change: {} block {}", [pair.name, pair.id, diff.toString(), blockNumber.toString()])
-          isSandwichAttack = true
-        }
-      }
-    }
+    // If the pair is used for trading, use cached reserves for pricing to avoid arbitrage and sandwich attacks
+    const useCache = pair._cacheUpdatedAtBlock.equals(blockNumber)
 
     const pairToken0Price = getTokenPrice(pair.token0)
     const pairToken1Price = getTokenPrice(pair.token1)
-    const token0NativeLiquidity = convertTokenToDecimal(!isSandwichAttack ? pair.reserve0 : pair._cache_reserve0!, token0.decimals).times(pairToken0Price.derivedNative)
-    const token1NativeLiquidity = convertTokenToDecimal(!isSandwichAttack ? pair.reserve1 : pair._cache_reserve1!, token1.decimals).times(pairToken1Price.derivedNative)
+    const token0NativeLiquidity = convertTokenToDecimal(!useCache ? pair.reserve0 : pair._cache_reserve0, token0.decimals).times(pairToken0Price.derivedNative)
+    const token1NativeLiquidity = convertTokenToDecimal(!useCache ? pair.reserve1 : pair._cache_reserve1, token1.decimals).times(pairToken1Price.derivedNative)
 
     // NOTE: We have to calculate this because the pair.nativeLiquidity field is being updated after this function is called
     // e.g. if we used pair.liquidityNative, it would still have the inflated value from the attackers swap
-    const pairLiquidityNative = token0NativeLiquidity.plus(token1NativeLiquidity) 
+    const pairLiquidityNative = token0NativeLiquidity.plus(token1NativeLiquidity)
 
     if (
       pair.token0 == token.id &&
@@ -136,19 +126,13 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal, 
         pricedOffToken = token1Price.id
         pricedOffPair = pair.id
         mostLiquidity = pairLiquidityNative
-        if (!isSandwichAttack) {
-          currentPrice = pair.token1Price.times(token1Price.derivedNative)
+
+        const newPrice = pair.token1Price.times(token1Price.derivedNative)
+        if (useCache) {
+          const cachedPrice = pair._cache_token1Price.times(token1Price.derivedNative)
+          currentPrice = cachedPrice.gt(newPrice) ? newPrice : cachedPrice
         } else {
-          // Guard against false positives
-          let newPrice = pair.token1Price.times(token1Price.derivedNative) 
-          let cachedPrice = pair._cache_token1Price!.times(token1Price.derivedNative)
-          if (cachedPrice.gt(newPrice)) {
-            log.debug("False positive detected, cached price should not be greater if there is a sandwich attack, using the new price (which is lower). Pair: {} {} cached: {} new: {}", 
-            [pair.name, pair.id, cachedPrice.toString(), newPrice.toString()])
-            currentPrice = newPrice
-          } else {
-            currentPrice = cachedPrice
-          }
+          currentPrice = newPrice
         }
       }
     }
@@ -163,20 +147,13 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal, 
         pricedOffToken = token0Price.id
         pricedOffPair = pair.id
         mostLiquidity = pairLiquidityNative
-        
-        if (!isSandwichAttack) {
-          currentPrice = pair.token0Price.times(token0Price.derivedNative)
+        const newPrice = pair.token0Price.times(token0Price.derivedNative)
+
+        if (useCache) {
+          const cachedPrice = pair._cache_token0Price.times(token0Price.derivedNative)
+          currentPrice = cachedPrice.gt(newPrice) ? newPrice : cachedPrice
         } else {
-          // Guard against false positives
-          let newPrice = pair.token0Price.times(token0Price.derivedNative)
-          let cachedPrice = pair._cache_token0Price!.times(token0Price.derivedNative)
-          if (cachedPrice.gt(newPrice)) {
-            log.debug("False positive detected, cached price should not be greater if there is a sandwich attack, using the new price (which is lower). Pair: {} {} cached: {} new: {}", 
-            [pair.name, pair.id, cachedPrice.toString(), newPrice.toString()])
-            currentPrice = newPrice
-          } else {
-            currentPrice = cachedPrice
-          }
+          currentPrice = newPrice
         }
       }
     }
