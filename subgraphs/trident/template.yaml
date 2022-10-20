@@ -55,6 +55,8 @@ dataSources:
           file: ./abis/MasterDeployer.json
         - name: ConstantProductPool
           file: ./abis/ConstantProductPool.json
+        - name: StablePool
+          file: ./abis/StablePool.json
         - name: ERC20
           file: ./node_modules/abi/ERC20/ERC20.json
         - name: SymbolBytes32
@@ -92,6 +94,39 @@ templates:
         - event: Mint(indexed address,uint256,uint256,indexed address)
           handler: onMint
         - event: Burn(indexed address,uint256,uint256,indexed address)
+          handler: onBurn
+        - event: Sync(uint256,uint256)
+          handler: onSync
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: onTransfer
+        - event: Swap(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: onSwap
+  - kind: ethereum/contract
+    name: StablePool
+    network: {{ network }}
+    source:
+      abi: StablePool
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/pair.ts
+      entities: []
+      abis:
+        - name: StablePool
+          file: ./abis/StablePool.json
+        - name: StablePoolFactory
+          file: ./abis/StablePoolFactory.json
+        - name: ERC20
+          file: ./node_modules/abi/ERC20/ERC20.json
+        - name: SymbolBytes32
+          file: ./node_modules/abi/ERC20/SymbolBytes32.json
+        - name: NameBytes32
+          file: ./node_modules/abi/ERC20/NameBytes32.json
+      eventHandlers:
+        - event: Mint(indexed address,uint256,uint256,indexed address,uint256)    
+          handler: onMint
+        - event: Burn(indexed address,uint256,uint256,indexed address,uint256)
           handler: onBurn
         - event: Sync(uint256,uint256)
           handler: onSync

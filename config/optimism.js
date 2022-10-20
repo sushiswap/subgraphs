@@ -18,6 +18,7 @@ module.exports = {
       address: '0x93395129bd3fcf49d95730d3c2737c17990ff328',
       initCodeHash: '0x3172d82413be467c1130709f7479a07def9b99caf8e0059f248c131081e4ea09',
     },
+    stablePoolFactory: { address: '0x827179dD56d07A7eeA32e3873493835da2866976' },
     hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     native: { address: NATIVE_ADDRESS },
