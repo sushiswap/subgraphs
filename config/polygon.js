@@ -30,6 +30,7 @@ module.exports = {
   kashi: {
     mediumRiskMasterContractAddresses: ['0xb527c5295c4bc348cbb3a2e96b2494fd292075a7'],
     depreciated: ['0xb527c5295c4bc348cbb3a2e96b2494fd292075a7'],
+    oracles: JSON.stringify(require('./kashi/polygon'), null, 2),
   },
   masterDeployer: { address: '0x351447fc9bd20a917783e159e61e86edda0b0187', startBlock: 25840876 },
   concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },

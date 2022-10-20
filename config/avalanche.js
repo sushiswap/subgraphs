@@ -22,6 +22,7 @@ module.exports = {
     medium: '0x513037395fa0c9c35e41f89189cedfe3bd42fadb',
     mediumRiskMasterContractAddresses: ['0x513037395fa0c9c35e41f89189cedfe3bd42fadb'],
     depreciated: ['0x513037395fa0c9c35e41f89189cedfe3bd42fadb'],
+    oracles: JSON.stringify(require('./kashi/avalanche'), null, 2),
   },
   miso: {
     accessControls: { address: '0x0769fd68dfb93167989c6f7254cd0d766fb2841f', startBlock: 13510155 },

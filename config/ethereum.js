@@ -45,6 +45,7 @@ module.exports = {
   kashi: {
     mediumRiskMasterContractAddresses: ['0x2cba6ab6574646badc84f0544d05059e57a5dc42'],
     depreciated: ['0x2cba6ab6574646badc84f0544d05059e57a5dc42'],
+    oracles: JSON.stringify(require('./kashi/ethereum'), null, 2),
   },
   blocks: {
     address: '0x6e38A457C722C6011B2dfa06d49240e797844d66',

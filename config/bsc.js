@@ -20,6 +20,7 @@ module.exports = {
   kashi: {
     mediumRiskMasterContractAddresses: ['0x2cba6ab6574646badc84f0544d05059e57a5dc42'],
     depreciated: ['0x2cba6ab6574646badc84f0544d05059e57a5dc42'],
+    oracles: JSON.stringify(require('./kashi/bsc'), null, 2),
   },
   legacy: {
     native: { address: NATIVE_ADDRESS },

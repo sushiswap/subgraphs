@@ -14,6 +14,9 @@ program
     exec(
       `node_modules/.bin/mustache config/${network}.js subgraphs/${subgraph}/src/constants/addresses.template.ts > subgraphs/${subgraph}/src/constants/addresses.ts`
     )
+    exec(
+      `node_modules/.bin/mustache config/${network}.js subgraphs/${subgraph}/src/constants/index.template.ts > subgraphs/${subgraph}/src/constants/index.ts`
+    )
   })
 
 program
