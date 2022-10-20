@@ -22,7 +22,7 @@ import {
   getTokenPrice,
   toElastic
 } from './functions'
-import { getNativePriceInUSD, updateTokenPrice } from './pricing'
+import { getNativePriceInUSD, TokenPrices, updateTokenPrices } from './pricing'
 import { isBurn, isInitialTransfer, isMint } from './transfer'
 
 export function updateTvlAndTokenPrices(event: SyncEvent): void {
@@ -75,8 +75,9 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   bundle.nativePrice = getNativePriceInUSD()
   bundle.save()
 
-  const token0Price = updateTokenPrice(token0.id, bundle.nativePrice)
-  const token1Price = updateTokenPrice(token1.id, bundle.nativePrice)
+  const prices = updateTokenPrices(token0.id, token1.id, bundle.nativePrice)
+  const token0Price = prices.token0Price
+  const token1Price = prices.token1Price
 
 
   // get tracked liquidity - will be 0 if neither is in whitelist
