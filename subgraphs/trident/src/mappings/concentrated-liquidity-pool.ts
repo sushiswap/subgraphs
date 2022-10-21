@@ -5,15 +5,17 @@ import {
   Swap as SwapEvent,
   Collect as CollectEvent
 } from '../../generated/templates/ConcentratedLiquidityPool/ConcentratedLiquidityPool'
+import { updateTvlAndTokenPrices } from '../update-price-tvl-volume'
 
 
 
 export function onSwap(event: SwapEvent): void {
-
+  // updates prices
 }
 
 export function onMint(event: MintEvent): void {
   handleMint(event)
+  // TODO: update tvl
   // TODO: update snapshots
 }
 

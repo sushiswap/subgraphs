@@ -15,4 +15,5 @@ export * from './token-pair'
 export * from './token-price'
 export * from './transaction'
 export * from './user'
+export * from './concentrated-liquidity-info'
 
