@@ -117,6 +117,8 @@ type Token @entity(immutable: true) {
 type TokenKpi @entity {
   " Token address "
   id: ID!
+  " Token that belongs to this Kpi "
+  token: Token!
   " Liquidity "
   liquidity: BigInt!
   " Strategy count "
