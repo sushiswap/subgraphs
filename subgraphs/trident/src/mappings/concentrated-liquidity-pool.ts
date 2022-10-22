@@ -1,12 +1,9 @@
-import { handleMint } from '../concentrated/mint'
 import {
-  Burn as BurnEvent,
-  Mint as MintEvent,
-  Swap as SwapEvent,
-  Collect as CollectEvent
+  Burn as BurnEvent, Collect as CollectEvent, Mint as MintEvent,
+  Swap as SwapEvent
 } from '../../generated/templates/ConcentratedLiquidityPool/ConcentratedLiquidityPool'
-import { updateTvlAndTokenPrices } from '../update-price-tvl-volume'
-
+import { handleBurn, handleMint } from '../concentrated'
+import { updateFactorySnapshots, updatePairSnapshots, updateTokenSnapshots } from '../functions'
 
 
 export function onSwap(event: SwapEvent): void {
@@ -15,12 +12,16 @@ export function onSwap(event: SwapEvent): void {
 
 export function onMint(event: MintEvent): void {
   handleMint(event)
-  // TODO: update tvl
-  // TODO: update snapshots
+  updateFactorySnapshots(event)
+  updateTokenSnapshots(event.block.timestamp, event.address)
+  updatePairSnapshots(event.block.timestamp, event.address)
 }
 
 export function onBurn(event: BurnEvent): void {
-
+  handleBurn(event)
+  updateFactorySnapshots(event)
+  updateTokenSnapshots(event.block.timestamp, event.address)
+  updatePairSnapshots(event.block.timestamp, event.address)
 }
 
 

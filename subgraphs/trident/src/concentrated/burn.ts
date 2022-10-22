@@ -1,7 +1,7 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { getConcentratedLiquidityInfo } from '../functions'
-import { Mint } from '../../generated/schema'
-import { Mint as MintEvent } from '../../generated/templates/ConcentratedLiquidityPool/ConcentratedLiquidityPool'
+import { Burn, Mint } from '../../generated/schema'
+import { Burn as BurnEvent } from '../../generated/templates/ConcentratedLiquidityPool/ConcentratedLiquidityPool'
 import { BIG_DECIMAL_ZERO, BIG_INT_ONE, PairType } from '../constants'
 import {
   convertTokenToDecimal,
@@ -13,10 +13,10 @@ import {
 } from '../functions'
 import { updateDerivedTVLAmounts } from './tvl'
 
-export function handleMint(event: MintEvent): Mint | null {
+export function handleBurn(event: BurnEvent): Burn | null {
 
   getOrCreateTransaction(event)
-
+  
   const pair = getPair(event.address.toHex())
 
   const id = event.transaction.hash.toHex().concat('-cl-').concat(pair.txCount.toString().toString())
@@ -32,10 +32,10 @@ export function handleMint(event: MintEvent): Mint | null {
   
   // Update TVL values.
   let oldLiquidityNative = pair.liquidityNative
-  token0.liquidity = token0.liquidity.plus(event.params.amount0)
-  token1.liquidity = token1.liquidity.plus(event.params.amount1)
-  pair.reserve0 = pair.reserve0.plus(event.params.amount0)
-  pair.reserve1 = pair.reserve1.plus(event.params.amount1)
+  token0.liquidity = token0.liquidity.minus(event.params.amount0)
+  token1.liquidity = token1.liquidity.minus(event.params.amount1)
+  pair.reserve0 = pair.reserve0.minus(event.params.amount0)
+  pair.reserve1 = pair.reserve1.minus(event.params.amount1)
   updateDerivedTVLAmounts(pair, oldLiquidityNative)
   
   // TODO: update cl events?
@@ -58,22 +58,21 @@ export function handleMint(event: MintEvent): Mint | null {
     .plus(token0Price.derivedNative.times(amount0))
     .times(bundle.nativePrice)
 
-  let mint = Mint.load(id)
-  if (mint === null) {
-    mint = new Mint(id)
-    mint.transaction = event.transaction.hash.toHex()
-    mint.timestamp = event.block.timestamp
-    mint.pair = event.address.toHex()
-    mint.to = event.params.owner.toHex()
-    mint.liquidity = BIG_DECIMAL_ZERO // Must be set to be compatible with current schema
-    // mint.save()
-    // mint.sender = event.params.
-    // mint.sender = event.
-    mint.amount0 = amount0 as BigDecimal
-    mint.amount1 = amount1 as BigDecimal
-    mint.logIndex = event.logIndex
-    mint.amountUSD = amountTotalUSD as BigDecimal
-    mint.save()
+  let burn = Burn.load(id)
+  if (burn === null) {
+    burn = new Burn(id)
+    burn.transaction = event.transaction.hash.toHex()
+    burn.timestamp = event.block.timestamp
+    burn.pair = event.address.toHex()
+    burn.liquidity = BIG_DECIMAL_ZERO // must be set to be compatible with current schema
+    burn.complete = true
+    // burn.to = // If we want to track this, we need to add it to the event.
+
+    burn.amount0 = amount0 as BigDecimal
+    burn.amount1 = amount1 as BigDecimal
+    burn.logIndex = event.logIndex
+    burn.amountUSD = amountTotalUSD as BigDecimal
+    burn.save()
   }
 
   pair.txCount = pair.txCount.plus(BIG_INT_ONE)
@@ -84,5 +83,5 @@ export function handleMint(event: MintEvent): Mint | null {
   token1.save()
 
   increaseFactoryTransactionCount(PairType.CONCENTRATED_LIQUIDITY_POOL)
-  return mint
+  return burn
 }

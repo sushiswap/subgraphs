@@ -1,9 +1,8 @@
 import { BigDecimal } from '@graphprotocol/graph-ts'
-import { convertTokenToDecimal, getOrCreateBundle, getOrCreateToken, getTokenPrice } from '../functions'
+import { convertTokenToDecimal, getOrCreateBundle, getOrCreateFactory, getOrCreateToken, getTokenPrice } from '../functions'
 import { Bundle, Factory, Pair, Token } from '../../generated/schema'
 import { AmountType, getAdjustedAmounts } from './pricing'
-// import { AmountType, getAdjustedAmounts } from './pricing'
-
+import { PairType } from '../constants'
 /**
  * Updates all dervived TVL values. This includes all ETH and USD
  * TVL metrics for a given pool, as well as in the aggregate factory.
@@ -21,14 +20,14 @@ import { AmountType, getAdjustedAmounts } from './pricing'
  */
 export function updateDerivedTVLAmounts(
   pair: Pair,
-  factory: Factory,
   oldPairLiquidityNative: BigDecimal,
 ): void {
-  let bundle = getOrCreateBundle()
-  let token0 = getOrCreateToken(pair.token0)
-  let token1 = getOrCreateToken(pair.token1)
-  let token0Price = getTokenPrice(pair.token0)
-  let token1Price = getTokenPrice(pair.token1)
+  const bundle = getOrCreateBundle()
+  const token0 = getOrCreateToken(pair.token0)
+  const token1 = getOrCreateToken(pair.token1)
+  const token0Price = getTokenPrice(pair.token0)
+  const token1Price = getTokenPrice(pair.token1)
+  const factory = getOrCreateFactory(PairType.CONCENTRATED_LIQUIDITY_POOL)
 
   // Update token TVL values.
   token0.liquidityUSD = token0.liquidityUSD.times(token0Price.derivedNative.times(bundle.nativePrice))
