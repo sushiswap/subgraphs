@@ -44,7 +44,7 @@ export function updateDerivedTVLAmounts(
   )
 
   // Update pool TVL values.
-  pair.liquidityNative = amounts.eth
+  pair.liquidityNative = amounts.native
   pair.liquidityUSD = amounts.usd
 //   pair.totalValueLockedETHUntracked = amounts.ethUntracked
 //   pair.totalValueLockedUSDUntracked = amounts.usdUntracked
@@ -57,7 +57,7 @@ export function updateDerivedTVLAmounts(
   factory.liquidityUSD = factory.liquidityUSD.minus(oldPairLiquidityNative)
 
   // Add new TVL based on pool.
-  factory.liquidityNative = factory.liquidityNative.plus(amounts.eth)
+  factory.liquidityNative = factory.liquidityNative.plus(amounts.native)
 //   factory.totalValueLockedETHUntracked = factory.totalValueLockedETHUntracked.plus(amounts.ethUntracked)
   factory.liquidityUSD = factory.liquidityNative.times(bundle.nativePrice)
 //   factory.totalValueLockedUSDUntracked = factory.totalValueLockedETHUntracked.times(bundle.ethPriceUSD)

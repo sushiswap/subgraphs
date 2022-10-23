@@ -16,10 +16,8 @@ import { updateDerivedTVLAmounts } from './tvl'
 export function handleBurn(event: BurnEvent): Burn | null {
 
   getOrCreateTransaction(event)
-  
-  const pair = getPair(event.address.toHex())
 
-  const id = event.transaction.hash.toHex().concat('-cl-').concat(pair.txCount.toString().toString())
+  const pair = getPair(event.address.toHex())
 
   const token0 = getOrCreateToken(pair.token0)
   const token1 = getOrCreateToken(pair.token1)
@@ -29,7 +27,7 @@ export function handleBurn(event: BurnEvent): Burn | null {
   const amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
   const amount1 = convertTokenToDecimal(event.params.amount1, token1.decimals)
   const concentratedLiquidity = getConcentratedLiquidityInfo(pair.id)
-  
+
   // Update TVL values.
   let oldLiquidityNative = pair.liquidityNative
   token0.liquidity = token0.liquidity.minus(event.params.amount0)
@@ -37,7 +35,7 @@ export function handleBurn(event: BurnEvent): Burn | null {
   pair.reserve0 = pair.reserve0.minus(event.params.amount0)
   pair.reserve1 = pair.reserve1.minus(event.params.amount1)
   updateDerivedTVLAmounts(pair, oldLiquidityNative)
-  
+
   // TODO: update cl events?
   // Pools liquidity tracks the currently active liquidity given pools current tick.
   // We only want to update it on mint if the new position includes the current tick.
@@ -58,6 +56,8 @@ export function handleBurn(event: BurnEvent): Burn | null {
     .plus(token0Price.derivedNative.times(amount0))
     .times(bundle.nativePrice)
 
+
+  const id = event.transaction.hash.toHex().concat('-cl-').concat(pair.txCount.toString())
   let burn = Burn.load(id)
   if (burn === null) {
     burn = new Burn(id)
@@ -68,10 +68,10 @@ export function handleBurn(event: BurnEvent): Burn | null {
     burn.complete = true
     // burn.to = // If we want to track this, we need to add it to the event.
 
-    burn.amount0 = amount0 as BigDecimal
-    burn.amount1 = amount1 as BigDecimal
+    burn.amount0 = amount0
+    burn.amount1 = amount1
+    burn.amountUSD = amountTotalUSD
     burn.logIndex = event.logIndex
-    burn.amountUSD = amountTotalUSD as BigDecimal
     burn.save()
   }
 

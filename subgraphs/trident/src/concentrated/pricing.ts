@@ -5,7 +5,7 @@ import { BIG_DECIMAL_ZERO } from "../constants"
 
 
 export class AmountType {
-    eth: BigDecimal
+    native: BigDecimal
     usd: BigDecimal
 }
 
@@ -41,5 +41,5 @@ export function getAdjustedAmounts(
     // Define USD values based on ETH derived values.
     let usd = native.times(bundle.nativePrice)
 
-    return { eth: native, usd }
+    return { native, usd }
 }
