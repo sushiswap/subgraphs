@@ -1,4 +1,4 @@
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { Pair, PairHourSnapshot, Swap } from '../generated/schema'
 import { Swap as SwapEvent } from '../generated/templates/ConstantProductPool/ConstantProductPool'
 import { BIG_DECIMAL_ZERO, BIG_INT_ONE, PairType } from './constants'
@@ -50,7 +50,7 @@ export function handleSwap(event: SwapEvent, volumeUSD: BigDecimal): Swap {
 }
 
 
-export function updateApr(event: SwapEvent): void {
+export function updateApr(event: ethereum.Event): void {
   const pair = getPair(event.address.toHex())
   const snapshot = getAprSnapshot(event.address.toHex(), event.block.timestamp)
   if (snapshot == null || pair.liquidityUSD.equals(BIG_DECIMAL_ZERO)) {

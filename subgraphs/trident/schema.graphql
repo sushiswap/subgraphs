@@ -340,9 +340,9 @@ type Swap @entity {
   amountUSD: BigDecimal!
 
   # The sqrt(price) of the pool after the swap, as a Q64.96
-  sqrtPriceX96: BigInt!
+  sqrtPriceX96: BigInt
   # the tick after the swap
-  tick: BigInt!
+  tick: BigInt
 }
 
 type Collect @entity {

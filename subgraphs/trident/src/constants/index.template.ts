@@ -101,5 +101,7 @@ export namespace PairType {
   export const CONCENTRATED_LIQUIDITY_POOL = "CONCENTRATED_LIQUIDITY_POOL";
 }
 
+export const Q192 = 2 * 192
+
 export * from './id'
 export * from './time'

@@ -1,20 +1,15 @@
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
-import { getConcentratedLiquidityInfo } from '../functions'
-import { Burn, Collect, Mint } from '../../generated/schema'
+import { Collect } from '../../generated/schema'
 import { Collect as CollectEvent } from '../../generated/templates/ConcentratedLiquidityPool/ConcentratedLiquidityPool'
-import { BIG_DECIMAL_ZERO, BIG_INT_ONE, PairType } from '../constants'
+import { BIG_INT_ONE, PairType } from '../constants'
 import {
-  convertTokenToDecimal,
-  getOrCreateBundle,
-  getOrCreateFactory,
-  getOrCreateToken, getOrCreateTransaction, getPair,
+  convertTokenToDecimal, getConcentratedLiquidityInfo, getOrCreateBundle, getOrCreateToken, getOrCreateTransaction, getPair,
   getTokenPrice,
   increaseFactoryTransactionCount
 } from '../functions'
+import { getAdjustedAmounts } from './pricing'
 import { updateDerivedTVLAmounts } from './tvl'
-import { AmountType, getAdjustedAmounts } from './pricing'
 
-export function handleBurn(event: CollectEvent): Collect | null {
+export function handleCollect(event: CollectEvent): Collect | null {
 
   getOrCreateTransaction(event)
 

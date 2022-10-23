@@ -1,13 +1,20 @@
+
+import { updateApr } from '../swap'
 import {
   Burn as BurnEvent, Collect as CollectEvent, Mint as MintEvent,
   Swap as SwapEvent
 } from '../../generated/templates/ConcentratedLiquidityPool/ConcentratedLiquidityPool'
-import { handleBurn, handleMint } from '../concentrated'
+import { handleBurn, handleMint, handleCollect, handleSwap } from '../concentrated'
 import { updateFactorySnapshots, updatePairSnapshots, updateTokenSnapshots } from '../functions'
 
 
 export function onSwap(event: SwapEvent): void {
-  // updates prices
+
+  const volume = handleSwap(event) // TODO: Prices are only updated in here, consider if it should be runnin in the other handlers as well
+  updateFactorySnapshots(event, volume)
+  updateTokenSnapshots(event.block.timestamp, event.address, volume)
+  updatePairSnapshots(event.block.timestamp, event.address, volume)
+  updateApr(event)
 }
 
 export function onMint(event: MintEvent): void {
@@ -26,5 +33,5 @@ export function onBurn(event: BurnEvent): void {
 
 
 export function onCollect(event: CollectEvent): void {
-
+  handleCollect(event)
 }

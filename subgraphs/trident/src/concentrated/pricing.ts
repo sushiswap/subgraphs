@@ -25,17 +25,17 @@ export function getAdjustedAmounts(
     let native = BIG_DECIMAL_ZERO
 
     if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
-        native = tokenAmount0.times(derivedNative0).plus(tokenAmount1.times(derivedNative1)).div(BigDecimal.fromString('2'))
+        native = tokenAmount0.times(derivedNative0).plus(tokenAmount1.times(derivedNative1))
     }
 
     // take full value of the priced token
     if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && !token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
-        native = tokenAmount0.times(derivedNative0)
+        native = tokenAmount0.times(derivedNative0).times(BigDecimal.fromString('2'))
     }
 
     // take full value of the priced token
     if (!token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
-        native = tokenAmount1.times(derivedNative1)
+        native = tokenAmount1.times(derivedNative1).times(BigDecimal.fromString('2'))
     }
 
     // Define USD values based on ETH derived values.
