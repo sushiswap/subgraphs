@@ -1,4 +1,4 @@
-import { BigDecimal } from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { Swap } from '../../generated/schema'
 import { Swap as SwapEvent } from '../../generated/templates/ConcentratedLiquidityPool/ConcentratedLiquidityPool'
 import { BIG_INT_ONE, PairType } from '../constants'
@@ -48,9 +48,10 @@ export function handleSwap(event: SwapEvent): Volume {
 
 
     const concentratedLiquidity = getConcentratedLiquidityInfo(pair.id)
-    // pair.liquidity = // TODO: event missing
-    // concentratedLiquidity.tick = // TODO: missing
-    // concentratedLiquidity.sqrtPrice = TODO: missing 
+    pair.liquidity = event.params.totalLiquidity
+    concentratedLiquidity.tick = BigInt.fromI32(event.params.tick)
+    concentratedLiquidity.sqrtPrice = event.params.price
+    concentratedLiquidity.save()
 
     const prices = sqrtPriceX96ToTokenPrices(concentratedLiquidity.sqrtPrice, tokenIn, tokenOut)
     pair.token0Price = isTokenInFirstToken ? prices[0] : prices[1]

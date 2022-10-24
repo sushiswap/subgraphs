@@ -37,16 +37,15 @@ export function handleMint(event: MintEvent): Mint | null {
   updateDerivedTVLAmounts(pair, oldLiquidityNative)
 
   
-  // TODO: update cl events?
   // Pools liquidity tracks the currently active liquidity given pools current tick.
   // We only want to update it on mint if the new position includes the current tick.
-  // if (
-  //   concentratedLiquidity.tick !== null &&
-  //   BigInt.fromI32(event.params.tickLower).le(pool.tick as BigInt) &&
-  //   BigInt.fromI32(event.params.tickUpper).gt(pool.tick as BigInt)
-  // ) {
-  //   pool.liquidity = pool.liquidity.plus(event.params.amount)
-  // }
+  if (
+    concentratedLiquidity.tick !== null &&
+    BigInt.fromI32(event.params.tickLower).le(concentratedLiquidity.tick as BigInt) &&
+    BigInt.fromI32(event.params.tickUpper).gt(concentratedLiquidity.tick as BigInt)
+  ) {
+    pair.liquidity = pair.liquidity.plus(event.params.liquidityAmount)
+  }
 
 
 
