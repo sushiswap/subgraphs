@@ -105,6 +105,24 @@
         "internalType": "uint256",
         "name": "amount1",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "int24",
+        "name": "tickLower",
+        "type": "int24"
+      },
+      {
+        "indexed": false,
+        "internalType": "int24",
+        "name": "tickUpper",
+        "type": "int24"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint128",
+        "name": "liquidityAmount",
+        "type": "uint128"
       }
     ],
     "name": "Burn",
@@ -155,6 +173,24 @@
         "internalType": "uint256",
         "name": "amount1",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "int24",
+        "name": "tickLower",
+        "type": "int24"
+      },
+      {
+        "indexed": false,
+        "internalType": "int24",
+        "name": "tickUpper",
+        "type": "int24"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "liquidityAmount",
+        "type": "uint256"
       }
     ],
     "name": "Mint",
@@ -192,6 +228,24 @@
         "internalType": "uint256",
         "name": "amountOut",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint160",
+        "name": "price",
+        "type": "uint160"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint128",
+        "name": "totalLiquidity",
+        "type": "uint128"
+      },
+      {
+        "indexed": false,
+        "internalType": "int24",
+        "name": "tick",
+        "type": "int24"
       }
     ],
     "name": "Swap",
