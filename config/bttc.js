@@ -18,27 +18,27 @@ module.exports = {
   network: 'bttc',
   auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   bentobox: {
-    address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
+    address: '0x2f686751b19a9d91cc3d57d90150bc767f050066',
     base: '',
-    startBlock: 13009215,
+    startBlock: 13304288,
   },
   blocks: {
-    address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
-    startBlock: 13009215,
+    address: '0x2f686751b19a9d91cc3d57d90150bc767f050066',
+    startBlock: 13304599,
   },
   trident: {
     bentobox: {
-      address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
-      startBlock: 13009215,
+      address: '0x2f686751b19a9d91cc3d57d90150bc767f050066',
+      startBlock: 13304599,
     },
-    masterDeployer: { address: '0x1b02da8cb0d097eb8d57a175b88c7d8b47997506', startBlock: 13009519 },
+    masterDeployer: { address: '0xbe811a0d44e2553d25d11cb8dc0d3f0d0e6430e6', startBlock: 13304596 },
     concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     constantProductPoolFactory: {
-      address: '0x0769fd68dfb93167989c6f7254cd0d766fb2841f',
+      address: '0xab235da7f52d35fb4551afba11bfb56e18774a65',
       initCodeHash: '0x3172d82413be467c1130709f7479a07def9b99caf8e0059f248c131081e4ea09',
-      startBlock: 13009522
+      startBlock: 13304599
     },
-    stablePoolFactory: { address: '0x0be808376ecb75a5cf9bb6d237d16cd37893d904' },
+    stablePoolFactory: { address: '0x1e9b24073183d5c6b7ae5fb4b8f0b1dd83fdc77a' },
     hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     native: { address: NATIVE_ADDRESS },
