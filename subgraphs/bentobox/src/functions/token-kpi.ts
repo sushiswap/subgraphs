@@ -3,13 +3,14 @@ import { TokenKpi } from '../../generated/schema'
 import {
   decreaseTokenSnapshotKpiLiquidity,
   increaseTokenSnapshotKpiLiquidity,
-  increaseTokenSnapshotKpiStrategyCount
+  increaseTokenSnapshotKpiStrategyCount,
 } from './token-kpi-snapshots'
 
 function createTokenKpi(id: string): TokenKpi {
   const kpi = new TokenKpi(id)
   kpi.strategyCount = BigInt.fromU32(0)
   kpi.liquidity = BigInt.fromU32(0)
+  kpi.token = id
   kpi.save()
   return kpi as TokenKpi
 }
