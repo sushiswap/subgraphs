@@ -1,4 +1,4 @@
-const NATIVE_ADDRESS = '0x0000000000000000000000000000000000001010'
+const NATIVE_ADDRESS = '0x23181f21dea5936e24163ffaba4ea3b316b57f3c'
 const TRON_ADDRESS = '0xedf53026aea60f8f75fca25f8830b7e2d6200662'
 const BNB_ADDRESS = '0x185a4091027e2db459a2433f85f894dc3013aeb5'
 
@@ -68,8 +68,8 @@ module.exports = {
     minimumNativeLiquidity: '1000000000',
   },
   furo: {
-    stream: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
-    vesting: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+    stream: { address: '0x3db923fbab372ab8c796fef9bb8341cdb37cb9ec', startBlock: 13312382 },
+    vesting: { address: '0x5629ce74ddcad7cc72b3ea30444da7172ad851d9', startBlock: 13312542 },
   },
   staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   xswap: {
