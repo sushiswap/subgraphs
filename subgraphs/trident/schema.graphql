@@ -245,10 +245,22 @@ type User @entity {
   id: ID!
   lpSnapshotsCount: BigInt!
   liquidityPositions: [LiquidityPosition!] @derivedFrom(field: "user")
+  nftPositions: [NftPosition!] @derivedFrom(field: "user")
 }
 
 type LiquidityPosition @entity {
   "pair.id:user.id"
+  id: ID!
+  pair: Pair!
+  user: User!
+  balance: BigInt!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+
+type NftPosition @entity {
+  " user.id:positionId, e.g. 0x0.00:98 "
   id: ID!
   pair: Pair!
   user: User!

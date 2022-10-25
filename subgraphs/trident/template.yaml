@@ -67,6 +67,30 @@ dataSources:
         - event: DeployPool(indexed address,indexed address,bytes)
           handler: onDeployPool
       file: ./src/mappings/master-deployer.ts
+      
+  - kind: ethereum/contract
+    name: ConcentratedLiquidityPoolManager
+    network: {{ network }}
+    source:
+      address: '{{ trident.masterDeployer.address }}'
+      startBlock: {{ trident.masterDeployer.startBlock }}
+      abi: ConcentratedLiquidityPoolManager
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities: []
+      abis:
+        - name: BentoBox
+          file: ./node_modules/abi/BentoBox/BentoBox.json
+        - name: ConcentratedLiquidityPoolManager
+          file: ./abis/ConcentratedLiquidityPoolManager.json
+      eventHandlers:
+        - event: IncreaseLiquidity(indexed address,indexed address,indexed uint256,uint128)
+          handler: onIncreaseLiquidity
+        - event: DecreaseLiquidity(indexed address,indexed address,indexed uint256,uint128)
+          handler: onDecreaseLiquidity
+      file: ./src/mappings/cl-manager.ts
 templates:
   - kind: ethereum/contract
     name: ConstantProductPool

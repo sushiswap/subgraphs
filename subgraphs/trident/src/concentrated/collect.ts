@@ -43,19 +43,6 @@ export function handleCollect(event: CollectEvent): Collect | null {
   // TODO: save collected fees for token 0 and 1? save on concentratedLiquidityInfo?
   pair.feesUSD = pair.feesUSD.plus(amounts.native)
 
-  // TODO: update cl events?
-  // Pools liquidity tracks the currently active liquidity given pools current tick.
-  // We only want to update it on mint if the new position includes the current tick.
-  // if (
-  //   concentratedLiquidity.tick !== null &&
-  //   BigInt.fromI32(event.params.tickLower).le(pool.tick as BigInt) &&
-  //   BigInt.fromI32(event.params.tickUpper).gt(pool.tick as BigInt)
-  // ) {
-  //   pool.liquidity = pool.liquidity.plus(event.params.amount)
-  // }
-
-
-
   // get new amounts of USD and ETH for tracking
   const bundle = getOrCreateBundle()
   const amountTotalUSD = token1Price.derivedNative
@@ -76,6 +63,7 @@ export function handleCollect(event: CollectEvent): Collect | null {
     collect.amount1 = amount1
     collect.amountUSD = amountTotalUSD
     // TODO: update event, add ticks?
+    // collect.tickLower = concentratedLiquidity
     collect.logIndex = event.logIndex
     collect.save()
   }

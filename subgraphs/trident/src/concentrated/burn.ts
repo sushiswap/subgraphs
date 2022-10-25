@@ -36,7 +36,6 @@ export function handleBurn(event: BurnEvent): Burn | null {
   pair.reserve1 = pair.reserve1.minus(event.params.amount1)
   updateDerivedTVLAmounts(pair, oldLiquidityNative)
 
-  // TODO: update cl events?
   // Pools liquidity tracks the currently active liquidity given pools current tick.
   // We only want to update it on mint if the new position includes the current tick.
   if (

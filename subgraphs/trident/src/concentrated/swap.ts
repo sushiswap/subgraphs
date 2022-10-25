@@ -89,8 +89,9 @@ export function handleSwap(event: SwapEvent): Volume {
         swap.amountUSD = volumeUSD
         swap.to = event.transaction.to!.toHex()
         swap.logIndex = event.logIndex
-        // swap.sqrtPriceX96 = event.params.sqrtPriceX96 // TODO: missing
-        // swap.tick = event.BigInt.fromI32(event.params.tick as i32) // TODO: missing
+        swap.sqrtPriceX96 = event.params.price
+        swap.tick = BigInt.fromI32(event.params.tick)
+
         swap.save()
     }
 
