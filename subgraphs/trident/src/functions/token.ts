@@ -7,6 +7,7 @@ import { Token } from '../../generated/schema'
 import { getOrCreateRebase } from './rebase'
 import { createTokenPrice } from './token-price'
 import { getOrCreateFactory } from './factory'
+import { StaticTokenDefinition } from './staticTokenDefinition'
 
 export function getOrCreateToken(id: string): Token {
   let token = Token.load(id)
@@ -72,6 +73,11 @@ function getTokenSymbol(contract: ERC20): Symbol {
     symbolBytes32.value.toHex() != '0x0000000000000000000000000000000000000000000000000000000000000001'
   ) {
     return { success: true, value: symbolBytes32.value.toString() }
+  } else {
+    let staticTokenDefinition = StaticTokenDefinition.fromAddress(contract._address)
+    if (staticTokenDefinition != null) {
+      return { success: true, value: staticTokenDefinition.symbol }
+    }
   }
 
   return { success: false, value: '???' }
@@ -98,6 +104,11 @@ function getTokenName(contract: ERC20): Name {
     nameBytes32.value.toHex() != '0x0000000000000000000000000000000000000000000000000000000000000001'
   ) {
     return { success: true, value: nameBytes32.value.toString() }
+  } else {
+    let staticTokenDefinition = StaticTokenDefinition.fromAddress(contract._address)
+    if (staticTokenDefinition != null) {
+      return { success: true, value: staticTokenDefinition.name }
+    }
   }
 
   return { success: false, value: '???' }
@@ -113,6 +124,11 @@ function getTokenDecimals(contract: ERC20): Decimal {
 
   if (!decimals.reverted) {
     return { success: true, value: BigInt.fromI32(decimals.value) }
+  } else {
+    let staticTokenDefinition = StaticTokenDefinition.fromAddress(contract._address)
+    if (staticTokenDefinition != null) {
+      return { success: true, value: staticTokenDefinition.decimals }
+    }
   }
 
   return { success: false, value: BigInt.fromI32(18) }
