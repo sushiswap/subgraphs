@@ -129,9 +129,8 @@ export function updateVolume(event: SwapEvent): Volume {
     volumeNative = volumeUSD.div(bundle.nativePrice)
   }
 
-  const fee = pair.swapFee.divDecimal(BigDecimal.fromString('10000')).times(BigDecimal.fromString('0.83333333333'))
-  const feesNative = volumeNative.times(fee)
-  const feesUSD = volumeUSD.times(fee)
+  const feesNative = volumeNative.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
+  const feesUSD = volumeUSD.times(pair.swapFee.divDecimal(BigDecimal.fromString('10000')))
 
   tokenIn.volume = tokenIn.volume.plus(amountIn)
   tokenIn.volumeNative = tokenIn.volumeNative.plus(volumeNative)
