@@ -1,5 +1,5 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
-import { getConcentratedLiquidityInfo } from '../functions'
+import { getConcentratedLiquidityInfo, getOrCreateTick } from '../functions'
 import { Burn, Mint } from '../../generated/schema'
 import { Burn as BurnEvent } from '../../generated/templates/ConcentratedLiquidityPool/ConcentratedLiquidityPool'
 import { BIG_DECIMAL_ZERO, BIG_INT_ONE, PairType } from '../constants'
@@ -81,5 +81,16 @@ export function handleBurn(event: BurnEvent): Burn | null {
   token1.save()
 
   increaseFactoryTransactionCount(PairType.CONCENTRATED_LIQUIDITY_POOL)
+  
+  const lowerTick = getOrCreateTick(pair.id, event.params.tickLower, event.block)
+  const upperTick = getOrCreateTick(pair.id, event.params.tickUpper, event.block)
+  
+  lowerTick.liquidityGross = lowerTick.liquidityGross.minus(event.params.liquidityAmount)
+  lowerTick.liquidityNet = lowerTick.liquidityNet.minus(event.params.liquidityAmount)
+  upperTick.liquidityGross = upperTick.liquidityGross.minus(event.params.liquidityAmount)
+  upperTick.liquidityNet = upperTick.liquidityNet.plus(event.params.liquidityAmount)
+  lowerTick.save()
+  upperTick.save()
+
   return burn
 }

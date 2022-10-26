@@ -1,6 +1,6 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { Token } from '../../generated/schema'
-import { BIG_DECIMAL_ZERO, Q192 } from '../constants'
+import { BIG_DECIMAL_ONE, BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_TWO, BIG_INT_ZERO, Q192 } from '../constants'
 
 export function convertTokenToDecimal(tokenAmount: BigInt, exchangeDecimals: BigInt): BigDecimal {
   if (exchangeDecimals == BigInt.fromI32(0)) {
@@ -37,4 +37,36 @@ export function sqrtPriceX96ToTokenPrices(sqrtPriceX96: BigInt, token0: Token, t
 
   let price0 = safeDiv(BigDecimal.fromString('1'), price1)
   return [price0, price1]
+}
+
+
+
+export function bigDecimalExponated(value: BigDecimal, power: BigInt): BigDecimal {
+  if (power.equals(BIG_INT_ZERO)) {
+    return BIG_DECIMAL_ONE
+  }
+
+  let negativePower = power.lt(BIG_INT_ZERO)
+  let evenPower = BIG_DECIMAL_ZERO.plus(value)
+  let powerAbs = power.abs()
+  let oddPower = BIG_DECIMAL_ONE
+
+  while (powerAbs.lt(BIG_INT_ONE)) {
+    if (powerAbs.mod(BIG_INT_TWO) == BIG_INT_ZERO) {
+      evenPower = evenPower.times(evenPower)
+      powerAbs = powerAbs.div(BIG_INT_TWO)
+    } else {
+      oddPower = evenPower.times(oddPower)
+      evenPower = evenPower.times(evenPower)
+      powerAbs = powerAbs.minus(BIG_INT_ONE).div(BIG_INT_TWO)
+    }
+  }
+
+  let result = evenPower.times(oddPower)
+
+  if (negativePower) {
+    result = safeDiv(BIG_DECIMAL_ONE, result)
+  }
+
+  return result
 }

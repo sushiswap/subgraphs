@@ -1,6 +1,6 @@
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
-import { getConcentratedLiquidityInfo } from '../functions'
-import { Mint } from '../../generated/schema'
+import { BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { getConcentratedLiquidityInfo, getOrCreateTick } from '../functions'
+import { Mint, Tick } from '../../generated/schema'
 import { Mint as MintEvent } from '../../generated/templates/ConcentratedLiquidityPool/ConcentratedLiquidityPool'
 import { BIG_DECIMAL_ZERO, BIG_INT_ONE, PairType } from '../constants'
 import {
@@ -47,8 +47,6 @@ export function handleMint(event: MintEvent): Mint | null {
     pair.liquidity = pair.liquidity.plus(event.params.liquidityAmount)
   }
 
-
-
   // get new amounts of USD and ETH for tracking
   const bundle = getOrCreateBundle()
   const amountTotalUSD = token1Price.derivedNative
@@ -81,5 +79,28 @@ export function handleMint(event: MintEvent): Mint | null {
   token1.save()
 
   increaseFactoryTransactionCount(PairType.CONCENTRATED_LIQUIDITY_POOL)
+
+  const lowerTick = getOrCreateTick(pair.id, event.params.tickLower, event.block)
+  const upperTick = getOrCreateTick(pair.id, event.params.tickUpper, event.block)
+  
+  lowerTick.liquidityGross = lowerTick.liquidityGross.plus(event.params.liquidityAmount)
+  lowerTick.liquidityNet = lowerTick.liquidityNet.plus(event.params.liquidityAmount)
+  upperTick.liquidityGross = upperTick.liquidityGross.plus(event.params.liquidityAmount)
+  upperTick.liquidityNet = upperTick.liquidityNet.minus(event.params.liquidityAmount)
+  lowerTick.save()
+  upperTick.save()
+
   return mint
 }
+
+// function updateTickFeeVarsAndSave(tick: Tick, event: ethereum.Event): void {
+//   let poolAddress = event.address
+//   // not all ticks are initialized so obtaining null is expected behavior
+//   let poolContract = ....bind(poolAddress)
+//   let tickResult = poolContract.ticks(tick.tickIdx.toI32())
+//   tick.feeGrowthOutside0X128 = tickResult.value2
+//   tick.feeGrowthOutside1X128 = tickResult.value3
+//   tick.save()
+
+//   updateTickDayData(tick!, event)
+// }
