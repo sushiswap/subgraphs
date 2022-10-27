@@ -18,8 +18,8 @@ export function createPair(event: DeployPool, type: string): Pair {
   const swapFee = decoded[2].toBigInt() as BigInt
   const twapEnabled = decoded[3].toBoolean() as boolean
 
-  let rebase0 = getOrCreateRebase(token0Address, event.block.number)
-  let rebase1 = getOrCreateRebase(token1Address, event.block.number)
+  getOrCreateRebase(token0Address, event.block.number)
+  getOrCreateRebase(token1Address, event.block.number)
   let token0 = getOrCreateToken(token0Address, type, true)
   let token1 = getOrCreateToken(token1Address, type, true)
 
