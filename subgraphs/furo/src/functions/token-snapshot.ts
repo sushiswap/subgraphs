@@ -11,7 +11,7 @@ export function updateTokenSnapshots(
   tokenId: string
 ): void {
   const token = getOrCreateToken(tokenId, event)
-  const rebase = getOrCreateRebase(token.id)
+  const rebase = getOrCreateRebase(token.id, event.block.number)
   updateTokenHourSnapshot(event.block.timestamp, token, rebase)
   updateTokenDaySnapshot(event.block.timestamp, token, rebase)
  }

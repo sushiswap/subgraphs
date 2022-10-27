@@ -17,7 +17,7 @@ import { getOrCreateRebase, toElastic } from './rebase'
 import { getOrCreateUser } from './user'
 
 export function createStreamTransaction<T extends ethereum.Event>(stream: Stream, event: T, withdrawnAmount: BigInt = BIG_INT_ZERO): void {
-  let rebase = getOrCreateRebase(stream.token)
+  let rebase = getOrCreateRebase(stream.token, event.block.number)
   if (event instanceof CreateStreamEvent) {
     const id = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
     let transaction = new Transaction(id)
@@ -123,7 +123,7 @@ export function createStreamTransaction<T extends ethereum.Event>(stream: Stream
 }
 
 export function createVestingTransaction<T extends ethereum.Event>(vesting: Vesting, event: T): void {
-  let rebase = getOrCreateRebase(vesting.token)
+  let rebase = getOrCreateRebase(vesting.token, event.block.number)
   if (event instanceof CreateVestingEvent) {
     const id = vesting.id.concat(':tx:').concat(vesting.transactionCount.toString())
     let transaction = new Transaction(id)

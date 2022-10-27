@@ -25,7 +25,7 @@ export function createVesting(event: CreateVestingEvent): Vesting {
   let vesting = new Vesting(event.params.vestId.toString())
   let recipient = getOrCreateUser(event.params.recipient, event)
   let token = getOrCreateToken(event.params.token.toHex(), event)
-  let rebase = getOrCreateRebase(event.params.token.toHex())
+  let rebase = getOrCreateRebase(event.params.token.toHex(), event.block.number)
   let initialShares = calculateTotalShares(event.params.steps, event.params.stepShares, event.params.cliffShares)
   
   token.liquidityShares = token.liquidityShares.plus(initialShares)
@@ -59,7 +59,7 @@ export function createVesting(event: CreateVestingEvent): Vesting {
 }
 
 export function cancelVesting(event: CancelVestingEvent): Vesting {
-  let rebase = getOrCreateRebase(event.params.token.toHex())
+  let rebase = getOrCreateRebase(event.params.token.toHex(), event.block.number)
   let vesting = getVesting(event.params.vestId)
   const token = getOrCreateToken(vesting.token, event)
   token.liquidityShares = token.liquidityShares.minus(vesting.remainingShares)
@@ -78,7 +78,7 @@ export function cancelVesting(event: CancelVestingEvent): Vesting {
 }
 
 export function withdrawFromVesting(event: WithdrawEvent): Vesting {
-  let rebase = getOrCreateRebase(event.params.token.toHex())
+  let rebase = getOrCreateRebase(event.params.token.toHex(), event.block.number)
   let vesting = getVesting(event.params.vestId)
   vesting.withdrawnAmount = vesting.withdrawnAmount.plus(toElastic(rebase, event.params.amount, true))
   vesting.remainingShares = vesting.remainingShares.minus(event.params.amount)

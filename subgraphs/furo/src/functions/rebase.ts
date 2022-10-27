@@ -1,14 +1,15 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { BentoBox } from '../../generated/BentoBox/BentoBox'
 import { Rebase } from '../../generated/schema'
 import { BENTOBOX_ADDRESS, BIG_INT_ONE } from '../constants'
 
-export function createRebase(token: string): Rebase {
+export function createRebase(token: string, blockNumber: BigInt): Rebase {
   const rebase = new Rebase(token)
   const totals = getRebaseFromContract(token)
   rebase.token = token
   rebase.elastic = totals.elastic
   rebase.base = totals.base
+  rebase.createdAtBlock = blockNumber
   rebase.save()
   return rebase as Rebase
 }
@@ -17,11 +18,12 @@ export function getRebase(token: string): Rebase {
   return Rebase.load(token) as Rebase
 }
 
-export function getOrCreateRebase(token: string): Rebase {
+
+export function getOrCreateRebase(token: string, blockNumber: BigInt): Rebase {
   let rebase = Rebase.load(token)
 
   if (rebase === null) {
-    rebase = createRebase(token)
+    rebase = createRebase(token, blockNumber)
   }
 
   return rebase as Rebase

@@ -4,7 +4,6 @@ import { ERC20 } from '../../generated/MasterDeployer/ERC20'
 import { NameBytes32 } from '../../generated/MasterDeployer/NameBytes32'
 import { SymbolBytes32 } from '../../generated/MasterDeployer/SymbolBytes32'
 import { Token, _FactoryToken } from '../../generated/schema'
-import { getOrCreateRebase } from './rebase'
 import { createTokenPrice } from './token-price'
 import { getOrCreateFactory } from './factory'
 
@@ -30,8 +29,7 @@ export function getOrCreateToken(id: string, type: string = PairType.ALL, isCall
     token.decimals = decimals.value
     token.decimalsSuccess = decimals.success
     token.price = id
-    const rebase = getOrCreateRebase(id)
-    token.rebase = rebase.id
+    token.rebase = id
 
     token.liquidity = BIG_INT_ZERO
     token.liquidityNative = BIG_DECIMAL_ZERO

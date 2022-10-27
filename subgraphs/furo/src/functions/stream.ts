@@ -20,7 +20,7 @@ export function createStream(event: CreateStreamEvent): Stream {
   const owner = contract.streams(event.params.streamId).getSender()
   let sender = getOrCreateUser(owner, event)
 
-  let rebase = getOrCreateRebase(event.params.token.toHex())
+  let rebase = getOrCreateRebase(event.params.token.toHex(), event.block.number)
   let stream = new Stream(event.params.streamId.toString())
   let recipient = getOrCreateUser(event.params.recipient, event)
   let token = getOrCreateToken(event.params.token.toHex(), event)
@@ -60,7 +60,7 @@ export function createStream(event: CreateStreamEvent): Stream {
 
 export function updateStream(remainingShares: BigInt, withdrawnShares: BigInt, event: UpdateStreamEvent): Stream {
   let stream = getStream(event.params.streamId)
-  let rebase = getOrCreateRebase(stream.token)
+  let rebase = getOrCreateRebase(stream.token, event.block.number)
   const topUpShares = toBase(rebase, event.params.topUpAmount, true)
   const withdrawnAmount = toElastic(rebase, withdrawnShares, true)
   stream.extendedShares = stream.extendedShares.plus(topUpShares)
@@ -86,7 +86,7 @@ export function updateStream(remainingShares: BigInt, withdrawnShares: BigInt, e
 
 export function cancelStream(event: CancelStreamEvent): Stream {
   let stream = getStream(event.params.streamId)
-  let rebase = getOrCreateRebase(stream.token)
+  let rebase = getOrCreateRebase(stream.token, event.block.number)
 
   
   const token = getOrCreateToken(stream.token, event)
@@ -105,7 +105,7 @@ export function cancelStream(event: CancelStreamEvent): Stream {
 
 export function withdrawFromStream(event: WithdrawEvent): Stream {
   const stream = getStream(event.params.streamId)
-  let rebase = getOrCreateRebase(stream.token)
+  let rebase = getOrCreateRebase(stream.token, event.block.number)
   const withdrawnAmount = toElastic(rebase, event.params.sharesToWithdraw, true)
   stream.withdrawnAmount = stream.withdrawnAmount.plus(withdrawnAmount)
   if (!stream.extendedAtTimestamp.equals(BigInt.fromU32(0))) {
