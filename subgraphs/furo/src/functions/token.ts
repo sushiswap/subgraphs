@@ -25,6 +25,7 @@ export function getOrCreateToken(id: string, event: ethereum.Event): Token {
     token.decimalsSuccess = decimals.success
     token.createdAtBlock = event.block.number
     token.createdAtTimestamp = event.block.timestamp
+    token.rebase = id
 
     token.save()
   }

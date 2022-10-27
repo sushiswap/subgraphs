@@ -106,6 +106,7 @@ type Token @entity {
   nameSuccess: Boolean!
   decimals: BigInt!
   decimalsSuccess: Boolean!
+  rebase: Rebase!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
 }

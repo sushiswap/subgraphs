@@ -17,6 +17,12 @@ export function getRebase(token: string): Rebase {
   return Rebase.load(token) as Rebase
 }
 
+/**
+ * This function should only be used in other mappings than bentobox itself due to the contract call being made on entity creation, which 
+ * already contains the updated elastic and base values.
+ * @param token 
+ * @returns 
+ */
 export function getOrCreateRebase(token: string): Rebase {
   let rebase = Rebase.load(token)
 
