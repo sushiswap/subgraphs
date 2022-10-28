@@ -15,11 +15,11 @@ export function getOrCreateToken(id: string): Token {
     token = new Token(id)
     createTokenPrice(id)
 
-    const contract = ERC20.bind(Address.fromString(id))
+    const contractAddress = Address.fromString(id)
 
-    const decimals = getTokenDecimals(contract)
-    const name = getTokenName(contract)
-    const symbol = getTokenSymbol(contract)
+    const decimals = getTokenDecimals(contractAddress)
+    const name = getTokenName(contractAddress)
+    const symbol = getTokenSymbol(contractAddress)
     token.price = id
     token.name = name.value
     token.nameSuccess = name.success
@@ -53,79 +53,84 @@ class Symbol {
   value: string
 }
 
-function getTokenSymbol(contract: ERC20): Symbol {
-  const symbol = contract.try_symbol()
-  if (!symbol.reverted) {
-    return { success: true, value: symbol.value.toString() }
+export function getTokenSymbol(tokenAddress: Address): Symbol {
+  let contract = ERC20.bind(tokenAddress)
+  let contractSymbolBytes = SymbolBytes32.bind(tokenAddress)
+  let staticTokenDefinition = StaticTokenDefinition.fromAddress(tokenAddress)
+  if (staticTokenDefinition != null) {
+    return { success: true, value: staticTokenDefinition.symbol }
   }
 
-  const symbolBytes32Contract = SymbolBytes32.bind(contract._address)
+  let symbolResult = contract.try_symbol()
 
-  const symbolBytes32 = symbolBytes32Contract.try_symbol()
+  if (!symbolResult.reverted) {
+    return { success: true, value: symbolResult.value.toString() }
+  }
 
-
-  if (!symbolBytes32.reverted)
-    if (symbolBytes32.value.toHex() != '0x0000000000000000000000000000000000000000000000000000000000000001') {
-      return { success: true, value: symbolBytes32.value.toString() }
-    } else {
-      let staticTokenDefinition = StaticTokenDefinition.fromAddress(contract._address)
-      if (staticTokenDefinition != null) {
-        return { success: true, value: staticTokenDefinition.symbol }
-      }
-    }
+  let symbolResultBytes = contractSymbolBytes.try_symbol()
+  if (!symbolResultBytes.reverted && symbolResultBytes.value.toHex() != '0x0000000000000000000000000000000000000000000000000000000000000001') {
+    return { success: true, value: symbolResultBytes.value.toString() }
+  }
 
   return { success: false, value: '???' }
 }
+
+
 
 class Name {
   success: boolean
   value: string
 }
 
-function getTokenName(contract: ERC20): Name {
-  const name = contract.try_name()
+export function getTokenName(tokenAddress: Address): Name {
+  let contract = ERC20.bind(tokenAddress)
+  let contractNameBytes = NameBytes32.bind(tokenAddress)
+  let staticTokenDefinition = StaticTokenDefinition.fromAddress(tokenAddress)
 
-  if (!name.reverted) {
-    return { success: true, value: name.value.toString() }
+  if (staticTokenDefinition != null) {
+    return { success: true, value: staticTokenDefinition.name }
   }
 
-  const nameBytes32Contract = NameBytes32.bind(contract._address)
+  let nameResult = contract.try_name()
 
-  const nameBytes32 = nameBytes32Contract.try_name()
+  if (!nameResult.reverted) {
+    return { success: true, value: nameResult.value.toString() }
+  }
 
-  if (!nameBytes32.reverted)
-    if (nameBytes32.value.toHex() != '0x0000000000000000000000000000000000000000000000000000000000000001') {
-      return { success: true, value: nameBytes32.value.toString() }
-    } else {
-      let staticTokenDefinition = StaticTokenDefinition.fromAddress(contract._address)
-      if (staticTokenDefinition != null) {
-        return { success: true, value: staticTokenDefinition.name }
-      }
-    }
+  let nameResultBytes = contractNameBytes.try_name()
+  if (!nameResultBytes.reverted && nameResultBytes.value.toHex() != '0x0000000000000000000000000000000000000000000000000000000000000001') {
+    return { success: true, value: nameResultBytes.value.toString() }
+  }
 
 
   return { success: false, value: '???' }
 }
+
 
 class Decimal {
   success: boolean
   value: BigInt
 }
 
-function getTokenDecimals(contract: ERC20): Decimal {
-  const decimals = contract.try_decimals()
 
-  if (!decimals.reverted) {
-  return { success: true, value: BigInt.fromI32(decimals.value) }
-  } else {
-    let staticTokenDefinition = StaticTokenDefinition.fromAddress(contract._address)
-    if (staticTokenDefinition != null) {
-      return { success: true, value: staticTokenDefinition.decimals }
-    }
+export function getTokenDecimals(tokenAddress: Address): Decimal {
+  let contract = ERC20.bind(tokenAddress)
+  let decimalResult = contract.try_decimals()
+  let staticTokenDefinition = StaticTokenDefinition.fromAddress(tokenAddress)
+  
+  if (staticTokenDefinition != null) {
+    return { success: true, value: staticTokenDefinition.decimals }
   }
+
+  if (!decimalResult.reverted) {
+    return { success: true, value: BigInt.fromI32(decimalResult.value) }
+  }
+
 
   return { success: false, value: BigInt.fromI32(18) }
 }
+
+
 
 const BLACKLIST_EXCHANGE_VOLUME: string[] = [
   '0x9ea3b5b4ec044b70375236a281986106457b20ef', // DELTA
