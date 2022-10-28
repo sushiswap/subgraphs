@@ -1,4 +1,4 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts'
+import { Address, BigInt, log } from '@graphprotocol/graph-ts'
 import { ERC20 } from '../../generated/Factory/ERC20'
 import { NameBytes32 } from '../../generated/Factory/NameBytes32'
 import { SymbolBytes32 } from '../../generated/Factory/SymbolBytes32'
@@ -63,17 +63,16 @@ function getTokenSymbol(contract: ERC20): Symbol {
 
   const symbolBytes32 = symbolBytes32Contract.try_symbol()
 
-  if (
-    !symbolBytes32.reverted &&
-    symbolBytes32.value.toHex() != '0x0000000000000000000000000000000000000000000000000000000000000001'
-  ) {
-    return { success: true, value: symbolBytes32.value.toString() }
-  } else {
-    let staticTokenDefinition = StaticTokenDefinition.fromAddress(contract._address)
-    if (staticTokenDefinition != null) {
-      return { success: true, value: staticTokenDefinition.symbol }
+
+  if (!symbolBytes32.reverted)
+    if (symbolBytes32.value.toHex() != '0x0000000000000000000000000000000000000000000000000000000000000001') {
+      return { success: true, value: symbolBytes32.value.toString() }
+    } else {
+      let staticTokenDefinition = StaticTokenDefinition.fromAddress(contract._address)
+      if (staticTokenDefinition != null) {
+        return { success: true, value: staticTokenDefinition.symbol }
+      }
     }
-  }
 
   return { success: false, value: '???' }
 }
@@ -94,17 +93,15 @@ function getTokenName(contract: ERC20): Name {
 
   const nameBytes32 = nameBytes32Contract.try_name()
 
-  if (
-    !nameBytes32.reverted &&
-    nameBytes32.value.toHex() != '0x0000000000000000000000000000000000000000000000000000000000000001'
-  ) {
-    return { success: true, value: nameBytes32.value.toString() }
-  } else {
-    let staticTokenDefinition = StaticTokenDefinition.fromAddress(contract._address)
-    if (staticTokenDefinition != null) {
-      return { success: true, value: staticTokenDefinition.name }
+  if (!nameBytes32.reverted)
+    if (nameBytes32.value.toHex() != '0x0000000000000000000000000000000000000000000000000000000000000001') {
+      return { success: true, value: nameBytes32.value.toString() }
+    } else {
+      let staticTokenDefinition = StaticTokenDefinition.fromAddress(contract._address)
+      if (staticTokenDefinition != null) {
+        return { success: true, value: staticTokenDefinition.name }
+      }
     }
-  }
 
 
   return { success: false, value: '???' }
@@ -119,7 +116,7 @@ function getTokenDecimals(contract: ERC20): Decimal {
   const decimals = contract.try_decimals()
 
   if (!decimals.reverted) {
-    return { success: true, value: BigInt.fromI32(decimals.value) }
+  return { success: true, value: BigInt.fromI32(decimals.value) }
   } else {
     let staticTokenDefinition = StaticTokenDefinition.fromAddress(contract._address)
     if (staticTokenDefinition != null) {

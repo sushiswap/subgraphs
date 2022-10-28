@@ -2,6 +2,11 @@ enum PairType {
   CONSTANT_PRODUCT_POOL
 }
 
+type _Version @entity {
+  id: ID!
+  version: String!
+}
+
 type Factory @entity {
   " Contract address "
   id: ID!
