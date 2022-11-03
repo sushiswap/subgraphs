@@ -59,13 +59,21 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   const reserve1Decimals = convertTokenToDecimal(pair.reserve1, token1.decimals)
 
   if (pair.reserve1.notEqual(BIG_INT_ZERO)) {
-    pair.token0Price = reserve0Decimals.div(reserve1Decimals)
+    if (pair.type == PairType.CONSTANT_PRODUCT_POOL) {
+      pair.token0Price = reserve0Decimals.div(reserve1Decimals)
+    } else if (pair.type == PairType.STABLE_POOL) {
+      pair.token0Price = BigDecimal.fromString('1')
+    }
   } else {
     pair.token0Price = BIG_DECIMAL_ZERO
   }
 
   if (pair.reserve0.notEqual(BIG_INT_ZERO)) {
-    pair.token1Price = reserve1Decimals.div(reserve0Decimals)
+    if (pair.type == PairType.CONSTANT_PRODUCT_POOL) {
+      pair.token1Price = reserve1Decimals.div(reserve0Decimals)
+    } else if (pair.type == PairType.STABLE_POOL) {
+      pair.token1Price = BigDecimal.fromString('1')
+    }
   } else {
     pair.token1Price = BIG_DECIMAL_ZERO
   }
