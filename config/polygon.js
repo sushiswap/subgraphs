@@ -75,7 +75,7 @@ module.exports = {
       // DAI/WMATIC/30/TRUE
       '0x1bd908569c1157417abae2ed3de3cb04c734b984',
     ],
-    minimumNativeLiquidity: 1000,
+    minimumNativeLiquidity: 500,
     minimum_usd_threshold_new_pairs: '3000',
   },
   legacy: {

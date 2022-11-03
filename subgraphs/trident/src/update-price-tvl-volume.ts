@@ -1,4 +1,4 @@
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 import { TokenPrice } from '../generated/schema'
 import {
   Swap as SwapEvent,
@@ -59,13 +59,21 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   const reserve1Decimals = convertTokenToDecimal(pair.reserve1, token1.decimals)
 
   if (pair.reserve1.notEqual(BIG_INT_ZERO)) {
-    pair.token0Price = reserve0Decimals.div(reserve1Decimals)
+    if (pair.type == PairType.CONSTANT_PRODUCT_POOL) {
+      pair.token0Price = reserve0Decimals.div(reserve1Decimals)
+    } else if (pair.type == PairType.STABLE_POOL) {
+      pair.token0Price = BigDecimal.fromString('1')
+    }
   } else {
     pair.token0Price = BIG_DECIMAL_ZERO
   }
 
   if (pair.reserve0.notEqual(BIG_INT_ZERO)) {
-    pair.token1Price = reserve1Decimals.div(reserve0Decimals)
+    if (pair.type == PairType.CONSTANT_PRODUCT_POOL) {
+      pair.token1Price = reserve1Decimals.div(reserve0Decimals)
+    } else if (pair.type == PairType.STABLE_POOL) {
+      pair.token1Price = BigDecimal.fromString('1')
+    }
   } else {
     pair.token1Price = BIG_DECIMAL_ZERO
   }
@@ -75,8 +83,8 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   bundle.nativePrice = getNativePriceInUSD()
   bundle.save()
 
-  const token1Price = updateTokenPrice(token1.id, bundle.nativePrice)
   const token0Price = updateTokenPrice(token0.id, bundle.nativePrice)
+  const token1Price = updateTokenPrice(token1.id, bundle.nativePrice)
 
 
   // get tracked liquidity - will be 0 if neither is in whitelist
@@ -173,7 +181,7 @@ export function updateVolume(event: SwapEvent): Volume {
   factory.feesNative = factory.feesNative.plus(feesNative)
   factory.feesUSD = factory.feesUSD.plus(feesUSD)
   factory.save()
-  
+
   const globalFactory = getOrCreateFactory(PairType.ALL)
   globalFactory.volumeUSD = globalFactory.volumeUSD.plus(volumeUSD)
   globalFactory.volumeNative = globalFactory.volumeNative.plus(volumeNative)
@@ -233,17 +241,17 @@ export function getVolumeUSD(
 
 
   // both tokens are priced, take average of both amounts
-  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
+  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
     return tokenAmount0.times(price0).plus(tokenAmount1.times(price1)).div(BigDecimal.fromString('2'))
   }
 
   // take full value of the priced token
-  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && !token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
+  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && !token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
     return tokenAmount0.times(price0)
   }
 
   // take full value of the priced token
-  if (!token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
+  if (!token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
     return tokenAmount1.times(price1)
   }
 
@@ -269,17 +277,17 @@ export function getLiquidityUSD(
   const price1 = token1Price.derivedNative.times(bundle.nativePrice)
 
   // both tokens are priced, take average of both amounts
-  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
+  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
     return tokenAmount0.times(price0).plus(tokenAmount1.times(price1))
   }
 
   // take full value of the priced token
-  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && !token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
+  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && !token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
     return tokenAmount0.times(price0).times(BigDecimal.fromString('2'))
   }
 
   // take full value of the priced token
-  if (!token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
+  if (!token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
     return tokenAmount1.times(price1).times(BigDecimal.fromString('2'))
   }
 

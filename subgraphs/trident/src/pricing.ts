@@ -1,4 +1,4 @@
-import { BigDecimal } from '@graphprotocol/graph-ts'
+import { BigDecimal, log } from '@graphprotocol/graph-ts'
 import { Pair, _TokenPair, TokenPrice } from '../generated/schema'
 import {
   BIG_DECIMAL_ONE,
@@ -83,6 +83,27 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal):
   let mostLiquidity = BIG_DECIMAL_ZERO
   let currentPrice = BIG_DECIMAL_ZERO
 
+  // ISSUE: low liquidity and attractive stable pools makes none of the tokens price off native
+  // HOTFIX: lock USDC to price off native, come up with a proper solution later. 
+  if (tokenAddress == '0x2791bca1f2de4661ed88a30c99a7a9449aa84174') {
+    const pair = Pair.load('0x846fea3d94976ef9862040d9fba9c391aa75a44b')
+
+    if (pair != null) {
+      const nativeTokenPrice = getTokenPrice(pair.token0)
+      pricedOffToken = nativeTokenPrice.id
+      pricedOffPair = pair.id
+      currentPrice = pair.token0Price.times(nativeTokenPrice.derivedNative)
+      log.debug('USDC price off native', []) // TODO: remove, only added to get a new build id, landed on a slow node.......
+    }
+
+    currentTokenPrice.pricedOffToken = pricedOffToken
+    currentTokenPrice.pricedOffPair = pricedOffPair
+    currentTokenPrice.derivedNative = currentPrice
+    currentTokenPrice.lastUsdPrice = currentPrice.times(nativePrice)
+    currentTokenPrice.save()
+    return currentTokenPrice
+  }
+
   for (let i = 0; i < token.pairCount.toI32(); ++i) {
     const tokenPairRelationshipId = token.id.concat(':').concat(i.toString())
     const tokenPairRelationship = _TokenPair.load(tokenPairRelationshipId)
@@ -142,3 +163,4 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal):
 function passesLiquidityCheck(reserveNative: BigDecimal, mostReseveEth: BigDecimal): boolean {
   return reserveNative.gt(MINIMUM_NATIVE_LIQUIDITY) && reserveNative.gt(mostReseveEth)
 }
+
