@@ -59,6 +59,10 @@ module.exports = {
       // USDC/WKAVA/30/FALSE
       '0x88395b86cf9787e131d2fb5462a22b44056bf574',
     ],
+    tokensToPriceOffNative: [
+      // These tokens will be priced off the NATIVE token
+      USDC_ADDRESS
+    ],
     minimum_usd_threshold_new_pairs: '3000',
     minimumNativeLiquidity: '0.1',
   },

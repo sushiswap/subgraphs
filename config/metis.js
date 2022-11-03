@@ -53,6 +53,10 @@ module.exports = {
       // DAI
       DAI_ADDRESS,
     ],
+    tokensToPriceOffNative: [
+      // These tokens will be priced off the NATIVE token
+      USDC_ADDRESS
+    ],
     minimumNativeLiquidity: '0.1',
   },
   furo: {

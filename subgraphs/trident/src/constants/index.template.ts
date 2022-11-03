@@ -75,16 +75,34 @@ const STABLE_POOL_PERMUTATIONS = combinate(STABLE_TOKEN_ADDRESSES, NATIVE_ADDRES
 export const INIT_CODE_HASH = '{{ trident.constantProductPoolFactory.initCodeHash }}'
 
 export const STABLE_POOL_ADDRESSES: string[] = STABLE_POOL_PERMUTATIONS.map<string>((perm: CombinateReturn) => {
-      const factory = Bytes.fromByteArray(Bytes.fromHexString('{{ trident.constantProductPoolFactory.address }}'))
-      const token0 = perm.tokens[0].slice(2).padStart(64, '0')
-      const token1 = perm.tokens[1].slice(2).padStart(64, '0')
-      const fee = (perm.fee as i32).toString(16).padStart(64, '0')
-      const oracle = (+perm.oracle as i32).toString(16).padStart(64, '0')
-      const keccak = crypto.keccak256(ByteArray.fromHexString('0x' + token0 + token1 + fee + oracle)).toHex()
-      const initCodeHash = Bytes.fromByteArray(Bytes.fromHexString(INIT_CODE_HASH))
+  const factory = Bytes.fromByteArray(Bytes.fromHexString('{{ trident.constantProductPoolFactory.address }}'))
+  const token0 = perm.tokens[0].slice(2).padStart(64, '0')
+  const token1 = perm.tokens[1].slice(2).padStart(64, '0')
+  const fee = (perm.fee as i32).toString(16).padStart(64, '0')
+  const oracle = (+perm.oracle as i32).toString(16).padStart(64, '0')
+  const keccak = crypto.keccak256(ByteArray.fromHexString('0x' + token0 + token1 + fee + oracle)).toHex()
+  const initCodeHash = Bytes.fromByteArray(Bytes.fromHexString(INIT_CODE_HASH))
 
-      return getCreate2Address(factory, keccak, initCodeHash).toHex()
-    })
+  return getCreate2Address(factory, keccak, initCodeHash).toHex()
+})
+
+export const TOKENS_TO_PRICE_OFF_NATIVE_ADDRESSES: string[] = '{{ trident.tokensToPriceOffNative }}'.split(',')
+export const TOKENS_TO_PRICE_OFF_NATIVE = new Map<string, string[]>()
+
+TOKENS_TO_PRICE_OFF_NATIVE_ADDRESSES.forEach((token: string) => {
+  const permutations = combinate([token], NATIVE_ADDRESS, [false, true], [1, 5, 10, 30, 100])
+  const pools = permutations.map<string>((perm: CombinateReturn) => {
+    const factory = Bytes.fromByteArray(Bytes.fromHexString('{{ trident.constantProductPoolFactory.address }}'))
+    const token0 = perm.tokens[0].slice(2).padStart(64, '0')
+    const token1 = perm.tokens[1].slice(2).padStart(64, '0')
+    const fee = (perm.fee as i32).toString(16).padStart(64, '0')
+    const oracle = (+perm.oracle as i32).toString(16).padStart(64, '0')
+    const keccak = crypto.keccak256(ByteArray.fromHexString('0x' + token0 + token1 + fee + oracle)).toHex()
+    const initCodeHash = Bytes.fromByteArray(Bytes.fromHexString(INIT_CODE_HASH))
+    return getCreate2Address(factory, keccak, initCodeHash).toHex()
+  })
+  TOKENS_TO_PRICE_OFF_NATIVE.set(token, pools)
+})
 
 // Minimum liqudiity threshold in native currency
 export const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('{{ trident.minimumNativeLiquidity }}')

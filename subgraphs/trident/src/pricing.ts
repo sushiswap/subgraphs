@@ -1,4 +1,4 @@
-import { BigDecimal } from '@graphprotocol/graph-ts'
+import { BigDecimal, log } from '@graphprotocol/graph-ts'
 import { Pair, _TokenPair, TokenPrice } from '../generated/schema'
 import {
   BIG_DECIMAL_ONE,
@@ -6,7 +6,9 @@ import {
   MINIMUM_NATIVE_LIQUIDITY,
   NATIVE_ADDRESS,
   STABLE_POOL_ADDRESSES,
-  STABLE_TOKEN_ADDRESSES
+  STABLE_TOKEN_ADDRESSES,
+  TOKENS_TO_PRICE_OFF_NATIVE,
+  TOKENS_TO_PRICE_OFF_NATIVE_ADDRESSES
 } from './constants'
 import { convertTokenToDecimal, getOrCreateToken } from './functions'
 import { getTokenPrice } from './functions/token-price'
@@ -82,6 +84,34 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal):
   let pricedOffPair = ''
   let mostLiquidity = BIG_DECIMAL_ZERO
   let currentPrice = BIG_DECIMAL_ZERO
+
+  // This ensures that some tokens are priced off native, stable pools might contain more liquidity than native pairing
+  if (TOKENS_TO_PRICE_OFF_NATIVE_ADDRESSES.includes(tokenAddress)) {
+    const pairs = TOKENS_TO_PRICE_OFF_NATIVE.get(tokenAddress)
+    for (let i = 0; i < pairs.length; i++) {
+      const pair = Pair.load(pairs[i])
+      if (pair != null) {
+        const isNativeFirst = pair.token0 == NATIVE_ADDRESS
+        const nativeTokenPrice = getTokenPrice(isNativeFirst ? pair.token0 : pair.token1)
+        const pairTokenPrice = isNativeFirst ? pair.token0Price : pair.token1Price
+        if (passesLiquidityCheck(pair.liquidityNative, mostLiquidity)) {
+          pricedOffToken = nativeTokenPrice.id
+          pricedOffPair = pair.id
+          mostLiquidity = pair.liquidityNative
+          currentPrice = pairTokenPrice.times(nativeTokenPrice.derivedNative)
+        }
+      }
+    }
+
+    currentTokenPrice.pricedOffToken = pricedOffToken
+    currentTokenPrice.pricedOffPair = pricedOffPair
+    currentTokenPrice.derivedNative = currentPrice
+    currentTokenPrice.lastUsdPrice = currentPrice.times(nativePrice)
+    currentTokenPrice.save()
+    return currentTokenPrice
+  }
+
+
 
   for (let i = 0; i < token.pairCount.toI32(); ++i) {
     const tokenPairRelationshipId = token.id.concat(':').concat(i.toString())

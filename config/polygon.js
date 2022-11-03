@@ -75,6 +75,10 @@ module.exports = {
       // DAI/WMATIC/30/TRUE
       '0x1bd908569c1157417abae2ed3de3cb04c734b984',
     ],
+    tokensToPriceOffNative: [
+      // These tokens will be priced off the NATIVE token
+      USDC_ADDRESS
+    ],
     minimumNativeLiquidity: 1000,
     minimum_usd_threshold_new_pairs: '3000',
   },
