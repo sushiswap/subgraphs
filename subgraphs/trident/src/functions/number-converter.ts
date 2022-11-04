@@ -41,3 +41,11 @@ export function bigDecimalExponated(value: BigDecimal, power: BigInt): BigDecima
 
   return result
 }
+
+export function exponentBigInt(decimals: BigInt): BigInt {
+  let bd = BigInt.fromString('1')
+  for (let i = BigInt.fromI32(0); i.lt(decimals as BigInt); i = i.plus(BigInt.fromI32(1))) {
+    bd = bd.times(BigInt.fromString('10'))
+  }
+  return bd
+}

@@ -12,6 +12,7 @@ import {
 } from './constants'
 import {
   convertTokenToDecimal,
+  exponentBigInt,
   getOrCreateBundle,
   getOrCreateFactory,
   getOrCreateToken,
@@ -318,49 +319,41 @@ function deriveTokenPrice(
   if (reserve0.equals(BIG_INT_ZERO) || reserve1.equals(BIG_INT_ZERO)) {
     return BIG_DECIMAL_ZERO
   }
+  
+  const _reserve0 = parseInt(reserve0.times(BigInt.fromString('1000000000000')).div(BigInt.fromString('10').pow(token0.decimals.toI32() as u8)).toString())
+  const _reserve1 = parseInt(reserve1.times(BigInt.fromString('1000000000000')).div(BigInt.fromString('10').pow(token1.decimals.toI32() as u8)).toString())
+
 
   const decimalsCompensation0 = Math.pow(10, 12 - token0.decimals.toI32())
   const decimalsCompensation1 = Math.pow(10, 12 - token1.decimals.toI32())
-  log.debug("TEST ------------------------------------------", [])
-  log.debug('TEST reserve0 INPUT: {}, reserve1 INPUT: {}', [reserve0.toString(), reserve1.toString()])
+  log.debug('TEST --------- reserve0: {}, reserve1: {}', [_reserve0.toString(), _reserve1.toString()])
 
-
-  log.debug('TEST reserve0: {}, reserve1: {}', [reserve0.toString(), reserve1.toString()])
-
-  const calcDirection = reserve0.gt(reserve1)
-  const xBN = calcDirection ? reserve0 : reserve1
-  const x = parseFloat(xBN.toString())
-  const k = parseFloat((reserve0.times(reserve1).times(reserve0.times(reserve0).plus(reserve1.times(reserve1)))).toString())
+  const calcDirection = _reserve0 > _reserve1
+  const xBN = calcDirection ? _reserve0 : _reserve1
+  const x = parseInt(xBN.toString())
+  const k = parseInt((_reserve0 * _reserve1 * (_reserve0 *_reserve0) + (_reserve1 * _reserve1)).toString())
   const q = k / x / 2
   const qD = -q / x // devivative of q
   const Q = Math.pow(x, 6) / 27 + q * q
   const QD = (6 * Math.pow(x, 5)) / 27 + 2 * q * qD // derivative of Q
   const sqrtQ = Math.sqrt(Q)
-  const sqrtQD = (0.5 / sqrtQ) * QD // derivative of sqrtQ
+  const sqrtQD = (1 / 2 / sqrtQ) * QD // derivative of sqrtQ
   const a = sqrtQ + q
   const aD = sqrtQD + qD
   const b = sqrtQ - q
   const bD = sqrtQD - qD
-  const a3 = Math.pow(a, 0.333333)
-  const _a3 = BigDecimal.fromString(a3.toString())
-  const _a3D = BigDecimal.fromString((0.33333333).toString()).times(_a3).div(BigDecimal.fromString(a.toString())).times(BigDecimal.fromString(aD.toString()))
-  // const a3D = (((1 / 3) * a3) / a) * aD
-  const b3 = Math.pow(b, 0.333333)
-  const _b3 = BigDecimal.fromString(b3.toString())
-  const _b3D = BigDecimal.fromString((0.33333333).toString()).times(_b3).div(BigDecimal.fromString(b.toString())).times(BigDecimal.fromString(bD.toString()))
- 
-  // const b3D = (((1 / 3) * b3) / b) * bD
-  const _yD = _a3D.minus(_b3D)
-  // const yD = a3D - b3D
-  const yD = parseFloat(_yD.toString())
-  log.debug('TEST TEST TEST yD: {}', [yD.toString()])
-
+  const a3 = Math.pow(a, 1 / 3)
+  const a3D = (((1 / 3) * a3) / a) * aD
+  const b3 = Math.pow(b, 1 / 3)
+  const b3D = (((1 / 3) * b3) / b) * bD
+  const yD = a3D - b3D
   const rebase0 = getRebase(token0.id)
   const rebase1 = getRebase(token1.id)
-  // toBase(rebase1, toElastic(rebase0, yD, false), false) : toBase(rebase0, toElastic(rebase1, yD, false)
+
+  log.debug('TEST yd {}', [yD.toString()])
   const yDShares = calcDirection
-    ? parseFloat(toBase(rebase1, toElastic(rebase0, BigInt.fromString(parseInt(yD.toString()).toString()), false), false).toString())
-    : parseFloat(toBase(rebase0, toElastic(rebase1, BigInt.fromString(parseInt(yD.toString()).toString()), false), false).toString())
+    ? parseFloat(toBase(rebase1, toElastic(rebase0, BigInt.fromU32(yD as u32), false), false).toString())
+    : parseFloat(toBase(rebase0, toElastic(rebase1, BigInt.fromU32(yD as u32), false), false).toString())
 
   const price = calcDirection == direction ? -yDShares : -1 / yDShares
   const scale = decimalsCompensation0 / decimalsCompensation1
@@ -368,48 +361,18 @@ function deriveTokenPrice(
   const result = direction ? price * scale : price / scale
   log.debug('TEST deriveTokenPrice: {}', [result.toString()])
   log.debug("TEST ---------------------- END ", [])
+  // if (isNaN(result) || result == Infinity) {
+  //   log.debug('TEST NaN or Infinity: {}', [result.toString()])
+  //   return BIG_DECIMAL_ZERO
+  // }
+  // if (result < 0) {
+  //   const test = result * -1
+  //   if (isNaN(test) || test == Infinity) {
+  //     log.debug('TEST NaN or Infinity: {}', [result.toString()])
+  //     return BIG_DECIMAL_ZERO
+  //   }
+  //   return BigDecimal.fromString(test.toString())
+  // }
   return BigDecimal.fromString(result.toString())
-
-
-
-
-
-
-
-
-  // const decimalsCompensation0 = BigInt.fromString('10').pow(<u8>(12) - <u8>(token0.decimals.toU32()))
-  // const decimalsCompensation1 = BigInt.fromString('10').pow(<u8>(12) - <u8>(token1.decimals.toU32()))
-
-  // const calcDirection = reserve0.gt(reserve1)
-  // const x = calcDirection ? reserve0 : reserve1
-  // const k = reserve0.times(reserve1).times(
-  //   reserve0.times(reserve0)
-  //     .plus(reserve1.times(reserve1))
-  // )
-  // const q = k.div(x).div(BigInt.fromString('2'))
-  // const qD = q.times(BigInt.fromString('-1')).div(x)
-
-  // const Q = x.pow(<u8>(6)).div(BigInt.fromString('27')).plus(BigInt.fromString('2')).times(q).times(q)
-  // const QD = BigInt.fromString('6').times(x.pow(<u8>(5))).div(BigInt.fromString('27')).plus(BigInt.fromString('2')).times(q).times(qD)
-
-  // const sqrtQ = Q.sqrt()
-  // const sqrtQD = BigInt.fromString('1').div(BigInt.fromString('2')).div(sqrtQ).times(QD)
-  // const a = sqrtQ.plus(q)
-  // const aD = sqrtQD.plus(q)
-  // const b = sqrtQ.minus(q)
-  // const bD = sqrtQD.minus(qD)
-
-  // const a3 = a.pow(<u8>(1 / 3))
-  // const a3D = BigInt.fromString('1').div(BigInt.fromString('3')).times(a3).div(a).times(aD)
-  // const b3 = b.pow(<u8>(1 / 3))
-  // const b3D = BigInt.fromString('1').div(BigInt.fromString('3')).times(b3).div(b).times(bD)
-
-  // const yD = a3D.minus(b3D)
-
-  // const rebase0 = getRebase(token0.id)
-  // const rebase1 = getRebase(token1.id)
-  // const ydShares = calcDirection ? toBase(rebase1, toElastic(rebase0, yD, false), false) : toBase(rebase0, toElastic(rebase1, yD, false), false)
-  // const price = calcDirection == direction ? BigInt.fromString('-1').times(ydShares) : ydShares
-  // const scale = decimalsCompensation0.div(decimalsCompensation1)
-  // return direction ? price.times(scale) : price.div(scale)
 }
+
