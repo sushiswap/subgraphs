@@ -1,6 +1,12 @@
-specVersion: 0.0.6
+specVersion: 0.0.4
 schema:
   file: ./schema.graphql
+features:
+  - grafting
+  # - nonFatalErrors
+graft:
+  base: 'QmUnuemWyvAj4gV38wDHCR7aNgCtpjhDypuY8QJ8zGKn56'
+  block: 2267160
 dataSources:
   - kind: ethereum/contract
     name: BentoBox
@@ -11,7 +17,7 @@ dataSources:
       abi: BentoBox
     mapping:
       kind: ethereun/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       file: ./src/mappings/bentobox.ts
       entities: []
@@ -45,7 +51,7 @@ dataSources:
       abi: MasterDeployer
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities: []
       abis:
@@ -75,7 +81,7 @@ templates:
       abi: ConstantProductPool
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       file: ./src/mappings/pair.ts
       entities: []
@@ -108,7 +114,7 @@ templates:
       abi: StablePool
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       file: ./src/mappings/pair.ts
       entities: []
