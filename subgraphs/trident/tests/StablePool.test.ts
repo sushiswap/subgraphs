@@ -14,6 +14,7 @@ class TestArg {
 }
 const TEST_ARGS: TestArg[] =
     [
+
         {
             reserve0: BigInt.fromString("5028472782"), reserve1: BigInt.fromString("5028472782"),
             expectedToken0Price: BigDecimal.fromString('0.9999999999999996'), expectedToken1Price: BigDecimal.fromString('1.0000000000000005')
@@ -50,34 +51,69 @@ const TEST_ARGS: TestArg[] =
 const PAIR = Address.fromString("0x397ff1542f962076d0bfe58ea045ffa2d347aca0")
 
 test(`Test stable pool token0Price/token1Price calculation`, () => {
-    for (let i = 0; i < TEST_ARGS.length; i++) {
+    clearStore()
 
-        getOrCreateTokenMock(NATIVE_ADDRESS, 18, "NATIVE", "NAT")
-        deployPair({
-            factory: STABLE_POOL_FACTORY_ADDRESS,
-            token0: Address.fromString("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"),
-            token0Decimals: 18,
-            token0Symbol: "SomeToken",
-            token0Name: "Some Token",
-            token1: Address.fromString("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"),
-            token1Decimals: 18,
-            token1Symbol: "SomeOtherToken",
-            token1Name: "Some Other Token",
-            pairAddress: PAIR
-        })
-        const blockNumber = BigInt.fromString("13413298")
-        const syncEvent = createSyncEvent(Bytes.fromHexString("0xcd18330c23ba51da48581d11d43db76fe3c4502af0a49dc7667a9b65c2546c9f"), blockNumber, PAIR, TEST_ARGS[i].reserve0, TEST_ARGS[i].reserve1)
+    const reserve0 = BigInt.fromString("999999")
+    const reserve1 = BigInt.fromString("999999999999999999")
+    const expectedToken0Price = BigDecimal.fromString('1000000000000.0044')
+    const expectedToken1Price = BigDecimal.fromString('0.0000000000009999999999999957')
 
-        onSync(syncEvent)
+    getOrCreateTokenMock(NATIVE_ADDRESS, 18, "NATIVE", "NAT")
+    deployPair({
+        factory: STABLE_POOL_FACTORY_ADDRESS,
+        token0: Address.fromString("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"),
+        token0Decimals: 6,
+        token0Symbol: "SomeToken",
+        token0Name: "Some Token",
+        token1: Address.fromString("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"),
+        token1Decimals: 18,
+        token1Symbol: "SomeOtherToken",
+        token1Name: "Some Other Token",
+        pairAddress: PAIR
+    })
+    const blockNumber = BigInt.fromString("13413298")
+    const syncEvent = createSyncEvent(Bytes.fromHexString("0xcd18330c23ba51da48581d11d43db76fe3c4502af0a49dc7667a9b65c2546c9f"), blockNumber, PAIR, reserve0, reserve1)
 
-        assert.fieldEquals('Pair', PAIR.toHex(), 'token0Price', TEST_ARGS[i].expectedToken0Price.toString())
-        assert.fieldEquals('Pair', PAIR.toHex(), 'token1Price', TEST_ARGS[i].expectedToken1Price.toString())
+    onSync(syncEvent)
 
-        log.debug("Test {} reserve0: {} reserve1: {}, expected token0Price: {}, token1Price: {}", [(i + 1).toString(), TEST_ARGS[i].reserve0.toString(), TEST_ARGS[i].reserve1.toString(), TEST_ARGS[i].expectedToken0Price.toString(), TEST_ARGS[i].expectedToken1Price.toString()])
-        log.debug("Test {} passed", [(i + 1).toString()])
+    assert.fieldEquals('Pair', PAIR.toHex(), 'token0Price', expectedToken0Price.toString())
+    assert.fieldEquals('Pair', PAIR.toHex(), 'token1Price', expectedToken1Price.toString())
+    
+        log.debug("reserve0: {} reserve1: {}, expected token0Price: {}, token1Price: {}", [reserve0.toString(), reserve1.toString(), expectedToken0Price.toString(), expectedToken1Price.toString()])
 
-    }
 })
+
+
+// test(`Test stable pool token0Price/token1Price calculation`, () => {
+//     for (let i = 0; i < TEST_ARGS.length; i++) {
+//         clearStore()
+
+//         getOrCreateTokenMock(NATIVE_ADDRESS, 18, "NATIVE", "NAT")
+//         deployPair({
+//             factory: STABLE_POOL_FACTORY_ADDRESS,
+//             token0: Address.fromString("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"),
+//             token0Decimals: 18,
+//             token0Symbol: "SomeToken",
+//             token0Name: "Some Token",
+//             token1: Address.fromString("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"),
+//             token1Decimals: 18,
+//             token1Symbol: "SomeOtherToken",
+//             token1Name: "Some Other Token",
+//             pairAddress: PAIR
+//         })
+//         const blockNumber = BigInt.fromString("13413298")
+//         const syncEvent = createSyncEvent(Bytes.fromHexString("0xcd18330c23ba51da48581d11d43db76fe3c4502af0a49dc7667a9b65c2546c9f"), blockNumber, PAIR, TEST_ARGS[i].reserve0, TEST_ARGS[i].reserve1)
+
+//         onSync(syncEvent)
+
+//         assert.fieldEquals('Pair', PAIR.toHex(), 'token0Price', TEST_ARGS[i].expectedToken0Price.toString())
+//         assert.fieldEquals('Pair', PAIR.toHex(), 'token1Price', TEST_ARGS[i].expectedToken1Price.toString())
+
+//         log.debug("Test {} reserve0: {} reserve1: {}, expected token0Price: {}, token1Price: {}", [(i + 1).toString(), TEST_ARGS[i].reserve0.toString(), TEST_ARGS[i].reserve1.toString(), TEST_ARGS[i].expectedToken0Price.toString(), TEST_ARGS[i].expectedToken1Price.toString()])
+//         log.debug("Test {} passed", [(i + 1).toString()])
+
+//     }
+// })
 
 
 
