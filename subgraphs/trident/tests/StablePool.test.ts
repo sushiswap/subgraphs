@@ -1,44 +1,93 @@
-import { Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts'
-import { assert, test } from 'matchstick-as/assembly/index'
+import { Address, BigDecimal, BigInt, Bytes, ethereum, log } from '@graphprotocol/graph-ts'
+import { afterAll, assert, beforeAll, clearStore, test } from 'matchstick-as/assembly/index'
 import { Pair, Token } from '../generated/schema'
-import { STABLE_POOL_FACTORY_ADDRESS } from '../src/constants'
+import { NATIVE_ADDRESS, STABLE_POOL_FACTORY_ADDRESS } from '../src/constants'
 import { onDeployPool } from '../src/mappings/master-deployer'
 import { onSync } from '../src/mappings/pair'
 import { createPairEvent, createSyncEvent, getOrCreateRebaseMock, getOrCreateTokenMock } from './mocks'
 
+class TestArg {
+    reserve0: BigInt
+    reserve1: BigInt
+    expectedToken0Price: BigDecimal
+    expectedToken1Price: BigDecimal
+}
+const TEST_ARGS: TestArg[] =
+    [
+        {
+            reserve0: BigInt.fromString("5028472782"), reserve1: BigInt.fromString("5028472782"),
+            expectedToken0Price: BigDecimal.fromString('0.9999999999999996'), expectedToken1Price: BigDecimal.fromString('1.0000000000000005')
+        },
+        {
+            reserve0: BigInt.fromString("6028472782"), reserve1: BigInt.fromString("5028472782"),
+            expectedToken0Price: BigDecimal.fromString('0.9985211822128942'), expectedToken1Price: BigDecimal.fromString('1.0014810079279726')
+        },
+        {
+            reserve0: BigInt.fromString("7028472782"), reserve1: BigInt.fromString("5028472782"),
+            expectedToken0Price: BigDecimal.fromString('0.9909106664191369'), expectedToken1Price: BigDecimal.fromString('1.0091727073780619')
+        },
+        {
+            reserve0: BigInt.fromString("8028472782"), reserve1: BigInt.fromString("5028472782"),
+            expectedToken0Price: BigDecimal.fromString('0.976026791175519'), expectedToken1Price: BigDecimal.fromString('1.0245620397321347')
+        }
+        ,
+        {
+            reserve0: BigInt.fromString("9028472782"), reserve1: BigInt.fromString("5028472782"),
+            expectedToken0Price: BigDecimal.fromString('0.9549463914654022'), expectedToken1Price: BigDecimal.fromString('1.0471792018245772')
+        }
+        ,
+        {
+            reserve0: BigInt.fromString("10028472782"), reserve1: BigInt.fromString("5028472782"),
+            expectedToken0Price: BigDecimal.fromString('0.9293374369128773'), expectedToken1Price: BigDecimal.fromString('1.0760354208067345')
+        }
+        ,
+        {
+            reserve0: BigInt.fromString("5028472782"), reserve1: BigInt.fromString("7028472782"),
+            expectedToken0Price: BigDecimal.fromString('1.0091727073780619'), expectedToken1Price: BigDecimal.fromString('0.9909106664191369')
+        }
+    ]
 
-test('Price test', () => {
+const PAIR = Address.fromString("0x397ff1542f962076d0bfe58ea045ffa2d347aca0")
+// beforeAll(() => {
+//     getOrCreateTokenMock(NATIVE_ADDRESS, 18, "NATIVE", "NAT")
+//     let pair = 
+// })
 
-    let pair = deployPair({
-        factory: STABLE_POOL_FACTORY_ADDRESS,
-        token0: Address.fromString("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"),
-        token0Decimals: 6,
-        token0Symbol: "USDC",
-        token0Name: "USD Coin",
-        token1: Address.fromString("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"),
-        token1Decimals: 6,
-        token1Symbol: "USDT",
-        token1Name: "USD Tether",
-        pairAddress: Address.fromString("0x397ff1542f962076d0bfe58ea045ffa2d347aca0")
-    })
+// afterAll(() => {
+//     clearStore()
+// })
 
-    const blockNumber = BigInt.fromString("13413298")
-    const reserve0 = BigInt.fromString("5028472782")
-    const reserve1 = BigInt.fromString("5028350937")
-    const syncEvent = createSyncEvent(
-        Bytes.fromHexString("0xcd18330c23ba51da48581d11d43db76fe3c4502af0a49dc7667a9b65c2546c9f"),
-        blockNumber,
-        Address.fromString(pair.id),
-        reserve0,
-        reserve1)
+test(`Pair.token0/1.price test`, () => {
+    // const i = 0
+    for (let i = 0; i < TEST_ARGS.length; i++) {
 
-    onSync(syncEvent)
+        getOrCreateTokenMock(NATIVE_ADDRESS, 18, "NATIVE", "NAT")
+        deployPair({
+            factory: STABLE_POOL_FACTORY_ADDRESS,
+            token0: Address.fromString("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"),
+            token0Decimals: 18,
+            token0Symbol: "SomeToken",
+            token0Name: "Some Token",
+            token1: Address.fromString("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"),
+            token1Decimals: 18,
+            token1Symbol: "SomeOtherToken",
+            token1Name: "Some Other Token",
+            pairAddress: PAIR
+        })
+        const blockNumber = BigInt.fromString("13413298")
+        const syncEvent = createSyncEvent(Bytes.fromHexString("0xcd18330c23ba51da48581d11d43db76fe3c4502af0a49dc7667a9b65c2546c9f"), blockNumber, PAIR, TEST_ARGS[i].reserve0, TEST_ARGS[i].reserve1)
 
-    assert.fieldEquals('Pair', pair.id, 'token0Price', '0.9999999999999996')
-    assert.fieldEquals('Pair', pair.id, 'token1Price', '1.0000000000000004')
+        onSync(syncEvent)
 
+        assert.fieldEquals('Pair', PAIR.toHex(), 'token0Price', TEST_ARGS[i].expectedToken0Price.toString())
+        assert.fieldEquals('Pair', PAIR.toHex(), 'token1Price', TEST_ARGS[i].expectedToken1Price.toString())
 
+        log.debug("Test {} reserve0: {} reserve1: {}, expected token0Price: {}, token1Price: {}", [(i+1).toString(), TEST_ARGS[i].reserve0.toString(), TEST_ARGS[i].reserve1.toString(), TEST_ARGS[i].expectedToken0Price.toString(), TEST_ARGS[i].expectedToken1Price.toString()])
+        log.debug("Test {} passed", [(i + 1).toString()])
+
+    }
 })
+
 
 
 

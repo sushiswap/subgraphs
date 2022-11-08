@@ -315,64 +315,75 @@ function deriveTokenPrice(
   token0: Token, token1: Token,
   direction: boolean,
   block: BigInt
-  ): BigDecimal {
+): BigDecimal {
   if (reserve0.equals(BIG_INT_ZERO) || reserve1.equals(BIG_INT_ZERO)) {
     return BIG_DECIMAL_ZERO
   }
-  
+
   const _reserve0 = parseInt(reserve0.times(BigInt.fromString('1000000000000')).div(BigInt.fromString('10').pow(token0.decimals.toI32() as u8)).toString())
   const _reserve1 = parseInt(reserve1.times(BigInt.fromString('1000000000000')).div(BigInt.fromString('10').pow(token1.decimals.toI32() as u8)).toString())
 
 
   const decimalsCompensation0 = Math.pow(10, 12 - token0.decimals.toI32())
   const decimalsCompensation1 = Math.pow(10, 12 - token1.decimals.toI32())
-  log.debug('TEST --------- reserve0: {}, reserve1: {}', [_reserve0.toString(), _reserve1.toString()])
 
   const calcDirection = _reserve0 > _reserve1
   const xBN = calcDirection ? _reserve0 : _reserve1
   const x = parseInt(xBN.toString())
-  const k = parseInt((_reserve0 * _reserve1 * (_reserve0 *_reserve0) + (_reserve1 * _reserve1)).toString())
+  const k = parseInt((_reserve0 * _reserve1 * ((_reserve0 * _reserve0) + (_reserve1 * _reserve1))).toString())
   const q = k / x / 2
   const qD = -q / x // devivative of q
   const Q = Math.pow(x, 6) / 27 + q * q
   const QD = (6 * Math.pow(x, 5)) / 27 + 2 * q * qD // derivative of Q
   const sqrtQ = Math.sqrt(Q)
-  const sqrtQD = (1 / 2 / sqrtQ) * QD // derivative of sqrtQ
+  const sqrtQD = (1.0 / 2.0 / sqrtQ) * QD // derivative of sqrtQ
   const a = sqrtQ + q
   const aD = sqrtQD + qD
   const b = sqrtQ - q
   const bD = sqrtQD - qD
-  const a3 = Math.pow(a, 1 / 3)
-  const a3D = (((1 / 3) * a3) / a) * aD
-  const b3 = Math.pow(b, 1 / 3)
-  const b3D = (((1 / 3) * b3) / b) * bD
+  const a3 = Math.pow(a, 1.0 / 3.0)
+  const a3D = (((1.0 / 3.0) * a3) / a) * aD
+  const b3 = Math.pow(b, 1.0 / 3.0)
+  const b3D = (((1.0 / 3.0) * b3) / b) * bD
   const yD = a3D - b3D
   const rebase0 = getRebase(token0.id)
   const rebase1 = getRebase(token1.id)
 
-  log.debug('TEST yd {}', [yD.toString()])
-  const yDShares = calcDirection
-    ? parseFloat(toBase(rebase1, toElastic(rebase0, BigInt.fromU32(yD as u32), false), false).toString())
-    : parseFloat(toBase(rebase0, toElastic(rebase1, BigInt.fromU32(yD as u32), false), false).toString())
+  // log.debug('TEST calcDirection {} xBN {} x {}, k {}, q {}, qD {}, Q {}, QD {}, sqrtQ {}, sqrtQD {}, a {}, aD {}, b {}, bD {}, a3 {}, a3D {}, b3 {}, b3D {}, yD {}', [
+  //   calcDirection.toString(),
+  //   xBN.toString(),
+  //   x.toString(),
+  //   k.toString(),
+  //   q.toString(),
+  //   qD.toString(),
+  //   Q.toString(),
+  //   QD.toString(),
+  //   sqrtQ.toString(),
+  //   sqrtQD.toString(),
+  //   a.toString(),
+  //   aD.toString(),
+  //   b.toString(),
+  //   bD.toString(),
+  //   a3.toString(),
+  //   a3D.toString(),
+  //   b3.toString(),
+  //   b3D.toString(),
+  //   yD.toString()
+  // ])
+
+
+
+  const elastic2Base0 = rebase0.base.isZero() || rebase0.elastic.isZero() ? 1 : parseInt(rebase0.elastic.toString()) / parseInt(rebase0.base.toString())
+  const elastic2Base1 = rebase1.base.isZero() || rebase1.elastic.isZero() ? 1 : parseInt(rebase1.elastic.toString()) / parseInt(rebase1.base.toString())
+
+  const ydS0 = (yD * elastic2Base0) / elastic2Base0
+  const ydS1 = (yD * elastic2Base1) / elastic2Base1
+
+  const yDShares = calcDirection? ydS0: ydS1
 
   const price = calcDirection == direction ? -yDShares : -1 / yDShares
   const scale = decimalsCompensation0 / decimalsCompensation1
-  log.debug('TEST scale: {}', [scale.toString()])
   const result = direction ? price * scale : price / scale
-  log.debug('TEST deriveTokenPrice: {}', [result.toString()])
-  log.debug("TEST ---------------------- END ", [])
-  // if (isNaN(result) || result == Infinity) {
-  //   log.debug('TEST NaN or Infinity: {}', [result.toString()])
-  //   return BIG_DECIMAL_ZERO
-  // }
-  // if (result < 0) {
-  //   const test = result * -1
-  //   if (isNaN(test) || test == Infinity) {
-  //     log.debug('TEST NaN or Infinity: {}', [result.toString()])
-  //     return BIG_DECIMAL_ZERO
-  //   }
-  //   return BigDecimal.fromString(test.toString())
-  // }
   return BigDecimal.fromString(result.toString())
 }
 
