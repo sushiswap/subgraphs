@@ -48,17 +48,8 @@ const TEST_ARGS: TestArg[] =
     ]
 
 const PAIR = Address.fromString("0x397ff1542f962076d0bfe58ea045ffa2d347aca0")
-// beforeAll(() => {
-//     getOrCreateTokenMock(NATIVE_ADDRESS, 18, "NATIVE", "NAT")
-//     let pair = 
-// })
 
-// afterAll(() => {
-//     clearStore()
-// })
-
-test(`Pair.token0/1.price test`, () => {
-    // const i = 0
+test(`Test stable pool token0Price/token1Price calculation`, () => {
     for (let i = 0; i < TEST_ARGS.length; i++) {
 
         getOrCreateTokenMock(NATIVE_ADDRESS, 18, "NATIVE", "NAT")
@@ -82,7 +73,7 @@ test(`Pair.token0/1.price test`, () => {
         assert.fieldEquals('Pair', PAIR.toHex(), 'token0Price', TEST_ARGS[i].expectedToken0Price.toString())
         assert.fieldEquals('Pair', PAIR.toHex(), 'token1Price', TEST_ARGS[i].expectedToken1Price.toString())
 
-        log.debug("Test {} reserve0: {} reserve1: {}, expected token0Price: {}, token1Price: {}", [(i+1).toString(), TEST_ARGS[i].reserve0.toString(), TEST_ARGS[i].reserve1.toString(), TEST_ARGS[i].expectedToken0Price.toString(), TEST_ARGS[i].expectedToken1Price.toString()])
+        log.debug("Test {} reserve0: {} reserve1: {}, expected token0Price: {}, token1Price: {}", [(i + 1).toString(), TEST_ARGS[i].reserve0.toString(), TEST_ARGS[i].reserve1.toString(), TEST_ARGS[i].expectedToken0Price.toString(), TEST_ARGS[i].expectedToken1Price.toString()])
         log.debug("Test {} passed", [(i + 1).toString()])
 
     }

@@ -62,7 +62,7 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
     if (pair.type == PairType.CONSTANT_PRODUCT_POOL) {
       pair.token0Price = reserve0Decimals.div(reserve1Decimals)
     } else if (pair.type == PairType.STABLE_POOL) {
-      const token0Price = deriveTokenPrice(reserve0, reserve1, token0, token1, true, event.block.number)
+      const token0Price = deriveTokenPrice(reserve0, reserve1, token0, token1, true)
       pair.token0Price = token0Price
     }
   } else {
@@ -73,8 +73,7 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
     if (pair.type == PairType.CONSTANT_PRODUCT_POOL) {
       pair.token1Price = reserve1Decimals.div(reserve0Decimals)
     } else if (pair.type == PairType.STABLE_POOL) {
-      const token1Price = deriveTokenPrice(reserve0, reserve1, token0, token1, false, event.block.number)
-      log.debug("token0Price: {}", [token1Price.toString()])
+      const token1Price = deriveTokenPrice(reserve0, reserve1, token0, token1, false)
       pair.token1Price = token1Price
     }
   } else {
@@ -313,8 +312,7 @@ export class Volume {
 function deriveTokenPrice(
   reserve0: BigInt, reserve1: BigInt,
   token0: Token, token1: Token,
-  direction: boolean,
-  block: BigInt
+  direction: boolean
 ): BigDecimal {
   if (reserve0.equals(BIG_INT_ZERO) || reserve1.equals(BIG_INT_ZERO)) {
     return BIG_DECIMAL_ZERO
@@ -348,30 +346,6 @@ function deriveTokenPrice(
   const yD = a3D - b3D
   const rebase0 = getRebase(token0.id)
   const rebase1 = getRebase(token1.id)
-
-  // log.debug('TEST calcDirection {} xBN {} x {}, k {}, q {}, qD {}, Q {}, QD {}, sqrtQ {}, sqrtQD {}, a {}, aD {}, b {}, bD {}, a3 {}, a3D {}, b3 {}, b3D {}, yD {}', [
-  //   calcDirection.toString(),
-  //   xBN.toString(),
-  //   x.toString(),
-  //   k.toString(),
-  //   q.toString(),
-  //   qD.toString(),
-  //   Q.toString(),
-  //   QD.toString(),
-  //   sqrtQ.toString(),
-  //   sqrtQD.toString(),
-  //   a.toString(),
-  //   aD.toString(),
-  //   b.toString(),
-  //   bD.toString(),
-  //   a3.toString(),
-  //   a3D.toString(),
-  //   b3.toString(),
-  //   b3D.toString(),
-  //   yD.toString()
-  // ])
-
-
 
   const elastic2Base0 = rebase0.base.isZero() || rebase0.elastic.isZero() ? 1 : parseInt(rebase0.elastic.toString()) / parseInt(rebase0.base.toString())
   const elastic2Base1 = rebase1.base.isZero() || rebase1.elastic.isZero() ? 1 : parseInt(rebase1.elastic.toString()) / parseInt(rebase1.base.toString())
