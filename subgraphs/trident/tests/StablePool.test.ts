@@ -78,8 +78,8 @@ test(`Test stable pool token0Price/token1Price calculation`, () => {
 
     assert.fieldEquals('Pair', PAIR.toHex(), 'token0Price', expectedToken0Price.toString())
     assert.fieldEquals('Pair', PAIR.toHex(), 'token1Price', expectedToken1Price.toString())
-    
-        log.debug("reserve0: {} reserve1: {}, expected token0Price: {}, token1Price: {}", [reserve0.toString(), reserve1.toString(), expectedToken0Price.toString(), expectedToken1Price.toString()])
+
+    log.debug("reserve0: {} reserve1: {}, expected token0Price: {}, token1Price: {}", [reserve0.toString(), reserve1.toString(), expectedToken0Price.toString(), expectedToken1Price.toString()])
 
 })
 
@@ -111,7 +111,6 @@ test(`Test stable pool token0Price/token1Price calculation`, () => {
 
         log.debug("Test {} reserve0: {} reserve1: {}, expected token0Price: {}, token1Price: {}", [(i + 1).toString(), TEST_ARGS[i].reserve0.toString(), TEST_ARGS[i].reserve1.toString(), TEST_ARGS[i].expectedToken0Price.toString(), TEST_ARGS[i].expectedToken1Price.toString()])
         log.debug("Test {} passed", [(i + 1).toString()])
-
     }
 })
 

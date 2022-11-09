@@ -1,5 +1,5 @@
-import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
-import { Rebase, Token, TokenPrice } from '../generated/schema'
+import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
+import { Token, TokenPrice } from '../generated/schema'
 import {
   Swap as SwapEvent,
   Sync as SyncEvent,
@@ -8,19 +8,15 @@ import {
 import {
   BIG_DECIMAL_ZERO,
   BIG_INT_ZERO,
-  PairType,
+  PairType
 } from './constants'
 import {
-  convertTokenToDecimal,
-  exponentBigInt,
-  getOrCreateBundle,
+  convertTokenToDecimal, getOrCreateBundle,
   getOrCreateFactory,
   getOrCreateToken,
   getPair,
   getRebase,
-  getTokenPrice,
-  toBase,
-  toElastic
+  getTokenPrice, toElastic
 } from './functions'
 import { getNativePriceInUSD, updateTokenPrice } from './pricing'
 import { isBurn, isInitialTransfer, isMint } from './transfer'
