@@ -11,6 +11,7 @@ subgraph.yaml
 .pnp.*
 **/tests/.*/
 .vscode
+.idea
 deploy.sh
 
 # turbo

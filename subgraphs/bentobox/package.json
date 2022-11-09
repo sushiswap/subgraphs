@@ -33,7 +33,8 @@
     "deploy-optimism": "graph deploy --product hosted-service matthewlilley/bentobox-optimism",
     "deploy-harmony": "graph deploy --product hosted-service matthewlilley/bentobox-harmony",
     "deploy-kava": "graph deploy --node https://pvt-admin.graph.kava.io sushiswap/bentobox-kava",
-    "deploy-metis": "graph deploy --node https://andromeda.thegraph.metisdevops.link:8020 --ipfs https://ipfs.thegraph.metisdevops.link:5001 sushiswap/bentobox-metis"
+    "deploy-metis": "graph deploy --node https://andromeda.thegraph.metisdevops.link:8020 --ipfs https://ipfs.thegraph.metisdevops.link:5001 sushiswap/bentobox-metis",
+    "deploy-aurora": "graph deploy --product hosted-service sushiswap/bentobox-aurora"
   },
   "devDependencies": {
     "abi": "workspace:*",
