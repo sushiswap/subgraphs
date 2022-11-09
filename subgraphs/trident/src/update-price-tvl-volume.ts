@@ -317,19 +317,13 @@ function deriveTokenPrice(
   if (reserve0.equals(BIG_INT_ZERO) || reserve1.equals(BIG_INT_ZERO)) {
     return BIG_DECIMAL_ZERO
   }
-  log.warning('reserve0: {} reserve1 {}', [reserve0.toString(), reserve1.toString()])
 
   const _reserve0 = parseInt(reserve0.times(BigInt.fromString('1000000000000')).div(BigInt.fromString('10').pow(token0.decimals.toI32() as u8)).toString())
   const _reserve1 = parseInt(reserve1.times(BigInt.fromString('1000000000000')).div(BigInt.fromString('10').pow(token1.decimals.toI32() as u8)).toString())
-
   const _reserve0_BI = BigDecimal.fromString(_reserve0.toString())
   const _reserve1_BI = BigDecimal.fromString(_reserve1.toString())
 
-  log.warning('_reserve0: {} _reserve1 {}', [_reserve0.toString(), _reserve1.toString()])
-  const decimalsCompensation0 = Math.pow(10, 12 - token0.decimals.toI32())
-  const decimalsCompensation1 = Math.pow(10, 12 - token1.decimals.toI32())
-
-  const calcDirection = _reserve0 > _reserve1
+  const calcDirection = _reserve0_BI.gt(_reserve1_BI)
   const xBN = calcDirection ? _reserve0 : _reserve1
   const x = parseInt(xBN.toString())
 
@@ -350,27 +344,28 @@ function deriveTokenPrice(
   const b3D = (((1.0 / 3.0) * b3) / b) * bD
   const yD = a3D - b3D
 
-  log.debug('{ calcDirection: {} xBN: {} x: {} k: {} q: {} qD: {} Q: {} QD: {} sqrtQ: {} sqrtQD: {} a: {} aD: {} b: {} bD: {} a3: {} a3D: {} b3: {} b3D: {} yD: {} }', [
-    calcDirection.toString(),
-    xBN.toString(),
-    x.toString(),
-    k.toString(),
-    q.toString(),
-    qD.toString(),
-    Q.toString(),
-    QD.toString(),
-    sqrtQ.toString(),
-    sqrtQD.toString(),
-    a.toString(),
-    aD.toString(),
-    b.toString(),
-    bD.toString(),
-    a3.toString(),
-    a3D.toString(),
-    b3.toString(),
-    b3D.toString(),
-    yD.toString()
-  ])
+  // KEEP THIS FOR DEBUGGING
+  // log.debug('{ calcDirection: {} xBN: {} x: {} k: {} q: {} qD: {} Q: {} QD: {} sqrtQ: {} sqrtQD: {} a: {} aD: {} b: {} bD: {} a3: {} a3D: {} b3: {} b3D: {} yD: {} }', [
+  //   calcDirection.toString(),
+  //   xBN.toString(),
+  //   x.toString(),
+  //   k.toString(),
+  //   q.toString(),
+  //   qD.toString(),
+  //   Q.toString(),
+  //   QD.toString(),
+  //   sqrtQ.toString(),
+  //   sqrtQD.toString(),
+  //   a.toString(),
+  //   aD.toString(),
+  //   b.toString(),
+  //   bD.toString(),
+  //   a3.toString(),
+  //   a3D.toString(),
+  //   b3.toString(),
+  //   b3D.toString(),
+  //   yD.toString()
+  // ])
   const rebase0 = getRebase(token0.id)
   const rebase1 = getRebase(token1.id)
 
@@ -383,9 +378,7 @@ function deriveTokenPrice(
   const yDShares = calcDirection ? ydS0 : ydS1
 
   const price = calcDirection == direction ? -yDShares : -1 / yDShares
-  const scale = decimalsCompensation0 / decimalsCompensation1
-  const result = direction ? price * scale : price / scale
-  log.warning('ydShares: {}, price: {}, scale: {}, result: {}', [yDShares.toString(), price.toString(), scale.toString(), result.toString()])
-  return BigDecimal.fromString(result.toString())
+
+  return BigDecimal.fromString(price.toString())
 }
 
