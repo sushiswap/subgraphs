@@ -65,6 +65,10 @@ module.exports = {
       USDC_E_ADDRESS,
       USDD_T_ADDRESS,
     ],
+    tokensToPriceOffNative: [
+      // These tokens will be priced off the NATIVE token
+      USDC_E_ADDRESS
+    ],
     minimumNativeLiquidity: '1000000000',
   },
   furo: {
