@@ -1,4 +1,3 @@
-import { ConstantProductPool, StablePool } from '../../generated/templates'
 import {
   DeployPool
 } from '../../generated/MasterDeployer/MasterDeployer'
