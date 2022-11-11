@@ -1,5 +1,5 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
-import { TokenPrice } from '../generated/schema'
+import { Token, TokenPrice } from '../generated/schema'
 import {
   Swap as SwapEvent,
   Sync as SyncEvent,
@@ -8,19 +8,15 @@ import {
 import {
   BIG_DECIMAL_ZERO,
   BIG_INT_ZERO,
-  PairType,
-  MINIMUM_USD_THRESHOLD_NEW_PAIRS,
-  WHITELISTED_TOKEN_ADDRESSES
+  PairType
 } from './constants'
 import {
-  convertTokenToDecimal,
-  getOrCreateBundle,
+  convertTokenToDecimal, getOrCreateBundle,
   getOrCreateFactory,
   getOrCreateToken,
   getPair,
   getRebase,
-  getTokenPrice,
-  toElastic
+  getTokenPrice, toElastic
 } from './functions'
 import { getNativePriceInUSD, updateTokenPrice } from './pricing'
 import { isBurn, isInitialTransfer, isMint } from './transfer'
@@ -59,13 +55,23 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   const reserve1Decimals = convertTokenToDecimal(pair.reserve1, token1.decimals)
 
   if (pair.reserve1.notEqual(BIG_INT_ZERO)) {
-    pair.token0Price = reserve0Decimals.div(reserve1Decimals)
+    if (pair.type == PairType.CONSTANT_PRODUCT_POOL) {
+      pair.token0Price = reserve0Decimals.div(reserve1Decimals)
+    } else if (pair.type == PairType.STABLE_POOL) {
+      const token0Price = deriveTokenPrice(reserve0, reserve1, token0, token1, true)
+      pair.token0Price = token0Price
+    }
   } else {
     pair.token0Price = BIG_DECIMAL_ZERO
   }
 
   if (pair.reserve0.notEqual(BIG_INT_ZERO)) {
-    pair.token1Price = reserve1Decimals.div(reserve0Decimals)
+    if (pair.type == PairType.CONSTANT_PRODUCT_POOL) {
+      pair.token1Price = reserve1Decimals.div(reserve0Decimals)
+    } else if (pair.type == PairType.STABLE_POOL) {
+      const token1Price = deriveTokenPrice(reserve0, reserve1, token0, token1, false)
+      pair.token1Price = token1Price
+    }
   } else {
     pair.token1Price = BIG_DECIMAL_ZERO
   }
@@ -173,7 +179,7 @@ export function updateVolume(event: SwapEvent): Volume {
   factory.feesNative = factory.feesNative.plus(feesNative)
   factory.feesUSD = factory.feesUSD.plus(feesUSD)
   factory.save()
-  
+
   const globalFactory = getOrCreateFactory(PairType.ALL)
   globalFactory.volumeUSD = globalFactory.volumeUSD.plus(volumeUSD)
   globalFactory.volumeNative = globalFactory.volumeNative.plus(volumeNative)
@@ -233,17 +239,17 @@ export function getVolumeUSD(
 
 
   // both tokens are priced, take average of both amounts
-  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
+  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
     return tokenAmount0.times(price0).plus(tokenAmount1.times(price1)).div(BigDecimal.fromString('2'))
   }
 
   // take full value of the priced token
-  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && !token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
+  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && !token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
     return tokenAmount0.times(price0)
   }
 
   // take full value of the priced token
-  if (!token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
+  if (!token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
     return tokenAmount1.times(price1)
   }
 
@@ -269,17 +275,17 @@ export function getLiquidityUSD(
   const price1 = token1Price.derivedNative.times(bundle.nativePrice)
 
   // both tokens are priced, take average of both amounts
-  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
+  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
     return tokenAmount0.times(price0).plus(tokenAmount1.times(price1))
   }
 
   // take full value of the priced token
-  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && !token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
+  if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && !token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
     return tokenAmount0.times(price0).times(BigDecimal.fromString('2'))
   }
 
   // take full value of the priced token
-  if (!token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
+  if (!token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO)) {
     return tokenAmount1.times(price1).times(BigDecimal.fromString('2'))
   }
 
@@ -297,3 +303,78 @@ export class Volume {
   amount0Total: BigDecimal
   amount1Total: BigDecimal
 }
+
+
+function deriveTokenPrice(
+  reserve0: BigInt, reserve1: BigInt,
+  token0: Token, token1: Token,
+  direction: boolean
+): BigDecimal {
+  if (reserve0.equals(BIG_INT_ZERO) || reserve1.equals(BIG_INT_ZERO)) {
+    return BIG_DECIMAL_ZERO
+  }
+
+  const _reserve0 = parseInt(reserve0.times(BigInt.fromString('1000000000000')).div(BigInt.fromString('10').pow(token0.decimals.toI32() as u8)).toString())
+  const _reserve1 = parseInt(reserve1.times(BigInt.fromString('1000000000000')).div(BigInt.fromString('10').pow(token1.decimals.toI32() as u8)).toString())
+  const _reserve0_BI = BigDecimal.fromString(_reserve0.toString())
+  const _reserve1_BI = BigDecimal.fromString(_reserve1.toString())
+
+  const calcDirection = _reserve0_BI.gt(_reserve1_BI)
+  const xBN = calcDirection ? _reserve0 : _reserve1
+  const x = parseInt(xBN.toString())
+
+  const k = parseInt(_reserve0_BI.times(_reserve1_BI).times(_reserve0_BI.times(_reserve0_BI).plus(_reserve1_BI.times(_reserve1_BI))).toString())
+  const q = k / x / 2
+  const qD = -q / x // devivative of q
+  const Q = Math.pow(x, 6) / 27 + q * q
+  const QD = (6 * Math.pow(x, 5)) / 27 + 2 * q * qD // derivative of Q
+  const sqrtQ = Math.sqrt(Q)
+  const sqrtQD = (1.0 / 2.0 / sqrtQ) * QD // derivative of sqrtQ
+  const a = sqrtQ + q
+  const aD = sqrtQD + qD
+  const b = sqrtQ - q
+  const bD = sqrtQD - qD
+  const a3 = Math.pow(a, 1.0 / 3.0)
+  const a3D = (((1.0 / 3.0) * a3) / a) * aD
+  const b3 = Math.pow(b, 1.0 / 3.0)
+  const b3D = (((1.0 / 3.0) * b3) / b) * bD
+  const yD = a3D - b3D
+
+  // KEEP THIS FOR DEBUGGING
+  // log.debug('{ calcDirection: {} xBN: {} x: {} k: {} q: {} qD: {} Q: {} QD: {} sqrtQ: {} sqrtQD: {} a: {} aD: {} b: {} bD: {} a3: {} a3D: {} b3: {} b3D: {} yD: {} }', [
+  //   calcDirection.toString(),
+  //   xBN.toString(),
+  //   x.toString(),
+  //   k.toString(),
+  //   q.toString(),
+  //   qD.toString(),
+  //   Q.toString(),
+  //   QD.toString(),
+  //   sqrtQ.toString(),
+  //   sqrtQD.toString(),
+  //   a.toString(),
+  //   aD.toString(),
+  //   b.toString(),
+  //   bD.toString(),
+  //   a3.toString(),
+  //   a3D.toString(),
+  //   b3.toString(),
+  //   b3D.toString(),
+  //   yD.toString()
+  // ])
+  const rebase0 = getRebase(token0.id)
+  const rebase1 = getRebase(token1.id)
+
+  const elastic2Base0 = rebase0.base.isZero() || rebase0.elastic.isZero() ? 1 : parseInt(rebase0.elastic.toString()) / parseInt(rebase0.base.toString())
+  const elastic2Base1 = rebase1.base.isZero() || rebase1.elastic.isZero() ? 1 : parseInt(rebase1.elastic.toString()) / parseInt(rebase1.base.toString())
+
+  const ydS0 = (yD * elastic2Base0) / elastic2Base0
+  const ydS1 = (yD * elastic2Base1) / elastic2Base1
+
+  const yDShares = calcDirection ? ydS0 : ydS1
+
+  const price = calcDirection == direction ? -yDShares : -1 / yDShares
+
+  return BigDecimal.fromString(price.toString())
+}
+

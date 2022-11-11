@@ -48,11 +48,14 @@ module.exports = {
     stablePoolAddresses: [
       // USDC/WETH/30/FALSE
       '0x1e31a2c6e6614273d740358affb46bef180efb7b',
+    ],    
+    tokensToPriceOffNative: [
+      // These tokens will be priced off the NATIVE token
+      USDC_ADDRESS
     ],
     minimumNativeLiquidity: '0.01',
     minimum_usd_threshold_new_pairs: '3000',
   },
-
   furo: {
     stream: { address: '0x4ab2fc6e258a0ca7175d05ff10c5cf798a672cae', startBlock: 10835062 },
     vesting: { address: '0x0689640d190b10765f09310fcfe9c670ede4e25b', startBlock: 10835089 },

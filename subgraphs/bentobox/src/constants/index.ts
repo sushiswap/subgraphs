@@ -1,6 +1,6 @@
 import { Address } from '@graphprotocol/graph-ts'
 
-export const BENTOBOX_ADDRESS = Address.fromString('0x80c7dd17b01855a6d2347444a0fcc36136a314de')
+export const BENTOBOX_ADDRESS = Address.fromString('0x8dacffa7f69ce572992132697252e16254225d38')
 
 export const DEPOSIT = 'deposit'
 export const TRANSFER = 'transfer'
