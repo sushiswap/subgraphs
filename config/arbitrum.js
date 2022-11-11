@@ -77,5 +77,9 @@ module.exports = {
     startBlock: 7920342,
     usdcPool: { address: '0x892785f33cdee22a30aef750f285e18c18040c3e', startBlock: 8041115 },
     usdtPool: { address: '0xb6cfcf89a7b22988bfc96632ac2a9d6dab60d641', startBlock: 8041122 },
+  },
+  router: {
+    address: '0x1b02da8cb0d097eb8d57a175b88c7d8b47997506',
+    startBlock: 29527181,
   }
 }

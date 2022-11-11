@@ -1,0 +1,28 @@
+type Token @entity {
+  id: ID!
+  positiveSlippage: BigInt!
+  symbol: String!
+  symbolSuccess: Boolean!
+  name: String!
+  nameSuccess: Boolean!
+  decimals: BigInt!
+  decimalsSuccess: Boolean!
+}
+
+type Swap @entity {
+  id: ID!
+  amountOutMin: BigInt!
+  amountOut: BigInt!
+  positiveSlippage: BigInt! # =  amounts[length] -amountOutMin
+  tokenIn: Token!
+  tokenOut: Token!
+  createdAtBlock: BigInt!
+  createdAtTimestamp: BigInt!
+}
+
+type Global @entity {
+  id: ID!
+  totalSwapCount: BigInt!
+  positiveSlippageSwapCount: BigInt!
+  exactSwapCount: BigInt!
+}
