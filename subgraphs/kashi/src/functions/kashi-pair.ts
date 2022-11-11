@@ -9,11 +9,16 @@ import { getOrCreateToken } from './token'
 import { LogDeploy } from '../../generated/BentoBox/BentoBox'
 import { createRebase } from './rebase'
 import { STARTING_INTEREST_PER_YEAR } from '../constants'
+import { KashiPair as KashiPairTemplate } from '../../generated/templates'
 
 // TODO: should add props for specific kashi pair types (collateralization rates, etc.)
 
-export function createKashiPair(event: LogDeploy): KashiPair {
+export function createKashiPair(event: LogDeploy): void {
   const pairContract = KashiPairContract.bind(event.params.cloneAddress)
+
+  if (pairContract.try_symbol().reverted || pairContract.try_name().reverted) {
+    return
+  }
 
   const bentoBox = getOrCreateBentoBox()
 
@@ -54,7 +59,7 @@ export function createKashiPair(event: LogDeploy): KashiPair {
   pair.timestamp = event.block.timestamp
   pair.save()
 
-  return pair as KashiPair
+  KashiPairTemplate.create(event.params.cloneAddress)
 }
 
 export function getKashiPair(address: Address, block: ethereum.Block): KashiPair {
