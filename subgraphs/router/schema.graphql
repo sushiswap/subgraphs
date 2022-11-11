@@ -18,6 +18,9 @@ type Swap @entity {
   tokenOut: Token!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
+  txFrom: String!
+  txTo: String
+  to: String!
 }
 
 type Global @entity {

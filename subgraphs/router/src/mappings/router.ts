@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { Address, BigInt, ethereum, log } from '@graphprotocol/graph-ts'
 import { SwapExactETHForTokensCall, SwapExactTokensForETHCall, SwapExactTokensForTokensCall } from '../../generated/Router/Router'
 import { Swap } from '../../generated/schema'
 import { BIG_INT_ONE, BIG_INT_ZERO } from '../constants'
@@ -7,36 +7,29 @@ import { getOrCreateToken } from '../functions/token'
 
 
 export function onSwapExactETHForTokens(call: SwapExactETHForTokensCall): void {
-  const amountOutMin = call.inputs.amountOutMin
-  const amountOut = call.outputs.amounts[call.outputs.amounts.length - 1]
-  const tokenInAddress = call.inputs.path[0]
-  const tokenOutAddress = call.inputs.path[call.inputs.path.length - 1]
-
-  handleSwap(amountOutMin, amountOut, tokenInAddress, tokenOutAddress, call)
+  handleSwap(call)
 }
 
 
 export function onSwapExactTokensForETH(call: SwapExactTokensForETHCall): void {
-  const amountOutMin = call.inputs.amountOutMin
-  const amountOut = call.outputs.amounts[call.outputs.amounts.length - 1]
-  const tokenInAddress = call.inputs.path[0]
-  const tokenOutAddress = call.inputs.path[call.inputs.path.length - 1]
-
-  handleSwap(amountOutMin, amountOut, tokenInAddress, tokenOutAddress, call)
+  handleSwap(call)
 }
 
 export function onSwapExactTokensForTokens(call: SwapExactTokensForTokensCall): void {
+  handleSwap(call)
+}
+
+
+function handleSwap<T>(call: T): void {
+  if (!(call instanceof SwapExactTokensForTokensCall || call instanceof SwapExactETHForTokensCall || call instanceof SwapExactTokensForETHCall)) {
+    log.debug("handleSwap: call is not a SwapExactTokensForTokensCall, SwapExactTokensForETHCall or SwapExactETHForTokensCall", [])
+    return
+  }
 
   const amountOutMin = call.inputs.amountOutMin
   const amountOut = call.outputs.amounts[call.outputs.amounts.length - 1]
   const tokenInAddress = call.inputs.path[0]
   const tokenOutAddress = call.inputs.path[call.inputs.path.length - 1]
-
-  handleSwap(amountOutMin, amountOut, tokenInAddress, tokenOutAddress, call)
-}
-
-
-function handleSwap(amountOutMin: BigInt, amountOut: BigInt, tokenInAddress: Address, tokenOutAddress: Address, call: ethereum.Call): void {
   const positiveSlippage = amountOut.minus(amountOutMin)
 
   getOrCreateToken(tokenInAddress.toHex())
@@ -64,6 +57,9 @@ function handleSwap(amountOutMin: BigInt, amountOut: BigInt, tokenInAddress: Add
   swap.createdAtTimestamp = call.block.timestamp
   swap.tokenIn = tokenInAddress.toHex()
   swap.tokenOut = tokenOutAddress.toHex()
+  swap.txFrom = call.transaction.from.toHex()
+  if (call.transaction.to !== null) swap.txTo = call.transaction.to!.toHex()
+  swap.to = call.inputs.to.toHex()
   swap.save()
 
 }
