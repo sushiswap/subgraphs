@@ -1,5 +1,4 @@
 import { Clone } from '../../generated/schema'
-import { KashiPair as KashiPairTemplate } from '../../generated/templates'
 import {
   LogDeploy,
   LogDeposit,
@@ -76,6 +75,5 @@ export function onLogDeploy(event: LogDeploy): void {
 
   if (KASHI_MEDIUM_RISK_MASTER_CONTRACT_ADDRESSES.includes(event.params.masterContract.toHex())) {
     createKashiPair(event)
-    KashiPairTemplate.create(event.params.cloneAddress)
   }
 }
