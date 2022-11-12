@@ -142,6 +142,6 @@ module.exports = {
   },
   router: {
     address: '0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f',
-    startBlock: 15723412,
+    startBlock: 13600375, // 2021-11-12
   }
 }
