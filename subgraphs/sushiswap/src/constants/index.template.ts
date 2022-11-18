@@ -15,7 +15,7 @@ export function getCreate2Address(from: Bytes, salt: Bytes, initCodeHash: Bytes)
   ) as Bytes
 }
 
-export const VERSION = "1.0.0" // Bump major if schema breaking change, minor if new feature, patch if bug fix, suffix with -graft for grafts
+export const VERSION = "1.0.1" // Bump major if schema breaking change, minor if new feature, patch if bug fix, suffix with -graft for grafts
 
 export const LEGACY = "LEGACY"
 
