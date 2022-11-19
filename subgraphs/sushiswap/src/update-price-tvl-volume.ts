@@ -185,12 +185,11 @@ export function updateLiquidity(event: TransferEvent): void {
 }
 
 /**
- * Accepts tokens and amounts, return tracked amount based on if the token is priced
- * If one token is priced, return amount in that token converted to USD.
- * If both are, return average of two amounts
- * If neither is, return 0
+ * Accepts tokens and amounts, return amount based on if the token is priced
+ * If both tokens are priced: Take token and amount based on which token has the highest liquidity because it's more likely to be trusted
+ * If only one token is priced, take that amount
  */
-export function getVolumeUSD(
+ export function getVolumeUSD(
   tokenAmount0: BigDecimal,
   tokenAmount1: BigDecimal,
   pairAddress: string
@@ -203,9 +202,11 @@ export function getVolumeUSD(
   const price0 = token0Price.derivedNative.times(bundle.nativePrice)
   const price1 = token1Price.derivedNative.times(bundle.nativePrice)
 
-  // both tokens are priced, take average of both amounts
+  // both tokens are priced, take the one with highest liquidity
   if (token0Price.derivedNative.gt(BIG_DECIMAL_ZERO) && token1Price.derivedNative.gt(BIG_DECIMAL_ZERO) ) {
-    return tokenAmount0.times(price0).plus(tokenAmount1.times(price1)).div(BigDecimal.fromString('2'))
+    const token0 = getOrCreateToken(pair.token0)
+    const token1 = getOrCreateToken(pair.token1)
+    return token0.liquidityUSD.gt(token1.liquidityUSD) ? tokenAmount0.times(price0) : tokenAmount1.times(price1)
   }
 
   // take full value of the priced token
