@@ -1,6 +1,12 @@
 specVersion: 0.0.6
 description: Sushiswap
 repository: https://github.com/sushiswap/sushiswap-subgraph
+features:
+  - grafting
+  # - nonFatalErrors
+graft:
+  base: 'QmUptDtFHsyvWDiCvqKUriFBhfFVBqeAXZ6X5CgM4vnzf6'
+  block: 32579356
 schema:
   file: ./schema.graphql
 dataSources:
