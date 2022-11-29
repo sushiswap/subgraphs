@@ -9,8 +9,8 @@
         "generate": "mustache ../../config/$NETWORK.js template.yaml > subgraph.yaml && mustache ../../config/$NETWORK.js src/constants/index.template.ts > src/constants/index.ts && graph codegen",
         "build": "graph build",
         "test": "graph test -r",
-        "deploy-arbitrum": "graph deploy --product hosted-service jiro-ono/minichef-arbitrum",
-        "deploy-gnosis": "graph deploy --product hosted-service jiro-ono/minichef-gnosis",
+        "deploy-arbitrum": "graph deploy --product hosted-service sushiswap/minichef-arbitrum",
+        "deploy-gnosis": "graph deploy --product hosted-service sushiswap/minichef-gnosis",
         "create-local": "graph create --node http://localhost:8020/ sushiswap/minichef",
         "remove-local": "graph remove --node http://localhost:8020/ sushiswap/minichef",
         "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/minichef"
