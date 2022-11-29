@@ -1,4 +1,5 @@
 const NATIVE_ADDRESS = '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d'
+const SUSHI_ADDRESS = '0x2995d1317dcd4f0ab89f4ae60f3f020a4f17c7ce'
 const WETH_ADDRESS = '0x6a023ccd1ff6f2045c3309768ead9e68f978f6e1'
 const WBTC_ADDRESS = '0x8e5bbbb09ed1ebde8674cda39a0c169401db4252'
 const USDC_ADDRESS = '0xddafbb505ad214d7b80b1f830fccc89b60fb7a83'
@@ -10,9 +11,20 @@ const USDP_ADDRESS = '0xfe7ed09c4956f7cdb54ec4ffcb9818db2d7025b8'
 
 module.exports = {
   network: 'xdai',
+  sushi: { address: SUSHI_ADDRESS },
   bentobox: {
     address: '0xe2d7f5dd869fc7c126d21b13a9080e75a4bdb324',
     startBlock: 17002491,
+  },
+  minichef: {
+    address: '0xddcbf776df3de60163066a5dddf2277cb445e0f3',
+    startBlock: 16747770,
+    native: {
+      address: NATIVE_ADDRESS,
+    },
+    rewarder: {
+      complex: { address: '0x3f505b5cff05d04f468db65e27e72ec45a12645f' }
+    }
   },
   legacy: {
     native: { address: NATIVE_ADDRESS },
