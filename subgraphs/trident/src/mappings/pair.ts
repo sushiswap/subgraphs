@@ -57,7 +57,7 @@ export function onMint(event: MintEvent): void {
 
 export function onBurn(event: BurnEvent): void {
   let burn = handleBurn(event)
-  if (burn.sender) {
+  if (burn.sender !== null) {
     const liquidityPosition = getOrCreateLiquidityPosition(Address.fromString(burn.sender!), event.address, event.block)
     createLiquidityPositionSnapshot(liquidityPosition, event.block)
   }
