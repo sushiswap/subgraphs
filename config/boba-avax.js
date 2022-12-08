@@ -13,7 +13,7 @@ module.exports = {
   legacy: {
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [
-      // IMPORTANT! The native address must be included for pricing to start
+      // IMPORTANT! Native should be included here
       NATIVE_ADDRESS,
       USDC_ADDRESS,
       USDC_E_ADDRESS,
@@ -33,7 +33,6 @@ module.exports = {
       DAI_E_ADDRESS,
     ],
     minimumNativeLiquidity: 3000,
-    minimum_usd_threshold_new_pairs: '1000',
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',

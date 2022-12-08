@@ -55,11 +55,6 @@ export const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('{{ legacy.minimum
 
 // export const STABLE_POOL_ADDRESSES: string[] = '{{ stablePoolAddresses }}'.split(',')
 
-// minimum liquidity required to count towards tracked volume for pairs with small # of Lps
-export const MINIMUM_USD_THRESHOLD_NEW_PAIRS = BigDecimal.fromString(
-  '{{ legacy.minimum_usd_threshold_new_pairs }}{{^legacy.minimum_usd_threshold_new_pairs}}3000{{/legacy.minimum_usd_threshold_new_pairs}}'
-)
-
 
 export namespace PairType {
   export const CONSTANT_PRODUCT_POOL = "CONSTANT_PRODUCT_POOL";

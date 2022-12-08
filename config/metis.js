@@ -57,7 +57,8 @@ module.exports = {
       // These tokens will be priced off the NATIVE token
       USDC_ADDRESS
     ],
-    minimumNativeLiquidity: '0.1',
+    minimumNativeLiquidity: '2', // Threshold for being considered for pricing
+    
   },
   furo: {
     stream: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
