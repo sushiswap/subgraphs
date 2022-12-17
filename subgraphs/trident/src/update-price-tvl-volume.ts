@@ -1,4 +1,4 @@
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
+import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 import { Token, TokenPrice } from '../generated/schema'
 import {
   Swap as SwapEvent,
@@ -6,6 +6,7 @@ import {
   Transfer as TransferEvent
 } from '../generated/templates/ConstantProductPool/ConstantProductPool'
 import {
+  BIG_DECIMAL_ONE,
   BIG_DECIMAL_ZERO,
   BIG_INT_ZERO,
   PairType,
@@ -342,27 +343,27 @@ function deriveTokenPrice(
   const yD = a3D - b3D
 
   // KEEP THIS FOR DEBUGGING
-  // log.debug('{ calcDirection: {} xBN: {} x: {} k: {} q: {} qD: {} Q: {} QD: {} sqrtQ: {} sqrtQD: {} a: {} aD: {} b: {} bD: {} a3: {} a3D: {} b3: {} b3D: {} yD: {} }', [
-  //   calcDirection.toString(),
-  //   xBN.toString(),
-  //   x.toString(),
-  //   k.toString(),
-  //   q.toString(),
-  //   qD.toString(),
-  //   Q.toString(),
-  //   QD.toString(),
-  //   sqrtQ.toString(),
-  //   sqrtQD.toString(),
-  //   a.toString(),
-  //   aD.toString(),
-  //   b.toString(),
-  //   bD.toString(),
-  //   a3.toString(),
-  //   a3D.toString(),
-  //   b3.toString(),
-  //   b3D.toString(),
-  //   yD.toString()
-  // ])
+  log.debug('{ calcDirection: {} xBN: {} x: {} k: {} q: {} qD: {} Q: {} QD: {} sqrtQ: {} sqrtQD: {} a: {} aD: {} b: {} bD: {} a3: {} a3D: {} b3: {} b3D: {} yD: {} }', [
+    calcDirection.toString(),
+    xBN.toString(),
+    x.toString(),
+    k.toString(),
+    q.toString(),
+    qD.toString(),
+    Q.toString(),
+    QD.toString(),
+    sqrtQ.toString(),
+    sqrtQD.toString(),
+    a.toString(),
+    aD.toString(),
+    b.toString(),
+    bD.toString(),
+    a3.toString(),
+    a3D.toString(),
+    b3.toString(),
+    b3D.toString(),
+    yD.toString()
+  ])
   const rebase0 = getRebase(token0.id)
   const rebase1 = getRebase(token1.id)
 
@@ -375,6 +376,9 @@ function deriveTokenPrice(
   const yDShares = calcDirection ? ydS0 : ydS1
 
   const price = calcDirection == direction ? -yDShares : -1 / yDShares
+  // if (price === Infinity || price === -Infinity || price === 0) {
+  //   return BIG_DECIMAL_ONE
+  // }
 
   return BigDecimal.fromString(price.toString())
 }

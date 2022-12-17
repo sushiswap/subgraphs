@@ -41,12 +41,9 @@ export function getOrCreateToken(id: string, type: string = PairType.ALL, isCall
     token.feesUSD = BIG_DECIMAL_ZERO
     token.txCount = BIG_INT_ZERO
     token.pairCount = BIG_INT_ZERO
+    token.whitelistedPairCount = BIG_INT_ZERO
 
     token.save()
-
-    // const globalFactory = getOrCreateFactory(PairType.ALL)
-    // globalFactory.tokenCount = globalFactory.tokenCount.plus(BIG_INT_ONE)
-    // globalFactory.save()
   }
 
   if (isCalledFromPairCreation) {

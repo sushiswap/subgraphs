@@ -91,9 +91,13 @@ type Token @entity {
   txCount: BigInt!
   " Count of all the pairs "
   pairCount: BigInt!
+  " Count of all the whitelisted pairs "
+  whitelistedPairCount: BigInt!
 
   " All pairs where this token is involved in "
   pairs: [_TokenPair!]! @derivedFrom(field: "token")
+  " All whitelisted pairs where this token is involved in "
+  whitelistedPairs: [_WhitelistedTokenPair!]! @derivedFrom(field: "token")
 }
 
 type TokenPrice @entity {
@@ -112,6 +116,15 @@ type TokenPrice @entity {
 }
 
 type _TokenPair @entity(immutable: true) {
+  " id is created by combining token.id and count, e.g. 0x00x00:1 "
+  id: ID!
+  " Pair "
+  pair: Pair!
+  " Token "
+  token: Token!
+}
+
+type _WhitelistedTokenPair @entity(immutable: true) {
   " id is created by combining token.id and count, e.g. 0x00x00:1 "
   id: ID!
   " Pair "
