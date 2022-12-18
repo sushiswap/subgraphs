@@ -1,9 +1,8 @@
-import { BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
+import { BigDecimal } from '@graphprotocol/graph-ts'
 import { TokenPrice } from '../generated/schema'
 import { Swap as SwapEvent, Sync as SyncEvent, Transfer as TransferEvent } from '../generated/templates/Pair/Pair'
 import {
   BIG_DECIMAL_ZERO, BIG_INT_ZERO,
-  MINIMUM_USD_THRESHOLD_NEW_PAIRS,
   WHITELISTED_TOKEN_ADDRESSES
 } from './constants'
 import {
@@ -87,9 +86,7 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   token1.save()
 
   pair.trackedLiquidityNative = trackedLiquidityNative
-  pair.liquidityNative = reserve0Decimals
-    .times(token0Price.derivedNative)
-    .plus(reserve1Decimals.times(token1Price.derivedNative))
+  pair.liquidityNative = trackedLiquidityNative
 
   pair.liquidityUSD = pair.liquidityNative.times(bundle.nativePrice)
   pair.save()

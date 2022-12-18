@@ -30,7 +30,6 @@ const INV_ADDRESS = '0x41d5d79431a913c4ae7d69a668ecdfe5ff9dfb68'
 const PRIMATE_ADDRESS = '0x46e98ffe40e408ba6412beb670507e083c8b95ff'
 const MIM_ADDRESS = '0x99d8a9c45b2eca8864373a26d1459e3dff1e17f3'
 const FRAX_ADDRESS = '0x853d955acef822db058eb8505911ed77f175b99e'
-const UST_ADDRESS = '0xa47c8bf37f92abed4a126bda807a7b7498661acd'
 
 module.exports = {
   network: 'mainnet',
@@ -101,7 +100,6 @@ module.exports = {
       DAI_ADDRESS,
       MIM_ADDRESS,
       FRAX_ADDRESS,
-      UST_ADDRESS,
       USDP_ADDRESS,
       SUSD_ADDRESS,
       TUSD_ADDRESS,

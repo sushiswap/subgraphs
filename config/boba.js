@@ -28,6 +28,7 @@ module.exports = {
       USDC_ADDRESS,
       FRAX_ADDRESS,
       UST_ADDRESS,
+      SUSHI_ADDRESS,
       BUSD_ADDRESS
     ],
     stableTokenAddresses: [
