@@ -113,9 +113,7 @@ export function updateTvlAndTokenPrices(event: SyncEvent): void {
   token1.save()
 
   pair.trackedLiquidityNative = trackedLiquidityNative
-  pair.liquidityNative = convertTokenToDecimal(pair.reserve0, token0.decimals)
-    .times(token0Price.derivedNative)
-    .plus(convertTokenToDecimal(pair.reserve1, token1.decimals).times(token1Price.derivedNative))
+  pair.liquidityNative = trackedLiquidityNative
 
   pair.liquidityUSD = pair.liquidityNative.times(bundle.nativePrice)
   pair.save()

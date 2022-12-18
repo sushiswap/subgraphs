@@ -1,8 +1,10 @@
 const NATIVE_ADDRESS = '0x4200000000000000000000000000000000000006'
+const OP_ADDRESS = '0x4200000000000000000000000000000000000042'
 const WBTC_ADDRESS = '0x68f180fcce6836688e9084f035309e29bf0a2095'
 const USDC_ADDRESS = '0x7f5c764cbc14f9669b88837ca1490cca17c31607'
 const USDT_ADDRESS = '0x94b008aa00579c1307b0ef2c499ad98a8ce58e58'
 const DAI_ADDRESS = '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1'
+const SUSD_ADDRESS = '0x7170bd6f5ab1ac44a1ba7a0beb5f3f06c2d4a898'
 
 module.exports = {
   network: 'optimism',
@@ -27,14 +29,12 @@ module.exports = {
       // it's now apart of the whitelisted token check in createPair, because the
       // base should always be whitelisted or pricing never begins.
       NATIVE_ADDRESS,
-      // WBTC
       WBTC_ADDRESS,
-      // USDC
       USDC_ADDRESS,
-      // USDT
       USDT_ADDRESS,
-      // DAI
       DAI_ADDRESS,
+      OP_ADDRESS,
+      SUSD_ADDRESS,
     ],
     stableTokenAddresses: [
       // USDC
