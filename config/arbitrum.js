@@ -36,7 +36,7 @@ module.exports = {
     startBlock: 16548328,
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [
-      // IMPORTANT! The native address must be included for pricing to start
+      // IMPORTANT! Native should be included here
       NATIVE_ADDRESS,
       WBTC_ADDRESS,
       ARBY_ADDRESS,
@@ -51,12 +51,45 @@ module.exports = {
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, MIM_ADDRESS, FRAX_ADDRESS],
     minimumNativeLiquidity: 3,
-    minimum_usd_threshold_new_pairs: '3000',
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
       startBlock: 70,
     },
+  },
+  trident: {
+    masterDeployer: { address: '0xf0e1f962e3e6d8e2af8190b2798c1b4f018fe48d', startBlock: 43756724 },
+    concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
+    constantProductPoolFactory: {
+      address: '0xc79ae87e9f55761c08e346b98dddf070c9872787',
+      initCodeHash: '0x3172d82413be467c1130709f7479a07def9b99caf8e0059f248c131081e4ea09',
+    },
+    stablePoolFactory: { address: '0xc2fb256aba36852dccea92181ec6b355f09a0288' },
+    hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
+    indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      SUSHI_ADDRESS,
+      WETH_ADDRESS,
+      WBTC_ADDRESS,
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      DAI_ADDRESS,
+      MIM_ADDRESS,
+      FRAX_ADDRESS,
+      ARBY_ADDRESS,
+      DPX_ADDRESS,
+      GOHM_ADDRESS,
+      MAGIC_ADDRESS
+    ],
+    stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, MIM_ADDRESS, FRAX_ADDRESS],
+    tokensToPriceOffNative: [
+      // These tokens will be priced off the NATIVE token.
+      USDC_ADDRESS,
+    ],
+    minimumNativeLiquidity: '0.3',
   },
   furo: {
     stream: { address: '0x4ab2fc6e258a0ca7175d05ff10c5cf798a672cae', startBlock: 13964139 },
@@ -77,5 +110,9 @@ module.exports = {
     startBlock: 7920342,
     usdcPool: { address: '0x892785f33cdee22a30aef750f285e18c18040c3e', startBlock: 8041115 },
     usdtPool: { address: '0xb6cfcf89a7b22988bfc96632ac2a9d6dab60d641', startBlock: 8041122 },
+  },
+  router: {
+    address: '0x1b02da8cb0d097eb8d57a175b88c7d8b47997506',
+    startBlock: 29527181,
   }
 }

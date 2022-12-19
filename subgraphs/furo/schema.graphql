@@ -106,6 +106,7 @@ type Token @entity {
   nameSuccess: Boolean!
   decimals: BigInt!
   decimalsSuccess: Boolean!
+  rebase: Rebase!
   createdAtBlock: BigInt!
   createdAtTimestamp: BigInt!
 }
@@ -129,4 +130,26 @@ type Rebase @entity {
   base: BigInt!
   " Elastic (Amount) "
   elastic: BigInt!
+  " created at block, used internally to know when to ignore updates for the rebase "
+  createdAtBlock: BigInt!
+}
+
+type TokenHourSnapshot @entity {
+  " {tokenId}-hour-{timestamp} "
+  id: ID!
+  date: Int!
+  token: Token!
+  cumulativeLiquidityShares: BigInt!
+  cumulativeLiquidityAmount: BigInt!
+  transactionCount: BigInt!
+}
+
+type TokenDaySnapshot @entity {
+  " {tokenId}-day-{timestamp} "
+  id: ID!
+  date: Int!
+  token: Token!
+  cumulativeLiquidityShares: BigInt!
+  cumulativeLiquidityAmount: BigInt!
+  transactionCount: BigInt!
 }

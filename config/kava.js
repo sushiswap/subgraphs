@@ -26,6 +26,7 @@ module.exports = {
       address: '0x0769fd68dfb93167989c6f7254cd0d766fb2841f',
       initCodeHash: '0x3172d82413be467c1130709f7479a07def9b99caf8e0059f248c131081e4ea09',
     },
+    stablePoolFactory: { address: '0x9B3fF703FA9C8B467F5886d7b61E61ba07a9b51c' },
     hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     native: { address: NATIVE_ADDRESS },
@@ -58,8 +59,11 @@ module.exports = {
       // USDC/WKAVA/30/FALSE
       '0x88395b86cf9787e131d2fb5462a22b44056bf574',
     ],
-    minimum_usd_threshold_new_pairs: '3000',
-    minimumNativeLiquidity: '0.1',
+    tokensToPriceOffNative: [
+      // These tokens will be priced off the NATIVE token
+      USDC_ADDRESS
+    ],
+    minimumNativeLiquidity: '50', // Threshold for being considered for pricing
   },
   furo: {
     stream: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },

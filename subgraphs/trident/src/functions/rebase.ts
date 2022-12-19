@@ -3,12 +3,13 @@ import { BentoBox } from '../../generated/BentoBox/BentoBox'
 import { Rebase } from '../../generated/schema'
 import { BENTOBOX_ADDRESS, BIG_INT_ONE } from '../constants'
 
-export function createRebase(token: string): Rebase {
+export function createRebase(token: string, blockNumber: BigInt): Rebase {
   const rebase = new Rebase(token)
   const totals = getRebaseFromContract(token)
   rebase.token = token
   rebase.elastic = totals.elastic
   rebase.base = totals.base
+  rebase.createdAtBlock = blockNumber
   rebase.save()
   return rebase as Rebase
 }
@@ -17,17 +18,24 @@ export function getRebase(token: string): Rebase {
   return Rebase.load(token) as Rebase
 }
 
-export function getOrCreateRebase(token: string): Rebase {
+export function getOrCreateRebase(token: string, blockNumber: BigInt): Rebase {
   let rebase = Rebase.load(token)
 
   if (rebase === null) {
-    rebase = createRebase(token)
+    rebase = createRebase(token, blockNumber)
   }
 
   return rebase as Rebase
 }
 
 
+/**
+ * To base (shares)
+ * @param total 
+ * @param elastic 
+ * @param roundUp 
+ * @returns 
+ */
 export function toBase(total: Rebase, elastic: BigInt, roundUp: boolean): BigInt {
   if (total.elastic.equals(BigInt.fromU32(0))) {
     return elastic
@@ -42,6 +50,13 @@ export function toBase(total: Rebase, elastic: BigInt, roundUp: boolean): BigInt
   return base
 }
 
+/**
+ * To elastic (amount)
+ * @param total 
+ * @param base 
+ * @param roundUp 
+ * @returns 
+ */
 export function toElastic(total: Rebase, base: BigInt, roundUp: boolean): BigInt {
   if (total.base.equals(BigInt.fromU32(0))) {
     return base

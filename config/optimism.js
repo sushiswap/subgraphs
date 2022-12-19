@@ -1,8 +1,10 @@
 const NATIVE_ADDRESS = '0x4200000000000000000000000000000000000006'
+const OP_ADDRESS = '0x4200000000000000000000000000000000000042'
 const WBTC_ADDRESS = '0x68f180fcce6836688e9084f035309e29bf0a2095'
 const USDC_ADDRESS = '0x7f5c764cbc14f9669b88837ca1490cca17c31607'
 const USDT_ADDRESS = '0x94b008aa00579c1307b0ef2c499ad98a8ce58e58'
 const DAI_ADDRESS = '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1'
+const SUSD_ADDRESS = '0x7170bd6f5ab1ac44a1ba7a0beb5f3f06c2d4a898'
 
 module.exports = {
   network: 'optimism',
@@ -18,6 +20,7 @@ module.exports = {
       address: '0x93395129bd3fcf49d95730d3c2737c17990ff328',
       initCodeHash: '0x3172d82413be467c1130709f7479a07def9b99caf8e0059f248c131081e4ea09',
     },
+    stablePoolFactory: { address: '0x827179dD56d07A7eeA32e3873493835da2866976' },
     hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     native: { address: NATIVE_ADDRESS },
@@ -26,14 +29,12 @@ module.exports = {
       // it's now apart of the whitelisted token check in createPair, because the
       // base should always be whitelisted or pricing never begins.
       NATIVE_ADDRESS,
-      // WBTC
       WBTC_ADDRESS,
-      // USDC
       USDC_ADDRESS,
-      // USDT
       USDT_ADDRESS,
-      // DAI
       DAI_ADDRESS,
+      OP_ADDRESS,
+      SUSD_ADDRESS,
     ],
     stableTokenAddresses: [
       // USDC
@@ -47,11 +48,13 @@ module.exports = {
     stablePoolAddresses: [
       // USDC/WETH/30/FALSE
       '0x1e31a2c6e6614273d740358affb46bef180efb7b',
+    ],    
+    tokensToPriceOffNative: [
+      // These tokens will be priced off the NATIVE token
+      USDC_ADDRESS
     ],
-    minimumNativeLiquidity: '0.01',
-    minimum_usd_threshold_new_pairs: '3000',
+    minimumNativeLiquidity: '0.01', // Threshold for being considered for pricing
   },
-
   furo: {
     stream: { address: '0x4ab2fc6e258a0ca7175d05ff10c5cf798a672cae', startBlock: 10835062 },
     vesting: { address: '0x0689640d190b10765f09310fcfe9c670ede4e25b', startBlock: 10835089 },

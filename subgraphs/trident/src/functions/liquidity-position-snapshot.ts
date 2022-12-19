@@ -7,7 +7,8 @@ import { getOrCreateUser } from './user'
 
 export function createLiquidityPositionSnapshot(position: LiquidityPosition, block: ethereum.Block): void {
   const timestamp = block.timestamp.toI32()
-  const user = getOrCreateUser(Address.fromString(position.user))
+  const pair = getPair(position.pair)
+  const user = getOrCreateUser(Address.fromString(position.user), pair.type)
   const id = position.id
     .concat('-')
     .concat(timestamp.toString())
@@ -15,7 +16,6 @@ export function createLiquidityPositionSnapshot(position: LiquidityPosition, blo
     .concat(user.lpSnapshotsCount.toString())
 
   const bundle = getOrCreateBundle()
-  const pair = getPair(position.pair)
   const token0Price = getTokenPrice(pair.token0)
   const token1Price = getTokenPrice(pair.token1)
 

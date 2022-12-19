@@ -31,6 +31,7 @@ const PRIMATE_ADDRESS = '0x46e98ffe40e408ba6412beb670507e083c8b95ff'
 const MIM_ADDRESS = '0x99d8a9c45b2eca8864373a26d1459e3dff1e17f3'
 const FRAX_ADDRESS = '0x853d955acef822db058eb8505911ed77f175b99e'
 const UST_ADDRESS = '0xa47c8bf37f92abed4a126bda807a7b7498661acd'
+const ASTRAFER_ADDRESS = '0x97bbbc5d96875fb78d2f14b7ff8d7a3a74106f17'
 
 module.exports = {
   network: 'mainnet',
@@ -52,10 +53,16 @@ module.exports = {
     accessControls: { address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4', startBlock: 14598164 },
     market: { address: '0x281bd3a3f96ae7c96049493a7ba9449df2c5b0fe', startBlock: 14598240 },
   },
+  miso_0_1: {
+    market: { address: '0x9d6c60d26B8f776B85d5731AD56b88973C3D370b', startBlock: 12453632 },
+  },
+  miso_0_2: {
+    market: { address: '0x9a40B4497b62607ED9014e8E14284b21095a572C', startBlock: 13405590 }, 
+  },
   legacy: {
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [
-      // IMPORTANT! The native address must be included for pricing to start
+      // IMPORTANT! Native should be included here
       NATIVE_ADDRESS,
       WBTC_ADDRESS,
       DAI_ADDRESS,
@@ -88,6 +95,8 @@ module.exports = {
       PRIMATE_ADDRESS,
       MIM_ADDRESS,
       FRAX_ADDRESS,
+      ASTRAFER_ADDRESS,
+      UST_ADDRESS
     ],
     stableTokenAddresses: [
       USDC_ADDRESS,
@@ -95,13 +104,11 @@ module.exports = {
       DAI_ADDRESS,
       MIM_ADDRESS,
       FRAX_ADDRESS,
-      UST_ADDRESS,
       USDP_ADDRESS,
       SUSD_ADDRESS,
       TUSD_ADDRESS,
     ],
     minimumNativeLiquidity: 3,
-    minimum_usd_threshold_new_pairs: '3000',
     factory: {
       address: '0xc0aee478e3658e2610c5f7a4a2e1777ce9e4f2ac',
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
@@ -133,5 +140,9 @@ module.exports = {
   stargate: {
     usdcPool: { address: '0xdf0770df86a8034b3efef0a1bb3c889b8332ff56', startBlock: 14403393 },
     usdtPool: { address: '0x38ea452219524bb87e18de1c24d3bb59510bd783', startBlock: 14403402 },
+  },
+  router: {
+    address: '0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f',
+    startBlock: 13600375, // 2021-11-12
   }
 }

@@ -52,6 +52,8 @@ export const MASTER_DEPLOYER_ADDRESS = Address.fromString('{{ trident.masterDepl
 
 export const CONSTANT_PRODUCT_POOL_FACTORY_ADDRESS = Address.fromString('{{ trident.constantProductPoolFactory.address }}')
 
+export const STABLE_POOL_FACTORY_ADDRESS = Address.fromString('{{ trident.stablePoolFactory.address }}')
+
 export const HYBRID_POOL_FACTORY_ADDRESS = Address.fromString('{{ trident.hybridPoolFactory.address }}')
 
 export const INDEX_POOL_FACTORY_ADDRESS = Address.fromString('{{ trident.indexPoolFactory.address }}')
@@ -60,9 +62,9 @@ export const CONCENTRATED_LIQUIDITY_POOL_FACTORY_ADDRESS = Address.fromString(
   '{{ trident.concentratedLiquidityPoolFactory.address }}'
 )
 
-export const NATIVE_ADDRESS = '{{ trident.native.address }}'
-
 export const WHITELISTED_TOKEN_ADDRESSES: string[] = '{{ trident.whitelistedTokenAddresses }}'.split(',')
+
+export const NATIVE_ADDRESS = '{{ trident.native.address }}'
 
 export const STABLE_TOKEN_ADDRESSES: string[] = '{{ trident.stableTokenAddresses }}'.split(',')
 
@@ -73,27 +75,43 @@ const STABLE_POOL_PERMUTATIONS = combinate(STABLE_TOKEN_ADDRESSES, NATIVE_ADDRES
 export const INIT_CODE_HASH = '{{ trident.constantProductPoolFactory.initCodeHash }}'
 
 export const STABLE_POOL_ADDRESSES: string[] = STABLE_POOL_PERMUTATIONS.map<string>((perm: CombinateReturn) => {
-      const factory = Bytes.fromByteArray(Bytes.fromHexString('{{ trident.constantProductPoolFactory.address }}'))
-      const token0 = perm.tokens[0].slice(2).padStart(64, '0')
-      const token1 = perm.tokens[1].slice(2).padStart(64, '0')
-      const fee = (perm.fee as i32).toString(16).padStart(64, '0')
-      const oracle = (+perm.oracle as i32).toString(16).padStart(64, '0')
-      const keccak = crypto.keccak256(ByteArray.fromHexString('0x' + token0 + token1 + fee + oracle)).toHex()
-      const initCodeHash = Bytes.fromByteArray(Bytes.fromHexString(INIT_CODE_HASH))
+  const factory = Bytes.fromByteArray(Bytes.fromHexString('{{ trident.constantProductPoolFactory.address }}'))
+  const token0 = perm.tokens[0].slice(2).padStart(64, '0')
+  const token1 = perm.tokens[1].slice(2).padStart(64, '0')
+  const fee = (perm.fee as i32).toString(16).padStart(64, '0')
+  const oracle = (+perm.oracle as i32).toString(16).padStart(64, '0')
+  const keccak = crypto.keccak256(ByteArray.fromHexString('0x' + token0 + token1 + fee + oracle)).toHex()
+  const initCodeHash = Bytes.fromByteArray(Bytes.fromHexString(INIT_CODE_HASH))
 
-      return getCreate2Address(factory, keccak, initCodeHash).toHex()
-    })
+  return getCreate2Address(factory, keccak, initCodeHash).toHex()
+})
+
+export const TOKENS_TO_PRICE_OFF_NATIVE_ADDRESSES: string[] = '{{ trident.tokensToPriceOffNative }}'.split(',')
+export const TOKENS_TO_PRICE_OFF_NATIVE = new Map<string, string[]>()
+
+TOKENS_TO_PRICE_OFF_NATIVE_ADDRESSES.forEach((token: string) => {
+  const permutations = combinate([token], NATIVE_ADDRESS, [false, true], [1, 5, 10, 30, 100])
+  const pools = permutations.map<string>((perm: CombinateReturn) => {
+    const factory = Bytes.fromByteArray(Bytes.fromHexString('{{ trident.constantProductPoolFactory.address }}'))
+    const token0 = perm.tokens[0].slice(2).padStart(64, '0')
+    const token1 = perm.tokens[1].slice(2).padStart(64, '0')
+    const fee = (perm.fee as i32).toString(16).padStart(64, '0')
+    const oracle = (+perm.oracle as i32).toString(16).padStart(64, '0')
+    const keccak = crypto.keccak256(ByteArray.fromHexString('0x' + token0 + token1 + fee + oracle)).toHex()
+    const initCodeHash = Bytes.fromByteArray(Bytes.fromHexString(INIT_CODE_HASH))
+    return getCreate2Address(factory, keccak, initCodeHash).toHex()
+  })
+  TOKENS_TO_PRICE_OFF_NATIVE.set(token, pools)
+})
 
 // Minimum liqudiity threshold in native currency
 export const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('{{ trident.minimumNativeLiquidity }}')
 
-// minimum liquidity required to count towards tracked volume for pairs with small # of Lps
-export const MINIMUM_USD_THRESHOLD_NEW_PAIRS = BigDecimal.fromString(
-  '{{ trident.minimum_usd_threshold_new_pairs }}{{^trident.minimum_usd_threshold_new_pairs}}3000{{/trident.minimum_usd_threshold_new_pairs}}'
-)
 
 export namespace PairType {
+  export const ALL = "ALL";
   export const CONSTANT_PRODUCT_POOL = "CONSTANT_PRODUCT_POOL";
+  export const STABLE_POOL = "STABLE_POOL";
 }
 
 export * from './id'

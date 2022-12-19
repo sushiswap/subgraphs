@@ -38,6 +38,7 @@ export function getOrCreateToken(id: string): Token {
     token.feesUSD = BIG_DECIMAL_ZERO
     token.txCount = BIG_INT_ZERO
     token.pairCount = BIG_INT_ZERO
+    token.whitelistedPairCount = BIG_INT_ZERO
 
     token.save()
     const factory = getOrCreateFactory()

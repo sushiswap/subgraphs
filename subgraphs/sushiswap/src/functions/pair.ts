@@ -5,6 +5,7 @@ import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, LEGACY, PairType, SWAP_FEE
 import { getOrCreateFactory } from './factory'
 import { getOrCreateToken } from './token'
 import { createTokenPair } from './token-pair'
+import { createWhitelistedTokenPairs } from './whitelisted-token-pair'
 
 export function createPair(event: PairCreated): Pair {
   const id = event.params.pair.toHex()
@@ -16,6 +17,7 @@ export function createPair(event: PairCreated): Pair {
 
   createTokenPair(token0.id, id)
   createTokenPair(token1.id, id)
+  createWhitelistedTokenPairs(token0.id, token1.id, id)
 
   pair.name = token0.symbol.concat('-').concat(token1.symbol)
   pair.type = PairType.CONSTANT_PRODUCT_POOL

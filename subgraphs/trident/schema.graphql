@@ -1,6 +1,8 @@
 
 enum PairType {
   CONSTANT_PRODUCT_POOL
+  STABLE_POOL
+  ALL # This is a special value for the factory to use, it is not a valid value for a pool. Needed to track all factories as one.
 }
 
 type Factory @entity {
@@ -28,6 +30,17 @@ type Factory @entity {
   tokenCount: BigInt!
   " User count "
   userCount: BigInt!
+}
+
+
+type _FactoryToken @entity(immutable: true) {
+  " id is created by combining factory type and token id, e.g. STABLE_POOL:0x..00 "
+  id: ID!
+}
+
+type _FactoryUser @entity(immutable: true) {
+  " id is created by combining factory type and user id, e.g. STABLE_POOL:0x..00 "
+  id: ID!
 }
 
 " Bundle - should only ever be one created"
@@ -78,9 +91,13 @@ type Token @entity {
   txCount: BigInt!
   " Count of all the pairs "
   pairCount: BigInt!
+  " Count of all the whitelisted pairs "
+  whitelistedPairCount: BigInt!
 
   " All pairs where this token is involved in "
   pairs: [_TokenPair!]! @derivedFrom(field: "token")
+  " All whitelisted pairs where this token is involved in "
+  whitelistedPairs: [_WhitelistedTokenPair!]! @derivedFrom(field: "token")
 }
 
 type TokenPrice @entity {
@@ -99,6 +116,15 @@ type TokenPrice @entity {
 }
 
 type _TokenPair @entity(immutable: true) {
+  " id is created by combining token.id and count, e.g. 0x00x00:1 "
+  id: ID!
+  " Pair "
+  pair: Pair!
+  " Token "
+  token: Token!
+}
+
+type _WhitelistedTokenPair @entity(immutable: true) {
   " id is created by combining token.id and count, e.g. 0x00x00:1 "
   id: ID!
   " Pair "
@@ -184,6 +210,8 @@ type Rebase @entity {
   base: BigInt!
   " Elastic (Amount) "
   elastic: BigInt!
+  " created at block, used internally to know when to ignore updates for the rebase "
+  createdAtBlock: BigInt!
 }
 
 type User @entity {

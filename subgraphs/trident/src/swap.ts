@@ -45,7 +45,7 @@ export function handleSwap(event: SwapEvent, volumeUSD: BigDecimal): Swap {
   tokenIn.save()
   tokenOut.txCount = tokenOut.txCount.plus(BIG_INT_ONE)
   tokenOut.save()
-  increaseFactoryTransactionCount(PairType.CONSTANT_PRODUCT_POOL)
+  increaseFactoryTransactionCount(pair.type)
   return swap
 }
 
@@ -72,7 +72,7 @@ export function updateApr(event: SwapEvent): void {
  * @param snapshot 
  */
  const calculateApr = (pair: Pair, snapshot: PairHourSnapshot): BigDecimal => {
-  const fee = pair.swapFee.divDecimal(BigDecimal.fromString('10000')).times(BigDecimal.fromString('0.83333333333'))
+  const fee = pair.swapFee.divDecimal(BigDecimal.fromString('10000'))
   return pair.volumeUSD.minus(snapshot.cumulativeVolumeUSD)
     .times(fee)
     .times(BigDecimal.fromString('365')) // One year

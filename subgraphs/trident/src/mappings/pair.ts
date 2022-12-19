@@ -12,6 +12,7 @@ import {
   createLiquidityPositionSnapshot,
   getOrCreateLiquidityPosition,
   getOrCreateUser,
+  getPair,
   updateFactorySnapshots,
   updatePairSnapshots,
   updateTokenSnapshots
@@ -26,8 +27,9 @@ export function onSync(event: SyncEvent): void {
 }
 
 export function onTransfer(event: TransferEvent): void {
-  getOrCreateUser(event.params.recipient)
-  getOrCreateUser(event.params.sender)
+  const pair = getPair(event.address.toHex())
+  getOrCreateUser(event.params.recipient, pair.type)
+  getOrCreateUser(event.params.sender, pair.type)
   updateLiquidity(event)
   handleTransfer(event)
   createLiquidityPositions(event)
@@ -55,7 +57,7 @@ export function onMint(event: MintEvent): void {
 
 export function onBurn(event: BurnEvent): void {
   let burn = handleBurn(event)
-  if (burn.sender) {
+  if (burn.sender !== null) {
     const liquidityPosition = getOrCreateLiquidityPosition(Address.fromString(burn.sender!), event.address, event.block)
     createLiquidityPositionSnapshot(liquidityPosition, event.block)
   }
