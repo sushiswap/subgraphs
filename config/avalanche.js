@@ -1,6 +1,7 @@
 const NATIVE_ADDRESS = '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7'
 const WETH_ADDRESS = '0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab'
-const USDC_ADDRESS = '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664'
+const USDC_E_ADDRESS = '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664'
+const USDC_ADDRESS = '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e'
 const USDTE_ADDRESS = '0xc7198437980c041c805a1edcba50c1ce5db95118'
 const USDT_ADDRESS = '0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7'
 const DAI_ADDRESS = '0xd586e7f844cea2f87f50152665bcbc2c279d8d70'
@@ -37,6 +38,7 @@ module.exports = {
       TIME_ADDRESS,
       SPELL_ADDRESS,
       WMEMO_ADDRESS,
+      USDC_E_ADDRESS,
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, USDTE_ADDRESS, DAI_ADDRESS, MIM_ADDRESS],
     minimumNativeLiquidity: 5,
@@ -71,6 +73,7 @@ module.exports = {
       TIME_ADDRESS,
       SPELL_ADDRESS,
       WMEMO_ADDRESS,
+      USDC_E_ADDRESS,
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, USDTE_ADDRESS, DAI_ADDRESS, MIM_ADDRESS],
     tokensToPriceOffNative: [
