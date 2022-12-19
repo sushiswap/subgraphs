@@ -51,6 +51,17 @@ module.exports = {
     hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      WBTC_ADDRESS,
+      USDT_ADDRESS,
+      BUSD_ADDRESS,
+      DAI_ADDRESS,
+      ICE_ADDRESS,
+      USDC_ADDRESS,
+    ],
     stableTokenAddresses: [
       USDC_ADDRESS,
       USDT_ADDRESS,

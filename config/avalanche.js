@@ -57,12 +57,27 @@ module.exports = {
     hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      USDTE_ADDRESS,
+      DAI_ADDRESS,
+      WBTC_ADDRESS,
+      MIM_ADDRESS,
+      SUSHI_ADDRESS,
+      TIME_ADDRESS,
+      SPELL_ADDRESS,
+      WMEMO_ADDRESS,
+    ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, USDTE_ADDRESS, DAI_ADDRESS, MIM_ADDRESS],
     tokensToPriceOffNative: [
       // These tokens will be priced off the NATIVE token.
       USDC_ADDRESS,
     ],
-    minimumNativeLiquidity: '75',
+    minimumNativeLiquidity: '50',
   },
   furo: {
     stream: { address: '0x4ab2fc6e258a0ca7175d05ff10c5cf798a672cae', startBlock: 15714979 },

@@ -62,6 +62,8 @@ export const CONCENTRATED_LIQUIDITY_POOL_FACTORY_ADDRESS = Address.fromString(
   '{{ trident.concentratedLiquidityPoolFactory.address }}'
 )
 
+export const WHITELISTED_TOKEN_ADDRESSES: string[] = '{{ trident.whitelistedTokenAddresses }}'.split(',')
+
 export const NATIVE_ADDRESS = '{{ trident.native.address }}'
 
 export const STABLE_TOKEN_ADDRESSES: string[] = '{{ trident.stableTokenAddresses }}'.split(',')
