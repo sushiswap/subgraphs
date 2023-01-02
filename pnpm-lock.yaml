@@ -129,6 +129,22 @@ importers:
       matchstick-as: 0.4.2
       wabt: 1.0.24
 
+  subgraphs/router:
+    specifiers:
+      '@graphprotocol/graph-cli': ^0.33.0
+      '@graphprotocol/graph-ts': ^0.27.0
+      abi: workspace:*
+      assemblyscript: ^0.19.20
+      matchstick-as: ^0.4.2
+      wabt: 1.0.24
+    devDependencies:
+      '@graphprotocol/graph-cli': 0.33.0
+      '@graphprotocol/graph-ts': 0.27.0
+      abi: link:../../packages/abi
+      assemblyscript: 0.19.23
+      matchstick-as: 0.4.2
+      wabt: 1.0.24
+
   subgraphs/staking:
     specifiers:
       '@graphprotocol/graph-cli': ^0.27.0
@@ -162,6 +178,18 @@ importers:
       wabt: 1.0.24
 
   subgraphs/sushiswap:
+    specifiers:
+      '@graphprotocol/graph-cli': ^0.32.0
+      '@graphprotocol/graph-ts': ^0.27.0
+      abi: workspace:*
+      matchstick-as: ^0.5.0
+    devDependencies:
+      '@graphprotocol/graph-cli': 0.32.0
+      '@graphprotocol/graph-ts': 0.27.0
+      abi: link:../../packages/abi
+      matchstick-as: 0.5.0
+
+  subgraphs/sushiswap-minimal:
     specifiers:
       '@graphprotocol/graph-cli': ^0.32.0
       '@graphprotocol/graph-ts': ^0.27.0
@@ -2635,6 +2663,7 @@ packages:
 
   /multiaddr/6.1.1:
     resolution: {integrity: sha512-Q1Ika0F9MNhMtCs62Ue+GWIJtRFEhZ3Xz8wH7/MZDVZTWhil1/H2bEGN02kUees3hkI3q1oHSjmXYDM0gxaFjQ==}
+    deprecated: This module is deprecated, please upgrade to @multiformats/multiaddr
     dependencies:
       bs58: 4.0.1
       class-is: 1.1.0
@@ -2646,6 +2675,7 @@ packages:
 
   /multiaddr/7.5.0:
     resolution: {integrity: sha512-GvhHsIGDULh06jyb6ev+VfREH9evJCFIRnh3jUt9iEZ6XDbyoisZRFEI9bMvK/AiR6y66y6P+eoBw9mBYMhMvw==}
+    deprecated: This module is deprecated, please upgrade to @multiformats/multiaddr
     dependencies:
       buffer: 5.7.1
       cids: 0.8.3
@@ -3032,7 +3062,6 @@ packages:
     resolution: {integrity: sha512-N9iVG+CGJsI4b4ZGazjwLnxErD2d9Pe4DPvvXSxYA9tFNu8ymXME4Qs5HIQ0LMJpNM7zj+m0NlNnNeqFpKzqnA==}
     deprecated: Unmaintained
     dev: true
-    bundledDependencies: []
 
   /protocol-buffers-schema/3.6.0:
     resolution: {integrity: sha512-TdDRD+/QNdrCGCE7v8340QyuXd4kIWIgapsE2+n/SaGiSSbomYl4TjHlvIoCWRpE7wFt02EpB35VVA2ImcBVqw==}
