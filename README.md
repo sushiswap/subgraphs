@@ -9,6 +9,7 @@ This repository contains multiple subgraphs:
 - [furo-stream](./subgraphs/furo-stream/README.md)
 - [furo-vesting](./subgraphs/furo-vesting/README.md)
 - [legacy-exchange](./subgraphs/legacy-exchange/README.md)
+- [minichef](./subgraphs/minichef/README.md)
 - [miso](./subgraphs/miso/README.md)
 - [staking](./subgraphs/staking/README.md)
 - [sushi](./subgraphs/sushi/README.md)
