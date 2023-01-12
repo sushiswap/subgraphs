@@ -4,9 +4,21 @@ const USDC_ADDRESS = '0xfa9343c3897324496a05fc75abed6bac29f8a40f'
 const USDT_ADDRESS = '0xb44a9b6905af7c801311e8f4e76932ee959c663c'
 const DAI_ADDRESS = '0x765277eebeca2e31912c9946eae1021199b39c61'
 const WETH_ADDRESS = '0xe3f5a90f9cb311505cd691a46596599aa1a0ad7d'
+const SUSHI_ADDRESS = '0x7c598c96d02398d89fbcb9d41eab3df0c16F227d'
 
 module.exports = {
   network: 'kava-evm',
+  sushi: { address: SUSHI_ADDRESS },
+  minichef: {
+    address: '0xf731202a3cf7efa9368c2d7bd613926f7a144db5',
+    startBlock: 265615,
+    native: {
+      address: NATIVE_ADDRESS,
+    },
+    rewarder: {
+      complex: { address: '0xeaf76e3bd36680d98d254b378ed706cb0dfbfc1b' }
+    },
+  },
   blocks: {
     address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
     startBlock: 161967,

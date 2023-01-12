@@ -5,9 +5,21 @@ const USDT_ADDRESS = '0xed9d63a96c27f87b07115b56b2e3572827f21646'
 const WBTC_ADDRESS = '0x1d05e4e72cd994cdf976181cfb0707345763564d'
 const MOON_ADDRESS = '0x0057ac2d777797d31cd3f8f13bf5e927571d6ad0'
 const BRICK_ADDRESS = '0x6dcb98f460457fe4952e12779ba852f82ecc62c1'
+const SUSHI_ADDRESS = '0xfe60a48a0bcf4636afecc9642a145d2f241a7011'
 
 module.exports = {
   network: 'arbitrum-nova',
+  sushi: { address: SUSHI_ADDRESS },
+  minichef: {
+    address: '0xc09756432dad2ff50b2d40618f7b04546dd20043',
+    startBlock: 1771977,
+    native: {
+      address: NATIVE_ADDRESS,
+    },
+    rewarder: {
+      complex: { address: '0xe2d7460457f55e4786c69d2d3fa81978bf8dd11c'}
+    }
+  },
   legacy: {
     startBlock: 16548328,
     native: { address: NATIVE_ADDRESS },

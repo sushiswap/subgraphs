@@ -3,9 +3,21 @@ const USDC_ADDRESS = '0xea32a96608495e54156ae48931a7c20f0dcc1a21'
 const USDT_ADDRESS = '0xbb06dca3ae6887fabf931640f67cab3e3a16f4dc'
 const DAI_ADDRESS = '0x4c078361fc9bbb78df910800a991c7c3dd2f6ce0'
 const WETH_ADDRESS = '0x420000000000000000000000000000000000000A'
+const SUSHI_ADDRESS = '0x17ee7e4da37b01fc1bcc908fa63df343f23b4b7c'
 
 module.exports = {
   network: 'andromeda',
+  sushi: { address: SUSHI_ADDRESS },
+  minichef: {
+    address: '0x1334c8e873e1cae8467156e2a81d1c8b566b2da1',
+    startBlock: 3118733,
+    native: {
+      address: NATIVE_ADDRESS,
+    },
+    rewarder: {
+      complex: { address: '0xe2d7460457f55e4786c69d2d3fa81978bf8dd11c' }
+    },
+  },
   auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   bentobox: {
     address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',

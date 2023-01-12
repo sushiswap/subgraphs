@@ -5,8 +5,21 @@ const USDC_ADDRESS = '0x620fd5fa44be6af63715ef4e65ddfa0387ad13f5'
 const DAI_ADDRESS = '0x94ba7a27c7a95863d1bdc7645ac2951e0cca06ba'
 const USDT_ADDRESS = '0xfadbbf8ce7d5b7041be672561bba99f79c532e10'
 const FUSD_ADDRESS = '0x249be57637d8b013ad64785404b24aebae9b098b'
+const SUSHI_ADDRESS = '0x90708b20ccc1eb95a4fa7c8b18fd2c22a0ff9e78'
+
 module.exports = {
   network: 'fuse',
+  sushi: { address: SUSHI_ADDRESS },
+  minichef: {
+    address: '0x182cd0c6F1faec0aed2ea83cd0e160c8bd4cb063',
+    startBlock: 14411101,
+    native: {
+      address: NATIVE_ADDRESS,
+    },
+    rewarder: {
+      complex: { address: '0xef502259dd5d497d082498912031e027c4515563' }
+    },
+  },
   blocks: {
     address: '0x43ea90e2b786728520e4f930d2a71a477bf2737c',
     startBlock: 12943648,

@@ -7,10 +7,21 @@ const WMOVR_ADDRESS = '0xf50225a84382c74cbdea10b0c176f71fc3de0c4d'
 const WBTC_ADDRESS = '0xe6a991ffa8cfe62b0bf6bf72959a3d4f11b2e0f5'
 const FRAX_ADDRESS = '0x1a93b23281cc1cde4c4741353f3064709a16197d'
 const MIM_ADDRESS = '0x0cae51e1032e8461f4806e26332c030e34de3adb'
+const SUSHI_ADDRESS = '0xf390830df829cf22c53c8840554b98eafc5dcbc2'
 
 module.exports = {
   network: 'moonriver',
-
+  sushi: { address: SUSHI_ADDRESS },
+  minichef: {
+    address: '0x3db01570d97631f69bbb0ba39796865456cf89a5',
+    startBlock: 800950,
+    native: {
+      address: NATIVE_ADDRESS,
+    },
+    rewarder: {
+      complex: { address: '0x1334c8e873e1cae8467156e2a81d1c8b566b2da1' }
+    },
+  },
   bentobox: {
     address: '0x145d82bca93cca2ae057d1c6f26245d1b9522e6f',
     startBlock: 1610292,

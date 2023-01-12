@@ -12,7 +12,17 @@ const SPELL_ADDRESS = '0xce1bffbd5374dac86a2893119683f4911a2f7814'
 const WMEMO_ADDRESS = '0x0da67235dd5787d67955420c84ca1cecd4e5bb3b'
 module.exports = {
   network: 'avalanche',
-
+  sushi: { address: SUSHI_ADDRESS },
+  minichef: {
+    address: '0xe11252176cedd4a493aec9767192c06a04a6b04f',
+    startBlock: 24827313,
+    native: {
+      address: NATIVE_ADDRESS,
+    },
+    rewarder: {
+      complex: { address: '0x4a90e4ea17c29ddc88efb8b13129b7070b618586'}
+    }
+  },
   bentobox: {
     address: '0x0711b6026068f736bae6b213031fce978d48e026',
     startBlock: 3672722,

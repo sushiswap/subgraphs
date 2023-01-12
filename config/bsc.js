@@ -5,9 +5,21 @@ const USDT_ADDRESS = '0x55d398326f99059ff775485246999027b3197955'
 const BUSD_ADDRESS = '0xe9e7cea3dedca5984780bafc599bd69add087d56'
 const DAI_ADDRESS = '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3'
 const ICE_ADDRESS = '0xf16e81dce15b08f326220742020379b855b87df9'
+const SUSHI_ADDRESS = '0x986cdf0fd180b40c4d6aeaa01ab740b996d8b782'
 
 module.exports = {
   network: 'bsc',
+  sushi: { address: SUSHI_ADDRESS },
+  minichef: {
+    address: '0x5219c5e32b9fff87f29d5a833832c29134464aaa',
+    startBlock: 24709457,
+    native: {
+      address: NATIVE_ADDRESS,
+    },
+    rewarder: {
+      complex: { address: '0x21cb1bffd7bdbf4b48812a141620815972258a50' }
+    },
+  },
   bentobox: {
     address: '0xf5bce5077908a1b7370b9ae04adc565ebd643966',
     startBlock: 5926250,
