@@ -18,6 +18,16 @@ module.exports = {
   sushi: { address: SUSHI_ADDRESS },
   weth: { address: WETH_ADDRESS },
   wbtc: { address: WBTC_ADDRESS },
+  minichef: {
+    address: '0x0769fd68dfb93167989c6f7254cd0d766fb2841f',
+    startBlock: 13911377,
+    native: {
+      address: NATIVE_ADDRESS,
+    },
+    rewarder: {
+      complex: { address: '0xa3378ca78633b3b9b2255eaa26748770211163ae' }
+    },
+  },
   bentobox: {
     address: '0x0319000133d3ada02600f0875d2cf03d442c3367',
     startBlock: 13952308,

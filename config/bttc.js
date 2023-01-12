@@ -13,9 +13,21 @@ const USDC_E_ADDRESS = '0xae17940943ba9440540940db0f1877f101d39e8b'
 const USDD_T_ADDRESS = '0x17f235fd5974318e4e2a5e37919a209f7c37a6d1'
 
 const WETH_ADDRESS = '0x1249c65afb11d179ffb3ce7d4eedd1d9b98ad006'
+const SUSHI_ADDRESS = '0x53c56ece35f8cab135e13d6d00499dfc7c07a92e'
 
 module.exports = {
   network: 'bttc',
+  sushi: { address: SUSHI_ADDRESS },
+  minichef: {
+    address: '0xc09756432dad2ff50b2d40618f7b04546dd20043',
+    startBlock: 13314532,
+    native: {
+      address: NATIVE_ADDRESS,
+    },
+    rewarder: {
+      complex: { address: '0x75f52766a6a23f736edefcd69dfbe6153a48c3f3' }
+    },
+  },
   auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   bentobox: {
     address: '0x8dacffa7f69ce572992132697252e16254225d38',

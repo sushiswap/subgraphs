@@ -3,9 +3,21 @@ const WETH_ADDRESS = '0x74b23882a30290451a17c44f4f05243b6b58c76d'
 const FUSD_ADDRESS = '0xad84341756bf337f5a0164515b1f6f993d194e1f'
 const DAI_ADDRESS = '0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e'
 const USDC_ADDRESS = '0x04068da6c83afcfa0e13ba15a6696662335d5b75'
+const SUSHI_ADDRESS = '0xae75a438b2e0cb8bb01ec1e1e376de11d44477cc'
 
 module.exports = {
   network: 'fantom',
+  sushi: { address: SUSHI_ADDRESS },
+  minichef: {
+    address: '0xf731202a3cf7efa9368c2d7bd613926f7a144db5',
+    startBlock: 28771200,
+    native: {
+      address: NATIVE_ADDRESS,
+    },
+    rewarder: {
+      complex: { address: '0xeaf76e3bd36680d98d254b378ed706cb0dfbfc1b'}
+    },
+  },
   bentobox: {
     address: '0xf5bce5077908a1b7370b9ae04adc565ebd643966',
     startBlock: 2918231,

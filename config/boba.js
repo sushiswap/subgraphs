@@ -16,6 +16,16 @@ module.exports = {
   sushi: { address: SUSHI_ADDRESS },
   weth: { address: NATIVE_ADDRESS },
   wbtc: { address: WBTC_ADDRESS },
+  minichef: {
+    address: '0x75f52766a6a23f736edefcd69dfbe6153a48c3f3',
+    startBlock: 813755,
+    native: {
+      address: NATIVE_ADDRESS,
+    },
+    rewarder: {
+      complex: { address: '0xf731202a3cf7efa9368c2d7bd613926f7a144db5' }
+    },
+  },
   legacy: {
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [
