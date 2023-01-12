@@ -1,0 +1,38 @@
+{
+    "name": "sushiswap-minimal",
+    "license": "MIT",
+    "repository": {
+      "url": "sushiswap/subgraphs",
+      "directory": "subgraphs/sushiswap"
+    },
+    "files": [
+      "generated"
+    ],
+    "scripts": {
+      "generate": "mustache ../../config/$NETWORK.js template.yaml > subgraph.yaml && mustache ../../config/$NETWORK.js src/constants/index.template.ts > src/constants/index.ts && graph codegen",
+      "build": "graph build",
+      "create-local": "graph create --node http://localhost:8020/ sushiswap/sushiswap-minimal-ethereum",
+      "remove-local": "graph remove --node http://localhost:8020/ sushiswap/sushiswap-minimal-ethereum",
+      "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/sushiswap-minimal-ethereum",
+      "deploy-ethereum": "graph deploy --product hosted-service sushiswap/sushiswap-minimal-ethereum",
+      "deploy-kovan": "graph deploy --product hosted-service sushiswap/sushiswap-minimal-kovan",
+      "deploy-polygon": "graph deploy --product hosted-service sushiswap/sushiswap-minimal-polygon",
+      "deploy-avalanche": "graph deploy --product hosted-service sushiswap/sushiswap-minimal-avalanche",
+      "deploy-arbitrum": "graph deploy --product hosted-service sushiswap/sushiswap-minimal-arbitrum",
+      "deploy-moonbeam": "graph deploy --product hosted-service sushiswap/sushiswap-minimal-moonbeam",
+      "deploy-moonriver": "graph deploy --product hosted-service sushiswap/sushiswap-minimal-moonriver",
+      "deploy-bsc": "graph deploy --product hosted-service sushiswap/sushiswap-minimal-bsc",
+      "deploy-gnosis": "graph deploy --product hosted-service sushiswap/sushiswap-minimal-gnosis",
+      "deploy-fantom": "graph deploy --product hosted-service sushiswap/sushiswap-minimal-fantom",
+      "deploy-harmony": "graph deploy --product hosted-service sushiswap/sushiswap-minimal-harmony",
+      "deploy-celo": "graph deploy --product hosted-service sushiswap/sushiswap-minimal-celo",
+      "deploy-fuse": "graph deploy --product hosted-service sushiswap/sushiswap-minimal-fuse"
+    },
+    "devDependencies": {
+        "abi": "workspace:*",
+        "@graphprotocol/graph-cli": "^0.32.0",
+        "@graphprotocol/graph-ts": "^0.27.0",
+        "matchstick-as": "^0.5.0"
+    }
+  }
+  
