@@ -21,7 +21,7 @@
     "abi": "workspace:*",
     "@graphprotocol/graph-cli": "^0.27.0",
     "@graphprotocol/graph-ts": "^0.24.1",
-    "matchstick-as": "^0.4.2",
+    "matchstick-as": "0.5.0",
     "assemblyscript": "^0.19.20",
     "wabt": "1.0.24"
   }

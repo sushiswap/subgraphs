@@ -375,6 +375,10 @@ function deriveTokenPrice(
 
   const price = calcDirection == direction ? -yDShares : -1 / yDShares
 
+  if (price < 0 || price == Infinity || price == -Infinity) {
+    return BIG_DECIMAL_ZERO
+  }
+
   return BigDecimal.fromString(price.toString())
 }
 
