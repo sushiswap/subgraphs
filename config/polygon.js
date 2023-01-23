@@ -12,6 +12,8 @@ const AURUM_ADDRESS = '0x34d4ab47bee066f361fa52d792e69ac7bd05ee23'
 const MSU_ADDRESS = '0xe8377a076adabb3f9838afb77bee96eac101ffb1'
 const DMAGIC_ADDRESS = '0x61daecab65ee2a1d5b6032df030f3faa3d116aa7'
 const NDEFI_ADDRESS = '0xd3f07ea86ddf7baebefd49731d7bbd207fedc53b'
+const USDPLUS_ADDRESS = '0x236eec6359fb44cce8f97e99387aa7f8cd5cde1f'
+const BOB_ADDRESS = '0xb0b195aefa3650a6908f15cdac7d92f8a5791b0b'
 
 module.exports = {
   network: 'matic',
@@ -62,6 +64,8 @@ module.exports = {
       MSU_ADDRESS,
       DMAGIC_ADDRESS,
       NDEFI_ADDRESS,
+      USDPLUS_ADDRESS,
+      BOB_ADDRESS,
     ],
     stableTokenAddresses: [
       // USDC
