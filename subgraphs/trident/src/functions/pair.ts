@@ -7,6 +7,7 @@ import { getOrCreateFactory } from './factory'
 import { getOrCreateRebase } from './rebase'
 import { getOrCreateToken } from './token'
 import { createTokenPair } from './token-pair'
+import { createWhitelistedTokenPairs } from './whitelisted-token-pair'
 
 export function createPair(event: DeployPool, type: string): Pair {
   const id = event.params.pool.toHex()
@@ -25,12 +26,13 @@ export function createPair(event: DeployPool, type: string): Pair {
 
   const pair = new Pair(id)
 
-  createTokenPair(token0.id, id)
-  createTokenPair(token1.id, id)
+  createTokenPair(token0Address, id)
+  createTokenPair(token1Address, id)
+  createWhitelistedTokenPairs(token0Address, token1Address, id)
 
   pair.name = token0.symbol.concat('-').concat(token1.symbol)
-  pair.token0 = token0.id
-  pair.token1 = token1.id
+  pair.token0 = token0Address
+  pair.token1 = token1Address
   pair.type = type
   pair.source = TRIDENT
   pair.swapFee = swapFee
@@ -67,11 +69,11 @@ export function createPair(event: DeployPool, type: string): Pair {
 
   // create the tracked contract based on the template
 
-  if (type === PairType.CONSTANT_PRODUCT_POOL) {
+  if (type == PairType.CONSTANT_PRODUCT_POOL) {
     ConstantProductPool.create(event.params.pool)
   }
 
-  if (type === PairType.STABLE_POOL) {
+  if (type == PairType.STABLE_POOL) {
     StablePool.create(event.params.pool)
   }
 

@@ -6,6 +6,7 @@ const BUSD_ADDRESS = '0xe9e7cea3dedca5984780bafc599bd69add087d56'
 const DAI_ADDRESS = '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3'
 const ICE_ADDRESS = '0xf16e81dce15b08f326220742020379b855b87df9'
 const SUSHI_ADDRESS = '0x986cdf0fd180b40c4d6aeaa01ab740b996d8b782'
+const USDC_ADDRESS = '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d'
 
 module.exports = {
   network: 'bsc',
@@ -34,7 +35,7 @@ module.exports = {
   legacy: {
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [
-      // IMPORTANT! The native address must be included for pricing to start
+      // IMPORTANT! Native should be included here
       NATIVE_ADDRESS,
       WETH_ADDRESS,
       WBTC_ADDRESS,
@@ -45,12 +46,45 @@ module.exports = {
     ],
     stableTokenAddresses: [USDT_ADDRESS, BUSD_ADDRESS, DAI_ADDRESS],
     minimumNativeLiquidity: 5,
-    minimum_usd_threshold_new_pairs: '3000',
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
       startBlock: 5205069,
     },
+  },
+  trident: {
+    masterDeployer: { address: '0x9e4791ad13f14783c7b2a6a7bd8d6ddd1dc95847', startBlock: 23136876 },
+    concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
+    constantProductPoolFactory: {
+      address: '0x3d2f8ae0344d38525d2ae96ab750b83480c0844f',
+      initCodeHash: '0x3172d82413be467c1130709f7479a07def9b99caf8e0059f248c131081e4ea09',
+    },
+    stablePoolFactory: { address: '0xa4c0363edd74f55ac8f316a3bf447f8aa09607d3' },
+    hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
+    indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      WBTC_ADDRESS,
+      USDT_ADDRESS,
+      BUSD_ADDRESS,
+      DAI_ADDRESS,
+      ICE_ADDRESS,
+      USDC_ADDRESS,
+    ],
+    stableTokenAddresses: [
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      DAI_ADDRESS,
+      BUSD_ADDRESS
+    ],
+    tokensToPriceOffNative: [
+      // These tokens will be priced off the NATIVE token. At least one token needs to 
+      USDC_ADDRESS
+    ],
+    minimumNativeLiquidity: '5',
   },
   furo: {
     stream: { address: '0x4ab2fc6e258a0ca7175d05ff10c5cf798a672cae', startBlock: 18479521 },

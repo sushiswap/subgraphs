@@ -1,5 +1,5 @@
 import { BigDecimal, log } from '@graphprotocol/graph-ts'
-import { Pair, _TokenPair, TokenPrice } from '../generated/schema'
+import { Pair, _TokenPair, TokenPrice, _WhitelistedTokenPair } from '../generated/schema'
 import {
   BIG_DECIMAL_ONE,
   BIG_DECIMAL_ZERO,
@@ -64,7 +64,7 @@ export function getNativePriceInUSD(): BigDecimal {
 
 /**
  * Updates the token price.
- * Find the pair that contains the most liquidity and is safe from circular price dependency,
+ * Find the whitelisted pair that contains the most liquidity and is safe from circular price dependency,
  * (e.g. if DAI is priced off USDC, then USDC cannot be priced off DAI)
  * @param tokenAddress The address of the token to update
  * @returns
@@ -113,9 +113,9 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal):
 
 
 
-  for (let i = 0; i < token.pairCount.toI32(); ++i) {
+  for (let i = 0; i < token.whitelistedPairCount.toI32(); ++i) {
     const tokenPairRelationshipId = token.id.concat(':').concat(i.toString())
-    const tokenPairRelationship = _TokenPair.load(tokenPairRelationshipId)
+    const tokenPairRelationship = _WhitelistedTokenPair.load(tokenPairRelationshipId)
 
     if (tokenPairRelationship === null) {
       continue // Not created yet

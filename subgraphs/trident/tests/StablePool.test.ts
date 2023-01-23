@@ -50,7 +50,7 @@ const TEST_ARGS: TestArg[] =
 
 const PAIR = Address.fromString("0x397ff1542f962076d0bfe58ea045ffa2d347aca0")
 
-test(`Test stable pool token0Price/token1Price calculation`, () => {
+test(`Test pair price calculation with low amount`, () => {
     clearStore()
 
     const reserve0 = BigInt.fromString("999999")

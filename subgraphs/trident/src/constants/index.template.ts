@@ -62,9 +62,9 @@ export const CONCENTRATED_LIQUIDITY_POOL_FACTORY_ADDRESS = Address.fromString(
   '{{ trident.concentratedLiquidityPoolFactory.address }}'
 )
 
-export const NATIVE_ADDRESS = '{{ trident.native.address }}'
-
 export const WHITELISTED_TOKEN_ADDRESSES: string[] = '{{ trident.whitelistedTokenAddresses }}'.split(',')
+
+export const NATIVE_ADDRESS = '{{ trident.native.address }}'
 
 export const STABLE_TOKEN_ADDRESSES: string[] = '{{ trident.stableTokenAddresses }}'.split(',')
 
@@ -107,10 +107,6 @@ TOKENS_TO_PRICE_OFF_NATIVE_ADDRESSES.forEach((token: string) => {
 // Minimum liqudiity threshold in native currency
 export const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('{{ trident.minimumNativeLiquidity }}')
 
-// minimum liquidity required to count towards tracked volume for pairs with small # of Lps
-export const MINIMUM_USD_THRESHOLD_NEW_PAIRS = BigDecimal.fromString(
-  '{{ trident.minimum_usd_threshold_new_pairs }}{{^trident.minimum_usd_threshold_new_pairs}}3000{{/trident.minimum_usd_threshold_new_pairs}}'
-)
 
 export namespace PairType {
   export const ALL = "ALL";
