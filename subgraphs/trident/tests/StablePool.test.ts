@@ -147,6 +147,41 @@ test(`Extreme case where pair is imbalanced returns 0 for token0Price/token1Pric
 })
 
 
+
+test(`Extreme case where `, () => {
+    clearStore()
+
+    const reserve0 = BigInt.fromString("999999999999999999")
+    const reserve1 = BigInt.fromString("10000000000000000000000000000000")
+
+    getOrCreateTokenMock(NATIVE_ADDRESS, 18, "NATIVE", "NAT")
+    deployPair({
+        factory: STABLE_POOL_FACTORY_ADDRESS,
+        token0: Address.fromString("0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"),
+        token0Decimals: 18,
+        token0Symbol: "SomeToken",
+        token0Name: "Some Token",
+        token1: Address.fromString("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"),
+        token1Decimals: 18,
+        token1Symbol: "SomeOtherToken",
+        token1Name: "Some Other Token",
+        pairAddress: PAIR
+    })
+    const blockNumber = BigInt.fromString("13413298")
+    const syncEvent = createSyncEvent(Bytes.fromHexString("0xcd18330c23ba51da48581d11d43db76fe3c4502af0a49dc7667a9b65c2546c9f"), blockNumber, PAIR, reserve0, reserve1)
+
+    onSync(syncEvent)
+
+    assert.fieldEquals('Pair', PAIR.toHex(), 'token0Price', '0')
+    assert.fieldEquals('Pair', PAIR.toHex(), 'token1Price', '0')
+
+    log.debug("reserve0: {} reserve1: {}", [reserve0.toString(), reserve1.toString()])
+
+})
+
+
+
+
 function deployPair(args: DeployPairArgs): Pair {
     let tupleArray: Array<ethereum.Value> = [
         ethereum.Value.fromAddress(args.token0),

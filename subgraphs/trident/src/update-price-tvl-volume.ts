@@ -375,7 +375,7 @@ function deriveTokenPrice(
 
   const price = calcDirection == direction ? -yDShares : -1 / yDShares
 
-  if (price <= 0 || price == Infinity || price == -Infinity) {
+  if (price <= 0 || price == Infinity || price == -Infinity || Number.isNaN(price)) {
     return BIG_DECIMAL_ZERO
   }
 
