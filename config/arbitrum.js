@@ -99,8 +99,11 @@ module.exports = {
       // These tokens will be priced off the NATIVE token.
       USDC_ADDRESS,
     ],
-    minimumNativeLiquidity: '0.3',
+    minimumNativeLiquidity: '1.2',
   },
+  blacklistedTokenAddresses: [
+    '0xeba61eb686b515fae79a96118f140924a634ab23', // ArbFloki
+  ],
   furo: {
     stream: { address: '0x4ab2fc6e258a0ca7175d05ff10c5cf798a672cae', startBlock: 13964139 },
     vesting: { address: '0x0689640d190b10765f09310fcfe9c670ede4e25b', startBlock: 13964169 },

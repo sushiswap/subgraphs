@@ -3,15 +3,20 @@ import { Pair } from '../../generated/schema'
 import { Pair as PairTemplate } from '../../generated/templates'
 import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, LEGACY, PairType, SWAP_FEE, TWAP_ENABLED } from '../constants'
 import { getOrCreateFactory } from './factory'
-import { getOrCreateToken } from './token'
+import { getOrCreateToken, isBlacklistedToken } from './token'
 import { createTokenPair } from './token-pair'
 import { createWhitelistedTokenPairs } from './whitelisted-token-pair'
 
-export function createPair(event: PairCreated): Pair {
+export function createPair(event: PairCreated): Pair | null {
   const id = event.params.pair.toHex()
 
   let token0 = getOrCreateToken(event.params.token0.toHex())
   let token1 = getOrCreateToken(event.params.token1.toHex())
+
+
+  if (isBlacklistedToken(token0.id) || isBlacklistedToken(token1.id)) {
+    return null
+  }
 
   const pair = new Pair(id)
 

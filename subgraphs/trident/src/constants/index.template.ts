@@ -107,6 +107,7 @@ TOKENS_TO_PRICE_OFF_NATIVE_ADDRESSES.forEach((token: string) => {
 // Minimum liqudiity threshold in native currency
 export const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('{{ trident.minimumNativeLiquidity }}')
 
+export const BLACKLISTED_TOKENS: string[] = '{{ blacklistedTokenAddresses }}'.split(',')
 
 export namespace PairType {
   export const ALL = "ALL";

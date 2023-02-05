@@ -3,7 +3,7 @@ import { ERC20 } from '../../generated/Factory/ERC20'
 import { NameBytes32 } from '../../generated/Factory/NameBytes32'
 import { SymbolBytes32 } from '../../generated/Factory/SymbolBytes32'
 import { Token } from '../../generated/schema'
-import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO } from '../constants'
+import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, BLACKLISTED_TOKENS } from '../constants'
 import { getOrCreateFactory } from './factory'
 import { createTokenPrice } from './token-price'
 
@@ -114,10 +114,6 @@ function getTokenDecimals(contract: ERC20): Decimal {
   return { success: false, value: BigInt.fromI32(18) }
 }
 
-const BLACKLIST_EXCHANGE_VOLUME: string[] = [
-  '0x9ea3b5b4ec044b70375236a281986106457b20ef', // DELTA
-]
-
 export function isBlacklistedToken(token: string): boolean {
-  return BLACKLIST_EXCHANGE_VOLUME.includes(token)
+  return BLACKLISTED_TOKENS.includes(token)
 }

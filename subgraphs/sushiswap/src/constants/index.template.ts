@@ -55,6 +55,7 @@ export const MINIMUM_NATIVE_LIQUIDITY = BigDecimal.fromString('{{ legacy.minimum
 
 // export const STABLE_POOL_ADDRESSES: string[] = '{{ stablePoolAddresses }}'.split(',')
 
+export const BLACKLISTED_TOKENS: string[] = '{{ blacklistedTokenAddresses }}'.split(',')
 
 export namespace PairType {
   export const CONSTANT_PRODUCT_POOL = "CONSTANT_PRODUCT_POOL";
