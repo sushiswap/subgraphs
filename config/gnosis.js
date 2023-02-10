@@ -8,6 +8,7 @@ const BAO_ADDRESS = '0x82dfe19164729949fd66da1a37bc70dd6c4746ce'
 const WETH2_ADDRESS = '0x6a023ccd1ff6f2045c3309768ead9e68f978f6e1'
 const DAI_ADDRESS = '0x44fa8e6f47987339850636f88629646662444217'
 const USDP_ADDRESS = '0xfe7ed09c4956f7cdb54ec4ffcb9818db2d7025b8'
+const GNO_ADDRESS = '0x9c58bacc331c9aa871afd802db6379a98e80cedb'
 
 module.exports = {
   network: 'xdai',
@@ -19,11 +20,11 @@ module.exports = {
   minichef: {
     address: '0xddcbf776df3de60163066a5dddf2277cb445e0f3',
     startBlock: 16747770,
-    native: {
-      address: NATIVE_ADDRESS,
-    },
     rewarder: {
-      complex: { address: '0x3f505b5cff05d04f468db65e27e72ec45a12645f' }
+      complex: {
+        address: '0x3f505b5cff05d04f468db65e27e72ec45a12645f',
+        rewardToken: { address: GNO_ADDRESS },
+      }
     }
   },
   legacy: {

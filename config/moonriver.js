@@ -15,11 +15,11 @@ module.exports = {
   minichef: {
     address: '0x3db01570d97631f69bbb0ba39796865456cf89a5',
     startBlock: 800950,
-    native: {
-      address: NATIVE_ADDRESS,
-    },
     rewarder: {
-      complex: { address: '0x1334c8e873e1cae8467156e2a81d1c8b566b2da1' }
+      complex: {
+        address: '0x1334c8e873e1cae8467156e2a81d1c8b566b2da1',
+        rewardToken: { address: NATIVE_ADDRESS }
+      }
     },
   },
   bentobox: {

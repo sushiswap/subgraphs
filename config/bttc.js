@@ -21,11 +21,11 @@ module.exports = {
   minichef: {
     address: '0xc09756432dad2ff50b2d40618f7b04546dd20043',
     startBlock: 13314532,
-    native: {
-      address: NATIVE_ADDRESS,
-    },
     rewarder: {
-      complex: { address: '0x75f52766a6a23f736edefcd69dfbe6153a48c3f3' }
+      complex: {
+        address: '0x75f52766a6a23f736edefcd69dfbe6153a48c3f3',
+        rewardToken: { address: NATIVE_ADDRESS }
+      }
     },
   },
   auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },

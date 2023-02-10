@@ -1,5 +1,5 @@
 import { Address, ethereum } from '@graphprotocol/graph-ts'
-import { ZERO_ADDRESS, BIG_INT_ZERO, COMPLEX_REWARDER, NATIVE } from '../constants'
+import { ZERO_ADDRESS, BIG_INT_ZERO, COMPLEX_REWARDER, COMPLEX_REWARDER_TOKEN } from '../constants'
 import {
   CloneRewarderTime as CloneRewarderTimeTemplate,
   ComplexRewarderTime as ComplexRewarderTimeTemplate,
@@ -25,7 +25,7 @@ export function getRewarder(address: Address, block: ethereum.Block): Rewarder {
     if (COMPLEX_REWARDER != ZERO_ADDRESS && address == COMPLEX_REWARDER) {
       rewarder.timestamp = block.timestamp
       rewarder.block = block.number
-      rewarder.rewardToken = NATIVE
+      rewarder.rewardToken = COMPLEX_REWARDER_TOKEN
       rewarder.rewardPerSecond = BIG_INT_ZERO
       rewarder.totalAllocPoint = BIG_INT_ZERO
       rewarder.save()
