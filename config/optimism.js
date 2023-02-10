@@ -5,9 +5,21 @@ const USDC_ADDRESS = '0x7f5c764cbc14f9669b88837ca1490cca17c31607'
 const USDT_ADDRESS = '0x94b008aa00579c1307b0ef2c499ad98a8ce58e58'
 const DAI_ADDRESS = '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1'
 const SUSD_ADDRESS = '0x7170bd6f5ab1ac44a1ba7a0beb5f3f06c2d4a898'
+const SUSHI_ADDRESS = '0x3eaEb77b03dBc0F6321AE1b72b2E9aDb0F60112B'
 
 module.exports = {
   network: 'optimism',
+  sushi: { address: SUSHI_ADDRESS },
+  minichef: {
+    address: "0xb25157bf349295a7cd31d1751973f426182070d6",
+    startBlock: 72848630,
+    rewarder: {
+      complex: {
+        address: '0x320a04b981c092884a9783cde907578f613ef773',
+        rewardToken: { address: OP_ADDRESS }
+      }
+    }
+  },
   bentobox: {
     address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
     base: 'QmYJh2tYmFv9yGxeyRHDTKKCFgyHAv7wgczpWojF5B4BqN',

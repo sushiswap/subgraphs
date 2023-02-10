@@ -20,11 +20,11 @@ module.exports = {
   minichef: {
     address: '0xf4d73326c13a4fc5fd7a064217e12780e9bd62c3',
     startBlock: 226981,
-    native: {
-      address: NATIVE_ADDRESS,
-    },
     rewarder: {
-      complex: { address: '0x0000000000000000000000000000000000000000' }
+      complex: {
+        address: '0x0000000000000000000000000000000000000000',
+        rewardToken: { address: '0x0000000000000000000000000000000000000000' }
+      }
     }
   },
   bentobox: {

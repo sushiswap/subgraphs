@@ -13,11 +13,11 @@ module.exports = {
   minichef: {
     address: '0xc09756432dad2ff50b2d40618f7b04546dd20043',
     startBlock: 1771977,
-    native: {
-      address: NATIVE_ADDRESS,
-    },
     rewarder: {
-      complex: { address: '0xe2d7460457f55e4786c69d2d3fa81978bf8dd11c'}
+      complex: {
+        address: '0x0000000000000000000000000000000000000000',
+        rewardToken: { address: "0x0000000000000000000000000000000000000000" },
+      }
     }
   },
   legacy: {
