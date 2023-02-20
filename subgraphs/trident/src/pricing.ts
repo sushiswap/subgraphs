@@ -10,7 +10,7 @@ import {
   TOKENS_TO_PRICE_OFF_NATIVE,
   TOKENS_TO_PRICE_OFF_NATIVE_ADDRESSES
 } from './constants'
-import { convertTokenToDecimal, getOrCreateToken } from './functions'
+import { convertTokenToDecimal, getOrCreateToken, isBlacklistedToken } from './functions'
 import { getTokenPrice } from './functions/token-price'
 
 export function getNativePriceInUSD(): BigDecimal {
@@ -78,6 +78,10 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal):
       currentTokenPrice.save()
     }
     return currentTokenPrice
+  }
+
+  if (isBlacklistedToken(tokenAddress)) {
+      return currentTokenPrice
   }
 
   let pricedOffToken = ''

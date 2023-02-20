@@ -5,7 +5,7 @@ import { ConstantProductPool, StablePool } from '../../generated/templates'
 import { BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, TRIDENT, PairType } from '../constants'
 import { getOrCreateFactory } from './factory'
 import { getOrCreateRebase } from './rebase'
-import { getOrCreateToken, isBlacklistedToken } from './token'
+import { getOrCreateToken } from './token'
 import { createTokenPair } from './token-pair'
 import { createWhitelistedTokenPairs } from './whitelisted-token-pair'
 
@@ -15,10 +15,6 @@ export function createPair(event: DeployPool, type: string): Pair | null {
   const isCorrectOrder = decoded[0].toAddress().toHex() < decoded[1].toAddress().toHex()
   const token0Address = isCorrectOrder ? decoded[0].toAddress().toHex() : decoded[1].toAddress().toHex()
   const token1Address = !isCorrectOrder ? decoded[0].toAddress().toHex() : decoded[1].toAddress().toHex()
-
-  if (isBlacklistedToken(token0Address) || isBlacklistedToken(token1Address)) {
-    return null
-  }
 
   const swapFee = decoded[2].toBigInt() as BigInt
   const twapEnabled = decoded[3].toBoolean() as boolean

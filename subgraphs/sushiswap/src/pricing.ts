@@ -10,7 +10,7 @@ import {
   STABLE_POOL_ADDRESSES,
   STABLE_TOKEN_ADDRESSES
 } from './constants'
-import { convertTokenToDecimal, getOrCreateToken } from './functions'
+import { convertTokenToDecimal, getOrCreateToken, isBlacklistedToken } from './functions'
 import { getTokenPrice } from './functions/token-price'
 
 export const factoryContract = FactoryContract.bind(FACTORY_ADDRESS)
@@ -76,6 +76,10 @@ export function updateTokenPrice(tokenAddress: string, nativePrice: BigDecimal):
       currentTokenPrice.derivedNative = BIG_DECIMAL_ONE
       currentTokenPrice.save()
     }
+    return currentTokenPrice
+  }
+  
+  if (isBlacklistedToken(tokenAddress)) {
     return currentTokenPrice
   }
 
