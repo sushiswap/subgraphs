@@ -49,6 +49,36 @@ module.exports = {
       startBlock: 14735904,
     },
   },
+  trident: {
+    masterDeployer: { address: '0x80c7dd17b01855a6d2347444a0fcc36136a314de', startBlock: 26356547 },
+    concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
+    constantProductPoolFactory: {
+      address: '0xf4d73326c13a4fc5fd7a064217e12780e9bd62c3',
+      initCodeHash: '0x3172d82413be467c1130709f7479a07def9b99caf8e0059f248c131081e4ea09',
+    },
+    stablePoolFactory: { address: '0x1b9d177ccdea3c79b6c8f40761fc8dc9d0500eaa' },
+    hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
+    indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      WBTC_ADDRESS,
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      BAO_ADDRESS,
+      WETH2_ADDRESS,
+      DAI_ADDRESS,
+      USDP_ADDRESS,
+    ],
+    stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, USDP_ADDRESS],
+    tokensToPriceOffNative: [
+      // These tokens will be priced off the NATIVE token.
+      USDC_ADDRESS,
+    ],
+    minimumNativeLiquidity: '2400',
+  },
   furo: {
     stream: { address: '0x4ab2fc6e258a0ca7175d05ff10c5cf798a672cae', startBlock: 22535727 },
     vesting: { address: '0x0689640d190b10765f09310fcfe9c670ede4e25b', startBlock: 22535744 },
