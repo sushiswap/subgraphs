@@ -8,6 +8,7 @@ export function exponentToBigDecimal(decimals: BigInt): BigDecimal {
   for (let i = ZERO_BI; i.lt(decimals as BigInt); i = i.plus(ONE_BI)) {
     bd = bd.times(BigDecimal.fromString('10'))
   }
+
   return bd
 }
 

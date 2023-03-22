@@ -5,7 +5,7 @@ import { ERC20NameBytes } from '../../generated/Factory/ERC20NameBytes'
 import { StaticTokenDefinition } from './staticTokenDefinition'
 import { BigInt, Address } from '@graphprotocol/graph-ts'
 import { isNullEthValue } from '.'
-import { NETWORK } from '../constants'
+import { NETWORK, ZERO_BI } from '../constants'
 
 export function fetchTokenSymbol(tokenAddress: Address): string {
   let contract = ERC20.bind(tokenAddress)
@@ -65,22 +65,22 @@ export function fetchTokenName(tokenAddress: Address): string {
 
 export function fetchTokenTotalSupply(tokenAddress: Address): BigInt {
   let contract = ERC20.bind(tokenAddress)
-  let totalSupplyValue = 0
+  let totalSupplyValue = ZERO_BI
   let totalSupplyResult = contract.try_totalSupply()
   if (!totalSupplyResult.reverted) {
-    totalSupplyValue = totalSupplyResult.value.toI32()
+    totalSupplyValue = totalSupplyResult.value
   }
-  return BigInt.fromI32(totalSupplyValue as i32)
+  return totalSupplyValue
 }
 
 export function fetchTokenDecimals(tokenAddress: Address): BigInt {
   let contract = ERC20.bind(tokenAddress)
   // try types uint8 for decimals
-  let decimalValue = 18
+  let decimalValue = BigInt.fromString('18').toI32()
   let decimalResult = contract.try_decimals()
   if (!decimalResult.reverted) {
     decimalValue = decimalResult.value
-  } else if (NETWORK === 'mainnet') {
+  } else if (NETWORK == 'mainnet') {
     // try with the static definition
     let staticTokenDefinition = StaticTokenDefinition.fromAddress(tokenAddress)
     if(staticTokenDefinition != null) {
@@ -88,5 +88,5 @@ export function fetchTokenDecimals(tokenAddress: Address): BigInt {
     }
   }
 
-  return BigInt.fromI32(decimalValue as i32)
+  return BigInt.fromI32(decimalValue)
 }

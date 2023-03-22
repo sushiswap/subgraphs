@@ -4,10 +4,11 @@ import { Bundle, Pool, Token } from '../../generated/schema'
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { exponentToBigDecimal, safeDiv } from '../utils/index'
 
-let Q192 = 2 ** 192
+const Q192 = BigInt.fromI32(2).pow(BigInt.fromI32(192).toI32() as u8)
+
 export function sqrtPriceX96ToTokenPrices(sqrtPriceX96: BigInt, token0: Token, token1: Token): BigDecimal[] {
   let num = sqrtPriceX96.times(sqrtPriceX96).toBigDecimal()
-  let denom = BigDecimal.fromString(Q192.toString())
+  let denom = Q192.toBigDecimal()
   let price1 = num
     .div(denom)
     .times(exponentToBigDecimal(token0.decimals))

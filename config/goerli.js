@@ -23,6 +23,27 @@ module.exports = {
       startBlock: 4345820,
     },
   },
+  v3: {
+    factory: { // 0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6
+      address: '0x1f98431c8ad98523631ae4a59f267346ea31f984',
+      startBlock: 4734394,
+    },
+    positionManager: {
+      address: '0xc36442b4a4522e871399cd717abdd847ab11fe88',
+      startBlock: 4734414,
+    },
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      NATIVE_ADDRESS,
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      DAI_ADDRESS,
+      MIM_ADDRESS,
+    ],
+    stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, MIM_ADDRESS],
+    nativePricePool: '0x04b1560f4f58612a24cf13531f4706c817e8a5fe',
+    minimumEthLocked: 0.001
+  },
   auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   blocks: {
