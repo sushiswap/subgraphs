@@ -95,7 +95,7 @@ export function handleIncreaseLiquidity(event: IncreaseLiquidity): void {
 
   
   const tx = loadTransaction(event)
-  const increase = new IncreaseEvent(event.transaction.hash.toHexString())
+  const increase = new IncreaseEvent(event.transaction.hash.toHexString().concat(':').concat(event.logIndex.toString()))
   increase.transaction = tx.id
   increase.timeStamp = event.block.timestamp
   increase.amount0 = event.params.amount0
@@ -140,7 +140,7 @@ export function handleDecreaseLiquidity(event: DecreaseLiquidity): void {
     return
   }
   const tx = loadTransaction(event)
-  const decrease = new DecreaseEvent(event.transaction.hash.toHexString())
+  const decrease = new DecreaseEvent(event.transaction.hash.toHexString().concat(':').concat(event.logIndex.toString()))
   decrease.transaction = tx.id
   decrease.timeStamp = event.block.timestamp
   decrease.amount0 = event.params.amount0

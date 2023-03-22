@@ -234,6 +234,10 @@ type Position @entity {
   # vars needed for fee computation
   feeGrowthInside0LastX128: BigInt!
   feeGrowthInside1LastX128: BigInt!
+  
+  # derived fields
+  increaseEvents: [IncreaseEvent!]! @derivedFrom(field: "position")
+  decreaseEvents: [IncreaseEvent!]! @derivedFrom(field: "position")
 }
 
 type PositionSnapshot @entity {
