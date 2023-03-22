@@ -6,7 +6,7 @@ import {
   NonfungiblePositionManager,
   Transfer
 } from '../../generated/NonfungiblePositionManager/NonfungiblePositionManager'
-import { Bundle, Position, PositionSnapshot, Token } from '../../generated/schema'
+import { Bundle, DecreaseEvent, IncreaseEvent, Position, PositionSnapshot, Token } from '../../generated/schema'
 import { ADDRESS_ZERO, factoryContract, ZERO_BD, ZERO_BI } from '../constants'
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { convertTokenToDecimal, loadTransaction } from '../utils'
@@ -38,11 +38,17 @@ function getPosition(event: ethereum.Event, tokenId: BigInt): Position | null {
       position.depositedToken1 = ZERO_BD
       position.withdrawnToken0 = ZERO_BD
       position.withdrawnToken1 = ZERO_BD
+      position.collectedToken0 = ZERO_BD
+      position.collectedToken1 = ZERO_BD
       position.collectedFeesToken0 = ZERO_BD
       position.collectedFeesToken1 = ZERO_BD
       position.transaction = loadTransaction(event).id
       position.feeGrowthInside0LastX128 = positionResult.value8
       position.feeGrowthInside1LastX128 = positionResult.value9
+
+      position.amountDepositedUSD = ZERO_BD
+      position.amountWithdrawnUSD = ZERO_BD
+      position.amountCollectedUSD = ZERO_BD
     }
   }
 
@@ -87,6 +93,22 @@ export function handleIncreaseLiquidity(event: IncreaseLiquidity): void {
     return
   }
 
+  
+  const tx = loadTransaction(event)
+  const increase = new IncreaseEvent(event.transaction.hash.toHexString())
+  increase.transaction = tx.id
+  increase.timeStamp = event.block.timestamp
+  increase.amount0 = event.params.amount0
+  increase.amount1 = event.params.amount1
+  increase.pool = position.pool
+  increase.token0 = position.token0
+  increase.token1 = position.token1
+  increase.position = position.id
+  increase.tokenID = event.params.tokenId
+  increase.save()
+
+  let bundle = Bundle.load('1') as Bundle
+
   let token0 = Token.load(position.token0) as Token
   let token1 = Token.load(position.token1) as Token
 
@@ -96,6 +118,11 @@ export function handleIncreaseLiquidity(event: IncreaseLiquidity): void {
   position.liquidity = position.liquidity.plus(event.params.liquidity)
   position.depositedToken0 = position.depositedToken0.plus(amount0)
   position.depositedToken1 = position.depositedToken1.plus(amount1)
+
+  let newDepositUSD = amount0
+    .times(token0.derivedETH.times(bundle.ethPriceUSD))
+    .plus(amount1.times(token1.derivedETH.times(bundle.ethPriceUSD)))
+  position.amountDepositedUSD = position.amountDepositedUSD.plus(newDepositUSD)
 
   updateFeeVars(position!, event, event.params.tokenId)
 
@@ -112,6 +139,20 @@ export function handleDecreaseLiquidity(event: DecreaseLiquidity): void {
   if (position == null) {
     return
   }
+  const tx = loadTransaction(event)
+  const decrease = new DecreaseEvent(event.transaction.hash.toHexString())
+  decrease.transaction = tx.id
+  decrease.timeStamp = event.block.timestamp
+  decrease.amount0 = event.params.amount0
+  decrease.amount1 = event.params.amount1
+  decrease.pool = position.pool
+  decrease.token0 = position.token0
+  decrease.token1 = position.token1
+  decrease.position = position.id
+  decrease.tokenID = event.params.tokenId
+  decrease.save()
+
+  let bundle = Bundle.load('1') as Bundle
 
   let token0 = Token.load(position.token0) as Token
   let token1 = Token.load(position.token1) as Token
@@ -121,6 +162,11 @@ export function handleDecreaseLiquidity(event: DecreaseLiquidity): void {
   position.liquidity = position.liquidity.minus(event.params.liquidity)
   position.withdrawnToken0 = position.withdrawnToken0.plus(amount0)
   position.withdrawnToken1 = position.withdrawnToken1.plus(amount1)
+
+  let newWithdrawUSD = amount0
+    .times(token0.derivedETH.times(bundle.ethPriceUSD))
+    .plus(amount1.times(token1.derivedETH.times(bundle.ethPriceUSD)))
+  position.amountWithdrawnUSD = position.amountWithdrawnUSD.plus(newWithdrawUSD)
 
   position = updateFeeVars(position!, event, event.params.tokenId)
   position.save()
@@ -134,10 +180,21 @@ export function handleCollect(event: Collect): void {
     return
   }
 
+  let bundle = Bundle.load('1') as Bundle
   let token0 = Token.load(position.token0) as Token
+  let token1 = Token.load(position.token1) as Token
   let amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
-  position.collectedFeesToken0 = position.collectedFeesToken0.plus(amount0)
-  position.collectedFeesToken1 = position.collectedFeesToken1.plus(amount0)
+  let amount1 = convertTokenToDecimal(event.params.amount1, token1.decimals)
+  position.collectedToken0 = position.collectedToken0.plus(amount0)
+  position.collectedToken1 = position.collectedToken1.plus(amount1)
+
+  position.collectedFeesToken0 = position.collectedToken0.minus(position.withdrawnToken0)
+  position.collectedFeesToken1 = position.collectedToken1.minus(position.withdrawnToken1)
+
+  let newCollectUSD = amount0
+    .times(token0.derivedETH.times(bundle.ethPriceUSD))
+    .plus(amount1.times(token1.derivedETH.times(bundle.ethPriceUSD)))
+  position.amountCollectedUSD = position.amountCollectedUSD.plus(newCollectUSD)
 
   position = updateFeeVars(position!, event, event.params.tokenId)
   position.save()

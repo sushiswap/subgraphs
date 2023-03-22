@@ -215,10 +215,20 @@ type Position @entity {
   withdrawnToken0: BigDecimal!
   # amount of token 1 ever withdrawn from position (without fees)
   withdrawnToken1: BigDecimal!
+  # all time collect (inclusive of burn amounts)
+  collectedToken0: BigDecimal!
+  # all time collect (inclusive of burn amounts)
+  collectedToken1: BigDecimal!
   # all time collected fees in token0
   collectedFeesToken0: BigDecimal!
   # all time collected fees in token1
   collectedFeesToken1: BigDecimal!
+  # Total amount deposited in terms of USD
+  amountDepositedUSD: BigDecimal!
+  # Total amount withdrawn in terms of USD
+  amountWithdrawnUSD: BigDecimal!
+  # Total amount collected in terms of USD
+  amountCollectedUSD: BigDecimal!
   # tx in which the position was initialized
   transaction: Transaction!
   # vars needed for fee computation
@@ -650,4 +660,31 @@ type TokenHourData @entity {
   low: BigDecimal!
   # close price USD
   close: BigDecimal!
+}
+	type IncreaseEvent @entity {
+  id: ID!
+  pool: Pool!
+  tokenID: BigInt!
+  # amount of liquidity added
+  position: Position!
+  amount0: BigInt!
+  amount1: BigInt!
+#  amountUSD: BigDecimal!
+  token0: Token!
+  token1: Token!
+  timeStamp: BigInt!
+  transaction: Transaction!
+}
+type DecreaseEvent @entity {
+  id: ID!
+  pool: Pool!
+  tokenID: BigInt!
+  # amount of liquidity added
+  position: Position!
+  amount0: BigInt!
+  amount1: BigInt!
+  token0: Token!
+  token1: Token!
+  timeStamp: BigInt!
+  transaction: Transaction!
 }
