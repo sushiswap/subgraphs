@@ -12,4 +12,13 @@ export const ZERO_BD = BigDecimal.fromString('0')
 export const ONE_BD = BigDecimal.fromString('1')
 export const BI_18 = BigInt.fromI32(18)
 
+export const WHITELISTED_TOKEN_ADDRESSES: string[] = '{{ v3.whitelistedTokenAddresses }}'.split(',')
+
+export const NATIVE_ADDRESS = '{{ v3.native.address }}'
+
+export const STABLE_TOKEN_ADDRESSES: string[] = '{{ v3.stableTokenAddresses }}'.split(',')
+
+export const MINIMUM_ETH_LOCKED = BigDecimal.fromString('{{ v3.minimumEthLocked }}')
+
+
 export const factoryContract = FactoryContract.bind(FACTORY_ADDRESS)

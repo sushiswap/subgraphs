@@ -188,7 +188,60 @@ module.exports = {
     positionManager: {
       address: '0xc36442b4a4522e871399cd717abdd847ab11fe88',
       startBlock: 12369651,
-    }
+    },
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      NATIVE_ADDRESS,
+      WBTC_ADDRESS,
+      DAI_ADDRESS,
+      USDC_ADDRESS,
+      OHM_ADDRESS,
+      USDT_ADDRESS,
+      TUSD_ADDRESS,
+      CDAI_ADDRESS,
+      SUSD_ADDRESS,
+      LINK_ADDRESS,
+      YFI_ADDRESS,
+      XSUSHI_ADDRESS,
+      USDP_ADDRESS,
+      BAC_ADDRESS,
+      CREAM_ADDRESS,
+      FXS_ADDRESS,
+      ALPHA_ADDRESS,
+      PWING_ADDRESS,
+      UMA_ADDRESS,
+      RUNE_ADDRESS,
+      NFTX_ADDRESS,
+      STETH_ADDRESS,
+      DOUGH_ADDRESS,
+      LFBTC_ADDRESS,
+      SUSHI_ADDRESS,
+      APE_ADDRESS,
+      ANGLE_ADDRESS,
+      CRV_ADDRESS,
+      INV_ADDRESS,
+      PRIMATE_ADDRESS,
+      MIM_ADDRESS,
+      FRAX_ADDRESS,
+      ASTRAFER_ADDRESS,
+      UST_ADDRESS,
+      '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2', // MKR
+      '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f', // SNX
+      '0x111111111117dc0aa78b770fa6a738034120c302', // 1INCH
+      '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0', // MATIC
+      '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9', // AAVE
+    ],
+    stableTokenAddresses: [ 
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      DAI_ADDRESS,
+      MIM_ADDRESS,
+      FRAX_ADDRESS,
+      USDP_ADDRESS,
+      SUSD_ADDRESS,
+      TUSD_ADDRESS,
+    ],
+    minimumEthLocked: 3
   },
   blacklistedTokenAddresses: [
     '0x9ea3b5b4ec044b70375236a281986106457b20ef', // DELTA
