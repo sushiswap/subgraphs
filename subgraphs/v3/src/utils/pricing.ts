@@ -1,10 +1,8 @@
 /* eslint-disable prefer-const */
-import { MINIMUM_ETH_LOCKED, NATIVE_ADDRESS, ONE_BD, STABLE_TOKEN_ADDRESSES, WHITELISTED_TOKEN_ADDRESSES, ZERO_BD, ZERO_BI } from '../constants'
+import { MINIMUM_ETH_LOCKED, NATIVE_ADDRESS, NATIVE_PRICE_POOL, ONE_BD, STABLE_TOKEN_ADDRESSES, WHITELISTED_TOKEN_ADDRESSES, ZERO_BD, ZERO_BI } from '../constants'
 import { Bundle, Pool, Token } from '../../generated/schema'
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { exponentToBigDecimal, safeDiv } from '../utils/index'
-
-const USDC_WETH_03_POOL = '0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8'
 
 let Q192 = 2 ** 192
 export function sqrtPriceX96ToTokenPrices(sqrtPriceX96: BigInt, token0: Token, token1: Token): BigDecimal[] {
@@ -21,9 +19,10 @@ export function sqrtPriceX96ToTokenPrices(sqrtPriceX96: BigInt, token0: Token, t
 
 export function getEthPriceInUSD(): BigDecimal {
   // fetch eth prices for each stablecoin
-  let usdcPool = Pool.load(USDC_WETH_03_POOL) // dai is token0
-  if (usdcPool !== null) {
-    return usdcPool.token0Price
+  let nativeAndStablePool = Pool.load(NATIVE_PRICE_POOL)
+
+  if (nativeAndStablePool !== null) {
+    return nativeAndStablePool.token0 == NATIVE_ADDRESS.toLowerCase() ? nativeAndStablePool.token1Price : nativeAndStablePool.token0Price
   } else {
     return ZERO_BD
   }

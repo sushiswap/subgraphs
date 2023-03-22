@@ -20,5 +20,7 @@ export const STABLE_TOKEN_ADDRESSES: string[] = '{{ v3.stableTokenAddresses }}'.
 
 export const MINIMUM_ETH_LOCKED = BigDecimal.fromString('{{ v3.minimumEthLocked }}')
 
+export const NATIVE_PRICE_POOL = Address.fromString('{{ v3.factory.nativePricePool }}').toHex().toLowerCase()
+
 
 export const factoryContract = FactoryContract.bind(FACTORY_ADDRESS)
