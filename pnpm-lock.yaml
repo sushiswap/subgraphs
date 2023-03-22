@@ -233,6 +233,22 @@ importers:
       matchstick-as: 0.5.0
       wabt: 1.0.24
 
+  subgraphs/v3:
+    specifiers:
+      '@graphprotocol/graph-cli': ^0.32.0
+      '@graphprotocol/graph-ts': ^0.27.0
+      abi: workspace:*
+      assemblyscript: ^0.19.20
+      matchstick-as: 0.5.0
+      wabt: 1.0.24
+    devDependencies:
+      '@graphprotocol/graph-cli': 0.32.0
+      '@graphprotocol/graph-ts': 0.27.0
+      abi: link:../../packages/abi
+      assemblyscript: 0.19.23
+      matchstick-as: 0.5.0
+      wabt: 1.0.24
+
   subgraphs/xsushi:
     specifiers:
       '@graphprotocol/graph-cli': ^0.33.0

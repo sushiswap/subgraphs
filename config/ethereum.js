@@ -180,6 +180,16 @@ module.exports = {
     ],
     minimumNativeLiquidity: '2',
   },
+  v3: {
+    factory: {
+      address: '0x1f98431c8ad98523631ae4a59f267346ea31f984',
+      startBlock: 12369621,
+    },
+    positionManager: {
+      address: '0xc36442b4a4522e871399cd717abdd847ab11fe88',
+      startBlock: 12369651,
+    }
+  },
   blacklistedTokenAddresses: [
     '0x9ea3b5b4ec044b70375236a281986106457b20ef', // DELTA
   ],
