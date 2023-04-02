@@ -11,6 +11,7 @@ const ARBY_ADDRESS = '0x09ad12552ec45f82be90b38dfe7b06332a680864'
 const DPX_ADDRESS = '0x6c2c06790b3e3e3c38e12ee22f8183b37a13ee55'
 const GOHM_ADDRESS = '0x8d9ba570d6cb60c7e3e0f31343efe75ab8e65fb1'
 const MAGIC_ADDRESS = '0x539bde0d7dbd336b79148aa742883198bbf60342'
+const ARB_ADDRESS = '0x912ce59144191c1204e64559fe8253a0e49e6548'
 
 module.exports = {
   network: 'arbitrum-one',
@@ -100,6 +101,36 @@ module.exports = {
       USDC_ADDRESS,
     ],
     minimumNativeLiquidity: '1.2',
+  },
+  v3: {
+    factory: { // 0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6
+      address: '0x1af415a1eba07a4986a52b6f2e7de7003d82231e',
+      startBlock: 75998697,
+    },
+    positionManager: {
+      address: '0xf0cbce1942a68beb3d1b73f0dd86c8dcc363ef49',
+      startBlock: 76057451,
+    },
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      NATIVE_ADDRESS,
+      SUSHI_ADDRESS,
+      WETH_ADDRESS,
+      WBTC_ADDRESS,
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      DAI_ADDRESS,
+      MIM_ADDRESS,
+      FRAX_ADDRESS,
+      ARBY_ADDRESS,
+      DPX_ADDRESS,
+      GOHM_ADDRESS,
+      MAGIC_ADDRESS,
+      ARB_ADDRESS
+    ],
+    stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, MIM_ADDRESS, FRAX_ADDRESS],
+    nativePricePool: '0x4d1576158518dd61924218446c1057cf03138d57',
+    minimumEthLocked: 0.0001 // TODO: INCREASE LATER
   },
   blacklistedTokenAddresses: [
     '0xeba61eb686b515fae79a96118f140924a634ab23', // ArbFloki
