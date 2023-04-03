@@ -79,6 +79,32 @@ module.exports = {
     ],
     minimumNativeLiquidity: '2400',
   },
+  v3: {
+    factory: {
+      address: '0xf78031cbca409f2fb6876bdfdbc1b2df24cf9bef',
+      startBlock: 27232871,
+    },
+    positionManager: {
+      address: '0xab235da7f52d35fb4551afba11bfb56e18774a65',
+      startBlock: 27241490,
+    },
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      WBTC_ADDRESS,
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      BAO_ADDRESS,
+      WETH2_ADDRESS,
+      DAI_ADDRESS,
+      USDP_ADDRESS,
+    ],
+    stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, USDP_ADDRESS],
+    nativePricePool: '', // TODO: ADD POOL ADDRESS, lowercase it.
+    minimumEthLocked: 1000
+  },
   furo: {
     stream: { address: '0x4ab2fc6e258a0ca7175d05ff10c5cf798a672cae', startBlock: 22535727 },
     vesting: { address: '0x0689640d190b10765f09310fcfe9c670ede4e25b', startBlock: 22535744 },
