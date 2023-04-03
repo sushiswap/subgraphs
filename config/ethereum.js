@@ -182,12 +182,12 @@ module.exports = {
   },
   v3: {
     factory: {
-      address: '0x1f98431c8ad98523631ae4a59f267346ea31f984',
-      startBlock: 12369621,
+      address: '0xbaceb8ec6b9355dfc0269c18bac9d6e2bdc29c4f',
+      startBlock: 16955547,
     },
     positionManager: {
-      address: '0xc36442b4a4522e871399cd717abdd847ab11fe88',
-      startBlock: 12369651,
+      address: '0x2214A42d8e2A1d20635c2cb0664422c528B6A432',
+      startBlock: 16971375,
     },
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [
@@ -241,8 +241,8 @@ module.exports = {
       SUSD_ADDRESS,
       TUSD_ADDRESS,
     ],
-    nativePricePool: '0x8ad599c3a0ff1de082011efddc58f1908eb6e6d8',
-    minimumEthLocked: 3
+    nativePricePool: '', // TODO: add pool address, lowercase
+    minimumEthLocked: 0.7
   },
   blacklistedTokenAddresses: [
     '0x9ea3b5b4ec044b70375236a281986106457b20ef', // DELTA
