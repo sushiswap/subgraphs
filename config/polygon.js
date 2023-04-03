@@ -100,6 +100,7 @@ module.exports = {
     native: { address: WETH_ADDRESS },
     whitelistedTokenAddresses: [
       // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
       WETH_ADDRESS,
       USDC_ADDRESS,
       DAI_ADDRESS,
@@ -121,6 +122,37 @@ module.exports = {
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
       startBlock: 11333218,
     },
+  },
+  v3: {
+    factory: {
+      address: '0x917933899c6a5f8e37f31e19f92cdbff7e8ff0e2',
+      startBlock: 41024971,
+    },
+    positionManager: {
+      address: '0xb7402ee99f0a008e461098ac3a27f4957df89a40',
+      startBlock: 41046124,
+    },
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      USDC_ADDRESS,
+      DAI_ADDRESS,
+      USDT_ADDRESS,
+      WBTC_ADDRESS,
+      SUSHI_ADDRESS,
+      AAVE_ADDRESS,
+      FRAX_ADDRESS,
+      BCT_ADDRESS,
+      AURUM_ADDRESS,
+      MSU_ADDRESS,
+      DMAGIC_ADDRESS,
+      NDEFI_ADDRESS,
+    ],
+    stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, FRAX_ADDRESS],
+    nativePricePool: '', // TODO: ADD POOL ADDRESS, lowercase it.
+    minimumEthLocked: 1000,
   },
   miso: {
     accessControls: { address: '0x6b2a3ff504798886862ca5ce501e080947a506a2', startBlock: 26075438 },
