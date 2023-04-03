@@ -43,6 +43,31 @@ module.exports = {
       startBlock: 503713,
     },
   },
+  v3: {
+    factory: {
+      address: '0xf78031cbca409f2fb6876bdfdbc1b2df24cf9bef',
+      startBlock: 27232871,
+    },
+    positionManager: {
+      address: '0xab235da7f52d35fb4551afba11bfb56e18774a65',
+      startBlock: 27241490,
+    },
+    native: { address: WGLMR_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! Native should be included here
+      WGLMR_ADDRESS,
+      NATIVE_ADDRESS, // WETH, not changing the name here to avoid breaking legacy/trident config.
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      DAI_ADDRESS,
+      WBTC_ADDRESS,
+      UST_ADDRESS,
+      FRAX_ADDRESS,
+    ],
+    stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, UST_ADDRESS, FRAX_ADDRESS],
+    nativePricePool: '', // TODO: ADD POOL ADDRESS, lowercase it.
+    minimumEthLocked: 3000 // GLMR
+  },
   furo: {
     stream: { address: '0x4ab2fc6e258a0ca7175d05ff10c5cf798a672cae', startBlock: 1188323 },
     vesting: { address: '0x0689640d190b10765f09310fcfe9c670ede4e25b', startBlock: 1188335 },
