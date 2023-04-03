@@ -130,7 +130,7 @@ module.exports = {
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, MIM_ADDRESS, FRAX_ADDRESS],
     nativePricePool: '0x4d1576158518dd61924218446c1057cf03138d57',
-    minimumEthLocked: 0.0001 // TODO: INCREASE LATER
+    minimumEthLocked: 1
   },
   blacklistedTokenAddresses: [
     '0xeba61eb686b515fae79a96118f140924a634ab23', // ArbFloki
