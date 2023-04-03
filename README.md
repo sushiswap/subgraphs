@@ -70,3 +70,25 @@ curl -X POST -d '{ "query": "{indexingStatusForCurrentVersion(subgraphName: \"su
 ```sh
 node . log sushiswap/<subgraph> 
 ```
+
+
+## Deployment script
+
+add a deploy.sh in the root dir with:
+```sh
+# V3 DEPLOYMENT
+declare -a networks=("arbitrum" "avalanche" "bsc" "ethereum" "fantom" "fuse" "gnosis" "moonbeam" "moonriver" "optimism" "polygon")
+SUBGRAPH=v3
+DIRECTORY=v3
+USER=sushi-v3
+ACCESS_TOKEN=SET_YOUR_ACCESS_TOKEN_HERE
+for network in "${networks[@]}"
+do
+    echo "BUILD $network $DIRECTORY" 
+    NETWORK=$network pnpm exec turbo run build --scope=$DIRECTORY --force
+    echo "DEPLOYING TO $USER/$SUBGRAPH-$network" 
+    cd subgraphs/$DIRECTORY/ && pnpm exec graph deploy --product hosted-service $USER/$SUBGRAPH-$network --access-token $ACCESS_TOKEN
+    cd ../../
+done
+```
+
