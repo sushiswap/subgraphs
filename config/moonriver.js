@@ -52,6 +52,31 @@ module.exports = {
       startBlock: 428426,
     },
   },
+  v3: {
+    factory: {
+      address: '0x2f255d3f3c0a3726c6c99e74566c4b18e36e3ce6',
+      startBlock: 3945310,
+    },
+    positionManager: {
+      address: '0xd045d27c1f7e7f770a807b0a85d8e3f852e0f2be',
+      startBlock: 3949049,
+    },
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      DAI_ADDRESS,
+      WBTC_ADDRESS,
+      FRAX_ADDRESS,
+      MIM_ADDRESS,
+    ],
+    stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, FRAX_ADDRESS],
+    nativePricePool: '', // TODO: ADD POOL ADDRESS, lowercase it.
+    minimumEthLocked: 1200 // GLMR
+  },
   blocks: {
     address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
     startBlock: 428426,
