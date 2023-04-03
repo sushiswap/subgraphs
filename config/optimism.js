@@ -11,14 +11,14 @@ module.exports = {
   network: 'optimism',
   sushi: { address: SUSHI_ADDRESS },
   minichef: {
-    address: "0xb25157bf349295a7cd31d1751973f426182070d6",
+    address: '0xb25157bf349295a7cd31d1751973f426182070d6',
     startBlock: 72848630,
     rewarder: {
       complex: {
         address: '0x320a04b981c092884a9783cde907578f613ef773',
-        rewardToken: { address: OP_ADDRESS }
-      }
-    }
+        rewardToken: { address: OP_ADDRESS },
+      },
+    },
   },
   bentobox: {
     address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
@@ -60,12 +60,36 @@ module.exports = {
     stablePoolAddresses: [
       // USDC/WETH/30/FALSE
       '0x1e31a2c6e6614273d740358affb46bef180efb7b',
-    ],    
+    ],
     tokensToPriceOffNative: [
       // These tokens will be priced off the NATIVE token
-      USDC_ADDRESS
+      USDC_ADDRESS,
     ],
     minimumNativeLiquidity: '0.01', // Threshold for being considered for pricing
+  },
+  v3: {
+    factory: {
+      address: '0x9c6522117e2ed1fe5bdb72bb0ed5e3f2bde7dbe0',
+      startBlock: 85432013,
+    },
+    positionManager: {
+      address: '0x1af415a1eba07a4986a52b6f2e7de7003d82231e',
+      startBlock: 85528596,
+    },
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WBTC_ADDRESS,
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      DAI_ADDRESS,
+      OP_ADDRESS,
+      SUSD_ADDRESS,
+    ],
+    stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS],
+    nativePricePool: '', // TODO: ADD POOL ADDRESS, lowercase it.
+    minimumEthLocked: 0.7,
   },
   furo: {
     stream: { address: '0x4ab2fc6e258a0ca7175d05ff10c5cf798a672cae', startBlock: 10835062 },
@@ -84,5 +108,5 @@ module.exports = {
   stargate: {
     usdcPool: { address: '0xdecc0c09c3b5f6e92ef4184125d5648a66e35298', startBlock: 4535509 },
     usdtPool: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
-  }
+  },
 }

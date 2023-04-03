@@ -75,7 +75,7 @@ module.exports = {
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, FRAX_ADDRESS],
     nativePricePool: '', // TODO: ADD POOL ADDRESS, lowercase it.
-    minimumEthLocked: 1200 // GLMR
+    minimumEthLocked: 1200 // WMOVR
   },
   blocks: {
     address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
