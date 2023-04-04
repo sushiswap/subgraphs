@@ -77,7 +77,7 @@ node . log sushiswap/<subgraph>
 add a deploy.sh in the root dir with:
 ```sh
 # V3 DEPLOYMENT
-declare -a networks=("arbitrum" "avalanche" "bsc" "ethereum" "fantom" "fuse" "gnosis" "moonbeam" "moonriver" "optimism" "polygon")
+declare -a networks=("ethereum" "gnosis" "moonbeam" "optimism")
 SUBGRAPH=v3
 DIRECTORY=v3
 USER=sushi-v3

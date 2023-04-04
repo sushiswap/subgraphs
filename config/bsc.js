@@ -113,7 +113,7 @@ module.exports = {
       DAI_ADDRESS,
       BUSD_ADDRESS
     ],
-    nativePricePool: '', // TODO: ADD POOL ADDRESS, lowercase it.
+    nativePricePool: '0xc0e2792774b2f602f74f6056ed95ab958d253823',
     minimumEthLocked: 3
   },
   furo: {

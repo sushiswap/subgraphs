@@ -64,7 +64,7 @@ module.exports = {
       DAI_ADDRESS,
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS],
-    nativePricePool: '', // TODO: ADD POOL ADDRESS, lowercase it.
+    nativePricePool: '0x95442e8ac3a0a9021288f094a23f4dbb8cb5308a', 
     minimumEthLocked: 1
   },
   blocks: {

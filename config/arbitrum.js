@@ -129,7 +129,7 @@ module.exports = {
       ARB_ADDRESS
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, MIM_ADDRESS, FRAX_ADDRESS],
-    nativePricePool: '0x4d1576158518dd61924218446c1057cf03138d57',
+    nativePricePool: '0x15e444da5b343c5a0931f5d3e85d158d1efc3d40',
     minimumEthLocked: 1
   },
   blacklistedTokenAddresses: [

@@ -151,7 +151,7 @@ module.exports = {
       NDEFI_ADDRESS,
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, FRAX_ADDRESS],
-    nativePricePool: '', // TODO: ADD POOL ADDRESS, lowercase it.
+    nativePricePool: '0x21988c9cfd08db3b5793c2c6782271dc94749251',
     minimumEthLocked: 1000,
   },
   miso: {
