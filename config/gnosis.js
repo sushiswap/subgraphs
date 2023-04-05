@@ -102,7 +102,7 @@ module.exports = {
       USDP_ADDRESS,
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, USDP_ADDRESS],
-    nativePricePool: '', // TODO: ADD POOL ADDRESS, lowercase it.
+    nativePricePool: '0xf5e270c0d97f88efb023a161b9fcc5d0c7ad0b70',
     minimumEthLocked: 1000
   },
   furo: {

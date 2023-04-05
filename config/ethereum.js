@@ -241,8 +241,8 @@ module.exports = {
       SUSD_ADDRESS,
       TUSD_ADDRESS,
     ],
-    nativePricePool: '', // TODO: add pool address, lowercase
-    minimumEthLocked: 0.7
+    nativePricePool: '0x35644fb61afbc458bf92b15add6abc1996be5014',
+    minimumEthLocked: 1.5
   },
   blacklistedTokenAddresses: [
     '0x9ea3b5b4ec044b70375236a281986106457b20ef', // DELTA
