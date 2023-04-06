@@ -60,4 +60,38 @@ module.exports = {
     address: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
     startBlock: 822561,
   },
+  v3: {
+    factory: {
+      address: '0x0be808376ecb75a5cf9bb6d237d16cd37893d904',
+      startBlock: 998556,
+    },
+    positionManager: {
+      address: '0x1b9d177ccdea3c79b6c8f40761fc8dc9d0500eaa',
+      startBlock: 998558,
+    },
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      BOBA_ADDRESS,
+      WBTC_ADDRESS,
+      USDT_ADDRESS,
+      DAI_ADDRESS,
+      USDC_ADDRESS,
+      FRAX_ADDRESS,
+      UST_ADDRESS,
+      SUSHI_ADDRESS,
+      BUSD_ADDRESS
+    ],
+    stableTokenAddresses: [
+      USDT_ADDRESS,
+      DAI_ADDRESS,
+      USDC_ADDRESS,
+      FRAX_ADDRESS,
+      UST_ADDRESS,
+      BUSD_ADDRESS
+    ],
+    nativePricePool: '', // TODO: add this
+    minimumEthLocked: 0.7,
+  },
 }
