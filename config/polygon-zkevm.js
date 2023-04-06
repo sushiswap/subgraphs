@@ -32,7 +32,7 @@ module.exports = {
       MATIC_ADDRESS,
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS],
-    nativePricePool: '', // TODO: add this
+    nativePricePool: '0x41bbde5dfa689a2e53808d752e864c013ac4b733',
     minimumEthLocked: 0.7,
   },
 }

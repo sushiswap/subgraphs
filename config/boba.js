@@ -91,7 +91,7 @@ module.exports = {
       UST_ADDRESS,
       BUSD_ADDRESS
     ],
-    nativePricePool: '', // TODO: add this
+    nativePricePool: '0x03371a9811aa5529ba402268bea8c356cd1bdad8',
     minimumEthLocked: 0.7,
   },
 }
