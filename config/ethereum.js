@@ -40,24 +40,24 @@ module.exports = {
   wbtc: { address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599' },
   bentobox: {
     address: '0xf5bce5077908a1b7370b9ae04adc565ebd643966',
-    startBlock: 12094175,
+    startBlock: 12094175
   },
   kashi: {
-    medium: '0x2cba6ab6574646badc84f0544d05059e57a5dc42',
+    medium: '0x2cba6ab6574646badc84f0544d05059e57a5dc42'
   },
   blocks: {
     address: '0x6e38A457C722C6011B2dfa06d49240e797844d66',
-    startBlock: 49880,
+    startBlock: 49880
   },
   miso: {
     accessControls: { address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4', startBlock: 14598164 },
-    market: { address: '0x281bd3a3f96ae7c96049493a7ba9449df2c5b0fe', startBlock: 14598240 },
+    market: { address: '0x281bd3a3f96ae7c96049493a7ba9449df2c5b0fe', startBlock: 14598240 }
   },
   miso_0_1: {
-    market: { address: '0x9d6c60d26B8f776B85d5731AD56b88973C3D370b', startBlock: 12453632 },
+    market: { address: '0x9d6c60d26B8f776B85d5731AD56b88973C3D370b', startBlock: 12453632 }
   },
   miso_0_2: {
-    market: { address: '0x9a40B4497b62607ED9014e8E14284b21095a572C', startBlock: 13405590 }, 
+    market: { address: '0x9a40B4497b62607ED9014e8E14284b21095a572C', startBlock: 13405590 }
   },
   legacy: {
     native: { address: NATIVE_ADDRESS },
@@ -106,21 +106,21 @@ module.exports = {
       FRAX_ADDRESS,
       USDP_ADDRESS,
       SUSD_ADDRESS,
-      TUSD_ADDRESS,
+      TUSD_ADDRESS
     ],
     minimumNativeLiquidity: 3,
     factory: {
       address: '0xc0aee478e3658e2610c5f7a4a2e1777ce9e4f2ac',
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
-      startBlock: 10794229,
-    },
+      startBlock: 10794229
+    }
   },
   trident: {
     masterDeployer: { address: '0x10c19390e1ac2fd6d0c3643a2320b0aba38e5baa', startBlock: 16576663 },
     concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
     constantProductPoolFactory: {
       address: '0xd75f5369724b513b497101fb15211160c1d96550',
-      initCodeHash: '0x3172d82413be467c1130709f7479a07def9b99caf8e0059f248c131081e4ea09',
+      initCodeHash: '0x3172d82413be467c1130709f7479a07def9b99caf8e0059f248c131081e4ea09'
     },
     stablePoolFactory: { address: '0xc040f84cf7046409f92d578ef9040fe45e6ef4be' },
     hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
@@ -171,23 +171,23 @@ module.exports = {
       FRAX_ADDRESS,
       USDP_ADDRESS,
       SUSD_ADDRESS,
-      TUSD_ADDRESS,
+      TUSD_ADDRESS
     ],
     tokensToPriceOffNative: [
       // These tokens will be priced off the NATIVE token.
       USDT_ADDRESS,
-      USDC_ADDRESS,
+      USDC_ADDRESS
     ],
-    minimumNativeLiquidity: '2',
+    minimumNativeLiquidity: '2'
   },
   v3: {
     factory: {
       address: '0xbaceb8ec6b9355dfc0269c18bac9d6e2bdc29c4f',
-      startBlock: 16955547,
+      startBlock: 16955547
     },
     positionManager: {
       address: '0x2214A42d8e2A1d20635c2cb0664422c528B6A432',
-      startBlock: 16971375,
+      startBlock: 16971375
     },
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [
@@ -229,9 +229,9 @@ module.exports = {
       '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f', // SNX
       '0x111111111117dc0aa78b770fa6a738034120c302', // 1INCH
       '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0', // MATIC
-      '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9', // AAVE
+      '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9' // AAVE
     ],
-    stableTokenAddresses: [ 
+    stableTokenAddresses: [
       USDC_ADDRESS,
       USDT_ADDRESS,
       DAI_ADDRESS,
@@ -239,42 +239,42 @@ module.exports = {
       FRAX_ADDRESS,
       USDP_ADDRESS,
       SUSD_ADDRESS,
-      TUSD_ADDRESS,
+      TUSD_ADDRESS
     ],
     nativePricePool: '0x35644fb61afbc458bf92b15add6abc1996be5014',
     minimumEthLocked: 1.5
   },
   blacklistedTokenAddresses: [
-    '0x9ea3b5b4ec044b70375236a281986106457b20ef', // DELTA
+    '0x9ea3b5b4ec044b70375236a281986106457b20ef' // DELTA
   ],
   sushi: {
     address: '0x6b3595068778dd592e39a122f4f5a5cf09c90fe2',
-    startBlock: 10750000,
+    startBlock: 10736094
   },
   xSushi: {
     address: '0x8798249c2e607446efb7ad49ec89dd1865ff4272',
-    startBlock: 10801571,
+    startBlock: 10801571
   },
   furo: {
     stream: { address: '0x4ab2fc6e258a0ca7175d05ff10c5cf798a672cae', startBlock: 14857212 },
-    vesting: { address: '0x0689640d190b10765f09310fcfe9c670ede4e25b', startBlock: 14857245 },
+    vesting: { address: '0x0689640d190b10765f09310fcfe9c670ede4e25b', startBlock: 14857245 }
   },
   auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   blocks: {
     address: '0x0000000000000000000000000000000000000000',
-    startBlock: 0,
+    startBlock: 0
   },
   xswap: {
     address: '0x011e52e4e40cf9498c79273329e8827b21e2e581',
-    startBlock: 15187118,
+    startBlock: 15187118
   },
   stargate: {
     usdcPool: { address: '0xdf0770df86a8034b3efef0a1bb3c889b8332ff56', startBlock: 14403393 },
-    usdtPool: { address: '0x38ea452219524bb87e18de1c24d3bb59510bd783', startBlock: 14403402 },
+    usdtPool: { address: '0x38ea452219524bb87e18de1c24d3bb59510bd783', startBlock: 14403402 }
   },
   router: {
     address: '0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f',
-    startBlock: 13600375, // 2021-11-12
+    startBlock: 13600375 // 2021-11-12
   }
 }
