@@ -1,6 +1,7 @@
 type Sushi @entity {
   id: ID! # Hardcoded to 'Sushi'
-  userCount: BigInt!
+  totalUserCount: BigInt!
+  holderCount: BigInt!
   transactionCount: BigInt!
   totalSupply: BigInt!
 }
