@@ -33,7 +33,7 @@ export function getOrCreateUser(id: string, event: TransferEvent): User {
 export function updateUser(user: User, event: TransferEvent, type: UserType): void {
   user.modifiedAtBlock = event.block.number
   user.modifiedAtTimestamp = event.block.timestamp
-  //we don't update balance of address(0) when minting
+  //we don't update balance of address(0) when minting/burning
   if (user.id != ADDRESS_ZERO.toHex()) {
     const prevBalance = user.balance
     if (type === UserType.SENDER) {
