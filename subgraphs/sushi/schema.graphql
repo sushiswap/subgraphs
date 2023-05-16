@@ -1,15 +1,15 @@
-
 type Sushi @entity {
   id: ID! # Hardcoded to 'Sushi'
-  userCount: BigInt!
+  totalUserCount: BigInt!
+  holderCount: BigInt!
   transactionCount: BigInt!
   totalSupply: BigInt!
 }
 
 enum TransactionType {
-    TRANSFER,
-    MINT,
-    BURN
+  TRANSFER
+  MINT
+  BURN
 }
 
 type Transaction @entity {
@@ -32,6 +32,4 @@ type User @entity {
   modifiedAtBlock: BigInt!
   modifiedAtTimestamp: BigInt!
   balance: BigInt!
-  withdrawals: [Transaction!]! @derivedFrom(field: "from")
-  deposits: [Transaction!]! @derivedFrom(field: "to")
 }

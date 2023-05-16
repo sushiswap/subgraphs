@@ -1,4 +1,4 @@
 export enum UserType {
-    SENDER,
-    RECIEVER
+  SENDER,
+  RECEIVER
 }

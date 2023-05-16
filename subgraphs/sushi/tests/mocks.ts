@@ -11,7 +11,8 @@ export function createTransferEvent(from: Address, to: Address, value: BigInt): 
     mockEvent.logType,
     mockEvent.block,
     mockEvent.transaction,
-    mockEvent.parameters
+    mockEvent.parameters,
+    mockEvent.receipt
   )
   event.parameters = new Array()
 

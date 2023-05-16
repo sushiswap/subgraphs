@@ -15,7 +15,7 @@ export function getOrCreateTransaction(event: TransferEvent): Transaction {
 }
 
 function createTransaction(event: TransferEvent): Transaction {
-  const id = event.transaction.hash.toHex()
+  const id = event.transaction.hash.toHex() + '-' + event.logIndex.toHex() //can be multiple sushi transfer in a single TX so we add log index
   const transaction = new Transaction(id)
   transaction.from = event.params.from.toHex()
   transaction.to = event.params.to.toHex()
