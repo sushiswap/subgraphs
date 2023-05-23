@@ -45,12 +45,12 @@ module.exports = {
   },
   v3: {
     factory: {
-      address: '0xf78031cbca409f2fb6876bdfdbc1b2df24cf9bef',
-      startBlock: 27232871,
+      address: '0x2ecd58f51819e8f8ba08a650bea04fc0dea1d523',
+      startBlock: 3264275,
     },
     positionManager: {
-      address: '0xab235da7f52d35fb4551afba11bfb56e18774a65',
-      startBlock: 27241490,
+      address: '0x8f54301f315c56c112d492d9443047d4745dbe9e',
+      startBlock: 3267951,
     },
     native: { address: WGLMR_ADDRESS },
     whitelistedTokenAddresses: [
