@@ -158,5 +158,9 @@ module.exports = {
   router: {
     address: '0x1b02da8cb0d097eb8d57a175b88c7d8b47997506',
     startBlock: 29527181,
+  },
+  routeprocessor3: {
+    address: "0xfc506AaA1340b4dedFfd88bE278bEe058952D674",
+    startBlock: 86135603,
   }
 }

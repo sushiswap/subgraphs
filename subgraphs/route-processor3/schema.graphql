@@ -1,0 +1,38 @@
+type RouteProcessor @entity {
+  # route processor address
+  id: ID!
+  # amount of routes processed
+  routeCount: BigInt!
+  # amount of users
+  userCount: BigInt!
+}
+
+type Route @entity {
+  # tx hash - tx index
+  id: ID!
+  # from address
+  from: Bytes!
+  # to address
+  to: Bytes!
+  # tokenIn address
+  tokenIn: Bytes!
+  # tokenOut address
+  tokenOut: Bytes!
+  # amount of tokenIn
+  amountIn: BigInt!
+  # min amount of tokenOut
+  amountOutMin: BigInt!
+  # amount of tokenOut
+  amountOut: BigInt!
+  # timestamp
+  timestamp: BigInt!
+}
+
+type User @entity {
+  # user address
+  id: ID!
+  # amount of routes processed
+  routeCount: BigInt!
+  # list of routes processed
+  routes: [Route!]! @derivedFrom(field: "from")
+}
