@@ -4,10 +4,10 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: RouteProcessor3
-    network: { { network } }
+    network: {{ network }}
     source:
       address: '{{ routeprocessor3.address }}'
-      startBlock: { { routeprocessor3.startBlock } }
+      startBlock: {{ routeprocessor3.startBlock }}
       abi: RouteProcessor3
     mapping:
       kind: ethereum/events
