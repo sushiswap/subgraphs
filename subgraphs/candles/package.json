@@ -27,8 +27,8 @@
         "deploy-gnosis": "graph deploy --product hosted-service sushiswap/gnosis-candles"
     },
     "devDependencies": {
-        "@graphprotocol/graph-cli": "0.26.0",
-        "@graphprotocol/graph-ts": "0.23.1",
+        "@graphprotocol/graph-cli": "0.49.0",
+        "@graphprotocol/graph-ts": "0.27.0",
         "@sushiswap/core": "^1.4.2",
         "matchstick-as": "0.5.0"
     }
