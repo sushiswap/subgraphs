@@ -1,6 +1,6 @@
 import { BigInt } from "@graphprotocol/graph-ts";
 import { Route } from "../../generated/schema";
-import { Route as RouteEvent } from "../../generated/templates/RouteProcessor3/RouteProcessor3";
+import { Route as RouteEvent } from "../../generated/RouteProcessor3/RouteProcessor3";
 
 export function createRoute(event: RouteEvent): Route {
   let route = new Route(event.transaction.hash.toHex().concat('-').concat(event.transaction.index.toString()))

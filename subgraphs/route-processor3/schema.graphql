@@ -34,5 +34,5 @@ type User @entity {
   # amount of routes processed
   routeCount: BigInt!
   # list of routes processed
-  routes: [Route!]! @derivedFrom(field: "from")
+  #routes: [Route!]! @derivedFrom(field: "from")
 }

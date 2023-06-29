@@ -11,7 +11,7 @@ dataSources:
       abi: RouteProcessor3
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       file: ./src/mappings/route-processor3.ts
       entities: []
@@ -19,5 +19,5 @@ dataSources:
         - name: RouteProcessor3
           file: ./abis/RouteProcessor3.json
       eventHandlers:
-        - event: Route(indexed address,address,indexed address,indexed address,uint,uint,uint)
+        - event: Route(indexed address,address,indexed address,indexed address,uint256,uint256,uint256)
           handler: handleRoute
