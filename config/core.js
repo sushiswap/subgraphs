@@ -29,7 +29,7 @@ module.exports = {
       WETH_ADDRESS,
     ],
     stableTokenAddresses: [USDT_ADDRESS, USDC_ADDRESS],
-    nativePricePool: '0x72d8e6d7307dcf11a3456b9f6fdfad05385b2f3e', // WCORE/USDT
+    nativePricePool: '0x54ebeed7274e3484bf84b8cf5520a3ff547f584c', // WCORE/USDT
     minimumEthLocked: 1000,
   },
 }
