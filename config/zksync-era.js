@@ -1,20 +1,20 @@
-const NATIVE_ADDRESS = '0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91'
-const USDC_ADDRESS = '0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4'
-const WBTC_ADDRESS = '0xBBeB516fb02a01611cBBE0453Fe3c580D7281011'
+const NATIVE_ADDRESS = '0x5aea5775959fbc2557cc8789bc1bf90a239d9a91'
+const USDC_ADDRESS = '0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4'
+const WBTC_ADDRESS = '0xbbeb516fb02a01611cbbe0453fe3c580d7281011'
 
 module.exports = {
   network: 'zksync-era',
   blocks: {
-    address: '0x0bB5111bEB91cC1206386e416FC17BBF8838Aaf3',
+    address: '0x0bb5111beb91cc1206386e416fc17bbf8838aaf3',
     startBlock: 10339835,
   },
   v3: {
     factory: {
-      address: '0x0bB5111bEB91cC1206386e416FC17BBF8838Aaf3',
+      address: '0x0bb5111beb91cc1206386e416fc17bbf8838aaf3',
       startBlock: 10339835,
     },
     positionManager: {
-      address: '0x9E248c543f0B19D34C0B3f5e733715dB235b9fF3',
+      address: '0x9e248c543f0b19d34c0b3f5e733715db235b9ff3',
       startBlock: 10342968,
     },
     native: { address: NATIVE_ADDRESS },
