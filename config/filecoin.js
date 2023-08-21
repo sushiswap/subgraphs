@@ -1,9 +1,30 @@
-
+const NATIVE_ADDRESS = '0x60e1773636cf5e4a227d9ac24f20feca034ee25a'
+const USDC_ADDRESS = '0xeb466342c4d449bc9f53a865d5cb90586f405215'
+const DAI_ADDRESS = '0x5c7e299cf531eb66f2a1df637d37abb78e6200c7'
 
 module.exports = {
   network: 'mainnet',
   blocks: {
     address: '0x719e14fcb364bb05649bd525eb6c4a2d0d4ea2b7',
     startBlock: 2867000,
+  },
+  v3: {
+    factory: { // 0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6
+      address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
+      startBlock: 2867560,
+    },
+    positionManager: {
+      address: '0xf4d73326c13a4fc5fd7a064217e12780e9bd62c3',
+      startBlock: 2868037,
+    },
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      NATIVE_ADDRESS,
+      USDC_ADDRESS,
+      DAI_ADDRESS,
+    ],
+    stableTokenAddresses: [USDC_ADDRESS, DAI_ADDRESS],
+    nativePricePool: '0x15e444da5b343c5a0931f5d3e85d158d1efc3d40',
+    minimumEthLocked: 250
   },
 }
