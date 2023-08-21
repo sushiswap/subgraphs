@@ -24,7 +24,7 @@ module.exports = {
       DAI_ADDRESS,
     ],
     stableTokenAddresses: [USDC_ADDRESS, DAI_ADDRESS],
-    nativePricePool: '0x15e444da5b343c5a0931f5d3e85d158d1efc3d40',
+    nativePricePool: '0x1d1375281265e4dd496d90455f7c82f4fbd85cc2',
     minimumEthLocked: 250
   },
 }
