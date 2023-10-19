@@ -9,7 +9,7 @@ module.exports = {
   network: 'scroll',
   blocks: {
     address: '0xB45e53277a7e0F1D35f2a77160e91e25507f1763',
-    startBlock: 81841,
+    startBlock: 0,
   },
   legacy: {
     native: { address: NATIVE_ADDRESS },
