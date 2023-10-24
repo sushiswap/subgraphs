@@ -27,4 +27,20 @@ module.exports = {
     nativePricePool: '0x1d1375281265e4dd496d90455f7c82f4fbd85cc2',
     minimumEthLocked: 250
   },
+  legacy: {
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      USDC_ADDRESS,
+      DAI_ADDRESS,
+    ],
+    stableTokenAddresses: [USDC_ADDRESS, DAI_ADDRESS],
+    minimumNativeLiquidity: 250,
+    factory: {
+      address: '0x9b3336186a38e1b6c21955d112dbb0343ee061ee',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 3328632,
+    },
+  },
 }
