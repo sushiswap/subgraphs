@@ -80,5 +80,47 @@ module.exports = {
   xswap: {
     address: '0x0000000000000000000000000000000000000000',
     startBlock: 0,
-  }
+  },
+  legacy: {
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      DAI_ADDRESS,
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      SUSHI_ADDRESS,
+    ],
+    stableTokenAddresses: [DAI_ADDRESS, USDC_ADDRESS, USDT_ADDRESS],
+    minimumNativeLiquidity: 2,
+    factory: {
+      address: '0x580ed43f3bba06555785c81c2957efcca71f7483',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 8940434,
+    },
+  },
+  v3: {
+    factory: {
+      address: '0x145d82bca93cca2ae057d1c6f26245d1b9522e6f',
+      startBlock: 5220532,
+    },
+    positionManager: {
+      address: '0x630be2985674d31920babb4f96657960f131e7b1',
+      startBlock: 8940068,
+    },
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      DAI_ADDRESS,
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      SUSHI_ADDRESS
+    ],
+    stableTokenAddresses: [DAI_ADDRESS, USDC_ADDRESS, USDT_ADDRESS],
+    nativePricePool: '0xf956887f404883a838a388b7884ca85b223bd54d', // METIS/USDC
+    minimumEthLocked: 2,
+  },
 }
