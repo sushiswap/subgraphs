@@ -32,4 +32,22 @@ module.exports = {
     nativePricePool: '0x72d8e6d7307dcf11a3456b9f6fdfad05385b2f3e', // WCORE/USDT
     minimumEthLocked: 1000,
   },
+  legacy: {
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      NATIVE2_ADDRESS,
+      USDT_ADDRESS,
+      USDC_ADDRESS,
+      WETH_ADDRESS,
+    ],
+    stableTokenAddresses: [USDT_ADDRESS, USDC_ADDRESS],
+    minimumNativeLiquidity: 1000,
+    factory: {
+      address: '0xb45e53277a7e0f1d35f2a77160e91e25507f1763',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 8051339,
+    },
+  },
 }
