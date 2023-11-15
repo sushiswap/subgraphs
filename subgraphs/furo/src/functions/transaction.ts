@@ -19,7 +19,7 @@ import { getOrCreateUser } from './user'
 export function createStreamTransaction<T extends ethereum.Event>(stream: Stream, event: T, withdrawnAmount: BigInt = BIG_INT_ZERO): void {
   let rebase = getOrCreateRebase(stream.token, event.block.number)
   if (event instanceof CreateStreamEvent) {
-    const id = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
+    const id = 'stream:'.concat(stream.id).concat(':tx:').concat(stream.transactionCount.toString())
     let transaction = new Transaction(id)
     transaction.type = DEPOSIT
     transaction.stream = stream.id
@@ -36,7 +36,7 @@ export function createStreamTransaction<T extends ethereum.Event>(stream: Stream
     stream.transactionCount = stream.transactionCount.plus(BigInt.fromU32(1))
     stream.save()
   } else if (event instanceof CancelStreamEvent) {
-    const senderTransactionId = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
+    const senderTransactionId = 'stream:'.concat(stream.id).concat(':tx:').concat(stream.transactionCount.toString())
     let senderTransaction = new Transaction(senderTransactionId)
     senderTransaction.type = DISBURSEMENT
     senderTransaction.stream = stream.id
@@ -52,7 +52,7 @@ export function createStreamTransaction<T extends ethereum.Event>(stream: Stream
 
     stream.transactionCount = stream.transactionCount.plus(BigInt.fromU32(1))
 
-    const recipientTransactionId = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
+    const recipientTransactionId = 'stream:'.concat(stream.id).concat(':tx:').concat(stream.transactionCount.toString())
     let recipientTransaction = new Transaction(recipientTransactionId)
     recipientTransaction.type = DISBURSEMENT
     recipientTransaction.stream = stream.id
@@ -69,7 +69,7 @@ export function createStreamTransaction<T extends ethereum.Event>(stream: Stream
     stream.transactionCount = stream.transactionCount.plus(BigInt.fromU32(1))
     stream.save()
   } else if (event instanceof WithdrawStreamEvent) {
-    const id = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
+    const id = 'stream:'.concat(stream.id).concat(stream.transactionCount.toString())
     let recipient = getOrCreateUser(event.params.withdrawTo, event)
     let transaction = new Transaction(id)
     transaction.type = WITHDRAWAL
@@ -88,7 +88,7 @@ export function createStreamTransaction<T extends ethereum.Event>(stream: Stream
     stream.save()
   } else if (event instanceof UpdateStreamEvent) {
 
-    const withdrawTransactionId = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
+    const withdrawTransactionId = 'stream:'.concat(stream.id).concat(':tx:').concat(stream.transactionCount.toString())
     let transaction = new Transaction(withdrawTransactionId)
     transaction.type = WITHDRAWAL
     transaction.stream = stream.id
@@ -103,7 +103,7 @@ export function createStreamTransaction<T extends ethereum.Event>(stream: Stream
     increaseTransactionCount()
     stream.transactionCount = stream.transactionCount.plus(BigInt.fromU32(1))
 
-    const updateId = stream.id.concat(':tx:').concat(stream.transactionCount.toString())
+    const updateId = 'stream:'.concat(stream.id).concat(':tx:').concat(stream.transactionCount.toString())
     let updateTransaction = new Transaction(updateId)
     updateTransaction.type = EXTEND
     updateTransaction.stream = stream.id
@@ -125,7 +125,7 @@ export function createStreamTransaction<T extends ethereum.Event>(stream: Stream
 export function createVestingTransaction<T extends ethereum.Event>(vesting: Vesting, event: T): void {
   let rebase = getOrCreateRebase(vesting.token, event.block.number)
   if (event instanceof CreateVestingEvent) {
-    const id = vesting.id.concat(':tx:').concat(vesting.transactionCount.toString())
+    const id = 'vest:'.concat(vesting.id).concat(':tx:').concat(vesting.transactionCount.toString())
     let transaction = new Transaction(id)
     transaction.type = DEPOSIT
     transaction.vesting = vesting.id
@@ -142,7 +142,7 @@ export function createVestingTransaction<T extends ethereum.Event>(vesting: Vest
     vesting.transactionCount = vesting.transactionCount.plus(BigInt.fromU32(1))
     vesting.save()
   } else if (event instanceof CancelVestingEvent) {
-    const senderTransactionId = vesting.id.concat(':tx:').concat(vesting.transactionCount.toString())
+    const senderTransactionId = 'vest:'.concat(vesting.id).concat(':tx:').concat(vesting.transactionCount.toString())
     let senderTransaction = new Transaction(senderTransactionId)
     
     senderTransaction.type = DISBURSEMENT
@@ -159,7 +159,7 @@ export function createVestingTransaction<T extends ethereum.Event>(vesting: Vest
 
     vesting.transactionCount = vesting.transactionCount.plus(BigInt.fromU32(1))
 
-    const recipientTransactionId = vesting.id.concat(':tx:').concat(vesting.transactionCount.toString())
+    const recipientTransactionId = 'vest:'.concat(vesting.id).concat(':tx:').concat(vesting.transactionCount.toString())
     let recipientTransaction = new Transaction(recipientTransactionId)
     recipientTransaction.type = DISBURSEMENT
     recipientTransaction.vesting = vesting.id
@@ -176,7 +176,7 @@ export function createVestingTransaction<T extends ethereum.Event>(vesting: Vest
     vesting.transactionCount = vesting.transactionCount.plus(BigInt.fromU32(1))
     vesting.save()
   } else if (event instanceof WithdrawVestingEvent) {
-    const id = vesting.id.concat(':tx:').concat(vesting.transactionCount.toString())
+    const id = 'vest:'.concat(vesting.id).concat(':tx:').concat(vesting.transactionCount.toString())
     let transaction = new Transaction(id)
     transaction.type = WITHDRAWAL
     transaction.vesting = vesting.id
