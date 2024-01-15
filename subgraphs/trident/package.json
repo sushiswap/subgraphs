@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "abi": "workspace:*",
-    "@graphprotocol/graph-cli": "^0.49.0",
+    "@graphprotocol/graph-cli": "^0.60.0",
     "@graphprotocol/graph-ts": "^0.27.0",
     "assemblyscript": "^0.19.20",
     "matchstick-as": "0.5.0",

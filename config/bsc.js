@@ -43,8 +43,9 @@ module.exports = {
       BUSD_ADDRESS,
       DAI_ADDRESS,
       ICE_ADDRESS,
+      USDC_ADDRESS
     ],
-    stableTokenAddresses: [USDT_ADDRESS, BUSD_ADDRESS, DAI_ADDRESS],
+    stableTokenAddresses: [USDT_ADDRESS, BUSD_ADDRESS, DAI_ADDRESS, USDC_ADDRESS],
     minimumNativeLiquidity: 5,
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',

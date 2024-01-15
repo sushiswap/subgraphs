@@ -35,8 +35,8 @@ importers:
   subgraphs/auction-maker:
     devDependencies:
       '@graphprotocol/graph-cli':
-        specifier: ^0.49.0
-        version: 0.49.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        specifier: ^0.60.0
+        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -56,8 +56,8 @@ importers:
   subgraphs/bentobox:
     devDependencies:
       '@graphprotocol/graph-cli':
-        specifier: ^0.49.0
-        version: 0.49.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        specifier: ^0.60.0
+        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -74,8 +74,8 @@ importers:
   subgraphs/blocks:
     devDependencies:
       '@graphprotocol/graph-cli':
-        specifier: ^0.49.0
-        version: 0.49.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        specifier: ^0.60.0
+        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -107,8 +107,8 @@ importers:
   subgraphs/furo:
     devDependencies:
       '@graphprotocol/graph-cli':
-        specifier: ^0.49.0
-        version: 0.49.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        specifier: ^0.60.0
+        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -128,8 +128,8 @@ importers:
   subgraphs/kashi:
     devDependencies:
       '@graphprotocol/graph-cli':
-        specifier: ^0.49.0
-        version: 0.49.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        specifier: ^0.60.0
+        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -143,23 +143,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/math
 
-  subgraphs/maker-v2:
+  subgraphs/minichef:
     devDependencies:
       '@graphprotocol/graph-cli':
         specifier: ^0.60.0
         version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
-      '@graphprotocol/graph-ts':
-        specifier: ^0.27.0
-        version: 0.27.0
-      abi:
-        specifier: workspace:*
-        version: link:../../packages/abi
-
-  subgraphs/minichef:
-    devDependencies:
-      '@graphprotocol/graph-cli':
-        specifier: ^0.49.0
-        version: 0.49.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -179,8 +167,8 @@ importers:
   subgraphs/miso:
     devDependencies:
       '@graphprotocol/graph-cli':
-        specifier: ^0.49.0
-        version: 0.49.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        specifier: ^0.60.0
+        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -224,8 +212,8 @@ importers:
   subgraphs/router:
     devDependencies:
       '@graphprotocol/graph-cli':
-        specifier: ^0.49.0
-        version: 0.49.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        specifier: ^0.60.0
+        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -245,8 +233,8 @@ importers:
   subgraphs/staking:
     devDependencies:
       '@graphprotocol/graph-cli':
-        specifier: ^0.49.0
-        version: 0.49.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        specifier: ^0.60.0
+        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -269,8 +257,8 @@ importers:
   subgraphs/sushi:
     devDependencies:
       '@graphprotocol/graph-cli':
-        specifier: ^0.49.0
-        version: 0.49.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        specifier: ^0.60.0
+        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -287,8 +275,8 @@ importers:
   subgraphs/sushiswap:
     devDependencies:
       '@graphprotocol/graph-cli':
-        specifier: ^0.49.0
-        version: 0.49.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        specifier: ^0.60.0
+        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -302,8 +290,8 @@ importers:
   subgraphs/sushiswap-minimal:
     devDependencies:
       '@graphprotocol/graph-cli':
-        specifier: ^0.49.0
-        version: 0.49.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        specifier: ^0.60.0
+        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -317,8 +305,8 @@ importers:
   subgraphs/trident:
     devDependencies:
       '@graphprotocol/graph-cli':
-        specifier: ^0.49.0
-        version: 0.49.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        specifier: ^0.60.0
+        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -338,8 +326,8 @@ importers:
   subgraphs/v3:
     devDependencies:
       '@graphprotocol/graph-cli':
-        specifier: ^0.49.0
-        version: 0.49.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        specifier: ^0.60.0
+        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -359,8 +347,8 @@ importers:
   subgraphs/xsushi:
     devDependencies:
       '@graphprotocol/graph-cli':
-        specifier: ^0.49.0
-        version: 0.49.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        specifier: ^0.60.0
+        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -380,8 +368,8 @@ importers:
   subgraphs/xswap:
     devDependencies:
       '@graphprotocol/graph-cli':
-        specifier: ^0.49.0
-        version: 0.49.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        specifier: ^0.60.0
+        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -1691,7 +1679,7 @@ packages:
       object-assign: 4.1.1
       string-width: 2.1.1
     optionalDependencies:
-      colors: 1.3.3
+      colors: 1.4.0
     dev: true
 
   /cli-table3@0.6.0:

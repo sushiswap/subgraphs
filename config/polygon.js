@@ -3,6 +3,7 @@ const SUSHI_ADDRESS = '0x0b3f868e0be5597d5db7feb59e1cadbb0fdda50a'
 const WETH_ADDRESS = '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619'
 const WBTC_ADDRESS = '0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6'
 const USDC_ADDRESS = '0x2791bca1f2de4661ed88a30c99a7a9449aa84174'
+const USDC_CIRCLE_ADDRESS = '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359'
 const USDT_ADDRESS = '0xc2132d05d31c914a87c6611c10748aeb04b58e8f'
 const DAI_ADDRESS = '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063'
 const AAVE_ADDRESS = '0xd6df932a45c0f255f85145f286ea0b292b21c90b'
@@ -14,6 +15,7 @@ const DMAGIC_ADDRESS = '0x61daecab65ee2a1d5b6032df030f3faa3d116aa7'
 const NDEFI_ADDRESS = '0xd3f07ea86ddf7baebefd49731d7bbd207fedc53b'
 const USDPLUS_ADDRESS = '0x236eec6359fb44cce8f97e99387aa7f8cd5cde1f'
 const BOB_ADDRESS = '0xb0b195aefa3650a6908f15cdac7d92f8a5791b0b'
+const NPM_ADDRESS = '0x57f12fe6a4e5fe819eec699fadf9db2d06606bb4'
 
 module.exports = {
   network: 'matic',
@@ -66,6 +68,8 @@ module.exports = {
       NDEFI_ADDRESS,
       USDPLUS_ADDRESS,
       BOB_ADDRESS,
+      USDC_CIRCLE_ADDRESS,
+      NPM_ADDRESS
     ],
     stableTokenAddresses: [
       // USDC
@@ -74,6 +78,7 @@ module.exports = {
       USDT_ADDRESS,
       // DAI
       DAI_ADDRESS,
+      USDC_CIRCLE_ADDRESS,
       // MIM
       // '0x49a0400587a7f65072c87c4910449fdcc5c47242',
       // FRAX
@@ -114,8 +119,10 @@ module.exports = {
       MSU_ADDRESS,
       DMAGIC_ADDRESS,
       NDEFI_ADDRESS,
+      NPM_ADDRESS,
+      USDC_CIRCLE_ADDRESS,
     ],
-    stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, FRAX_ADDRESS],
+    stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, FRAX_ADDRESS, USDC_CIRCLE_ADDRESS],
     minimumNativeLiquidity: 3,
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
@@ -149,8 +156,10 @@ module.exports = {
       MSU_ADDRESS,
       DMAGIC_ADDRESS,
       NDEFI_ADDRESS,
+      NPM_ADDRESS,
+      USDC_CIRCLE_ADDRESS,
     ],
-    stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, FRAX_ADDRESS],
+    stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, FRAX_ADDRESS, USDC_CIRCLE_ADDRESS],
     nativePricePool: '0x21988c9cfd08db3b5793c2c6782271dc94749251',
     minimumEthLocked: 1000,
   },
