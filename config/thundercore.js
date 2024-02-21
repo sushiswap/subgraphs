@@ -54,4 +54,33 @@ module.exports = {
     nativePricePool: '0x37cfcf5a4878bcd58b6a0cffb1746c26465625f4',
     minimumEthLocked: 300000
   },
+  legacy: {
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      TT_USDT_ADDRESS,
+      TT_WBTC_ADDRESS,
+      TT_USDC_ADDRESS,
+      TT_ETH_ADDRESS,
+      TT_BUSD_ADDRESS,
+      TT_BNB_ADDRESS,
+      GUESS_ADDRESS,
+      ZIPPY_DICE_ADDRESS,
+      BNB_ADDRESS,
+      SUSHI_ADDRESS,
+      BUSD_ADDRESS,
+      ETH_ADDRESS,
+      WBTC_ADDRESS,
+      USDC_ADRESS,
+      USDT_ADDRESS,
+    ],
+    stableTokenAddresses: [TT_USDT_ADDRESS, TT_USDC_ADDRESS, TT_BUSD_ADDRESS, BUSD_ADDRESS, USDC_ADRESS, USDT_ADDRESS],
+    minimumNativeLiquidity: 300000,
+    factory: {
+      address: '0xb45e53277a7e0f1d35f2a77160e91e25507f1763',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 145330791,
+    },
+  },
 }
