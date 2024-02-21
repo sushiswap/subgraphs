@@ -54,7 +54,7 @@ module.exports = {
     factory: {
       address: '0xb45e53277a7e0f1d35f2a77160e91e25507f1763',
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
-      startBlock: 1027275,
+      startBlock: 6312213,
     },
   },
 }
