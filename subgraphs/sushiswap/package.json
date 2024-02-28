@@ -26,7 +26,8 @@
       "deploy-fantom": "graph deploy --product hosted-service sushiswap/sushiswap-fantom",
       "deploy-harmony": "graph deploy --product hosted-service sushiswap/sushiswap-harmony",
       "deploy-celo": "graph deploy --product hosted-service sushiswap/sushiswap-celo",
-      "deploy-fuse": "graph deploy --product hosted-service sushiswap/sushiswap-fuse"
+      "deploy-fuse": "graph deploy --product hosted-service sushiswap/sushiswap-fuse",
+      "deploy-aurora": "graph deploy --product hosted-service sushiswap/sushiswap-aurora"
     },
     "devDependencies": {
         "abi": "workspace:*",
@@ -35,4 +36,3 @@
         "matchstick-as": "0.5.0"
     }
   }
-  
