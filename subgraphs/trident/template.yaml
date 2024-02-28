@@ -10,7 +10,7 @@ dataSources:
       startBlock: {{ trident.masterDeployer.startBlock }}
       abi: BentoBox
     mapping:
-      kind: ethereun/events
+      kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       file: ./src/mappings/bentobox.ts
