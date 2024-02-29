@@ -2,7 +2,7 @@
 const NATIVE_ADDRESS = '0x4300000000000000000000000000000000000004'
 const USDB_ADDRESS = '0x4300000000000000000000000000000000000003'
 module.exports = {
-  network: 'zetachain-mainnet',
+  network: 'blast',
   blocks: {
     address: '0x4300000000000000000000000000000000000004',
     startBlock: 0,
