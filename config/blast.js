@@ -21,19 +21,19 @@ module.exports = {
     ],
     minimumNativeLiquidity: 1,
     factory: {
-      address: '0x1400fefd6f9b897970f00df6237ff2b8b27dc82c',
-      initCodeHash: '0xc6c1c4cb44d57484431f0f2bd8064b7306414d895141f2a3b4a29817d0eef556',
-      startBlock: 238231,
+      address: '0x42fa929fc636e657ac568c0b5cf38e203b67ac2b',
+      initCodeHash: '0x0871b2842bc5ad89183710ec5587b7e7e285f1212e8960a4941335bab95cf6af',
+      startBlock: 285621,
     },
   },
   v3: {
     factory: {
-      address: '0x0389879e0156033202c44bf784ac18fc02edee4f',
-      startBlock: 224405,
+      address: '0x7680d4b43f3d1d54d6cfeeb2169463bfa7a6cf0d',
+      startBlock: 284122,
     },
     positionManager: {
-      address: '0xeabce3e74ef41fb40024a21cc2ee2f5ddc615791',
-      startBlock: 247740,
+      address: '0x51edb3e5bce8618b77b60215f84ad3db14709051',
+      startBlock: 284489,
     },
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [
@@ -44,7 +44,7 @@ module.exports = {
     stableTokenAddresses: [
       USDB_ADDRESS,
     ],
-    nativePricePool: '0xf07b0020e194c20015d20936dd4eadba60d1bf56', // WETH/USDB - 0.03%
+    nativePricePool: '0xcd03572e7cfb94996beebaa539234ce5c23ae1d6', // WETH/USDB - 0.03%
     minimumEthLocked: 1,
   },
 }
