@@ -112,5 +112,25 @@ module.exports = {
   routeprocessor3: {
     address: '0xeb94eca012ec0bbb254722fdda2ce7475875a52b',
     startBlock: 109464278,
-  }
+  },
+  legacy: {
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WBTC_ADDRESS,
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      DAI_ADDRESS,
+      OP_ADDRESS,
+      SUSD_ADDRESS,
+    ],
+    stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS],
+    minimumNativeLiquidity: 0.7,
+    factory: {
+      address: '0xfbc12984689e5f15626bad03ad60160fe98b303c',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 110882086,
+    },
+  },
 }
