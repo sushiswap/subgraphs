@@ -36,7 +36,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli':
         specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        version: 0.60.0(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -57,7 +57,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli':
         specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        version: 0.60.0(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -75,7 +75,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli':
         specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        version: 0.60.0(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -93,7 +93,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli':
         specifier: 0.49.0
-        version: 0.49.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        version: 0.49.0(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: 0.27.0
         version: 0.27.0
@@ -108,7 +108,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli':
         specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        version: 0.60.0(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -129,7 +129,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli':
         specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        version: 0.60.0(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -147,7 +147,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli':
         specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        version: 0.60.0(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -168,7 +168,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli':
         specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        version: 0.60.0(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -191,8 +191,8 @@ importers:
   subgraphs/route-processor3:
     devDependencies:
       '@graphprotocol/graph-cli':
-        specifier: ^0.64.1
-        version: 0.64.1(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        specifier: ^0.68.5
+        version: 0.68.5(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -213,7 +213,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli':
         specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        version: 0.60.0(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -234,7 +234,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli':
         specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        version: 0.60.0(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -258,7 +258,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli':
         specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        version: 0.60.0(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -276,7 +276,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli':
         specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        version: 0.60.0(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -291,7 +291,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli':
         specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        version: 0.60.0(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -306,7 +306,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli':
         specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        version: 0.60.0(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -327,7 +327,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli':
         specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        version: 0.60.0(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -348,7 +348,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli':
         specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        version: 0.60.0(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -369,7 +369,7 @@ importers:
     devDependencies:
       '@graphprotocol/graph-cli':
         specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3)
+        version: 0.60.0(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -583,13 +583,13 @@ packages:
       js-yaml: 4.1.0
     dev: true
 
-  /@graphprotocol/graph-cli@0.49.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3):
+  /@graphprotocol/graph-cli@0.49.0(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3):
     resolution: {integrity: sha512-UZsMTcTZN/EFT/1t8Z253ZtEZXqYQIWKbSox+Q6Fu4bzkK7LlKtoKKrOhxqMfSe2jewFKkCQkVWVC4tXoN+sVQ==}
     engines: {node: '>=14'}
     hasBin: true
     dependencies:
       '@float-capital/float-subgraph-uncrashable': 0.0.0-internal-testing.5
-      '@oclif/core': 2.8.4(@types/node@20.10.6)(typescript@5.3.3)
+      '@oclif/core': 2.8.4(@types/node@20.11.24)(typescript@5.3.3)
       '@whatwg-node/fetch': 0.8.8
       assemblyscript: 0.19.23
       binary-install-raw: 0.0.13(debug@4.3.4)
@@ -626,15 +626,15 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@graphprotocol/graph-cli@0.60.0(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3):
+  /@graphprotocol/graph-cli@0.60.0(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3):
     resolution: {integrity: sha512-8tGaQJ0EzAPtkDXCAijFGoVdJXM+pKFlGxjiU31TdG5bS4cIUoSB6yWojVsFFod0yETAwf+giel/0/8sudYsDw==}
     engines: {node: '>=14'}
     hasBin: true
     dependencies:
       '@float-capital/float-subgraph-uncrashable': 0.0.0-internal-testing.5
-      '@oclif/core': 2.8.6(@types/node@20.10.6)(typescript@5.3.3)
-      '@oclif/plugin-autocomplete': 2.3.10(@types/node@20.10.6)(typescript@5.3.3)
-      '@oclif/plugin-not-found': 2.4.3(@types/node@20.10.6)(typescript@5.3.3)
+      '@oclif/core': 2.8.6(@types/node@20.11.24)(typescript@5.3.3)
+      '@oclif/plugin-autocomplete': 2.3.10(@types/node@20.11.24)(typescript@5.3.3)
+      '@oclif/plugin-not-found': 2.4.3(@types/node@20.11.24)(typescript@5.3.3)
       '@whatwg-node/fetch': 0.8.8
       assemblyscript: 0.19.23
       binary-install-raw: 0.0.13(debug@4.3.4)
@@ -671,15 +671,15 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@graphprotocol/graph-cli@0.64.1(@types/node@20.10.6)(node-fetch@3.3.2)(typescript@5.3.3):
-    resolution: {integrity: sha512-BUjWLiEvZUPxuJ/PpARXMBeVLBGjJ/AKP+Orqzlb09b/6HAyQwYpDsaz5R9rW05LYPRqMikuCmktY727rbIFuA==}
+  /@graphprotocol/graph-cli@0.68.5(@types/node@20.11.24)(node-fetch@3.3.2)(typescript@5.3.3):
+    resolution: {integrity: sha512-3GY2pYr5LksO6JY6s5nvePnSKVdtzDEn1CUGezyjCMR1uq9YIXMPXKqcnrzCX/DLugioEabiEi2+yOg9+rnFDQ==}
     engines: {node: '>=18'}
     hasBin: true
     dependencies:
       '@float-capital/float-subgraph-uncrashable': 0.0.0-internal-testing.5
-      '@oclif/core': 2.8.6(@types/node@20.10.6)(typescript@5.3.3)
-      '@oclif/plugin-autocomplete': 2.3.10(@types/node@20.10.6)(typescript@5.3.3)
-      '@oclif/plugin-not-found': 2.4.3(@types/node@20.10.6)(typescript@5.3.3)
+      '@oclif/core': 2.8.6(@types/node@20.11.24)(typescript@5.3.3)
+      '@oclif/plugin-autocomplete': 2.3.10(@types/node@20.11.24)(typescript@5.3.3)
+      '@oclif/plugin-not-found': 2.4.3(@types/node@20.11.24)(typescript@5.3.3)
       '@whatwg-node/fetch': 0.8.8
       assemblyscript: 0.19.23
       binary-install-raw: 0.0.13(debug@4.3.4)
@@ -690,14 +690,13 @@ packages:
       dockerode: 2.5.8
       fs-extra: 9.1.0
       glob: 9.3.5
-      gluegun: 5.1.2(debug@4.3.4)
+      gluegun: 5.1.6(debug@4.3.4)
       graphql: 15.5.0
       immutable: 4.2.1
       ipfs-http-client: 55.0.0(node-fetch@3.3.2)
       jayson: 4.0.0
       js-yaml: 3.14.1
       prettier: 3.0.3
-      request: 2.88.2
       semver: 7.4.0
       sync-request: 6.1.0
       tmp-promise: 3.0.3
@@ -779,7 +778,7 @@ packages:
       fastq: 1.15.0
     dev: true
 
-  /@oclif/core@2.15.0(@types/node@20.10.6)(typescript@5.3.3):
+  /@oclif/core@2.15.0(@types/node@20.11.24)(typescript@5.3.3):
     resolution: {integrity: sha512-fNEMG5DzJHhYmI3MgpByTvltBOMyFcnRIUMxbiz2ai8rhaYgaTHMG3Q38HcosfIvtw9nCjxpcQtC8MN8QtVCcA==}
     engines: {node: '>=14.0.0'}
     dependencies:
@@ -806,7 +805,7 @@ packages:
       strip-ansi: 6.0.1
       supports-color: 8.1.1
       supports-hyperlinks: 2.3.0
-      ts-node: 10.9.2(@types/node@20.10.6)(typescript@5.3.3)
+      ts-node: 10.9.2(@types/node@20.11.24)(typescript@5.3.3)
       tslib: 2.6.2
       widest-line: 3.1.0
       wordwrap: 1.0.0
@@ -818,7 +817,7 @@ packages:
       - typescript
     dev: true
 
-  /@oclif/core@2.8.4(@types/node@20.10.6)(typescript@5.3.3):
+  /@oclif/core@2.8.4(@types/node@20.11.24)(typescript@5.3.3):
     resolution: {integrity: sha512-VlFDhoAJ1RDwcpDF46wAlciWTIryapMUViACttY9GwX6Ci6Lud1awe/pC3k4jad5472XshnPQV4bHAl4a/yxpA==}
     engines: {node: '>=14.0.0'}
     dependencies:
@@ -846,7 +845,7 @@ packages:
       strip-ansi: 6.0.1
       supports-color: 8.1.1
       supports-hyperlinks: 2.3.0
-      ts-node: 10.9.1(@types/node@20.10.6)(typescript@5.3.3)
+      ts-node: 10.9.1(@types/node@20.11.24)(typescript@5.3.3)
       tslib: 2.6.0
       widest-line: 3.1.0
       wordwrap: 1.0.0
@@ -858,7 +857,7 @@ packages:
       - typescript
     dev: true
 
-  /@oclif/core@2.8.6(@types/node@20.10.6)(typescript@5.3.3):
+  /@oclif/core@2.8.6(@types/node@20.11.24)(typescript@5.3.3):
     resolution: {integrity: sha512-1QlPaHMhOORySCXkQyzjsIsy2GYTilOw3LkjeHkCgsPJQjAT4IclVytJusWktPbYNys9O+O4V23J44yomQvnBQ==}
     engines: {node: '>=14.0.0'}
     dependencies:
@@ -886,7 +885,7 @@ packages:
       strip-ansi: 6.0.1
       supports-color: 8.1.1
       supports-hyperlinks: 2.3.0
-      ts-node: 10.9.2(@types/node@20.10.6)(typescript@5.3.3)
+      ts-node: 10.9.2(@types/node@20.11.24)(typescript@5.3.3)
       tslib: 2.6.2
       widest-line: 3.1.0
       wordwrap: 1.0.0
@@ -898,11 +897,11 @@ packages:
       - typescript
     dev: true
 
-  /@oclif/plugin-autocomplete@2.3.10(@types/node@20.10.6)(typescript@5.3.3):
+  /@oclif/plugin-autocomplete@2.3.10(@types/node@20.11.24)(typescript@5.3.3):
     resolution: {integrity: sha512-Ow1AR8WtjzlyCtiWWPgzMyT8SbcDJFr47009riLioHa+MHX2BCDtVn2DVnN/E6b9JlPV5ptQpjefoRSNWBesmg==}
     engines: {node: '>=12.0.0'}
     dependencies:
-      '@oclif/core': 2.15.0(@types/node@20.10.6)(typescript@5.3.3)
+      '@oclif/core': 2.15.0(@types/node@20.11.24)(typescript@5.3.3)
       chalk: 4.1.2
       debug: 4.3.4(supports-color@8.1.1)
     transitivePeerDependencies:
@@ -913,11 +912,11 @@ packages:
       - typescript
     dev: true
 
-  /@oclif/plugin-not-found@2.4.3(@types/node@20.10.6)(typescript@5.3.3):
+  /@oclif/plugin-not-found@2.4.3(@types/node@20.11.24)(typescript@5.3.3):
     resolution: {integrity: sha512-nIyaR4y692frwh7wIHZ3fb+2L6XEecQwRDIb4zbEam0TvaVmBQWZoColQyWA84ljFBPZ8XWiQyTz+ixSwdRkqg==}
     engines: {node: '>=12.0.0'}
     dependencies:
-      '@oclif/core': 2.15.0(@types/node@20.10.6)(typescript@5.3.3)
+      '@oclif/core': 2.15.0(@types/node@20.11.24)(typescript@5.3.3)
       chalk: 4.1.2
       fast-levenshtein: 3.0.0
     transitivePeerDependencies:
@@ -1086,6 +1085,12 @@ packages:
 
   /@types/node@20.10.6:
     resolution: {integrity: sha512-Vac8H+NlRNNlAmDfGUP7b5h/KA+AtWIzuXy0E6OyP8f1tCLYAtPvKRRDJjAPqhpCb0t6U2j7/xqAuLEebW2kiw==}
+    dependencies:
+      undici-types: 5.26.5
+    dev: true
+
+  /@types/node@20.11.24:
+    resolution: {integrity: sha512-Kza43ewS3xoLgCEpQrsT+xRo/EJej1y0kVYGiLFE1NEODXGzTfwiC6tXTLMQskn1X4/Rjlh0MQUvx9W+L9long==}
     dependencies:
       undici-types: 5.26.5
     dev: true
@@ -1679,7 +1684,7 @@ packages:
       object-assign: 4.1.1
       string-width: 2.1.1
     optionalDependencies:
-      colors: 1.4.0
+      colors: 1.3.3
     dev: true
 
   /cli-table3@0.6.0:
@@ -1964,6 +1969,14 @@ packages:
       jake: 10.8.7
     dev: true
 
+  /ejs@3.1.8:
+    resolution: {integrity: sha512-/sXZeMlhS0ArkfX2Aw780gJzXSMPnKjtspYZv+f3NiKLlubezAHDU5+9xz6gd3/NhG3txQCo6xlglmTS+oTGEQ==}
+    engines: {node: '>=0.10.0'}
+    hasBin: true
+    dependencies:
+      jake: 10.8.7
+    dev: true
+
   /ejs@3.1.9:
     resolution: {integrity: sha512-rC+QVNMJWv+MtPgkt0y+0rVEIdbtxVADApW9JXrUVlzHetgcyczP/E7DJmWJ4fJCZF2cPcBk0laWO9ZHMG3DmQ==}
     engines: {node: '>=0.10.0'}
@@ -2220,7 +2233,7 @@ packages:
     engines: {node: ^12.20 || >= 14.13}
     dependencies:
       node-domexception: 1.0.0
-      web-streams-polyfill: 3.3.2
+      web-streams-polyfill: 3.3.3
     dev: true
 
   /filelist@1.0.4:
@@ -2421,6 +2434,44 @@ packages:
       cosmiconfig: 7.0.1
       cross-spawn: 7.0.3
       ejs: 3.1.6
+      enquirer: 2.3.6
+      execa: 5.1.1
+      fs-jetpack: 4.3.1
+      lodash.camelcase: 4.3.0
+      lodash.kebabcase: 4.1.1
+      lodash.lowercase: 4.3.0
+      lodash.lowerfirst: 4.3.1
+      lodash.pad: 4.5.1
+      lodash.padend: 4.6.1
+      lodash.padstart: 4.6.1
+      lodash.repeat: 4.1.0
+      lodash.snakecase: 4.1.1
+      lodash.startcase: 4.4.0
+      lodash.trim: 4.5.1
+      lodash.trimend: 4.5.1
+      lodash.trimstart: 4.5.1
+      lodash.uppercase: 4.3.0
+      lodash.upperfirst: 4.3.1
+      ora: 4.0.2
+      pluralize: 8.0.0
+      semver: 7.3.5
+      which: 2.0.2
+      yargs-parser: 21.1.1
+    transitivePeerDependencies:
+      - debug
+    dev: true
+
+  /gluegun@5.1.6(debug@4.3.4):
+    resolution: {integrity: sha512-9zbi4EQWIVvSOftJWquWzr9gLX2kaDgPkNR5dYWbM53eVvCI3iKuxLlnKoHC0v4uPoq+Kr/+F569tjoFbA4DSA==}
+    hasBin: true
+    dependencies:
+      apisauce: 2.1.6(debug@4.3.4)
+      app-module-path: 2.2.0
+      cli-table3: 0.6.0
+      colors: 1.4.0
+      cosmiconfig: 7.0.1
+      cross-spawn: 7.0.3
+      ejs: 3.1.8
       enquirer: 2.3.6
       execa: 5.1.1
       fs-jetpack: 4.3.1
@@ -4127,14 +4178,12 @@ packages:
   /tmp-promise@3.0.3:
     resolution: {integrity: sha512-RwM7MoPojPxsOBYnyd2hy0bxtIlVrihNs9pj5SUvY8Zz1sQcQG2tG1hSr8PDxfgEB8RNKDhqbIlroIarSNDNsQ==}
     dependencies:
-      tmp: 0.2.1
+      tmp: 0.2.3
     dev: true
 
-  /tmp@0.2.1:
-    resolution: {integrity: sha512-76SUhtfqR2Ijn+xllcI5P1oyannHNHByD80W1q447gU3mp9G9PSpGdWmjUOHRDPiHYacIk66W7ubDTuPF3BEtQ==}
-    engines: {node: '>=8.17.0'}
-    dependencies:
-      rimraf: 3.0.2
+  /tmp@0.2.3:
+    resolution: {integrity: sha512-nZD7m9iCPC5g0pYmcaxogYKggSfLsdxl8of3Q/oIbqCqLLIO9IAF0GWjX1z9NZRHPiXv8Wex4yDCaZsgEw0Y8w==}
+    engines: {node: '>=14.14'}
     dev: true
 
   /to-buffer@1.1.1:
@@ -4160,7 +4209,7 @@ packages:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
     dev: true
 
-  /ts-node@10.9.1(@types/node@20.10.6)(typescript@5.3.3):
+  /ts-node@10.9.1(@types/node@20.11.24)(typescript@5.3.3):
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
     peerDependencies:
@@ -4179,7 +4228,7 @@ packages:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
-      '@types/node': 20.10.6
+      '@types/node': 20.11.24
       acorn: 8.9.0
       acorn-walk: 8.2.0
       arg: 4.1.3
@@ -4191,7 +4240,7 @@ packages:
       yn: 3.1.1
     dev: true
 
-  /ts-node@10.9.2(@types/node@20.10.6)(typescript@5.3.3):
+  /ts-node@10.9.2(@types/node@20.11.24)(typescript@5.3.3):
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
     hasBin: true
     peerDependencies:
@@ -4210,7 +4259,7 @@ packages:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
-      '@types/node': 20.10.6
+      '@types/node': 20.11.24
       acorn: 8.11.3
       acorn-walk: 8.3.1
       arg: 4.1.3
@@ -4392,8 +4441,8 @@ packages:
     engines: {node: '>= 8'}
     dev: true
 
-  /web-streams-polyfill@3.3.2:
-    resolution: {integrity: sha512-3pRGuxRF5gpuZc0W+EpwQRmCD7gRqcDOMt688KmdlDAgAyaB1XlN0zq2njfDNm44XVdIouE7pZ6GzbdyH47uIQ==}
+  /web-streams-polyfill@3.3.3:
+    resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
     engines: {node: '>= 8'}
     dev: true
 
