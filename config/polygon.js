@@ -16,6 +16,7 @@ const NDEFI_ADDRESS = '0xd3f07ea86ddf7baebefd49731d7bbd207fedc53b'
 const USDPLUS_ADDRESS = '0x236eec6359fb44cce8f97e99387aa7f8cd5cde1f'
 const BOB_ADDRESS = '0xb0b195aefa3650a6908f15cdac7d92f8a5791b0b'
 const NPM_ADDRESS = '0x57f12fe6a4e5fe819eec699fadf9db2d06606bb4'
+const THREE_ADDRESS = '0x9b034262e0095210ab9ddec60199741a8a1fbfe7'
 
 module.exports = {
   network: 'matic',
@@ -70,6 +71,7 @@ module.exports = {
       BOB_ADDRESS,
       USDC_CIRCLE_ADDRESS,
       NPM_ADDRESS
+      THREE_ADDRESS
     ],
     stableTokenAddresses: [
       // USDC
@@ -121,6 +123,7 @@ module.exports = {
       NDEFI_ADDRESS,
       NPM_ADDRESS,
       USDC_CIRCLE_ADDRESS,
+      THREE_ADDRESS
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, FRAX_ADDRESS, USDC_CIRCLE_ADDRESS],
     minimumNativeLiquidity: 3,
@@ -158,6 +161,7 @@ module.exports = {
       NDEFI_ADDRESS,
       NPM_ADDRESS,
       USDC_CIRCLE_ADDRESS,
+      THREE_ADDRESS
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, FRAX_ADDRESS, USDC_CIRCLE_ADDRESS],
     nativePricePool: '0x21988c9cfd08db3b5793c2c6782271dc94749251',
