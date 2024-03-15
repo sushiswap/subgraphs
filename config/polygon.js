@@ -70,8 +70,8 @@ module.exports = {
       USDPLUS_ADDRESS,
       BOB_ADDRESS,
       USDC_CIRCLE_ADDRESS,
-      NPM_ADDRESS
-      THREE_ADDRESS
+      NPM_ADDRESS,
+      THREE_ADDRESS,
     ],
     stableTokenAddresses: [
       // USDC
@@ -123,7 +123,7 @@ module.exports = {
       NDEFI_ADDRESS,
       NPM_ADDRESS,
       USDC_CIRCLE_ADDRESS,
-      THREE_ADDRESS
+      THREE_ADDRESS,
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, FRAX_ADDRESS, USDC_CIRCLE_ADDRESS],
     minimumNativeLiquidity: 3,
@@ -161,7 +161,7 @@ module.exports = {
       NDEFI_ADDRESS,
       NPM_ADDRESS,
       USDC_CIRCLE_ADDRESS,
-      THREE_ADDRESS
+      THREE_ADDRESS,
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, FRAX_ADDRESS, USDC_CIRCLE_ADDRESS],
     nativePricePool: '0x21988c9cfd08db3b5793c2c6782271dc94749251',
