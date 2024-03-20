@@ -6,8 +6,6 @@ This repository contains multiple subgraphs:
 - [bentobox](./subgraphs/bentobox/README.md)
 - [blocks](./subgraphs/blocks/README.md)
 - [candles](./subgraphs/candles/README.md)
-- [furo-stream](./subgraphs/furo-stream/README.md)
-- [furo-vesting](./subgraphs/furo-vesting/README.md)
 - [legacy-exchange](./subgraphs/legacy-exchange/README.md)
 - [minichef](./subgraphs/minichef/README.md)
 - [miso](./subgraphs/miso/README.md)
