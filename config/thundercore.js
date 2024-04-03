@@ -83,4 +83,12 @@ module.exports = {
       startBlock: 145330791,
     },
   },
+  furo: {
+    stream: { address: '0x1400feFD6F9b897970f00Df6237Ff2B8b27Dc82C', startBlock: 159988546 },
+    vesting: { address: '0xBda8a8423B7F02Cd935412FB9F13CB88f7875991', startBlock: 159988772 }
+  },
+  bentobox: {
+    address: '0xe43ca1Dee3F0fc1e2df73A0745674545F11A59F5',
+    startBlock: 159987571
+  },
 }
