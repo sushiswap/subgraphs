@@ -151,13 +151,13 @@ module.exports = {
       NPM_ADDRESS,
       USDC_CIRCLE_ADDRESS
     ],
-    // ALWAYS PRE-GENEARTE THESE WITH create2 keccak256
-    usdcPair: "0x0000000000000000000000000000000000000000",
-    usdtPair: "0x0000000000000000000000000000000000000000",
-    daiPair: "0x0000000000000000000000000000000000000000",
+    usdcAddress: USDC_ADDRESS,
+    usdtAddress: USDT_ADDRESS,
+    daiAddress: DAI_ADDRESS,
     minimumNativeLiquidity: 1000,
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
       startBlock: 11333218,
     }
   },

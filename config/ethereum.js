@@ -226,13 +226,13 @@ module.exports = {
       '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9', // AAVE
       '0x6982508145454ce325ddbe47a25d4ec3d2311933' // PEPE
     ],
-    // ALWAYS PRE-GENEARTE THESE WITH create2 keccak256
-    usdcPair: "0x0000000000000000000000000000000000000000",
-    usdtPair: "0x0000000000000000000000000000000000000000",
-    daiPair: "0x0000000000000000000000000000000000000000",
+    usdcAddress: USDC_ADDRESS,
+    usdtAddress: USDT_ADDRESS,
+    daiAddress: DAI_ADDRESS,
     minimumNativeLiquidity: 3,
     factory: {
       address: '0xc0aee478e3658e2610c5f7a4a2e1777ce9e4f2ac',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
       startBlock: 10794229
     }
   },
