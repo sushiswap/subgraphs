@@ -5,6 +5,7 @@ export const WHITELIST: string[] = '{{ v2.whitelistAddresses }}'.toLowerCase().s
 export const USDC_NATIVE_PAIR = Address.fromString('{{ v2.usdcPair }}').toHexString().toLowerCase()
 export const USDT_NATIVE_PAIR = Address.fromString('{{ v2.usdtPair }}').toHexString().toLowerCase()
 export const DAI_NATIVE_PAIR = Address.fromString('{{ v2.daiPair }}').toHexString().toLowerCase()
+export const NETWORK = '{{ network }}'
 
 export const MINIMUM_LIQUIDITY_THRESHOLD_ETH = BigDecimal.fromString('{{ v2.minimumNativeLiquidity }}')
 
