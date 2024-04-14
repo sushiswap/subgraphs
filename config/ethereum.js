@@ -218,7 +218,13 @@ module.exports = {
       MIM_ADDRESS,
       FRAX_ADDRESS,
       ASTRAFER_ADDRESS,
-      UST_ADDRESS
+      UST_ADDRESS,
+      '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2', // MKR
+      '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f', // SNX
+      '0x111111111117dc0aa78b770fa6a738034120c302', // 1INCH
+      '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0', // MATIC
+      '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9', // AAVE
+      '0x6982508145454ce325ddbe47a25d4ec3d2311933' // PEPE
     ],
     // ALWAYS PRE-GENEARTE THESE WITH create2 keccak256
     usdcPair: "0x0000000000000000000000000000000000000000",
