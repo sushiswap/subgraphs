@@ -1,6 +1,9 @@
 {
-  "extends": "./node_modules/@graphprotocol/graph-ts/tsconfig.json",
+  "extends": "../../config/tsconfig.json",
+  "include": ["src", "generated", "tests"],
   "compilerOptions": {
-    "types": ["@graphprotocol/graph-ts"]
+    "baseUrl": ".",
+    "lib": ["ES2016"],
+    "rootDirs": ["./src", "./generated", "./tests"]
   }
 }

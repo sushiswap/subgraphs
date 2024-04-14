@@ -180,6 +180,56 @@ module.exports = {
     ],
     minimumNativeLiquidity: '2'
   },
+  
+  v2: {
+    nativeAddress: NATIVE_ADDRESS,
+    whitelistAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WBTC_ADDRESS,
+      DAI_ADDRESS,
+      USDC_ADDRESS,
+      OHM_ADDRESS,
+      USDT_ADDRESS,
+      TUSD_ADDRESS,
+      CDAI_ADDRESS,
+      SUSD_ADDRESS,
+      LINK_ADDRESS,
+      YFI_ADDRESS,
+      XSUSHI_ADDRESS,
+      USDP_ADDRESS,
+      BAC_ADDRESS,
+      CREAM_ADDRESS,
+      FXS_ADDRESS,
+      ALPHA_ADDRESS,
+      PWING_ADDRESS,
+      UMA_ADDRESS,
+      RUNE_ADDRESS,
+      NFTX_ADDRESS,
+      STETH_ADDRESS,
+      DOUGH_ADDRESS,
+      LFBTC_ADDRESS,
+      SUSHI_ADDRESS,
+      APE_ADDRESS,
+      ANGLE_ADDRESS,
+      CRV_ADDRESS,
+      INV_ADDRESS,
+      PRIMATE_ADDRESS,
+      MIM_ADDRESS,
+      FRAX_ADDRESS,
+      ASTRAFER_ADDRESS,
+      UST_ADDRESS
+    ],
+    // ALWAYS PRE-GENEARTE THESE WITH create2 keccak256
+    usdcPair: "0x0000000000000000000000000000000000000000",
+    usdtPair: "0x0000000000000000000000000000000000000000",
+    daiPair: "0x0000000000000000000000000000000000000000",
+    minimumNativeLiquidity: 3,
+    factory: {
+      address: '0xc0aee478e3658e2610c5f7a4a2e1777ce9e4f2ac',
+      startBlock: 10794229
+    }
+  },
   v3: {
     factory: {
       address: '0xbaceb8ec6b9355dfc0269c18bac9d6e2bdc29c4f',
