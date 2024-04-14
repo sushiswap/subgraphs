@@ -149,7 +149,8 @@ module.exports = {
       DMAGIC_ADDRESS,
       NDEFI_ADDRESS,
       NPM_ADDRESS,
-      USDC_CIRCLE_ADDRESS
+      USDC_CIRCLE_ADDRESS,
+      '0x9b034262e0095210ab9ddec60199741a8a1fbfe7' // THREE
     ],
     usdcAddress: USDC_ADDRESS,
     usdtAddress: USDT_ADDRESS,
