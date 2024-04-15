@@ -2,18 +2,14 @@
 
 This repository contains multiple subgraphs:  
 
-- [auction-maker](./subgraphs/auction-maker/README.md)
+- [v2](./subgraphs/v2/README.md)
+- [v3](./subgraphs/v3/README.md)
+- [furo](./subgraphs/furo/README.md)
 - [bentobox](./subgraphs/bentobox/README.md)
-- [blocks](./subgraphs/blocks/README.md)
-- [candles](./subgraphs/candles/README.md)
-- [furo-stream](./subgraphs/furo-stream/README.md)
-- [furo-vesting](./subgraphs/furo-vesting/README.md)
-- [legacy-exchange](./subgraphs/legacy-exchange/README.md)
 - [minichef](./subgraphs/minichef/README.md)
-- [miso](./subgraphs/miso/README.md)
-- [staking](./subgraphs/staking/README.md)
+- [blocks](./subgraphs/blocks/README.md)
+- [router](./subgraphs/router/README.md)
 - [sushi](./subgraphs/sushi/README.md)
-- [trident](./subgraphs/trident/README.md)
 - [xsushi](./subgraphs/xsushi/README.md)
 
 ## Build

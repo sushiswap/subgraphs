@@ -1,9 +1,0 @@
-{
-  "extends": "../../config/tsconfig.json",
-  "include": ["src", "generated", "tests"],
-  "compilerOptions": {
-    "lib": ["ES2015"],
-    "baseUrl": ".",
-    "rootDirs": ["./src", "./generated", "./tests"]
-  }
-}
