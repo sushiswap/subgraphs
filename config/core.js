@@ -50,4 +50,12 @@ module.exports = {
       startBlock: 8051339,
     },
   },
+  furo: {
+    stream: { address: '0x33d91116e0370970444b0281ab117e161febfcdd', startBlock: 12934361 },
+    vesting: { address: '0xBda8a8423B7F02Cd935412FB9F13CB88f7875991', startBlock: 12934442 }
+  },
+  bentobox: {
+    address: '0x1400feFD6F9b897970f00Df6237Ff2B8b27Dc82C',
+    startBlock: 12932398
+  },
 }
