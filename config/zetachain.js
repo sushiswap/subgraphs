@@ -68,7 +68,7 @@ module.exports = {
       USDT_BSC_ADDRESS,
       USDT_ETH_ADDRESS
     ],
-    nativePricePool: '0xcdbcd51a5e8728e0af4895ce5771b7d17ff71959', // ZETA/USDT.ETH - 0.03%
+    nativePricePool: '0xe449be94d63ce46c80ac21c486630013e66d2fe5', // ZETA/USDT.ETH - 0.03%
     minimumEthLocked: 1000,
   },
 }
