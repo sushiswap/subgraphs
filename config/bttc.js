@@ -92,4 +92,68 @@ module.exports = {
     address: '0x0000000000000000000000000000000000000000',
     startBlock: 0,
   },
+  legacy: {
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      TRON_ADDRESS,
+      BNB_ADDRESS,
+      USDT_B_ADDRESS,
+      USDT_T_ADDRESS,
+      USDT_E_ADDRESS,
+      USDC_B_ADDRESS,
+      USDC_T_ADDRESS,
+      USDC_E_ADDRESS,
+      USDD_T_ADDRESS,
+    ],
+    stableTokenAddresses: [
+      USDT_T_ADDRESS,
+      USDC_B_ADDRESS,
+      USDC_T_ADDRESS,
+      USDC_E_ADDRESS,
+      USDD_T_ADDRESS,
+    ],
+    minimumNativeLiquidity: 1000000000,
+    factory: {
+      address: '0xb45e53277a7e0f1d35f2a77160e91e25507f1763',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 28215551 ,
+    },
+  },
+  v3: {
+    factory: {
+      address: '0xbbde1d67297329148fe1ed5e6b00114842728e65',
+      startBlock: 19975843,
+    },
+    positionManager: {
+      address: '0x57bffa72db682f7eb6c132dae03ff36bbeb0c459',
+      startBlock: 28216924,
+    },
+    native: { address: NATIVE_ADDRESS },
+    whitelistedTokenAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      TRON_ADDRESS,
+      BNB_ADDRESS,
+      USDT_B_ADDRESS,
+      USDT_T_ADDRESS,
+      USDT_E_ADDRESS,
+      USDC_B_ADDRESS,
+      USDC_T_ADDRESS,
+      USDC_E_ADDRESS,
+      USDD_T_ADDRESS,
+    ],
+    stableTokenAddresses: [
+      USDT_T_ADDRESS,
+      USDC_B_ADDRESS,
+      USDC_T_ADDRESS,
+      USDC_E_ADDRESS,
+      USDD_T_ADDRESS,
+    ],
+    nativePricePool: '0x0a75979346b82c5af448c620bf9762384a7c765e',
+    minimumEthLocked: 1000000000,
+  },
 }
