@@ -28,9 +28,9 @@ export function generatePoolAddress(token0: string, token1: string, factoryAddre
 export const NATIVE_ADDRESS = '{{ v2.nativeAddress }}'
 export const WHITELIST: string[] = '{{ v2.whitelistAddresses }}'.toLowerCase().split(',')
 
-export const USDC_NATIVE_PAIR = generatePoolAddress('{{ v2.usdcAddress }}'.toLowerCase(), NATIVE_ADDRESS, '{{ v2.factory.address }}')
-export const USDT_NATIVE_PAIR = generatePoolAddress('{{ v2.usdtAddress }}'.toLowerCase(), NATIVE_ADDRESS, '{{ v2.factory.address }}')
-export const DAI_NATIVE_PAIR = generatePoolAddress('{{ v2.daiAddress }}'.toLowerCase(), NATIVE_ADDRESS, '{{ v2.factory.address }}')
+export const STABLE0_NATIVE_PAIR = generatePoolAddress('{{ v2.stable0 }}'.toLowerCase(), NATIVE_ADDRESS, '{{ v2.factory.address }}')
+export const STABLE1_NATIVE_PAIR = generatePoolAddress('{{ v2.stable1 }}'.toLowerCase(), NATIVE_ADDRESS, '{{ v2.factory.address }}')
+export const STABLE2_NATIVE_PAIR = generatePoolAddress('{{ v2.stable2 }}'.toLowerCase(), NATIVE_ADDRESS, '{{ v2.factory.address }}')
 
 export const NETWORK = '{{ network }}'
 

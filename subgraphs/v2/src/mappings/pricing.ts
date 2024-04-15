@@ -2,50 +2,49 @@
 import { Pair, Token, Bundle } from '../../generated/schema'
 import { BigDecimal, Address } from '@graphprotocol/graph-ts/index'
 import { ZERO_BD, factoryContract, ADDRESS_ZERO, ONE_BD } from './helpers'
-import { NATIVE_ADDRESS, USDC_NATIVE_PAIR, DAI_NATIVE_PAIR, USDT_NATIVE_PAIR, WHITELIST, MINIMUM_LIQUIDITY_THRESHOLD_ETH } from './../constants'
+import { NATIVE_ADDRESS, STABLE0_NATIVE_PAIR, STABLE1_NATIVE_PAIR, STABLE2_NATIVE_PAIR, WHITELIST, MINIMUM_LIQUIDITY_THRESHOLD_ETH } from './../constants'
 
 
 
 export function getEthPriceInUSD(): BigDecimal {
   // fetch eth prices for each stablecoin
-  let daiPair = Pair.load(DAI_NATIVE_PAIR)
-  let usdcPair = Pair.load(USDC_NATIVE_PAIR)
-  let usdtPair = Pair.load(USDT_NATIVE_PAIR)
+  let stable0Pair = Pair.load(STABLE0_NATIVE_PAIR)
+  let stable1Pair = Pair.load(STABLE1_NATIVE_PAIR)
+  let stable2Pair = Pair.load(STABLE2_NATIVE_PAIR)
 
   // all 3 have been created
-  if (daiPair !== null && usdcPair !== null && usdtPair !== null) {
-    let daiReserve = daiPair.token0 == NATIVE_ADDRESS ? daiPair.reserve0 : daiPair.reserve1;
-    let daiPrice = daiPair.token0 == NATIVE_ADDRESS ? daiPair.token1Price : daiPair.token0Price;
-    
-    let usdcReserve = usdcPair.token0 == NATIVE_ADDRESS ? usdcPair.reserve0 : usdcPair.reserve1;
-    let usdcPrice = usdcPair.token0 == NATIVE_ADDRESS ? usdcPair.token1Price : usdcPair.token0Price;
-    
-    let usdtReserve = usdtPair.token0 == NATIVE_ADDRESS ? usdtPair.reserve0 : usdtPair.reserve1;
-    let usdtPrice = usdtPair.token0 == NATIVE_ADDRESS ? usdtPair.token1Price : usdtPair.token0Price;
-    
-    let totalLiquidityETH = daiReserve.plus(usdcReserve).plus(usdtReserve);
-    let daiWeight = daiReserve.div(totalLiquidityETH);
-    let usdcWeight = usdcReserve.div(totalLiquidityETH);
-    let usdtWeight = usdtReserve.div(totalLiquidityETH);
-    return daiPrice
-      .times(daiWeight)
-      .plus(usdcPrice.times(usdcWeight))
-      .plus(usdtPrice.times(usdtWeight));
-  } else if (usdtPair !== null && usdcPair !== null) {
-    
-    let usdcReserve = usdcPair.token0 == NATIVE_ADDRESS ? usdcPair.reserve0 : usdcPair.reserve1;
-    let usdcPrice = usdcPair.token0 == NATIVE_ADDRESS ? usdcPair.token1Price : usdcPair.token0Price;
-    
-    let usdtReserve = usdtPair.token0 == NATIVE_ADDRESS ? usdtPair.reserve0 : usdtPair.reserve1;
-    let usdtPrice = usdtPair.token0 == NATIVE_ADDRESS ? usdtPair.token1Price : usdtPair.token0Price;
-    
-    let totalLiquidityETH = usdcReserve.plus(usdtReserve);
-    let usdcWeight = usdcReserve.div(totalLiquidityETH);
-    let usdtWeight = usdtReserve.div(totalLiquidityETH);
-    return usdcPrice.times(usdcWeight).plus(usdtPrice.times(usdtWeight));
-    // USDC is the only pair so far
-  } else if (usdcPair !== null) {
-    return usdcPair.token0 == NATIVE_ADDRESS ? usdcPair.token1Price : usdcPair.token0Price;
+  if (stable2Pair !== null && stable0Pair !== null && stable1Pair !== null) {
+
+    let stable0Reserve = stable0Pair.token0 == NATIVE_ADDRESS ? stable0Pair.reserve0 : stable0Pair.reserve1;
+    let stable0Price = stable0Pair.token0 == NATIVE_ADDRESS ? stable0Pair.token1Price : stable0Pair.token0Price;
+    let stable1Reserve = stable1Pair.token0 == NATIVE_ADDRESS ? stable1Pair.reserve0 : stable1Pair.reserve1;
+    let stable1Price = stable1Pair.token0 == NATIVE_ADDRESS ? stable1Pair.token1Price : stable1Pair.token0Price;
+    let stable2Reserve = stable2Pair.token0 == NATIVE_ADDRESS ? stable2Pair.reserve0 : stable2Pair.reserve1;
+    let stable2Price = stable2Pair.token0 == NATIVE_ADDRESS ? stable2Pair.token1Price : stable2Pair.token0Price;
+
+    let totalLiquidityETH = stable2Reserve.plus(stable0Reserve).plus(stable1Reserve);
+    let stable0Weight = stable0Reserve.div(totalLiquidityETH);
+    let stable1Weight = stable1Reserve.div(totalLiquidityETH);
+    let stable2Weight = stable2Reserve.div(totalLiquidityETH);
+    return stable2Price
+      .times(stable2Weight)
+      .plus(stable0Price.times(stable0Weight))
+      .plus(stable1Price.times(stable1Weight));
+  } else if (stable1Pair !== null && stable0Pair !== null) {
+
+    let stable0Reserve = stable0Pair.token0 == NATIVE_ADDRESS ? stable0Pair.reserve0 : stable0Pair.reserve1;
+    let stable0Price = stable0Pair.token0 == NATIVE_ADDRESS ? stable0Pair.token1Price : stable0Pair.token0Price;
+
+    let stable1Reserve = stable1Pair.token0 == NATIVE_ADDRESS ? stable1Pair.reserve0 : stable1Pair.reserve1;
+    let stable1Price = stable1Pair.token0 == NATIVE_ADDRESS ? stable1Pair.token1Price : stable1Pair.token0Price;
+
+    let totalLiquidityETH = stable0Reserve.plus(stable1Reserve);
+    let stable0Weight = stable0Reserve.div(totalLiquidityETH);
+    let stable1Weight = stable1Reserve.div(totalLiquidityETH);
+    return stable0Price.times(stable0Weight).plus(stable1Price.times(stable1Weight));
+
+  } else if (stable0Pair !== null) {
+    return stable0Pair.token0 == NATIVE_ADDRESS ? stable0Pair.token1Price : stable0Pair.token0Price;
   } else {
     return ZERO_BD
   }

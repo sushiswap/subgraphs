@@ -125,9 +125,9 @@ module.exports = {
       MAGIC_ADDRESS,
       ARB_ADDRESS
     ],
-    usdcAddress: USDC_ADDRESS,
-    usdtAddress: USDT_ADDRESS,
-    daiAddress: DAI_ADDRESS,
+    stable0: USDC_ADDRESS,
+    stable1: USDT_ADDRESS,
+    stable2: DAI_ADDRESS,
     minimumNativeLiquidity: 3,
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',

@@ -226,9 +226,9 @@ module.exports = {
       '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9', // AAVE
       '0x6982508145454ce325ddbe47a25d4ec3d2311933' // PEPE
     ],
-    usdcAddress: USDC_ADDRESS,
-    usdtAddress: USDT_ADDRESS,
-    daiAddress: DAI_ADDRESS,
+    stable0: USDC_ADDRESS,
+    stable1: USDT_ADDRESS,
+    stable2: DAI_ADDRESS,
     minimumNativeLiquidity: 3,
     factory: {
       address: '0xc0aee478e3658e2610c5f7a4a2e1777ce9e4f2ac',
