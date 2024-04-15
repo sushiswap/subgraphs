@@ -31,7 +31,6 @@ export function getEthPriceInUSD(): BigDecimal {
       .times(daiWeight)
       .plus(usdcPrice.times(usdcWeight))
       .plus(usdtPrice.times(usdtWeight));
-    // dai and USDC have been created
   } else if (usdtPair !== null && usdcPair !== null) {
     
     let usdcReserve = usdcPair.token0 == NATIVE_ADDRESS ? usdcPair.reserve0 : usdcPair.reserve1;
