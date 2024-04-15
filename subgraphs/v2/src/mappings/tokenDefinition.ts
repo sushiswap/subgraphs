@@ -2,6 +2,7 @@ import {
   Address,
   BigInt,
 } from "@graphprotocol/graph-ts"
+import { NETWORK } from "../constants"
 
 // Initialize a Token Definition with the attributes
 export class TokenDefinition {
@@ -80,14 +81,17 @@ export class TokenDefinition {
   }
 
   // Helper for hardcoded tokens
-  static fromAddress(tokenAddress: Address) : TokenDefinition | null {
+  static fromAddress(tokenAddress: Address): TokenDefinition | null {
+    if (NETWORK != 'mainnet') {
+      return null
+    }
     let staticDefinitions = this.getStaticDefinitions()
     let tokenAddressHex = tokenAddress.toHexString()
 
     // Search the definition using the address
     for (let i = 0; i < staticDefinitions.length; i++) {
       let staticDefinition = staticDefinitions[i]
-      if(staticDefinition.address.toHexString() == tokenAddressHex) {
+      if (staticDefinition.address.toHexString() == tokenAddressHex) {
         return staticDefinition
       }
     }

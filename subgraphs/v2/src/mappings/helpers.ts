@@ -8,7 +8,6 @@ import { Factory as FactoryContract } from '../../generated/templates/Pair/Facto
 import { TokenDefinition } from './tokenDefinition'
 
 import { FACTORY_ADDRESS } from './../constants'
-import { NETWORK } from '../constants'
 
 export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
 
@@ -138,7 +137,7 @@ export function fetchTokenTotalSupply(tokenAddress: Address): BigInt {
 export function fetchTokenDecimals(tokenAddress: Address): BigInt {
   // static definitions overrides
   let staticDefinition = TokenDefinition.fromAddress(tokenAddress)
-  if (staticDefinition != null && NETWORK == 'mainnet') {
+  if (staticDefinition != null) {
     return (staticDefinition as TokenDefinition).decimals
   }
 

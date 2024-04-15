@@ -287,10 +287,10 @@ export function handleMint(event: Mint): void {
 
   let mints = transaction.mints
   let mint = MintEvent.load(mints[mints.length - 1])
+
   if (mint === null) {
     return
   }
-
 
   let pair = Pair.load(event.address.toHex())!
   let uniswap = UniswapFactory.load(FACTORY_ADDRESS)!
@@ -300,7 +300,6 @@ export function handleMint(event: Mint): void {
   if (token0 === null || token1 === null) {
     return
   }
-
 
   // update exchange info (except balances, sync will cover that)
   let token0Amount = convertTokenToDecimal(event.params.amount0, token0.decimals)
@@ -335,7 +334,7 @@ export function handleMint(event: Mint): void {
   mint.save()
 
   // update the LP position
-  let liquidityPosition = createLiquidityPosition(event.address, mint.to as Address)
+  let liquidityPosition = createLiquidityPosition(event.address, Address.fromBytes(mint.to))
   createLiquiditySnapshot(liquidityPosition, event)
 
   // update day entities
@@ -356,6 +355,7 @@ export function handleBurn(event: Burn): void {
 
   let burns = transaction.burns
   let burn = BurnEvent.load(burns[burns.length - 1])
+
   if (burn === null) {
     return
   }
@@ -404,7 +404,7 @@ export function handleBurn(event: Burn): void {
   burn.save()
 
   // update the LP position
-  let liquidityPosition = createLiquidityPosition(event.address, burn.sender as Address)
+  let liquidityPosition = createLiquidityPosition(event.address, event.params.sender)
   createLiquiditySnapshot(liquidityPosition, event)
 
   // update day entities
@@ -442,7 +442,7 @@ export function handleSwap(event: Swap): void {
   let derivedAmountUSD = derivedAmountETH.times(bundle.ethPrice)
 
   // only accounts for volume through white listed tokens
-  let trackedAmountUSD = getTrackedVolumeUSD(amount0Total, token0, amount1Total, token1)
+  let trackedAmountUSD = getTrackedVolumeUSD(amount0Total, token0 as Token, amount1Total, token1 as Token)
 
   let trackedAmountETH: BigDecimal
   if (bundle.ethPrice.equals(ZERO_BD)) {
