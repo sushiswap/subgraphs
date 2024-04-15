@@ -100,6 +100,27 @@ module.exports = {
       startBlock: 8940434,
     },
   },
+  v2: {
+    nativeAddress: NATIVE_ADDRESS,
+    whitelistAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      DAI_ADDRESS,
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      SUSHI_ADDRESS
+    ],
+    stable0: USDC_ADDRESS,
+    stable1: USDT_ADDRESS,
+    stable2: DAI_ADDRESS,
+    minimumNativeLiquidity: 2,
+    factory: {
+      address: '0x580ed43f3bba06555785c81c2957efcca71f7483',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 8940434,
+    }
+  },
   v3: {
     factory: {
       address: '0x145d82bca93cca2ae057d1c6f26245d1b9522e6f',
