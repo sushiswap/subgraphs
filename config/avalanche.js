@@ -11,6 +11,8 @@ const SUSHI_ADDRESS = '0x37b608519f91f70f2eeb0e5ed9af4061722e4f76'
 const TIME_ADDRESS = '0xb54f16fb19478766a268f172c9480f8da1a7c9c3'
 const SPELL_ADDRESS = '0xce1bffbd5374dac86a2893119683f4911a2f7814'
 const WMEMO_ADDRESS = '0x0da67235dd5787d67955420c84ca1cecd4e5bb3b'
+const JOE_ADDRESS = '0x6e84a6216ea6dacc71ee8e6b0a5b7322eebc0fdd'
+const COQ_ADDRESS = '0x420fca0121dc28039145009570975747295f2329'
 
 module.exports = {
   network: 'avalanche',
@@ -93,6 +95,36 @@ module.exports = {
     ],
     minimumNativeLiquidity: '50',
   },
+  v2: {
+    nativeAddress: NATIVE_ADDRESS,
+    whitelistAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      USDTE_ADDRESS,
+      DAI_ADDRESS,
+      WBTC_ADDRESS,
+      MIM_ADDRESS,
+      SUSHI_ADDRESS,
+      TIME_ADDRESS,
+      SPELL_ADDRESS,
+      WMEMO_ADDRESS,
+      USDC_E_ADDRESS,
+      JOE_ADDRESS,
+      COQ_ADDRESS
+    ],
+    stable0: USDC_ADDRESS,
+    stable1: USDT_ADDRESS,
+    stable2: DAI_ADDRESS,
+    minimumNativeLiquidity: 5,
+    factory: {
+      address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 506190,
+    }
+  },
   v3: {
     factory: {
       address: '0x3e603c14af37ebdad31709c4f848fc6ad5bec715',
@@ -118,6 +150,8 @@ module.exports = {
       SPELL_ADDRESS,
       WMEMO_ADDRESS,
       USDC_E_ADDRESS,
+      JOE_ADDRESS,
+      COQ_ADDRESS
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, USDTE_ADDRESS, DAI_ADDRESS, MIM_ADDRESS],
     nativePricePool: '0x4a5c0e100f830a1f6b76a42e6bb4be2a7fe0d61b',
