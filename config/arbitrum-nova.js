@@ -6,6 +6,8 @@ const WBTC_ADDRESS = '0x1d05e4e72cd994cdf976181cfb0707345763564d'
 const MOON_ADDRESS = '0x0057ac2d777797d31cd3f8f13bf5e927571d6ad0'
 const BRICK_ADDRESS = '0x6dcb98f460457fe4952e12779ba852f82ecc62c1'
 const SUSHI_ADDRESS = '0xfe60a48a0bcf4636afecc9642a145d2f241a7011'
+const RUM_ADDRESS = '0x6ab6d61428fde76768d7b45d8bfeec19c6ef91a8'
+const DOUBLOON_ADDRESS = '0xefaeee334f0fd1712f9a8cc375f427d9cdd40d73'
 
 module.exports = {
   network: 'arbitrum-nova',
@@ -29,7 +31,6 @@ module.exports = {
       WBTC_ADDRESS,
       USDC_ADDRESS,
       USDT_ADDRESS,
-      WBTC_ADDRESS,
       MOON_ADDRESS,
       BRICK_ADDRESS,
       DAI_ADDRESS,
@@ -58,14 +59,39 @@ module.exports = {
       WBTC_ADDRESS,
       USDC_ADDRESS,
       USDT_ADDRESS,
-      WBTC_ADDRESS,
       MOON_ADDRESS,
       BRICK_ADDRESS,
       DAI_ADDRESS,
+      RUM_ADDRESS,
+      DOUBLOON_ADDRESS,
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS],
-    nativePricePool: '0x95442e8ac3a0a9021288f094a23f4dbb8cb5308a', 
+    nativePricePool: '0x95442e8ac3a0a9021288f094a23f4dbb8cb5308a',
     minimumEthLocked: 1
+  },
+  v2: {
+    nativeAddress: NATIVE_ADDRESS,
+    whitelistAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WBTC_ADDRESS,
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      MOON_ADDRESS,
+      BRICK_ADDRESS,
+      DAI_ADDRESS,
+      RUM_ADDRESS,
+      DOUBLOON_ADDRESS,
+    ],
+    stable0: USDC_ADDRESS,
+    stable1: USDT_ADDRESS,
+    stable2: DAI_ADDRESS,
+    minimumNativeLiquidity: 0.5,
+    factory: {
+      address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 721,
+    }
   },
   blocks: {
     address: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',

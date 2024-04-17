@@ -8,6 +8,7 @@ const anySUSHI_ADDRESS = '0x7c598c96d02398d89fbcb9d41eab3df0c16F227d'
 const USDT_ADDRESS = '0x919c1c267bc06a7039e03fcc2ef738525769109c'
 const axlUSDC_ADDRESS = '0xeb466342c4d449bc9f53a865d5cb90586f405215'
 const axlUSDT_ADDRESS = '0x7f5373ae26c3e8ffc4c77b7255df7ec1a9af52a6'
+const WAGMI_ADDRESS = '0xaf20f5f19698f1d19351028cd7103b63d30de7d7'
 
 module.exports = {
   network: 'kava-evm',
@@ -99,6 +100,11 @@ module.exports = {
     whitelistedTokenAddresses: [
       // IMPORTANT! Native should be included here
       NATIVE_ADDRESS,
+      anyWETH_ADDRESS,
+      anyWBTC_ADDRESS,
+      anyUSDC_ADDRESS,
+      anyUSDT_ADDRESS,
+      anyDAI_ADDRESS,
       USDT_ADDRESS,
       axlUSDC_ADDRESS,
       axlUSDT_ADDRESS,
@@ -108,8 +114,33 @@ module.exports = {
     factory: {
       address: '0xd408a20f1213286fb3158a2bfbf5bffaca8bf269',
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
-      startBlock: 6891276 ,
+      startBlock: 6891276,
     },
+  },
+  v2: {
+    nativeAddress: NATIVE_ADDRESS,
+    whitelistAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      anyWETH_ADDRESS,
+      anyWBTC_ADDRESS,
+      anyUSDC_ADDRESS,
+      anyUSDT_ADDRESS,
+      anyDAI_ADDRESS,
+      USDT_ADDRESS,
+      axlUSDC_ADDRESS,
+      axlUSDT_ADDRESS,
+      WAGMI_ADDRESS,
+    ],
+    stable0: USDT_ADDRESS,
+    stable1: axlUSDC_ADDRESS,
+    stable2: axlUSDT_ADDRESS,
+    minimumNativeLiquidity: 200,
+    factory: {
+      address: '0xd408a20f1213286fb3158a2bfbf5bffaca8bf269',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 6891276,
+    }
   },
   v3: {
     factory: {
@@ -122,10 +153,17 @@ module.exports = {
     },
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [
+      // IMPORTANT! Native should be included here
       NATIVE_ADDRESS,
+      anyWETH_ADDRESS,
+      anyWBTC_ADDRESS,
+      anyUSDC_ADDRESS,
+      anyUSDT_ADDRESS,
+      anyDAI_ADDRESS,
       USDT_ADDRESS,
       axlUSDC_ADDRESS,
       axlUSDT_ADDRESS,
+      WAGMI_ADDRESS,
     ],
     stableTokenAddresses: [USDT_ADDRESS, axlUSDC_ADDRESS, axlUSDT_ADDRESS],
     nativePricePool: '0x324fb03755683b613d6062b5b5aca71979f582b7', // KAVA/USDT

@@ -43,6 +43,29 @@ module.exports = {
       startBlock: 503713,
     },
   },
+  v2: {
+    nativeAddress: WGLMR_ADDRESS,
+    whitelistAddresses: [
+      // IMPORTANT! Native should be included here
+      WGLMR_ADDRESS,
+      NATIVE_ADDRESS, // WETH, not changing the name here to avoid breaking legacy/trident config.
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      DAI_ADDRESS,
+      WBTC_ADDRESS,
+      UST_ADDRESS,
+      FRAX_ADDRESS,
+    ],
+    stable0: USDC_ADDRESS,
+    stable1: USDT_ADDRESS,
+    stable2: DAI_ADDRESS,
+    minimumNativeLiquidity: 3000,
+    factory: {
+      address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 503713,
+    }
+  },
   v3: {
     factory: {
       address: '0x2ecd58f51819e8f8ba08a650bea04fc0dea1d523',

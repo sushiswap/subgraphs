@@ -51,7 +51,7 @@ module.exports = {
     ],
     minimumNativeLiquidity: 3,
     factory: {
-      address: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
+      address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
       startBlock: 822561,
     },
@@ -59,6 +59,31 @@ module.exports = {
   blocks: {
     address: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
     startBlock: 822561,
+  },
+  v2: {
+    nativeAddress: NATIVE_ADDRESS,
+    whitelistAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      BOBA_ADDRESS,
+      WBTC_ADDRESS,
+      USDT_ADDRESS,
+      DAI_ADDRESS,
+      USDC_ADDRESS,
+      FRAX_ADDRESS,
+      UST_ADDRESS,
+      SUSHI_ADDRESS,
+      BUSD_ADDRESS
+    ],
+    stable0: USDC_ADDRESS,
+    stable1: USDT_ADDRESS,
+    stable2: DAI_ADDRESS,
+    minimumNativeLiquidity: 2,
+    factory: {
+      address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 822561,
+    }
   },
   v3: {
     factory: {

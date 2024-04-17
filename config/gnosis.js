@@ -79,6 +79,31 @@ module.exports = {
     ],
     minimumNativeLiquidity: '2400',
   },
+  v2: {
+    nativeAddress: NATIVE_ADDRESS,
+    whitelistAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      WBTC_ADDRESS,
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      BAO_ADDRESS,
+      WETH2_ADDRESS,
+      DAI_ADDRESS,
+      USDP_ADDRESS,
+      GNO_ADDRESS
+    ],
+    stable0: USDC_ADDRESS,
+    stable1: USDT_ADDRESS,
+    stable2: DAI_ADDRESS,
+    minimumNativeLiquidity: 1250,
+    factory: {
+      address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 14735904,
+    }
+  },
   v3: {
     factory: {
       address: '0xf78031cbca409f2fb6876bdfdbc1b2df24cf9bef',

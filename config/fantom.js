@@ -4,6 +4,9 @@ const FUSD_ADDRESS = '0xad84341756bf337f5a0164515b1f6f993d194e1f'
 const DAI_ADDRESS = '0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e'
 const USDC_ADDRESS = '0x04068da6c83afcfa0e13ba15a6696662335d5b75'
 const SUSHI_ADDRESS = '0xae75a438b2e0cb8bb01ec1e1e376de11d44477cc'
+const fUSDT_ADDRESS = '0x049d68029688eabf473097a2fc38ef61633a3c7a'
+const BOO_ADDRESS = '0x841fad6eae12c286d1fd18d1d525dffa75c7effe'
+const axlUSDC_ADDRESS = '0x1b6382dbdea11d97f24495c9a90b7c88469134a4'
 
 module.exports = {
   network: 'fantom',
@@ -69,6 +72,30 @@ module.exports = {
       USDC_ADDRESS,
     ],
     minimumNativeLiquidity: '2000',
+  },
+  v2: {
+    nativeAddress: NATIVE_ADDRESS,
+    whitelistAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      FUSD_ADDRESS,
+      DAI_ADDRESS,
+      USDC_ADDRESS,
+      fUSDT_ADDRESS,
+      BOO_ADDRESS,
+      axlUSDC_ADDRESS,
+      SUSHI_ADDRESS
+    ],
+    stable0: USDC_ADDRESS,
+    stable1: DAI_ADDRESS,
+    stable2: FUSD_ADDRESS,
+    minimumNativeLiquidity: 4000,
+    factory: {
+      address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 2457879,
+    }
   },
   v3: {
     factory: {

@@ -1,4 +1,5 @@
 const NATIVE_ADDRESS = '0xf50225a84382c74cbdea10b0c176f71fc3de0c4d'
+const NATIVE2_ADDRESS = '0x98878b06940ae243284ca214f92bb71a2b032b8a'
 const WETH_ADDRESS = '0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c'
 const USDC_ADDRESS = '0xe3f5a90f9cb311505cd691a46596599aa1a0ad7d'
 const USDT_ADDRESS = '0xb44a9b6905af7c801311e8f4e76932ee959c663c'
@@ -51,6 +52,30 @@ module.exports = {
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
       startBlock: 428426,
     },
+  },
+  v2: {
+    nativeAddress: NATIVE_ADDRESS,
+    whitelistAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      DAI_ADDRESS,
+      WBTC_ADDRESS,
+      FRAX_ADDRESS,
+      MIM_ADDRESS,
+      NATIVE2_ADDRESS
+    ],
+    stable0: USDC_ADDRESS,
+    stable1: USDT_ADDRESS,
+    stable2: DAI_ADDRESS,
+    minimumNativeLiquidity: 3, // This should probably be grafted eventually, price went from 400 to 5 dollars..
+    factory: {
+      address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 428426,
+    }
   },
   v3: {
     factory: {

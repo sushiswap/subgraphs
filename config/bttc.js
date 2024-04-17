@@ -119,8 +119,34 @@ module.exports = {
     factory: {
       address: '0xb45e53277a7e0f1d35f2a77160e91e25507f1763',
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
-      startBlock: 28215551 ,
+      startBlock: 28215551,
     },
+  },
+  v2: {
+    nativeAddress: NATIVE_ADDRESS,
+    whitelistAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      TRON_ADDRESS,
+      BNB_ADDRESS,
+      USDT_B_ADDRESS,
+      USDT_T_ADDRESS,
+      USDT_E_ADDRESS,
+      USDC_B_ADDRESS,
+      USDC_T_ADDRESS,
+      USDC_E_ADDRESS,
+      USDD_T_ADDRESS,
+    ],
+    stable0: USDC_E_ADDRESS,
+    stable1: USDD_T_ADDRESS,
+    stable2: USDT_E_ADDRESS,
+    minimumNativeLiquidity: 1000000000,
+    factory: {
+      address: '0xb45e53277a7e0f1d35f2a77160e91e25507f1763',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 28215551,
+    }
   },
   v3: {
     factory: {
