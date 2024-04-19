@@ -1,5 +1,5 @@
 /* eslint-disable prefer-const */
-import { Bundle, Burn, Collect, Factory, Mint, Pool, Swap, Tick, Token } from '../../generated/schema'
+import { Bundle, Burn, Collect, Factory, Mint, Pool, SetProtocolFeeEvent, Swap, Tick, Token } from '../../generated/schema'
 import { Pool as PoolABI } from '../../generated/Factory/Pool'
 import { BigDecimal, BigInt, ethereum, log } from '@graphprotocol/graph-ts'
 import {
@@ -9,7 +9,8 @@ import {
   Mint as MintEvent,
   Swap as SwapEvent,
   Collect as CollectEvent,
-  CollectProtocol as CollectProtocolEvent
+  CollectProtocol as CollectProtocolEvent,
+  SetFeeProtocol as ProtocolFeeEvent
 } from '../../generated/templates/Pool/Pool'
 import { convertTokenToDecimal, loadTransaction, safeDiv } from '../utils'
 import { FACTORY_ADDRESS, ONE_BI, ZERO_BD, ZERO_BI } from '../constants'
@@ -287,7 +288,7 @@ export function handleSwap(event: SwapEvent): void {
   let amountTotalUSDTracked = safeDiv(getTrackedAmountUSD(amount0Abs, token0, amount1Abs, token1), BigDecimal.fromString('2'))
   let amountTotalETHTracked = safeDiv(amountTotalUSDTracked, bundle.ethPriceUSD)
   let amountTotalUSDUntracked = safeDiv(amount0USD.plus(amount1USD), BigDecimal.fromString('2'))
-  
+
   let feesETH = amountTotalETHTracked.times(pool.feeTier.toBigDecimal()).div(BigDecimal.fromString('1000000'))
   let feesUSD = amountTotalUSDTracked.times(pool.feeTier.toBigDecimal()).div(BigDecimal.fromString('1000000'))
 
@@ -335,7 +336,7 @@ export function handleSwap(event: SwapEvent): void {
   token1.txCount = token1.txCount.plus(ONE_BI)
 
   // updated pool ratess
-  
+
   let prices = sqrtPriceX96ToTokenPrices(pool.sqrtPrice, token0 as Token, token1 as Token)
   pool.token0Price = prices[0]
   pool.token1Price = prices[1]
@@ -661,6 +662,27 @@ export function handleProtocolCollect(event: CollectProtocolEvent): void {
   collect.save()
 
   return
+}
+
+export function handleSetProtocolFee(event: ProtocolFeeEvent): void {
+  const pool = Pool.load(event.address.toHexString())
+  if (pool == null) {
+    return
+  }
+
+  pool.isProtocolFeeEnabled = (event.params.feeProtocol0New > 0 || event.params.feeProtocol1New > 0)
+  pool.save()
+
+  const protocolFeeEvent = new SetProtocolFeeEvent(event.transaction.hash.toHexString() + '-' + event.logIndex.toString())
+  protocolFeeEvent.pool = pool.id
+  protocolFeeEvent.logIndex = event.logIndex
+  protocolFeeEvent.timestamp = event.block.timestamp
+  protocolFeeEvent.pool = pool.id
+  protocolFeeEvent.new0 = BigInt.fromI32(event.params.feeProtocol0New)
+  protocolFeeEvent.new1 = BigInt.fromI32(event.params.feeProtocol1New)
+  protocolFeeEvent.old0 = BigInt.fromI32(event.params.feeProtocol0Old)
+  protocolFeeEvent.old1 = BigInt.fromI32(event.params.feeProtocol1Old)
+  protocolFeeEvent.save()
 }
 
 function updateTickFeeVarsAndSave(tick: Tick, event: ethereum.Event): void {

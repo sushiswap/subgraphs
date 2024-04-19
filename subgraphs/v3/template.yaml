@@ -96,3 +96,5 @@ templates:
           handler: handlePoolCollect
         - event: CollectProtocol(indexed address,indexed address,uint128,uint128)
           handler: handleProtocolCollect
+        - event: SetFeeProtocol(uint8,uint8,uint8,uint8)
+          handler: handleSetProtocolFee
