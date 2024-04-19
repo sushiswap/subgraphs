@@ -129,6 +129,8 @@ type Pool @entity {
   totalValueLockedUSD: BigDecimal!
   # TVL derived in USD untracked
   totalValueLockedUSDUntracked: BigDecimal!
+  # protocol fee
+  isProtocolFeeEnabled: Boolean!
   # Fields used to help derived relationship
   liquidityProviderCount: BigInt! # used to detect new exchanges
   # hourly snapshots of pool data
@@ -691,4 +693,15 @@ type DecreaseEvent @entity {
   token1: Token!
   timeStamp: BigInt!
   transaction: Transaction!
+}
+
+type SetProtocolFeeEvent @entity {
+  id: ID!
+  pool: Pool!
+  logIndex: BigInt!
+  new0: BigInt!
+  new1: BigInt!
+  old0: BigInt!
+  old1: BigInt!
+  timestamp: BigInt!
 }
