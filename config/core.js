@@ -10,6 +10,26 @@ module.exports = {
     address: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
     startBlock: 5211850,
   },
+  v2: {
+    nativeAddress: NATIVE_ADDRESS,
+    whitelistAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      NATIVE2_ADDRESS,
+      USDT_ADDRESS,
+      USDC_ADDRESS,
+      WETH_ADDRESS,
+    ],
+    stable0: USDC_ADDRESS,
+    stable1: USDT_ADDRESS,
+    stable2: "0x0000000000000000000000000000000000000000", // NOT 3 STABLES ON HERE
+    minimumNativeLiquidity: 1000,
+    factory: {
+      address: '0xb45e53277a7e0f1d35f2a77160e91e25507f1763',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 8051339,
+    }
+  },
   v3: {
     base: 'QmR4QNySr2dWxtnxTT6PduGjq42ipdbZxjRwBrNxPFzegU',
     startBlock: 13174609,
@@ -51,5 +71,13 @@ module.exports = {
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
       startBlock: 8051339,
     },
+  },
+  furo: {
+    stream: { address: '0x33d91116e0370970444b0281ab117e161febfcdd', startBlock: 12934361 },
+    vesting: { address: '0xBda8a8423B7F02Cd935412FB9F13CB88f7875991', startBlock: 12934442 }
+  },
+  bentobox: {
+    address: '0x1400feFD6F9b897970f00Df6237Ff2B8b27Dc82C',
+    startBlock: 12932398
   },
 }

@@ -7,6 +7,7 @@ const DAI_ADDRESS = '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3'
 const ICE_ADDRESS = '0xf16e81dce15b08f326220742020379b855b87df9'
 const SUSHI_ADDRESS = '0x986cdf0fd180b40c4d6aeaa01ab740b996d8b782'
 const USDC_ADDRESS = '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d'
+const CAKE_ADDRESS = '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82'
 
 module.exports = {
   network: 'bsc',
@@ -87,6 +88,30 @@ module.exports = {
     ],
     minimumNativeLiquidity: '5',
   },
+  v2: {
+    nativeAddress: NATIVE_ADDRESS,
+    whitelistAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      WBTC_ADDRESS,
+      USDT_ADDRESS,
+      BUSD_ADDRESS,
+      DAI_ADDRESS,
+      ICE_ADDRESS,
+      USDC_ADDRESS,
+      CAKE_ADDRESS
+    ],
+    stable0: USDC_ADDRESS,
+    stable1: USDT_ADDRESS,
+    stable2: BUSD_ADDRESS,
+    minimumNativeLiquidity: 5,
+    factory: {
+      address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 5205069,
+    }
+  },
   v3: {
     factory: {
       address: '0x126555dd55a39328f69400d6ae4f782bd4c34abb',
@@ -107,6 +132,7 @@ module.exports = {
       DAI_ADDRESS,
       ICE_ADDRESS,
       USDC_ADDRESS,
+      CAKE_ADDRESS
     ],
     stableTokenAddresses: [
       USDC_ADDRESS,

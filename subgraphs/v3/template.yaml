@@ -96,3 +96,9 @@ templates:
           handler: handleBurn
         - event: Flash(indexed address,indexed address,uint256,uint256,uint256,uint256)
           handler: handleFlash
+        - event: Collect(indexed address,address,indexed int24,indexed int24,uint128,uint128)
+          handler: handlePoolCollect
+        - event: CollectProtocol(indexed address,indexed address,uint128,uint128)
+          handler: handleProtocolCollect
+        - event: SetFeeProtocol(uint8,uint8,uint8,uint8)
+          handler: handleSetProtocolFee

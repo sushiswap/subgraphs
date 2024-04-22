@@ -6,7 +6,9 @@ const USDT_ADDRESS = '0x3c2b8be99c50593081eaa2a724f0b8285f5aba8f'
 const BUSD_ADDRESS = '0xe176ebe47d621b984a73036b9da5d834411ef734'
 const DAI_ADDRESS = '0xef977d2f931c1978db5f6747666fa1eacb0d0339'
 const FRAX_ADDRESS = '0xfa7191d292d5633f702b0bd7e3e3bccc0e633200'
-
+const USDC_2_ADDRESS = '0xbc594cabd205bd993e7ffa6f3e9cea75c1110da5'
+const USDT_2_ADDRESS = '0x9a89d0e1b051640c6704dde4df881f73adfef39a'
+const DAI_2_ADDRESS = '0x1d374ed0700a0ad3cd4945d66a5b1e08e5db20a8'
 module.exports = {
   network: 'harmony',
   miso: {
@@ -44,6 +46,37 @@ module.exports = {
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
       startBlock: 11256061,
     },
+  },
+  v2: {
+    nativeAddress: NATIVE_ADDRESS,
+    whitelistAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      WBTC_ADDRESS,
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      BUSD_ADDRESS,
+      DAI_ADDRESS,
+      FRAX_ADDRESS,
+      USDC_2_ADDRESS,
+      USDT_2_ADDRESS,
+      DAI_2_ADDRESS,
+    ],
+    // INITITAL STABLE TOKENS
+    stable0: USDC_ADDRESS,
+    stable1: USDT_ADDRESS,
+    stable2: DAI_ADDRESS,
+    // TODO: GRAFT AT 27500000, update config
+    // stable0: USDC_2_ADDRESS,
+    // stable1: USDT_2_ADDRESS,
+    // stable2: DAI_2_ADDRESS,
+    minimumNativeLiquidity: 30000,
+    factory: {
+      address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 11256061, 
+    }
   },
   bentobox: {
     address: '0xa28cff72b04f83a7e3f912e6ad34d5537708a2c2',

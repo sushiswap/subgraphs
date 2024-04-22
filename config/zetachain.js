@@ -6,6 +6,8 @@ const USDT_ETH_ADDRESS = '0x7c8dda80bbbe1254a7aacf3219ebe1481c6e01d7'
 const ETH_ETH_ADDRESS = '0xd97b1de3619ed2c6beb3860147e30ca8a7dc9891'
 const BNB_BSC_ADDRESS = '0x48f80608b672dc30dc7e3dbbd0343c5f02c738eb'
 const BTC_BTC_ADDRESS = '0x13a0c5930c028511dc02665e7285134b6d11a5f4'
+const stZETA_ADDRESS = '0x45334a5b0a01ce6c260f2b570ec941c680ea62c0'
+
 
 module.exports = {
   network: 'zetachain-mainnet',
@@ -41,6 +43,29 @@ module.exports = {
       startBlock: 1552091,
     },
   },
+  v2: {
+    nativeAddress: NATIVE_ADDRESS,
+    whitelistAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      USDC_BSC_ADDRESS,
+      USDC_ETH_ADDRESS,
+      USDT_BSC_ADDRESS,
+      USDT_ETH_ADDRESS,
+      ETH_ETH_ADDRESS,
+      BNB_BSC_ADDRESS,
+      BTC_BTC_ADDRESS
+    ],
+    stable0: USDT_ETH_ADDRESS,
+    stable1: USDC_ETH_ADDRESS,
+    stable2: USDC_BSC_ADDRESS,
+    minimumNativeLiquidity: 1000,
+    factory: {
+      address: '0x33d91116e0370970444b0281ab117e161febfcdd',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 1552091,
+    }
+  },
   v3: {
     factory: {
       address: '0xb45e53277a7e0f1d35f2a77160e91e25507f1763',
@@ -68,7 +93,7 @@ module.exports = {
       USDT_BSC_ADDRESS,
       USDT_ETH_ADDRESS
     ],
-    nativePricePool: '0xcdbcd51a5e8728e0af4895ce5771b7d17ff71959', // ZETA/USDT.ETH - 0.03%
+    nativePricePool: '0xe449be94d63ce46c80ac21c486630013e66d2fe5', // ZETA/USDT.ETH - 0.03%
     minimumEthLocked: 1000,
   },
 }

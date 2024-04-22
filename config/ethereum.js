@@ -180,6 +180,62 @@ module.exports = {
     ],
     minimumNativeLiquidity: '2'
   },
+  
+  v2: {
+    nativeAddress: NATIVE_ADDRESS,
+    whitelistAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WBTC_ADDRESS,
+      DAI_ADDRESS,
+      USDC_ADDRESS,
+      OHM_ADDRESS,
+      USDT_ADDRESS,
+      TUSD_ADDRESS,
+      CDAI_ADDRESS,
+      SUSD_ADDRESS,
+      LINK_ADDRESS,
+      YFI_ADDRESS,
+      XSUSHI_ADDRESS,
+      USDP_ADDRESS,
+      BAC_ADDRESS,
+      CREAM_ADDRESS,
+      FXS_ADDRESS,
+      ALPHA_ADDRESS,
+      PWING_ADDRESS,
+      UMA_ADDRESS,
+      RUNE_ADDRESS,
+      NFTX_ADDRESS,
+      STETH_ADDRESS,
+      DOUGH_ADDRESS,
+      LFBTC_ADDRESS,
+      SUSHI_ADDRESS,
+      APE_ADDRESS,
+      ANGLE_ADDRESS,
+      CRV_ADDRESS,
+      INV_ADDRESS,
+      PRIMATE_ADDRESS,
+      MIM_ADDRESS,
+      FRAX_ADDRESS,
+      ASTRAFER_ADDRESS,
+      UST_ADDRESS,
+      '0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2', // MKR
+      '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f', // SNX
+      '0x111111111117dc0aa78b770fa6a738034120c302', // 1INCH
+      '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0', // MATIC
+      '0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9', // AAVE
+      '0x6982508145454ce325ddbe47a25d4ec3d2311933' // PEPE
+    ],
+    stable0: USDC_ADDRESS,
+    stable1: USDT_ADDRESS,
+    stable2: DAI_ADDRESS,
+    minimumNativeLiquidity: 3,
+    factory: {
+      address: '0xc0aee478e3658e2610c5f7a4a2e1777ce9e4f2ac',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 10794229
+    }
+  },
   v3: {
     factory: {
       address: '0xbaceb8ec6b9355dfc0269c18bac9d6e2bdc29c4f',

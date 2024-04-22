@@ -14,7 +14,7 @@ const ETH_ADDRESS = '0xe6801928061cdbe32ac5ad0634427e140efd05f9'
 const WBTC_ADDRESS = '0xd67de0e0a0fd7b15dc8348bb9be742f3c5850454'
 const USDC_ADRESS = '0xdc42728b0ea910349ed3c6e1c9dc06b5fb591f98'
 const USDT_ADDRESS = '0x0dcb0cb0120d355cde1ce56040be57add0185baa'
-
+const VETT_ADDRESS = '0xc3c857a9e5be042c8acf4f2827aa053e93b5d039'
 module.exports = {
   network: 'mainnet',
   blocks: {
@@ -49,10 +49,43 @@ module.exports = {
       WBTC_ADDRESS,
       USDC_ADRESS,
       USDT_ADDRESS,
+      VETT_ADDRESS
     ],
     stableTokenAddresses: [TT_USDT_ADDRESS, TT_USDC_ADDRESS, TT_BUSD_ADDRESS, BUSD_ADDRESS, USDC_ADRESS, USDT_ADDRESS],
     nativePricePool: '0x37cfcf5a4878bcd58b6a0cffb1746c26465625f4',
     minimumEthLocked: 300000
+  },
+  v2: {
+    nativeAddress: NATIVE_ADDRESS,
+    whitelistAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      TT_USDT_ADDRESS,
+      TT_WBTC_ADDRESS,
+      TT_USDC_ADDRESS,
+      TT_ETH_ADDRESS,
+      TT_BUSD_ADDRESS,
+      TT_BNB_ADDRESS,
+      GUESS_ADDRESS,
+      ZIPPY_DICE_ADDRESS,
+      BNB_ADDRESS,
+      SUSHI_ADDRESS,
+      BUSD_ADDRESS,
+      ETH_ADDRESS,
+      WBTC_ADDRESS,
+      USDC_ADRESS,
+      USDT_ADDRESS,
+      VETT_ADDRESS
+    ],
+    stable0: TT_USDC_ADDRESS,
+    stable1: TT_USDT_ADDRESS,
+    stable2: TT_BUSD_ADDRESS,
+    minimumNativeLiquidity: 300000,
+    factory: {
+      address: '0xb45e53277a7e0f1d35f2a77160e91e25507f1763',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 145330791,
+    }
   },
   legacy: {
     native: { address: NATIVE_ADDRESS },
@@ -82,5 +115,13 @@ module.exports = {
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
       startBlock: 145330791,
     },
+  },
+  furo: {
+    stream: { address: '0x1400feFD6F9b897970f00Df6237Ff2B8b27Dc82C', startBlock: 159988546 },
+    vesting: { address: '0xBda8a8423B7F02Cd935412FB9F13CB88f7875991', startBlock: 159988772 }
+  },
+  bentobox: {
+    address: '0xe43ca1Dee3F0fc1e2df73A0745674545F11A59F5',
+    startBlock: 159987571
   },
 }
