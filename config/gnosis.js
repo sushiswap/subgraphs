@@ -11,7 +11,7 @@ const USDP_ADDRESS = '0xfe7ed09c4956f7cdb54ec4ffcb9818db2d7025b8'
 const GNO_ADDRESS = '0x9c58bacc331c9aa871afd802db6379a98e80cedb'
 
 module.exports = {
-  network: 'xdai',
+  network: 'gnosis',
   sushi: { address: SUSHI_ADDRESS },
   bentobox: {
     address: '0xe2d7f5dd869fc7c126d21b13a9080e75a4bdb324',

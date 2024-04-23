@@ -32,27 +32,6 @@ importers:
         specifier: ^0.27.0
         version: 0.27.0
 
-  subgraphs/auction-maker:
-    devDependencies:
-      '@graphprotocol/graph-cli':
-        specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.3.2)(node-fetch@2.6.11)(typescript@5.2.2)
-      '@graphprotocol/graph-ts':
-        specifier: ^0.27.0
-        version: 0.27.0
-      abi:
-        specifier: workspace:*
-        version: link:../../packages/abi
-      assemblyscript:
-        specifier: ^0.19.20
-        version: 0.19.23
-      matchstick-as:
-        specifier: 0.5.0
-        version: 0.5.0
-      wabt:
-        specifier: 1.0.24
-        version: 1.0.24
-
   subgraphs/bentobox:
     devDependencies:
       '@graphprotocol/graph-cli':
@@ -89,21 +68,6 @@ importers:
         specifier: 1.0.24
         version: 1.0.24
 
-  subgraphs/candles:
-    devDependencies:
-      '@graphprotocol/graph-cli':
-        specifier: 0.49.0
-        version: 0.49.0(@types/node@20.3.2)(node-fetch@2.6.11)(typescript@5.2.2)
-      '@graphprotocol/graph-ts':
-        specifier: 0.27.0
-        version: 0.27.0
-      '@sushiswap/core':
-        specifier: ^1.4.2
-        version: 1.4.2
-      matchstick-as:
-        specifier: 0.5.0
-        version: 0.5.0
-
   subgraphs/furo:
     devDependencies:
       '@graphprotocol/graph-cli':
@@ -124,24 +88,6 @@ importers:
       wabt:
         specifier: 1.0.24
         version: 1.0.24
-
-  subgraphs/kashi:
-    devDependencies:
-      '@graphprotocol/graph-cli':
-        specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.3.2)(node-fetch@2.6.11)(typescript@5.2.2)
-      '@graphprotocol/graph-ts':
-        specifier: ^0.27.0
-        version: 0.27.0
-      abi:
-        specifier: workspace:*
-        version: link:../../packages/abi
-      matchstick-as:
-        specifier: 0.5.0
-        version: 0.5.0
-      math:
-        specifier: workspace:*
-        version: link:../../packages/math
 
   subgraphs/minichef:
     devDependencies:
@@ -164,30 +110,6 @@ importers:
         specifier: 1.0.24
         version: 1.0.24
 
-  subgraphs/miso:
-    devDependencies:
-      '@graphprotocol/graph-cli':
-        specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.3.2)(node-fetch@2.6.11)(typescript@5.2.2)
-      '@graphprotocol/graph-ts':
-        specifier: ^0.27.0
-        version: 0.27.0
-      '@sushiswap/miso':
-        specifier: 1.0.0-canary.48
-        version: 1.0.0-canary.48
-      abi:
-        specifier: workspace:*
-        version: link:../../packages/abi
-      assemblyscript:
-        specifier: ^0.19.20
-        version: 0.19.23
-      matchstick-as:
-        specifier: 0.5.0
-        version: 0.5.0
-      wabt:
-        specifier: 1.0.24
-        version: 1.0.24
-
   subgraphs/router:
     devDependencies:
       '@graphprotocol/graph-cli':
@@ -196,30 +118,6 @@ importers:
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
-      abi:
-        specifier: workspace:*
-        version: link:../../packages/abi
-      assemblyscript:
-        specifier: ^0.19.20
-        version: 0.19.23
-      matchstick-as:
-        specifier: 0.5.0
-        version: 0.5.0
-      wabt:
-        specifier: 1.0.24
-        version: 1.0.24
-
-  subgraphs/staking:
-    devDependencies:
-      '@graphprotocol/graph-cli':
-        specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.3.2)(node-fetch@2.6.11)(typescript@5.2.2)
-      '@graphprotocol/graph-ts':
-        specifier: ^0.27.0
-        version: 0.27.0
-      '@sushiswap/core':
-        specifier: 1.4.2
-        version: 1.4.2
       abi:
         specifier: workspace:*
         version: link:../../packages/abi
@@ -266,47 +164,11 @@ importers:
         specifier: 0.5.0
         version: 0.5.0
 
-  subgraphs/sushiswap-minimal:
-    devDependencies:
-      '@graphprotocol/graph-cli':
-        specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.3.2)(node-fetch@2.6.11)(typescript@5.2.2)
-      '@graphprotocol/graph-ts':
-        specifier: ^0.27.0
-        version: 0.27.0
-      abi:
-        specifier: workspace:*
-        version: link:../../packages/abi
-      matchstick-as:
-        specifier: 0.5.0
-        version: 0.5.0
-
-  subgraphs/trident:
-    devDependencies:
-      '@graphprotocol/graph-cli':
-        specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.3.2)(node-fetch@2.6.11)(typescript@5.2.2)
-      '@graphprotocol/graph-ts':
-        specifier: ^0.27.0
-        version: 0.27.0
-      abi:
-        specifier: workspace:*
-        version: link:../../packages/abi
-      assemblyscript:
-        specifier: ^0.19.20
-        version: 0.19.23
-      matchstick-as:
-        specifier: 0.5.0
-        version: 0.5.0
-      wabt:
-        specifier: 1.0.24
-        version: 1.0.24
-
   subgraphs/v2:
     devDependencies:
       '@graphprotocol/graph-cli':
-        specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.3.2)(node-fetch@2.6.11)(typescript@5.2.2)
+        specifier: ^0.70.0
+        version: 0.70.0(@types/node@20.3.2)(node-fetch@2.6.11)(typescript@5.2.2)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -326,8 +188,8 @@ importers:
   subgraphs/v3:
     devDependencies:
       '@graphprotocol/graph-cli':
-        specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.3.2)(node-fetch@2.6.11)(typescript@5.2.2)
+        specifier: ^0.70.0
+        version: 0.70.0(@types/node@20.3.2)(node-fetch@2.6.11)(typescript@5.2.2)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -358,24 +220,6 @@ importers:
       assemblyscript:
         specifier: ^0.19.20
         version: 0.19.23
-      matchstick-as:
-        specifier: 0.5.0
-        version: 0.5.0
-      wabt:
-        specifier: 1.0.24
-        version: 1.0.24
-
-  subgraphs/xswap:
-    devDependencies:
-      '@graphprotocol/graph-cli':
-        specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.3.2)(node-fetch@2.6.11)(typescript@5.2.2)
-      '@graphprotocol/graph-ts':
-        specifier: ^0.27.0
-        version: 0.27.0
-      abi:
-        specifier: workspace:*
-        version: link:../../packages/abi
       matchstick-as:
         specifier: 0.5.0
         version: 0.5.0
@@ -582,49 +426,6 @@ packages:
       js-yaml: 4.1.0
     dev: true
 
-  /@graphprotocol/graph-cli@0.49.0(@types/node@20.3.2)(node-fetch@2.6.11)(typescript@5.2.2):
-    resolution: {integrity: sha512-UZsMTcTZN/EFT/1t8Z253ZtEZXqYQIWKbSox+Q6Fu4bzkK7LlKtoKKrOhxqMfSe2jewFKkCQkVWVC4tXoN+sVQ==}
-    engines: {node: '>=14'}
-    hasBin: true
-    dependencies:
-      '@float-capital/float-subgraph-uncrashable': 0.0.0-internal-testing.5
-      '@oclif/core': 2.8.4(@types/node@20.3.2)(typescript@5.2.2)
-      '@whatwg-node/fetch': 0.8.8
-      assemblyscript: 0.19.23
-      binary-install-raw: 0.0.13(debug@4.3.4)
-      chalk: 3.0.0
-      chokidar: 3.5.3
-      debug: 4.3.4(supports-color@8.1.1)
-      docker-compose: 0.23.19
-      dockerode: 2.5.8
-      fs-extra: 9.1.0
-      glob: 9.3.5
-      gluegun: github.com/edgeandnode/gluegun/b34b9003d7bf556836da41b57ef36eb21570620a(debug@4.3.4)
-      graphql: 15.5.0
-      immutable: 4.2.1
-      ipfs-http-client: 55.0.0(node-fetch@2.6.11)
-      jayson: 4.0.0
-      js-yaml: 3.14.1
-      prettier: 1.19.1
-      request: 2.88.2
-      semver: 7.4.0
-      sync-request: 6.1.0
-      tmp-promise: 3.0.3
-      web3-eth-abi: 1.7.0
-      which: 2.0.2
-      yaml: 1.10.2
-    transitivePeerDependencies:
-      - '@swc/core'
-      - '@swc/wasm'
-      - '@types/node'
-      - bufferutil
-      - encoding
-      - node-fetch
-      - supports-color
-      - typescript
-      - utf-8-validate
-    dev: true
-
   /@graphprotocol/graph-cli@0.60.0(@types/node@20.3.2)(node-fetch@2.6.11)(typescript@5.2.2):
     resolution: {integrity: sha512-8tGaQJ0EzAPtkDXCAijFGoVdJXM+pKFlGxjiU31TdG5bS4cIUoSB6yWojVsFFod0yETAwf+giel/0/8sudYsDw==}
     engines: {node: '>=14'}
@@ -652,6 +453,50 @@ packages:
       js-yaml: 3.14.1
       prettier: 1.19.1
       request: 2.88.2
+      semver: 7.4.0
+      sync-request: 6.1.0
+      tmp-promise: 3.0.3
+      web3-eth-abi: 1.7.0
+      which: 2.0.2
+      yaml: 1.10.2
+    transitivePeerDependencies:
+      - '@swc/core'
+      - '@swc/wasm'
+      - '@types/node'
+      - bufferutil
+      - encoding
+      - node-fetch
+      - supports-color
+      - typescript
+      - utf-8-validate
+    dev: true
+
+  /@graphprotocol/graph-cli@0.70.0(@types/node@20.3.2)(node-fetch@2.6.11)(typescript@5.2.2):
+    resolution: {integrity: sha512-BzwgEzC2s+2vhnLA2nJl11/pAIj8/WgmcdY1PKe1ig4nHGvD3veRY/zUBBy6TPkqkrBP9slb6G05lTlGFzyB9A==}
+    engines: {node: '>=18'}
+    hasBin: true
+    dependencies:
+      '@float-capital/float-subgraph-uncrashable': 0.0.0-internal-testing.5
+      '@oclif/core': 2.8.6(@types/node@20.3.2)(typescript@5.2.2)
+      '@oclif/plugin-autocomplete': 2.3.10(@types/node@20.3.2)(typescript@5.2.2)
+      '@oclif/plugin-not-found': 2.4.3(@types/node@20.3.2)(typescript@5.2.2)
+      '@whatwg-node/fetch': 0.8.8
+      assemblyscript: 0.19.23
+      binary-install-raw: 0.0.13(debug@4.3.4)
+      chalk: 3.0.0
+      chokidar: 3.5.3
+      debug: 4.3.4(supports-color@8.1.1)
+      docker-compose: 0.23.19
+      dockerode: 2.5.8
+      fs-extra: 9.1.0
+      glob: 9.3.5
+      gluegun: 5.1.6(debug@4.3.4)
+      graphql: 15.5.0
+      immutable: 4.2.1
+      ipfs-http-client: 55.0.0(node-fetch@2.6.11)
+      jayson: 4.0.0
+      js-yaml: 3.14.1
+      prettier: 3.0.3
       semver: 7.4.0
       sync-request: 6.1.0
       tmp-promise: 3.0.3
@@ -756,46 +601,6 @@ packages:
       object-treeify: 1.1.33
       password-prompt: 1.1.2
       slice-ansi: 4.0.0
-      string-width: 4.2.3
-      strip-ansi: 6.0.1
-      supports-color: 8.1.1
-      supports-hyperlinks: 2.3.0
-      ts-node: 10.9.1(@types/node@20.3.2)(typescript@5.2.2)
-      tslib: 2.6.0
-      widest-line: 3.1.0
-      wordwrap: 1.0.0
-      wrap-ansi: 7.0.0
-    transitivePeerDependencies:
-      - '@swc/core'
-      - '@swc/wasm'
-      - '@types/node'
-      - typescript
-    dev: true
-
-  /@oclif/core@2.8.4(@types/node@20.3.2)(typescript@5.2.2):
-    resolution: {integrity: sha512-VlFDhoAJ1RDwcpDF46wAlciWTIryapMUViACttY9GwX6Ci6Lud1awe/pC3k4jad5472XshnPQV4bHAl4a/yxpA==}
-    engines: {node: '>=14.0.0'}
-    dependencies:
-      '@types/cli-progress': 3.11.0
-      ansi-escapes: 4.3.2
-      ansi-styles: 4.3.0
-      cardinal: 2.1.1
-      chalk: 4.1.2
-      clean-stack: 3.0.1
-      cli-progress: 3.12.0
-      debug: 4.3.4(supports-color@8.1.1)
-      ejs: 3.1.9
-      fs-extra: 9.1.0
-      get-package-type: 0.1.0
-      globby: 11.1.0
-      hyperlinker: 1.0.0
-      indent-string: 4.0.0
-      is-wsl: 2.2.0
-      js-yaml: 3.14.1
-      natural-orderby: 2.0.3
-      object-treeify: 1.1.33
-      password-prompt: 1.1.2
-      semver: 7.4.0
       string-width: 4.2.3
       strip-ansi: 6.0.1
       supports-color: 8.1.1
@@ -952,14 +757,6 @@ packages:
 
   /@rescript/std@9.0.0:
     resolution: {integrity: sha512-zGzFsgtZ44mgL4Xef2gOy1hrRVdrs9mcxCOOKZrIPsmbZW14yTkaF591GXxpQvjXiHtgZ/iA9qLyWH6oSReIxQ==}
-    dev: true
-
-  /@sushiswap/core@1.4.2:
-    resolution: {integrity: sha512-Khd2i6Bob9uk7dCgVkhUioEoxRP28m6aj25MegAHvnJyxZPVzZDhxSkeL6wdv5MeAp2DwHkYqUq03KDfVTTP4Q==}
-    dev: true
-
-  /@sushiswap/miso@1.0.0-canary.48:
-    resolution: {integrity: sha512-D7qlWtvH2VjXbptb3hVQgrRYTKZCNFQUrsjjhIeUZIiyzJnrLMiUybwKVQdWPHICXLm6f1WXiy988VpqpE0TYQ==}
     dev: true
 
   /@sushiswap/prettier-config@0.1.0(prettier@2.6.2):
@@ -1133,11 +930,6 @@ packages:
       uri-js: 4.4.1
     dev: true
 
-  /ansi-colors@3.2.4:
-    resolution: {integrity: sha512-hHUXGagefjN2iRrID63xckIvotOXOojhQKWIPUZ4mNUZ9nLZW+7FMNoE1lOkEhNWYsx/7ysGIuJYCiMAA9FnrA==}
-    engines: {node: '>=6'}
-    dev: true
-
   /ansi-colors@4.1.3:
     resolution: {integrity: sha512-/6w/C21Pm1A7aZitlI5Ni/2J6FFQN8i1Cvz3kHABAAbw93v/NlvKdVOqz7CCWz/3iv/JplRSEEZ83XION15ovw==}
     engines: {node: '>=6'}
@@ -1153,11 +945,6 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       type-fest: 0.21.3
-    dev: true
-
-  /ansi-regex@3.0.1:
-    resolution: {integrity: sha512-+O9Jct8wf++lXxxFc4hc8LsjaSq0HFzzL7cVsw8pRDIPdjKD2mT4ytDZlLuSBZ4cLKZFXIrMGO7DbQCtMJJMKw==}
-    engines: {node: '>=4'}
     dev: true
 
   /ansi-regex@4.1.1:
@@ -1205,15 +992,6 @@ packages:
     dependencies:
       normalize-path: 3.0.0
       picomatch: 2.3.1
-    dev: true
-
-  /apisauce@1.1.5(debug@4.3.4):
-    resolution: {integrity: sha512-gKC8qb/bDJsPsnEXLZnXJ7gVx7dh87CEVNeIwv1dvaffnXoh5GHwac5pWR1P2broLiVj/fqFMQvLDDt/RhjiqA==}
-    dependencies:
-      axios: 0.21.4(debug@4.3.4)
-      ramda: 0.25.0
-    transitivePeerDependencies:
-      - debug
     dev: true
 
   /apisauce@2.1.6(debug@4.3.4):
@@ -1499,11 +1277,6 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /camelcase@5.3.1:
-    resolution: {integrity: sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==}
-    engines: {node: '>=6'}
-    dev: true
-
   /cardinal@2.1.1:
     resolution: {integrity: sha512-JSr5eOgoEymtYHBjNWyjrMqet9Am2miJhlfKNdqLp6zoeAh0KN5dRAcxlecj5mAJrmQomgiOBj35xHLrFjqBpw==}
     hasBin: true
@@ -1603,16 +1376,6 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /cli-table3@0.5.1:
-    resolution: {integrity: sha512-7Qg2Jrep1S/+Q3EceiZtQcDPWxhAvBw+ERf1162v4sikJrvojMHFqXt8QIVha8UlH9rgU0BeWPytZ9/TzYqlUw==}
-    engines: {node: '>=6'}
-    dependencies:
-      object-assign: 4.1.1
-      string-width: 2.1.1
-    optionalDependencies:
-      colors: 1.4.0
-    dev: true
-
   /cli-table3@0.6.0:
     resolution: {integrity: sha512-gnB85c3MGC7Nm9I/FkiasNBOKjOiO1RNuXXarQms37q4QMpWdlbBgD/VnOStA2faG1dpXMv31RFApjX1/QdgWQ==}
     engines: {node: 10.* || >= 12.*}
@@ -1647,11 +1410,6 @@ packages:
 
   /color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
-    dev: true
-
-  /colors@1.3.3:
-    resolution: {integrity: sha512-mmGt/1pZqYRjMxB1axhTo16/snVZ5krrKkcmMeVKxzECMMXoCgnvTPp10QgHfcbQZw8Dq2jMNG6je4JlWU0gWg==}
-    engines: {node: '>=0.1.90'}
     dev: true
 
   /colors@1.4.0:
@@ -1695,17 +1453,6 @@ packages:
 
   /core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
-    dev: true
-
-  /cosmiconfig@6.0.0:
-    resolution: {integrity: sha512-xb3ZL6+L8b9JLLCx3ZdoZy4+2ECphCMo2PwqgP1tlfVq6M6YReyzBJtvWWtbDSpNr9hn96pkCiZqUcFEc+54Qg==}
-    engines: {node: '>=8'}
-    dependencies:
-      '@types/parse-json': 4.0.0
-      import-fresh: 3.3.0
-      parse-json: 5.2.0
-      path-type: 4.0.0
-      yaml: 1.10.2
     dev: true
 
   /cosmiconfig@7.0.1:
@@ -1795,11 +1542,6 @@ packages:
       supports-color: 8.1.1
     dev: true
 
-  /decamelize@1.2.0:
-    resolution: {integrity: sha512-z2S+W9X73hAUUki+N+9Za2lBlun89zigOyGrsax+KUQ6wKW4ZoWpEYBkGhQjwAjjDCkWxhY0VKEhk8wzY7F5cA==}
-    engines: {node: '>=0.10.0'}
-    dev: true
-
   /defaults@1.0.4:
     resolution: {integrity: sha512-eFuaLoy/Rxalv2kr+lqMlUnrDWV+3j4pljOIJgLIhI058IQfWJ7vXhyEIHu+HtC738klGALYxOKDO0bQP3tg8A==}
     dependencies:
@@ -1876,14 +1618,16 @@ packages:
       safer-buffer: 2.1.2
     dev: true
 
-  /ejs@2.7.4:
-    resolution: {integrity: sha512-7vmuyh5+kuUyJKePhQfRQBhXV5Ce+RnaeeQArKu1EAMpL3WbgMt5WG6uQZpEVvYSSsxMXRKOewtDk9RaTKXRlA==}
-    engines: {node: '>=0.10.0'}
-    requiresBuild: true
-    dev: true
-
   /ejs@3.1.6:
     resolution: {integrity: sha512-9lt9Zse4hPucPkoP7FHDF0LQAlGyF9JVpnClFLFH3aSSbxmyoqINRpp/9wePWJTUl4KOQwRL72Iw3InHPDkoGw==}
+    engines: {node: '>=0.10.0'}
+    hasBin: true
+    dependencies:
+      jake: 10.8.7
+    dev: true
+
+  /ejs@3.1.8:
+    resolution: {integrity: sha512-/sXZeMlhS0ArkfX2Aw780gJzXSMPnKjtspYZv+f3NiKLlubezAHDU5+9xz6gd3/NhG3txQCo6xlglmTS+oTGEQ==}
     engines: {node: '>=0.10.0'}
     hasBin: true
     dependencies:
@@ -1931,13 +1675,6 @@ packages:
     resolution: {integrity: sha512-+uw1inIHVPQoaVuHzRyXd21icM+cnt4CzD5rW+NC1wjOUSTOs+Te7FOv7AhN7vS9x/oIyhLP5PR1H+phQAHu5Q==}
     dependencies:
       once: 1.4.0
-    dev: true
-
-  /enquirer@2.3.4:
-    resolution: {integrity: sha512-pkYrrDZumL2VS6VBGDhqbajCM2xpkUNLuKfGPjfKaSIBKYopQbqEFyrOkRMIb2HDR/rO1kGhEt/5twBwtzKBXw==}
-    engines: {node: '>=8.6'}
-    dependencies:
-      ansi-colors: 3.2.4
     dev: true
 
   /enquirer@2.3.6:
@@ -2038,22 +1775,6 @@ packages:
     dependencies:
       md5.js: 1.3.5
       safe-buffer: 5.2.1
-    dev: true
-
-  /execa@3.4.0:
-    resolution: {integrity: sha512-r9vdGQk4bmCuK1yKQu1KTwcT2zwfWdbdaXfCtAh+5nU/4fSX+JAb7vZGvI5naJrQlvONrEB20jeruESI69530g==}
-    engines: {node: ^8.12.0 || >=9.7.0}
-    dependencies:
-      cross-spawn: 7.0.3
-      get-stream: 5.2.0
-      human-signals: 1.1.1
-      is-stream: 2.0.1
-      merge-stream: 2.0.0
-      npm-run-path: 4.0.1
-      onetime: 5.1.2
-      p-finally: 2.0.1
-      signal-exit: 3.0.7
-      strip-final-newline: 2.0.0
     dev: true
 
   /execa@5.1.1:
@@ -2202,14 +1923,6 @@ packages:
       universalify: 2.0.0
     dev: true
 
-  /fs-jetpack@2.4.0:
-    resolution: {integrity: sha512-S/o9Dd7K9A7gicVU32eT8G0kHcmSu0rCVdP79P0MWInKFb8XpTc8Syhoo66k9no+HDshtlh4pUJTws8X+8fdFQ==}
-    engines: {node: '>=4'}
-    dependencies:
-      minimatch: 3.1.2
-      rimraf: 2.7.1
-    dev: true
-
   /fs-jetpack@4.3.1:
     resolution: {integrity: sha512-dbeOK84F6BiQzk2yqqCVwCPWTxAvVGJ3fMQc6E2wuEohS28mR6yHngbrKuVCK1KHRx/ccByDylqu4H5PCP2urQ==}
     dependencies:
@@ -2261,13 +1974,6 @@ packages:
   /get-port@3.2.0:
     resolution: {integrity: sha512-x5UJKlgeUiNT8nyo/AcnwLnZuZNcSjSw0kogRB+Whd1fjjFq4B1hySFxSFWWSn4mIBzg3sRNUDFYc4g5gjPoLg==}
     engines: {node: '>=4'}
-    dev: true
-
-  /get-stream@5.2.0:
-    resolution: {integrity: sha512-nBF+F1rAZVCu/p7rjzgA+Yb4lfYXrpl7a6VmJrU8wF9I1CKvP/QwPNZHnOlwbTkY6dvtFIzFMSyQXbLoTQPRpA==}
-    engines: {node: '>=8'}
-    dependencies:
-      pump: 3.0.0
     dev: true
 
   /get-stream@6.0.1:
@@ -2332,6 +2038,44 @@ packages:
       cosmiconfig: 7.0.1
       cross-spawn: 7.0.3
       ejs: 3.1.6
+      enquirer: 2.3.6
+      execa: 5.1.1
+      fs-jetpack: 4.3.1
+      lodash.camelcase: 4.3.0
+      lodash.kebabcase: 4.1.1
+      lodash.lowercase: 4.3.0
+      lodash.lowerfirst: 4.3.1
+      lodash.pad: 4.5.1
+      lodash.padend: 4.6.1
+      lodash.padstart: 4.6.1
+      lodash.repeat: 4.1.0
+      lodash.snakecase: 4.1.1
+      lodash.startcase: 4.4.0
+      lodash.trim: 4.5.1
+      lodash.trimend: 4.5.1
+      lodash.trimstart: 4.5.1
+      lodash.uppercase: 4.3.0
+      lodash.upperfirst: 4.3.1
+      ora: 4.0.2
+      pluralize: 8.0.0
+      semver: 7.3.5
+      which: 2.0.2
+      yargs-parser: 21.1.1
+    transitivePeerDependencies:
+      - debug
+    dev: true
+
+  /gluegun@5.1.6(debug@4.3.4):
+    resolution: {integrity: sha512-9zbi4EQWIVvSOftJWquWzr9gLX2kaDgPkNR5dYWbM53eVvCI3iKuxLlnKoHC0v4uPoq+Kr/+F569tjoFbA4DSA==}
+    hasBin: true
+    dependencies:
+      apisauce: 2.1.6(debug@4.3.4)
+      app-module-path: 2.2.0
+      cli-table3: 0.6.0
+      colors: 1.4.0
+      cosmiconfig: 7.0.1
+      cross-spawn: 7.0.3
+      ejs: 3.1.8
       enquirer: 2.3.6
       execa: 5.1.1
       fs-jetpack: 4.3.1
@@ -2471,11 +2215,6 @@ packages:
       sshpk: 1.17.0
     dev: true
 
-  /human-signals@1.1.1:
-    resolution: {integrity: sha512-SEQu7vl8KjNL2eoGBLF3+wAjpsNfA9XMlXAYj/3EdaNfAlxKthD1xjEQfGOUhllCGGJVNY34bRr6lPINhNjyZw==}
-    engines: {node: '>=8.12.0'}
-    dev: true
-
   /human-signals@2.1.0:
     resolution: {integrity: sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==}
     engines: {node: '>=10.17.0'}
@@ -2592,6 +2331,7 @@ packages:
   /ipfs-http-client@55.0.0(node-fetch@2.6.11):
     resolution: {integrity: sha512-GpvEs7C7WL9M6fN/kZbjeh4Y8YN7rY8b18tVWZnKxRsVwM25cIFrRI8CwNt3Ugin9yShieI3i9sPyzYGMrLNnQ==}
     engines: {node: '>=14.0.0', npm: '>=3.0.0'}
+    deprecated: js-IPFS has been deprecated in favour of Helia - please see https://github.com/ipfs/js-ipfs/issues/4336 for details
     dependencies:
       '@ipld/dag-cbor': 7.0.3
       '@ipld/dag-json': 8.0.11
@@ -2674,11 +2414,6 @@ packages:
   /is-extglob@2.1.1:
     resolution: {integrity: sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ==}
     engines: {node: '>=0.10.0'}
-    dev: true
-
-  /is-fullwidth-code-point@2.0.0:
-    resolution: {integrity: sha512-VHskAKYM8RfSFXwee5t5cbN5PZeq1Wrh6qd5bkyiXIf6UQcN6w/A0eXM9r6t8d+GYOh+o6ZhiEnb88LN/Y8m2w==}
-    engines: {node: '>=4'}
     dev: true
 
   /is-fullwidth-code-point@3.0.0:
@@ -3181,10 +2916,6 @@ packages:
     hasBin: true
     dev: true
 
-  /mute-stream@0.0.8:
-    resolution: {integrity: sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==}
-    dev: true
-
   /nanoid@3.3.6:
     resolution: {integrity: sha512-BGcqMMJuToF7i1rt+2PWSNVnWIkGCU78jBG3RxO/bZlnZPK2Cmi2QaffxGO/2RvWi9sL+FAiRiXMgsyxQ1DIDA==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
@@ -3300,20 +3031,6 @@ packages:
       wcwidth: 1.0.1
     dev: true
 
-  /ora@4.1.1:
-    resolution: {integrity: sha512-sjYP8QyVWBpBZWD6Vr1M/KwknSw6kJOz41tvGMlwWeClHBtYKTbHMki1PsLZnxKpXMPbTKv9b3pjQu3REib96A==}
-    engines: {node: '>=8'}
-    dependencies:
-      chalk: 3.0.0
-      cli-cursor: 3.1.0
-      cli-spinners: 2.9.0
-      is-interactive: 1.0.0
-      log-symbols: 3.0.0
-      mute-stream: 0.0.8
-      strip-ansi: 6.0.1
-      wcwidth: 1.0.1
-    dev: true
-
   /p-defer@3.0.0:
     resolution: {integrity: sha512-ugZxsxmtTln604yeYd29EGrNhazN2lywetzpKhfmQjW/VJmhpDmWbiX+h0zL8V91R0UXkhb3KtPmyq9PZw3aYw==}
     engines: {node: '>=8'}
@@ -3324,11 +3041,6 @@ packages:
     dependencies:
       fast-fifo: 1.3.0
       p-defer: 3.0.0
-    dev: true
-
-  /p-finally@2.0.1:
-    resolution: {integrity: sha512-vpm09aKwq6H9phqRQzecoDpD8TmVyGw70qmWlyq5onxY7tqyTTFVvxMykxQSQKILBSFlbXpypIw2T1Ml7+DDtw==}
-    engines: {node: '>=8'}
     dev: true
 
   /parent-module@1.0.1:
@@ -3428,6 +3140,12 @@ packages:
     hasBin: true
     dev: true
 
+  /prettier@3.0.3:
+    resolution: {integrity: sha512-L/4pUDMxcNa8R/EthV08Zt42WBO4h1rarVtK0K+QJG0X187OLo7l699jWw0GKuwzkPQ//jMFA/8Xm6Fh3J/DAg==}
+    engines: {node: '>=14'}
+    hasBin: true
+    dev: true
+
   /process-nextick-args@2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}
     dev: true
@@ -3469,13 +3187,6 @@ packages:
       once: 1.4.0
     dev: true
 
-  /pump@3.0.0:
-    resolution: {integrity: sha512-LwZy+p3SFs1Pytd/jYct4wpv49HiYCqd9Rlc5ZVdk0V+8Yzv6jR5Blk3TRmPL1ft69TxP0IMZGJ+WPFU2BFhww==}
-    dependencies:
-      end-of-stream: 1.4.4
-      once: 1.4.0
-    dev: true
-
   /punycode@1.4.1:
     resolution: {integrity: sha512-jmYNElW7yvO7TV33CjSmvSiE2yco3bV2czu/OzDKdMNVZQWfxCblURLhf+47syQRBntjfLdd/H0egrzIG+oaFQ==}
     dev: true
@@ -3510,20 +3221,6 @@ packages:
 
   /queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
-    dev: true
-
-  /ramda@0.24.1:
-    resolution: {integrity: sha512-HEm619G8PaZMfkqCa23qiOe7r3R0brPu7ZgOsgKUsnvLhd0qhc/vTjkUovomgPWa5ECBa08fJZixth9LaoBo5w==}
-    dev: true
-
-  /ramda@0.25.0:
-    resolution: {integrity: sha512-GXpfrYVPwx3K7RQ6aYT8KPS8XViSXUVJT1ONhoKPE9VAleW42YE+U+8VEyGWt41EnEQW7gwecYJriTI0pKoecQ==}
-    dev: true
-
-  /ramdasauce@2.1.3:
-    resolution: {integrity: sha512-Ml3CPim4SKwmg5g9UI77lnRSeKr/kQw7YhQ6rfdMcBYy6DMlwmkEwQqjygJ3OhxPR+NfFfpjKl3Tf8GXckaqqg==}
-    dependencies:
-      ramda: 0.24.1
     dev: true
 
   /randombytes@2.1.0:
@@ -3826,14 +3523,6 @@ packages:
     engines: {node: '>=10.0.0'}
     dev: true
 
-  /string-width@2.1.1:
-    resolution: {integrity: sha512-nOqH59deCq9SRHlxq1Aw85Jnt4w6KvLKqWVik6oA9ZklXLNIOlqg4F2yrT1MVaTjAqvVwdfeZ7w7aCvJD7ugkw==}
-    engines: {node: '>=4'}
-    dependencies:
-      is-fullwidth-code-point: 2.0.0
-      strip-ansi: 4.0.0
-    dev: true
-
   /string-width@4.2.3:
     resolution: {integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==}
     engines: {node: '>=8'}
@@ -3857,13 +3546,6 @@ packages:
     resolution: {integrity: sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA==}
     dependencies:
       safe-buffer: 5.2.1
-    dev: true
-
-  /strip-ansi@4.0.0:
-    resolution: {integrity: sha512-4XaJ2zQdCzROZDivEVIDPkcQn8LMFSa8kj8Gxb/Lnwzv9A8VctNZ+lfivC/sV3ivW8ElJTERXZoPBRrZKkNKow==}
-    engines: {node: '>=4'}
-    dependencies:
-      ansi-regex: 3.0.1
     dev: true
 
   /strip-ansi@5.2.0:
@@ -4391,13 +4073,6 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
-  /yargs-parser@16.1.0:
-    resolution: {integrity: sha512-H/V41UNZQPkUMIT5h5hiwg4QKIY1RPvoBV4XcjUbRM8Bk2oKqqyZ0DIEbTFZB0XjbtSPG8SAa/0DxCQmiRgzKg==}
-    dependencies:
-      camelcase: 5.3.1
-      decamelize: 1.2.0
-    dev: true
-
   /yargs-parser@21.1.1:
     resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
     engines: {node: '>=12'}
@@ -4406,46 +4081,4 @@ packages:
   /yn@3.1.1:
     resolution: {integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==}
     engines: {node: '>=6'}
-    dev: true
-
-  github.com/edgeandnode/gluegun/b34b9003d7bf556836da41b57ef36eb21570620a(debug@4.3.4):
-    resolution: {tarball: https://codeload.github.com/edgeandnode/gluegun/tar.gz/b34b9003d7bf556836da41b57ef36eb21570620a}
-    id: github.com/edgeandnode/gluegun/b34b9003d7bf556836da41b57ef36eb21570620a
-    name: gluegun
-    version: 4.3.1
-    hasBin: true
-    dependencies:
-      apisauce: 1.1.5(debug@4.3.4)
-      app-module-path: 2.2.0
-      cli-table3: 0.5.1
-      colors: 1.3.3
-      cosmiconfig: 6.0.0
-      cross-spawn: 7.0.3
-      ejs: 2.7.4
-      enquirer: 2.3.4
-      execa: 3.4.0
-      fs-jetpack: 2.4.0
-      lodash.camelcase: 4.3.0
-      lodash.kebabcase: 4.1.1
-      lodash.lowercase: 4.3.0
-      lodash.lowerfirst: 4.3.1
-      lodash.pad: 4.5.1
-      lodash.padend: 4.6.1
-      lodash.padstart: 4.6.1
-      lodash.repeat: 4.1.0
-      lodash.snakecase: 4.1.1
-      lodash.startcase: 4.4.0
-      lodash.trim: 4.5.1
-      lodash.trimend: 4.5.1
-      lodash.trimstart: 4.5.1
-      lodash.uppercase: 4.3.0
-      lodash.upperfirst: 4.3.1
-      ora: 4.1.1
-      pluralize: 8.0.0
-      ramdasauce: 2.1.3
-      semver: 7.4.0
-      which: 2.0.2
-      yargs-parser: 16.1.0
-    transitivePeerDependencies:
-      - debug
     dev: true
