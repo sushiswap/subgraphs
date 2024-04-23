@@ -7,7 +7,7 @@ const USDT_ADDRESS = '0xa219439258ca9da29e9cc4ce5596924745e12b93'
 const WBTC_ADDRESS = '0x3aab2285ddcddad8edf438c1bab47e1a9d05a9b4'
 
 module.exports = {
-  network: 'linea-mainnet',
+  network: 'linea',
   blocks: {
     address: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
     startBlock: 53256,
