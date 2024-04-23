@@ -32,6 +32,7 @@ module.exports = {
   },
   v3: {
     // graft using base w/ nativePricingPool = WCORE/USDT 0.3%
+    // (0x72d8e6d7307dcf11a3456b9f6fdfad05385b2f3e)
     base: 'QmZ2DS4ygETCH1DPXLY42moVjeswZPRHmTnv3Aeuz5S1ji',
     startBlock: 13174609,
     factory: {
