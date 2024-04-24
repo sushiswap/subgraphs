@@ -46,7 +46,11 @@ module.exports = {
     medium: '0x2cba6ab6574646badc84f0544d05059e57a5dc42'
   },
   blocks: {
-    address: '0x6e38A457C722C6011B2dfa06d49240e797844d66',
+    graft: {
+      base: 'QmfMF6FFweTxhiwH7LJVbV75cXcSB1CHkVZ9gpPE7aRs8o',
+      startBlock: 19717605,
+    },
+    address: '0x6e38A457C722C6011B2dfa06d49240e797844d66',    
     startBlock: 49880
   },
   miso: {
@@ -317,10 +321,6 @@ module.exports = {
   },
   auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
-  blocks: {
-    address: '0x0000000000000000000000000000000000000000',
-    startBlock: 0
-  },
   xswap: {
     address: '0x011e52e4e40cf9498c79273329e8827b21e2e581',
     startBlock: 15187118

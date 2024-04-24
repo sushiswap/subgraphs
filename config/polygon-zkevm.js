@@ -12,8 +12,8 @@ module.exports = {
   weth: { address: WETH_ADDRESS },
   wbtc: { address: WBTC_ADDRESS },
   blocks: {
-    address: '0x1b02da8cb0d097eb8d57a175b88c7d8b47997506',
-    startBlock: 80860,
+    address: '0xb45e53277a7e0f1d35f2a77160e91e25507f1763',
+    startBlock: 0,
   },
   v3: {
     factory: {

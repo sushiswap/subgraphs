@@ -3,6 +3,12 @@ description: Blocks
 repository: https://github.com/sushiswap/subgraphs
 schema:
   file: ./schema.graphql
+features:
+  - grafting
+  # - nonFatalErrors
+graft:
+  base: '{{ blocks.graft.base }}'
+  block: {{ blocks.graft.startBlock }}
 dataSources:
   - kind: ethereum/contract
     name: UniswapV2Factory

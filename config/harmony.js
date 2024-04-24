@@ -77,6 +77,14 @@ module.exports = {
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
       startBlock: 11256061, 
     }
+  },  
+  blocks: {
+    graft: {
+      base: 'QmazoaxzhVAZybLFy56Pc24mtj5yN1oaDWfXmG5a4vySgm',
+      startBlock: 56638762,
+    },
+    address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
+    startBlock: 11256061,
   },
   bentobox: {
     address: '0xa28cff72b04f83a7e3f912e6ad34d5537708a2c2',
