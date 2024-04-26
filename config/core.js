@@ -31,6 +31,10 @@ module.exports = {
     }
   },
   v3: {
+    // graft using base w/ nativePricingPool = WCORE/USDT 0.3%
+    // (0x72d8e6d7307dcf11a3456b9f6fdfad05385b2f3e)
+    base: 'QmZ2DS4ygETCH1DPXLY42moVjeswZPRHmTnv3Aeuz5S1ji',
+    startBlock: 13174609,
     factory: {
       address: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
       startBlock: 5211850,
@@ -49,7 +53,7 @@ module.exports = {
       WETH_ADDRESS,
     ],
     stableTokenAddresses: [USDT_ADDRESS, USDC_ADDRESS],
-    nativePricePool: '0x72d8e6d7307dcf11a3456b9f6fdfad05385b2f3e', // WCORE/USDT
+    nativePricePool: '0x95dcc9e9bf80980375494346e00fc5aef6883ef7', // WCORE/USDT 0.05%
     minimumEthLocked: 1000,
   },
   legacy: {

@@ -3,6 +3,10 @@ schema:
   file: ./schema.graphql
 features:
   - nonFatalErrors
+#  - grafting
+#graft:
+#  base: '{{ v3.base }}'
+#  block: {{ v3.startBlock }}
 dataSources:
   - kind: ethereum/contract
     name: Factory
