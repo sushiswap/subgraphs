@@ -58,6 +58,10 @@ module.exports = {
     nativePricePool: '0xe5ea78ebbacb76cd430e6832ee3e46ef15a82c56', // WETH/USDC
     minimumEthLocked: 1,
   },
+  blocks: {
+    address: '0x0000000000000000000000000000000000000000',
+    startBlock: 0,
+  },
   legacy: {
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [

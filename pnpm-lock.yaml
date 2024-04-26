@@ -53,8 +53,8 @@ importers:
   subgraphs/blocks:
     devDependencies:
       '@graphprotocol/graph-cli':
-        specifier: ^0.60.0
-        version: 0.60.0(@types/node@20.3.2)(node-fetch@2.6.11)(typescript@5.2.2)
+        specifier: ^0.70.0
+        version: 0.70.0(@types/node@20.3.2)(node-fetch@2.6.11)(typescript@5.2.2)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0

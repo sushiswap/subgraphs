@@ -22,7 +22,7 @@
     "deploy-metis": "graph deploy --node https://andromeda.thegraph.metisdevops.link:8020 --ipfs https://ipfs.thegraph.metisdevops.link:5001 sushiswap/blocks-metis"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.60.0",
+    "@graphprotocol/graph-cli": "^0.70.0",
     "@graphprotocol/graph-ts": "^0.27.0",
     "matchstick-as": "0.5.0",
     "assemblyscript": "^0.19.20",

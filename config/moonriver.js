@@ -103,6 +103,10 @@ module.exports = {
     minimumEthLocked: 120 // WMOVR
   },
   blocks: {
+    graft: {
+      base: 'QmX4sv7f9KgXpenYs7qaBCFVro1CgtvPYZMcHCokavon1L',
+      startBlock: 6615094,
+    },
     address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
     startBlock: 428426,
   },
