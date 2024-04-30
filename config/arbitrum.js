@@ -198,7 +198,7 @@ module.exports = {
     startBlock: 29527181,
   },
   routeprocessor: {
-    address: '0x09bd2a33c47746ff03b86bce4e885d03c74a8e8c',
-    startBlock: 130427125,
+    address: '0x544ba588efd839d2692fc31ea991cd39993c135f',
+    startBlock: 184266045,
   }
 }

@@ -1,4 +1,3 @@
-
 const NATIVE_ADDRESS = '0x4300000000000000000000000000000000000004'
 const USDB_ADDRESS = '0x4300000000000000000000000000000000000003'
 const axlUSDC_ADDRESS = '0xeb466342c4d449bc9f53a865d5cb90586f405215'
@@ -75,4 +74,8 @@ module.exports = {
     nativePricePool: '0xcd03572e7cfb94996beebaa539234ce5c23ae1d6', // WETH/USDB - 0.03%
     minimumEthLocked: 1,
   },
+  routeprocessor: {
+    address: "0xcdbcd51a5e8728e0af4895ce5771b7d17ff71959",
+    startBlock: 223662
+  }
 }

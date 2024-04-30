@@ -142,7 +142,7 @@ module.exports = {
     usdtPool: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   },
   routeprocessor: {
-    address: '0xfb70ad5a200d784e7901230e6875d91d5fa6b68c',
-    startBlock: 68113269,
+    address: '0x46b3fdf7b5cde91ac049936bf0bdb12c5d22202e',
+    startBlock: 76275028,
   }
 }

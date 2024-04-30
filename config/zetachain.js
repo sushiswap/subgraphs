@@ -97,7 +97,7 @@ module.exports = {
     minimumEthLocked: 1000,
   },
   routeprocessor: {
-    address: '0xb46e319390de313b8cc95ea5aa30c7bbfd79da94',
-    startBlock: 1552335,
+    address: '0x640129e6b5c31b3b12640a5b39fecdca9f81c640',
+    startBlock: 1913303,
   }
 }
