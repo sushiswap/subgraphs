@@ -144,4 +144,8 @@ module.exports = {
     nativePricePool: '0xf956887f404883a838a388b7884ca85b223bd54d', // METIS/USDC
     minimumEthLocked: 2,
   },
+  routeprocessor: {
+    address: '0xab235da7f52d35fb4551afba11bfb56e18774a65',
+    startBlock: 22238243,
+  }
 }

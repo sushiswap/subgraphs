@@ -79,4 +79,8 @@ module.exports = {
     nativePricePool: '0xe64ae4128e725868e8fe52e771e3d272e787b041', // WETH/USDC
     minimumEthLocked: 1,
   },
+  routeprocessor: {
+    address: '0xab235da7f52d35fb4551afba11bfb56e18774a65',
+    startBlock: 22238243,
+  }
 }

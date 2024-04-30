@@ -169,4 +169,8 @@ module.exports = {
     nativePricePool: '0x324fb03755683b613d6062b5b5aca71979f582b7', // KAVA/USDT
     minimumEthLocked: 200
   },
+  routeprocessor: {
+    address: "0xaa26771d497814E81D305c511Efbb3ceD90BF5bd",
+    startBlock: 3461718,
+  }
 }

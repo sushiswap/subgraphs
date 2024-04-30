@@ -123,4 +123,8 @@ module.exports = {
     nativePricePool: '0x03371a9811aa5529ba402268bea8c356cd1bdad8',
     minimumEthLocked: 0.7,
   },
+  routeprocessor: {
+    address: "0xbe811a0d44e2553d25d11cb8dc0d3f0d0e6430e6",
+    startBlock: 1008874,
+  }
 }

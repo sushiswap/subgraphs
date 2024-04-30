@@ -1,0 +1,41 @@
+{
+  "name": "route-processor",
+  "license": "MIT",
+  "repository": {
+    "url": "sushiswap/subgraphs",
+    "directory": "subgraphs/route-processor"
+  },
+  "files": [
+    "generated"
+  ],
+  "scripts": {
+    "generate": "mustache ../../config/$NETWORK.js template.yaml > subgraph.yaml && mustache ../../config/$NETWORK.js src/constants/index.template.ts > src/constants/index.ts && graph codegen",
+    "build": "graph build",
+    "test": "graph test -r",
+    "deploy-arbitrum": "graph deploy --product hosted-service sushiswap/routeprocessor-arbitrum",
+    "deploy-arbitrum-nova": "",
+    "deploy-avalanche": "",
+    "deploy-boba": "",
+    "deploy-bsc": "",
+    "deploy-ethereum": "",
+    "deploy-fantom": "",
+    "deploy-fuse": "",
+    "deploy-gnosis": "",
+    "deploy-moonriver": "",
+    "deploy-optimism": "",
+    "deploy-polygon": "",
+    "deploy-polygon-zkevm": "",
+    "deploy-thundercore": "",
+    "create-local": "graph create --node http://localhost:8020/ sushiswap/route-processor-ethereum",
+    "remove-local": "graph remove --node http://localhost:8020/ sushiswap/route-processor-ethereum",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/route-processor-ethereum"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.64.1",
+    "@graphprotocol/graph-ts": "^0.27.0",
+    "abi": "workspace:*",
+    "assemblyscript": "^0.19.20",
+    "matchstick-as": "0.5.0",
+    "wabt": "1.0.24"
+  }
+}

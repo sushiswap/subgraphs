@@ -140,5 +140,9 @@ module.exports = {
   stargate: {
     usdcPool: { address: '0x12edeA9cd262006cC3C4E77c90d2CD2DD4b1eb97', startBlock: 33647195 },
     usdtPool: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
+  },
+  routeprocessor: {
+    address: '0xfb70ad5a200d784e7901230e6875d91d5fa6b68c',
+    startBlock: 68113269,
   }
 }
