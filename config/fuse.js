@@ -103,5 +103,9 @@ module.exports = {
   xswap: {
     address: '0xd045d27c1f7e7f770a807b0a85d8e3f852e0f2be',
     startBlock: 43250231,
+  },
+  routeprocessor: {
+    address: "0x46b3fdf7b5cde91ac049936bf0bdb12c5d22202e",
+    startBlock: 28181801,
   }
 }

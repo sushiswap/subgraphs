@@ -1,0 +1,23 @@
+specVersion: 0.0.4
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: RouteProcessor
+    network: {{ network }}
+    source:
+      address: '{{ routeprocessor.address }}'
+      startBlock: {{ routeprocessor.startBlock }}
+      abi: RouteProcessor
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/route-processor.ts
+      entities: []
+      abis:
+        - name: RouteProcessor
+          file: ./abis/RouteProcessor3.json
+      eventHandlers:
+        - event: Route(indexed address,address,indexed address,indexed address,uint256,uint256,uint256)
+          handler: handleRoute
