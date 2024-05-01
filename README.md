@@ -88,3 +88,19 @@ do
 done
 ```
 
+
+### Studio deployment example
+```sh
+declare -a networks=("ethereum" "avalanche" "arbitrum" "bsc" "celo" "fuse" "fantom" "gnosis" "harmony" "moonriver" "moonbeam" "optimism" "boba" "polygon" "linea" "base" "scroll" "polygon-zkevm")
+SUBGRAPH=rp4
+DIRECTORY=route-processor
+for network in "${networks[@]}"
+do
+    echo "BUILD $network $DIRECTORY" 
+    NETWORK=$network pnpm exec turbo run build --scope=$DIRECTORY --force
+    echo "DEPLOYING TO $SUBGRAPH-$network" 
+    cd subgraphs/$DIRECTORY/
+    pnpm graph deploy --studio $SUBGRAPH-$network -l v0.0.1
+    cd ../../
+done
+```

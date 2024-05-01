@@ -82,4 +82,8 @@ module.exports = {
     address: '0x1400feFD6F9b897970f00Df6237Ff2B8b27Dc82C',
     startBlock: 12932398
   },
+  routeprocessor: {
+    address: '0x0389879e0156033202c44bf784ac18fc02edee4f',
+    startBlock: 11856234,
+  }
 }
