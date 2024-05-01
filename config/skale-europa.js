@@ -90,4 +90,8 @@ module.exports = {
     nativePricePool: '0x5e359b616eab96977473ba7b7de7107abe5b345b', // USDC/ETH - 0.03%
     minimumEthLocked: 0.5,
   },
+  routeprocessor: {
+    address: "0xba61f775730c0a3e3361717195ee86785ee33055",
+    startBlock: 5124041,
+  }
 }
