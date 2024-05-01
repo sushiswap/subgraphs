@@ -113,8 +113,8 @@ importers:
   subgraphs/route-processor:
     devDependencies:
       '@graphprotocol/graph-cli':
-        specifier: ^0.64.1
-        version: 0.64.1(@types/node@20.3.2)(node-fetch@2.6.11)(typescript@5.2.2)
+        specifier: ^0.70.0
+        version: 0.70.0(@types/node@20.3.2)(node-fetch@2.6.11)(typescript@5.2.2)
       '@graphprotocol/graph-ts':
         specifier: ^0.27.0
         version: 0.27.0
@@ -473,51 +473,6 @@ packages:
       jayson: 4.0.0
       js-yaml: 3.14.1
       prettier: 1.19.1
-      request: 2.88.2
-      semver: 7.4.0
-      sync-request: 6.1.0
-      tmp-promise: 3.0.3
-      web3-eth-abi: 1.7.0
-      which: 2.0.2
-      yaml: 1.10.2
-    transitivePeerDependencies:
-      - '@swc/core'
-      - '@swc/wasm'
-      - '@types/node'
-      - bufferutil
-      - encoding
-      - node-fetch
-      - supports-color
-      - typescript
-      - utf-8-validate
-    dev: true
-
-  /@graphprotocol/graph-cli@0.64.1(@types/node@20.3.2)(node-fetch@2.6.11)(typescript@5.2.2):
-    resolution: {integrity: sha512-BUjWLiEvZUPxuJ/PpARXMBeVLBGjJ/AKP+Orqzlb09b/6HAyQwYpDsaz5R9rW05LYPRqMikuCmktY727rbIFuA==}
-    engines: {node: '>=18'}
-    hasBin: true
-    dependencies:
-      '@float-capital/float-subgraph-uncrashable': 0.0.0-internal-testing.5
-      '@oclif/core': 2.8.6(@types/node@20.3.2)(typescript@5.2.2)
-      '@oclif/plugin-autocomplete': 2.3.10(@types/node@20.3.2)(typescript@5.2.2)
-      '@oclif/plugin-not-found': 2.4.3(@types/node@20.3.2)(typescript@5.2.2)
-      '@whatwg-node/fetch': 0.8.8
-      assemblyscript: 0.19.23
-      binary-install-raw: 0.0.13(debug@4.3.4)
-      chalk: 3.0.0
-      chokidar: 3.5.3
-      debug: 4.3.4(supports-color@8.1.1)
-      docker-compose: 0.23.19
-      dockerode: 2.5.8
-      fs-extra: 9.1.0
-      glob: 9.3.5
-      gluegun: 5.1.2(debug@4.3.4)
-      graphql: 15.5.0
-      immutable: 4.2.1
-      ipfs-http-client: 55.0.0(node-fetch@2.6.11)
-      jayson: 4.0.0
-      js-yaml: 3.14.1
-      prettier: 3.0.3
       request: 2.88.2
       semver: 7.4.0
       sync-request: 6.1.0
