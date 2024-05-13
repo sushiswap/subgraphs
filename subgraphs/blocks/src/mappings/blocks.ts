@@ -2,7 +2,7 @@ import { ethereum } from '@graphprotocol/graph-ts'
 import { Block } from '../../generated/schema'
 
 export function onBlock(block: ethereum.Block): void {
-  let id = block.hash.toHex()
+  let id = block.hash
   let blockEntity = new Block(id)
 
   blockEntity.number = block.number

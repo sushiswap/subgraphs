@@ -137,12 +137,8 @@ module.exports = {
   auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   blocks: {
-    graft: {
-      base: 'QmZLj6XmKRB6cUv7aVKunSt5G8wvAa3xEm6u51ZKJwWbE8',
-      startBlock: 33602916,
-    },
     address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
-    startBlock: 14735904,
+    startBlock: 0,
   },
   xswap: {
     address: '0x0000000000000000000000000000000000000000',

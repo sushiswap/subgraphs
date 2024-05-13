@@ -57,12 +57,8 @@ module.exports = {
     },
   },
   blocks: {
-    graft: {
-      base: 'QmYFZrHKG6CTuum3jLmC64tgKKrsAGNEzcs4Mw781bbb3W',
-      startBlock: 1476119,
-    },
     address: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
-    startBlock: 822561,
+    startBlock: 0,
   },
   v2: {
     nativeAddress: NATIVE_ADDRESS,

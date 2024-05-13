@@ -30,7 +30,7 @@ module.exports = {
   },
   blocks: {
     address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
-    startBlock: 3292,
+    startBlock: 0,
   },
   v2: {
     nativeAddress: NATIVE_ADDRESS,

@@ -103,12 +103,8 @@ module.exports = {
     minimumEthLocked: 120 // WMOVR
   },
   blocks: {
-    graft: {
-      base: 'QmX4sv7f9KgXpenYs7qaBCFVro1CgtvPYZMcHCokavon1L',
-      startBlock: 6615094,
-    },
     address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
-    startBlock: 428426,
+    startBlock: 0,
   },
   furo: {
     stream: { address: '0x4ab2fc6e258a0ca7175d05ff10c5cf798a672cae', startBlock: 1976212 },

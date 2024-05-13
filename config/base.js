@@ -14,12 +14,8 @@ const CBETH_ADDRESS = '0x2ae3f1ec7f1f5012cfeab0185bfc7aa3cf0dec22'
 module.exports = {
   network: 'base',
   blocks: {
-    graft: {
-      base: 'QmXG22oiHcm4xEiYac1Czx9gDwf7bM3shqXVWC8acKiHGd',
-      startBlock: 13578918,
-    },
     address: '0x71524b4f93c58fcbf659783284e38825f0622859',
-    startBlock: 2631214,
+    startBlock: 0,
   },
   legacy: {
     native: { address: NATIVE_ADDRESS },

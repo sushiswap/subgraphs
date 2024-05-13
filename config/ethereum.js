@@ -46,12 +46,8 @@ module.exports = {
     medium: '0x2cba6ab6574646badc84f0544d05059e57a5dc42'
   },
   blocks: {
-    graft: {
-      base: 'QmfMF6FFweTxhiwH7LJVbV75cXcSB1CHkVZ9gpPE7aRs8o',
-      startBlock: 19717605,
-    },
     address: '0x6e38A457C722C6011B2dfa06d49240e797844d66',    
-    startBlock: 49880
+    startBlock: 0
   },
   miso: {
     accessControls: { address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4', startBlock: 14598164 },

@@ -21,10 +21,6 @@ module.exports = {
   },
   auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
-  blocks: {
-    address: '0x0000000000000000000000000000000000000000',
-    startBlock: 0,
-  },
 
   legacy: {
     // IMPORTANT! Native should be included here
@@ -79,12 +75,8 @@ module.exports = {
     }
   },  
   blocks: {
-    graft: {
-      base: 'QmazoaxzhVAZybLFy56Pc24mtj5yN1oaDWfXmG5a4vySgm',
-      startBlock: 56638762,
-    },
     address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
-    startBlock: 11256061,
+    startBlock: 0,
   },
   bentobox: {
     address: '0xa28cff72b04f83a7e3f912e6ad34d5537708a2c2',

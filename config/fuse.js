@@ -21,12 +21,8 @@ module.exports = {
     },
   },
   blocks: {
-    graft: {
-      base: 'QmRFoEcA8nz1QKtYFqP9pXrkiTHmVFnmDjs4HRFLV3zyN3',
-      startBlock: 29187513,
-    },
     address: '0x43ea90e2b786728520e4f930d2a71a477bf2737c',
-    startBlock: 12943648,
+    startBlock: 0,
   },
   legacy: {
     native: { address: NATIVE_ADDRESS },

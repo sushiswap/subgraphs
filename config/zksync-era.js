@@ -5,8 +5,8 @@ const WBTC_ADDRESS = '0xbbeb516fb02a01611cbbe0453fe3c580d7281011'
 module.exports = {
   network: 'zksync-era',
   blocks: {
-    address: '0x0bb5111beb91cc1206386e416fc17bbf8838aaf3',
-    startBlock: 10339835,
+    address: '0x0000000000000000000000000000000000000000',
+    startBlock: 0,
   },
   v3: {
     factory: {
