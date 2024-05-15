@@ -212,7 +212,7 @@ type Swap @entity {
 
 # stores for USD calculations
 type Bundle @entity {
-  id: Bytes!
+  id: ID!
   ethPrice: BigDecimal! # price of ETH usd
 }
 

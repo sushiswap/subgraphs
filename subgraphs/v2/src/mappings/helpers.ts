@@ -181,7 +181,7 @@ export function createUser(address: Address): void {
 
 export function createLiquiditySnapshot(position: LiquidityPosition, event: ethereum.Event): void {
   let timestamp = event.block.timestamp.toI32()
-  let bundle = Bundle.load(Bytes.fromI32(1))!
+  let bundle = Bundle.load('1')!
   let pair = Pair.load(position.pair)!
   let token0 = Token.load(pair.token0)
   let token1 = Token.load(pair.token1)

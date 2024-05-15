@@ -27,7 +27,7 @@ export function handleNewPair(event: PairCreated): void {
     factory.txCount = ZERO_BI
 
     // create new bundle
-    let bundle = new Bundle(Bytes.fromI32(1))
+    let bundle = new Bundle('1')
     bundle.ethPrice = ZERO_BD
     bundle.save()
   }
