@@ -139,7 +139,7 @@ type Transaction @entity {
 }
 
 type Mint @entity {
-  # transaction hash + "-" + index in mints Transaction array
+  # transaction hash + index in mints Transaction array
   id: Bytes!
   transaction: Transaction!
   timestamp: BigInt! # need this to pull recent txns for specific token or pair
@@ -163,7 +163,7 @@ type Mint @entity {
 }
 
 type Burn @entity {
-  # transaction hash + "-" + index in mints Transaction array
+  # transaction hash + index in mints Transaction array
   id: Bytes!
   transaction: Transaction!
   timestamp: BigInt! # need this to pull recent txns for specific token or pair
@@ -190,7 +190,7 @@ type Burn @entity {
 }
 
 type Swap @entity {
-  # transaction hash + "-" + index in swaps Transaction array
+  # transaction hash + index in swaps Transaction array
   id: Bytes!
   transaction: Transaction!
   timestamp: BigInt! # need this to pull recent txns for specific token or pair
