@@ -121,16 +121,16 @@ let SKIP_TOTAL_SUPPLY: string[] = [
 ]
 
 export function fetchTokenTotalSupply(tokenAddress: Address): BigInt {
-  if (SKIP_TOTAL_SUPPLY.includes(tokenAddress.toHexString())) {
-    return BigInt.fromI32(0)
-  }
+  // if (SKIP_TOTAL_SUPPLY.includes(tokenAddress.toHexString())) {
+  //   return BigInt.fromI32(0)
+  // }
 
-  let contract = ERC20.bind(tokenAddress)
+  // let contract = ERC20.bind(tokenAddress)
   let totalSupplyValue =  ZERO_BI
-  let totalSupplyResult = contract.try_totalSupply()
-  if (!totalSupplyResult.reverted) {
-    totalSupplyValue = totalSupplyResult.value
-  }
+  // let totalSupplyResult = contract.try_totalSupply()
+  // if (!totalSupplyResult.reverted) {
+  //   totalSupplyValue = totalSupplyResult.value
+  // }
   return totalSupplyValue
 }
 
