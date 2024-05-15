@@ -1,5 +1,5 @@
 /* eslint-disable prefer-const */
-import { log, BigInt, BigDecimal, Address, ethereum } from '@graphprotocol/graph-ts'
+import { log, BigInt, BigDecimal, Address, ethereum, Bytes } from '@graphprotocol/graph-ts'
 import { ERC20 } from '../../generated/Factory/ERC20'
 import { ERC20SymbolBytes } from '../../generated/Factory/ERC20SymbolBytes'
 import { ERC20NameBytes } from '../../generated/Factory/ERC20NameBytes'
@@ -35,7 +35,7 @@ export function bigDecimalExp18(): BigDecimal {
 }
 
 export function convertEthToDecimal(eth: BigInt): BigDecimal {
-  return eth.toBigDecimal().div(exponentToBigDecimal(18))
+  return eth.toBigDecimal().div(exponentToBigDecimal(BigInt.fromI32(18)))
 }
 
 export function convertTokenToDecimal(tokenAmount: BigInt, exchangeDecimals: BigInt): BigDecimal {
@@ -152,29 +152,28 @@ export function fetchTokenDecimals(tokenAddress: Address): BigInt {
 }
 
 export function createLiquidityPosition(exchange: Address, user: Address): LiquidityPosition {
-  let id = exchange
-    .toHexString()
-    .concat('-')
-    .concat(user.toHexString())
+
+    let id = exchange.concat(user)
+    
   let liquidityTokenBalance = LiquidityPosition.load(id)
   if (liquidityTokenBalance === null) {
-    let pair = Pair.load(exchange.toHexString())!
+    let pair = Pair.load(exchange)!
     pair.liquidityProviderCount = pair.liquidityProviderCount.plus(ONE_BI)
     liquidityTokenBalance = new LiquidityPosition(id)
     liquidityTokenBalance.liquidityTokenBalance = ZERO_BD
-    liquidityTokenBalance.pair = exchange.toHexString()
-    liquidityTokenBalance.user = user.toHexString()
+    liquidityTokenBalance.pair = exchange
+    liquidityTokenBalance.user = user
     liquidityTokenBalance.save()
     pair.save()
   }
-  if (liquidityTokenBalance === null) log.error('LiquidityTokenBalance is null', [id])
+  if (liquidityTokenBalance === null) log.error('LiquidityTokenBalance is null', [id.toHexString()])
   return liquidityTokenBalance as LiquidityPosition
 }
 
 export function createUser(address: Address): void {
-  let user = User.load(address.toHexString())
+  let user = User.load(address)
   if (user === null) {
-    user = new User(address.toHexString())
+    user = new User(address)
     user.usdSwapped = ZERO_BD
     user.save()
   }
@@ -182,7 +181,7 @@ export function createUser(address: Address): void {
 
 export function createLiquiditySnapshot(position: LiquidityPosition, event: ethereum.Event): void {
   let timestamp = event.block.timestamp.toI32()
-  let bundle = Bundle.load('1')!
+  let bundle = Bundle.load(Bytes.fromI32(1))!
   let pair = Pair.load(position.pair)!
   let token0 = Token.load(pair.token0)
   let token1 = Token.load(pair.token1)
@@ -192,7 +191,7 @@ export function createLiquiditySnapshot(position: LiquidityPosition, event: ethe
   }
 
   // create new snapshot
-  let snapshot = new LiquidityPositionSnapshot(position.id.concat(timestamp.toString()))
+  let snapshot = new LiquidityPositionSnapshot(position.id.concatI32(timestamp))
   snapshot.liquidityPosition = position.id
   snapshot.timestamp = timestamp
   snapshot.block = event.block.number.toI32()
