@@ -1,8 +1,8 @@
 /* eslint-disable prefer-const */
-import { Pair, Token, Bundle } from '../../generated/schema'
-import { BigDecimal, Address } from '@graphprotocol/graph-ts/index'
-import { ZERO_BD, factoryContract, ADDRESS_ZERO, ONE_BD } from './helpers'
-import { NATIVE_ADDRESS, STABLE0_NATIVE_PAIR, STABLE1_NATIVE_PAIR, STABLE2_NATIVE_PAIR, WHITELIST, MINIMUM_LIQUIDITY_THRESHOLD_ETH } from './../constants'
+import { BigDecimal } from '@graphprotocol/graph-ts/index'
+import { Bundle, Pair, Token } from '../../generated/schema'
+import { FACTORY_ADDRESS, MINIMUM_LIQUIDITY_THRESHOLD_ETH, NATIVE_ADDRESS, STABLE0_NATIVE_PAIR, STABLE1_NATIVE_PAIR, STABLE2_NATIVE_PAIR, WHITELIST, generatePoolAddress } from './../constants'
+import { ADDRESS_ZERO, ONE_BD, ZERO_BD } from './helpers'
 
 
 
@@ -60,9 +60,9 @@ export function findEthPerToken(token: Token): BigDecimal {
   }
   // loop through whitelist and check if paired with any
   for (let i = 0; i < WHITELIST.length; ++i) {
-    let pairAddress = factoryContract.getPair(Address.fromString(token.id), Address.fromString(WHITELIST[i]))
-    if (pairAddress.toHexString() != ADDRESS_ZERO) {
-      let pair = Pair.load(pairAddress.toHexString())
+    let pairAddress = generatePoolAddress(token.id, WHITELIST[i], FACTORY_ADDRESS)
+    if (pairAddress != ADDRESS_ZERO) {
+      let pair = Pair.load(pairAddress)
       if (pair === null) {
         continue
       }
