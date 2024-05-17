@@ -1,16 +1,16 @@
 /* eslint-disable prefer-const */
-import { Pair, Token, Bundle } from '../../generated/schema'
-import { BigDecimal, Address } from '@graphprotocol/graph-ts/index'
-import { ZERO_BD, factoryContract, ADDRESS_ZERO, ONE_BD } from './helpers'
-import { NATIVE_ADDRESS, STABLE0_NATIVE_PAIR, STABLE1_NATIVE_PAIR, STABLE2_NATIVE_PAIR, WHITELIST, MINIMUM_LIQUIDITY_THRESHOLD_ETH } from './../constants'
+import { Address, BigDecimal, Bytes } from '@graphprotocol/graph-ts/index'
+import { Bundle, Pair, Token } from '../../generated/schema'
+import { FACTORY_ADDRESS, MINIMUM_LIQUIDITY_THRESHOLD_ETH, NATIVE_ADDRESS, STABLE0_NATIVE_PAIR, STABLE1_NATIVE_PAIR, STABLE2_NATIVE_PAIR, WHITELIST, generatePoolAddress } from './../constants'
+import { ADDRESS_ZERO, ONE_BD, ZERO_BD } from './helpers'
 
 
 
 export function getEthPriceInUSD(): BigDecimal {
   // fetch eth prices for each stablecoin
-  let stable0Pair = Pair.load(STABLE0_NATIVE_PAIR)
-  let stable1Pair = Pair.load(STABLE1_NATIVE_PAIR)
-  let stable2Pair = Pair.load(STABLE2_NATIVE_PAIR)
+  let stable0Pair = Pair.load(Address.fromHexString(STABLE0_NATIVE_PAIR))
+  let stable1Pair = Pair.load(Address.fromHexString(STABLE1_NATIVE_PAIR))
+  let stable2Pair = Pair.load(Address.fromHexString(STABLE2_NATIVE_PAIR))
 
   // all 3 have been created
   if (stable2Pair !== null && stable0Pair !== null && stable1Pair !== null) {
@@ -60,9 +60,9 @@ export function findEthPerToken(token: Token): BigDecimal {
   }
   // loop through whitelist and check if paired with any
   for (let i = 0; i < WHITELIST.length; ++i) {
-    let pairAddress = factoryContract.getPair(Address.fromString(token.id), Address.fromString(WHITELIST[i]))
-    if (pairAddress.toHexString() != ADDRESS_ZERO) {
-      let pair = Pair.load(pairAddress.toHexString())
+    let pairAddress = generatePoolAddress(token.id.toHexString(), WHITELIST[i], FACTORY_ADDRESS)
+    if (pairAddress != ADDRESS_ZERO) {
+      let pair = Pair.load(Bytes.fromHexString(pairAddress))
       if (pair === null) {
         continue
       }
@@ -102,17 +102,17 @@ export function getTrackedVolumeUSD(
   let price1 = token1.derivedETH.times(bundle.ethPrice);
 
   // both are whitelist tokens, take average of both amounts
-  if (WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {
+  if (WHITELIST.includes(token0.id.toHexString()) && WHITELIST.includes(token1.id.toHexString())) {
     return tokenAmount0.times(price0).plus(tokenAmount1.times(price1)).div(BigDecimal.fromString("2"));
   }
 
   // take full value of the whitelisted token amount
-  if (WHITELIST.includes(token0.id) && !WHITELIST.includes(token1.id)) {
+  if (WHITELIST.includes(token0.id.toHexString()) && !WHITELIST.includes(token1.id.toHexString())) {
     return tokenAmount0.times(price0);
   }
 
   // take full value of the whitelisted token amount
-  if (!WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {
+  if (!WHITELIST.includes(token0.id.toHexString()) && WHITELIST.includes(token1.id.toHexString())) {
     return tokenAmount1.times(price1);
   }
 
@@ -137,17 +137,17 @@ export function getTrackedLiquidityUSD(
   let price1 = token1.derivedETH.times(bundle.ethPrice)
 
   // both are whitelist tokens, take average of both amounts
-  if (WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {
+  if (WHITELIST.includes(token0.id.toHexString()) && WHITELIST.includes(token1.id.toHexString())) {
     return tokenAmount0.times(price0).plus(tokenAmount1.times(price1))
   }
 
   // take double value of the whitelisted token amount
-  if (WHITELIST.includes(token0.id) && !WHITELIST.includes(token1.id)) {
+  if (WHITELIST.includes(token0.id.toHexString()) && !WHITELIST.includes(token1.id.toHexString())) {
     return tokenAmount0.times(price0).times(BigDecimal.fromString('2'))
   }
 
   // take double value of the whitelisted token amount
-  if (!WHITELIST.includes(token0.id) && WHITELIST.includes(token1.id)) {
+  if (!WHITELIST.includes(token0.id.toHexString()) && WHITELIST.includes(token1.id.toHexString())) {
     return tokenAmount1.times(price1).times(BigDecimal.fromString('2'))
   }
 

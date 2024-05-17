@@ -200,8 +200,8 @@ importers:
         specifier: ^0.19.20
         version: 0.19.23
       matchstick-as:
-        specifier: 0.5.0
-        version: 0.5.0
+        specifier: 0.6.0
+        version: 0.6.0
       wabt:
         specifier: 1.0.24
         version: 1.0.24
@@ -2768,6 +2768,12 @@ packages:
     dependencies:
       '@graphprotocol/graph-ts': 0.27.0
       assemblyscript: 0.19.23
+      wabt: 1.0.24
+    dev: true
+
+  /matchstick-as@0.6.0:
+    resolution: {integrity: sha512-E36fWsC1AbCkBFt05VsDDRoFvGSdcZg6oZJrtIe/YDBbuFh8SKbR5FcoqDhNWqSN+F7bN/iS2u8Md0SM+4pUpw==}
+    dependencies:
       wabt: 1.0.24
     dev: true
 
