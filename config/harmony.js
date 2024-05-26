@@ -60,13 +60,13 @@ module.exports = {
       DAI_2_ADDRESS,
     ],
     // INITITAL STABLE TOKENS
-    stable0: USDC_ADDRESS,
-    stable1: USDT_ADDRESS,
-    stable2: DAI_ADDRESS,
+    // stable0: USDC_ADDRESS,
+    // stable1: USDT_ADDRESS,
+    // stable2: DAI_ADDRESS,
     // TODO: GRAFT AT 27500000, update config
-    // stable0: USDC_2_ADDRESS,
-    // stable1: USDT_2_ADDRESS,
-    // stable2: DAI_2_ADDRESS,
+    stable0: USDC_2_ADDRESS,
+    stable1: USDT_2_ADDRESS,
+    stable2: DAI_2_ADDRESS,
     minimumNativeLiquidity: 30000,
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
