@@ -13,6 +13,9 @@ const DPX_ADDRESS = '0x6c2c06790b3e3e3c38e12ee22f8183b37a13ee55'
 const GOHM_ADDRESS = '0x8d9ba570d6cb60c7e3e0f31343efe75ab8e65fb1'
 const MAGIC_ADDRESS = '0x539bde0d7dbd336b79148aa742883198bbf60342'
 const ARB_ADDRESS = '0x912ce59144191c1204e64559fe8253a0e49e6548'
+const SOLV_BTC_BNN_ADDRESS = '0x346c574c56e1a4aaa8dc88cda8f7eb12b39947ab'
+const SOLV_BTC_ENA_ADDRESS = '0xafafd68afe3fe65d376eec9eab1802616cfaccb8'
+const SOLV_BTC_ADDRESS = '0x3647c54c4c2c65bc7a2d63c0da2809b399dbbdc0'
 
 module.exports = {
   network: 'arbitrum-one',
@@ -123,7 +126,10 @@ module.exports = {
       DPX_ADDRESS,
       GOHM_ADDRESS,
       MAGIC_ADDRESS,
-      ARB_ADDRESS
+      ARB_ADDRESS,
+      SOLV_BTC_BNN_ADDRESS,
+      SOLV_BTC_ENA_ADDRESS,
+      SOLV_BTC_ADDRESS,
     ],
     stable0: USDC_ADDRESS,
     stable1: USDT_ADDRESS,
@@ -160,7 +166,10 @@ module.exports = {
       DPX_ADDRESS,
       GOHM_ADDRESS,
       MAGIC_ADDRESS,
-      ARB_ADDRESS
+      ARB_ADDRESS,
+      SOLV_BTC_BNN_ADDRESS,
+      SOLV_BTC_ENA_ADDRESS,
+      SOLV_BTC_ADDRESS,
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDC_CIRCLE_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, MIM_ADDRESS, FRAX_ADDRESS],
     nativePricePool: '0x15e444da5b343c5a0931f5d3e85d158d1efc3d40',
