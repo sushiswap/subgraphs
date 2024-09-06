@@ -17,7 +17,20 @@ const USDPLUS_ADDRESS = '0x236eec6359fb44cce8f97e99387aa7f8cd5cde1f'
 const BOB_ADDRESS = '0xb0b195aefa3650a6908f15cdac7d92f8a5791b0b'
 const NPM_ADDRESS = '0x57f12fe6a4e5fe819eec699fadf9db2d06606bb4'
 const THREE_ADDRESS = '0x9b034262e0095210ab9ddec60199741a8a1fbfe7'
-
+const RENDER_ADDRESS = '0x61299774020da444af134c82fa83e3810b309991'
+const GRAPH_ADDRESS = '0x5fe2b58c013d7601147dcdd68c143a77499f5531'
+const BAL_ADDRESS = '0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3'
+const SNX_ADDRESS = '0x50b728d8d964fd00c2d0aad81718b71311fef68a'
+const STG_ADDRESS = '0x2f6f07cdcf3588944bf4c42ac74ff24bf56e7590'
+const UNI_ADDRESS = '0xb33eaad8d922b1083446dc23f610c2567fb5180f'
+const LINK_ADDRESS = '0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39'
+const GRT_ADDRESS = '0x5fe2b58c013d7601147dcdd68c143a77499f5531'
+const TEL_ADDRESS = '0xdf7837de1f2fa4631d716cf2502f8b230f1dcc32'
+const MANA_ADDRESS = '0xa1c57f48f0deb89f569dfbe6e2b7f46d33606fd4'
+const GNS_ADDRESS = '0xe5417af564e4bfda1c483642db72007871397896'
+const QUICK_ADDRESS = '0xb5c064f955d8e7f38fe0460c556a72987494ee17'
+const AVAX_ADDRESS = '0x2c89bbc92bd86f8075d1decc58c7f4e0107f286b'
+const OCEAN_ADDRESS = '0x282d8efce846a88b159800bd4130ad77443fa1a1'
 module.exports = {
   network: 'matic',
   sushi: { address: SUSHI_ADDRESS },
@@ -72,6 +85,20 @@ module.exports = {
       USDC_CIRCLE_ADDRESS,
       NPM_ADDRESS,
       THREE_ADDRESS,
+      RNDR_ADDRESS,
+      GRAPH_ADDRESS,
+      BAL_ADDRESS,
+      SNX_ADDRESS,
+      STG_ADDRESS,
+      UNI_ADDRESS,
+      LINK_ADDRESS,
+      GRT_ADDRESS,
+      TEL_ADDRESS,
+      MANA_ADDRESS,
+      GNS_ADDRESS,
+      QUICK_ADDRESS,
+      AVAX_ADDRESS,
+      OCEAN_ADDRESS,
     ],
     stableTokenAddresses: [
       // USDC
@@ -124,6 +151,20 @@ module.exports = {
       NPM_ADDRESS,
       USDC_CIRCLE_ADDRESS,
       THREE_ADDRESS,
+      RNDR_ADDRESS,
+      GRAPH_ADDRESS,
+      BAL_ADDRESS,
+      SNX_ADDRESS,
+      STG_ADDRESS,
+      UNI_ADDRESS,
+      LINK_ADDRESS,
+      GRT_ADDRESS,
+      TEL_ADDRESS,
+      MANA_ADDRESS,
+      GNS_ADDRESS,
+      QUICK_ADDRESS,
+      AVAX_ADDRESS,
+      OCEAN_ADDRESS,
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, FRAX_ADDRESS, USDC_CIRCLE_ADDRESS],
     minimumNativeLiquidity: 3,
@@ -153,7 +194,21 @@ module.exports = {
       NDEFI_ADDRESS,
       NPM_ADDRESS,
       USDC_CIRCLE_ADDRESS,
-      '0x9b034262e0095210ab9ddec60199741a8a1fbfe7' // THREE
+      THREE_ADDRESS,
+      RNDR_ADDRESS,
+      GRAPH_ADDRESS,
+      BAL_ADDRESS,
+      SNX_ADDRESS,
+      STG_ADDRESS,
+      UNI_ADDRESS,
+      LINK_ADDRESS,
+      GRT_ADDRESS,
+      TEL_ADDRESS,
+      MANA_ADDRESS,
+      GNS_ADDRESS,
+      QUICK_ADDRESS,
+      AVAX_ADDRESS,
+      OCEAN_ADDRESS,
     ],
     stable0: USDC_ADDRESS,
     stable1: USDT_ADDRESS,
@@ -194,6 +249,20 @@ module.exports = {
       NPM_ADDRESS,
       USDC_CIRCLE_ADDRESS,
       THREE_ADDRESS,
+      RNDR_ADDRESS,
+      GRAPH_ADDRESS,
+      BAL_ADDRESS,
+      SNX_ADDRESS,
+      STG_ADDRESS,
+      UNI_ADDRESS,
+      LINK_ADDRESS,
+      GRT_ADDRESS,
+      TEL_ADDRESS,
+      MANA_ADDRESS,
+      GNS_ADDRESS,
+      QUICK_ADDRESS,
+      AVAX_ADDRESS,
+      OCEAN_ADDRESS,
     ],
     stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, FRAX_ADDRESS, USDC_CIRCLE_ADDRESS],
     nativePricePool: '0x21988c9cfd08db3b5793c2c6782271dc94749251',
