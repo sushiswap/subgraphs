@@ -3,7 +3,7 @@ const APE_ETH = '0xcf800f4948d16f23333508191b1b1591daf70438'
 const APE_USD = '0xa2235d059f80e176d931ef76b6c51953eb3fbef4'
 
 module.exports = {
-  network: 'apechain',
+  network: 'apechain-mainnet',
   legacy: {
     startBlock: 501359,
     native: { address: NATIVE_ADDRESS },
