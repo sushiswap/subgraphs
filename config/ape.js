@@ -5,7 +5,7 @@ const APE_USD = '0xa2235d059f80e176d931ef76b6c51953eb3fbef4'
 module.exports = {
   network: 'apechain',
   legacy: {
-    startBlock: 316146,
+    startBlock: 501359,
     native: { address: NATIVE_ADDRESS },
     whitelistedTokenAddresses: [
       // IMPORTANT! Native should be included here
@@ -16,9 +16,9 @@ module.exports = {
     stableTokenAddresses: [APE_USD],
     minimumNativeLiquidity: 500,
     factory: {
-      address: '0x46b3fdf7b5cde91ac049936bf0bdb12c5d22202e',
-      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
-      startBlock: 316146,
+      address: '0x57bffa72db682f7eb6c132dae03ff36bbeb0c459',
+      initCodeHash: '0xa0ee53d561d6427800b43a5f4cbd2551f003c447b59341c326a549ecd3fbf40a',
+      startBlock: 501359,
     },
   },
   v2: {
@@ -34,9 +34,9 @@ module.exports = {
     stable2: '0x0000000000000000000000000000000000000000',
     minimumNativeLiquidity: 500,
     factory: {
-      address: '0x46b3fdf7b5cde91ac049936bf0bdb12c5d22202e',
-      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
-      startBlock: 316146,
+      address: '0x57bffa72db682f7eb6c132dae03ff36bbeb0c459',
+      initCodeHash: '0xa0ee53d561d6427800b43a5f4cbd2551f003c447b59341c326a549ecd3fbf40a',
+      startBlock: 501359,
     }
   },
   routeprocessor: {
