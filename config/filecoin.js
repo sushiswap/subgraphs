@@ -65,7 +65,7 @@ module.exports = {
       DAI_ADDRESS,
     ],
     stableTokenAddresses: [USDC_ADDRESS, DAI_ADDRESS],
-    minimumNativeLiquidity: 250,
+    minimumNativeLiquidity: 10_000, // issue at block 4303436 with this value set to 250, tick moves and ruins the price. 
     factory: {
       address: '0x9b3336186a38e1b6c21955d112dbb0343ee061ee',
       initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
