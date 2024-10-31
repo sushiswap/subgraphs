@@ -231,13 +231,18 @@ export function handleBurn(event: BurnEvent): void {
   // tick entities
   let lowerTickId = poolAddress + '#' + BigInt.fromI32(event.params.tickLower).toString()
   let upperTickId = poolAddress + '#' + BigInt.fromI32(event.params.tickUpper).toString()
-  let lowerTick = Tick.load(lowerTickId) as Tick
-  let upperTick = Tick.load(upperTickId) as Tick
-  let amount = event.params.amount
-  lowerTick.liquidityGross = lowerTick.liquidityGross.minus(amount)
-  lowerTick.liquidityNet = lowerTick.liquidityNet.minus(amount)
-  upperTick.liquidityGross = upperTick.liquidityGross.minus(amount)
-  upperTick.liquidityNet = upperTick.liquidityNet.plus(amount)
+  let lowerTick = Tick.load(lowerTickId)
+  let upperTick = Tick.load(upperTickId)
+  if (lowerTick && upperTick) {
+    const amount = event.params.amount
+    lowerTick.liquidityGross = lowerTick.liquidityGross.minus(amount)
+    lowerTick.liquidityNet = lowerTick.liquidityNet.minus(amount)
+    upperTick.liquidityGross = upperTick.liquidityGross.minus(amount)
+    upperTick.liquidityNet = upperTick.liquidityNet.plus(amount)
+
+    lowerTick.save()
+    upperTick.save()
+  }
 
   updateUniswapDayData(event)
   updatePoolDayData(event)

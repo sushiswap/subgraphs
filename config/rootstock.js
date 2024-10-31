@@ -64,6 +64,8 @@ module.exports = {
     }
   },
   v3: {
+    // base: 'QmNo5q6UHp39aJQww6c2cRfr7LvzUFizHDeXZPY9hkGQHd', // v3-rootstock-2 is deployed with this graft setup
+    // startBlock: 6748405, // issue on 6748406
     factory: {
       address: '0x46b3fdf7b5cde91ac049936bf0bdb12c5d22202e',
       startBlock: 6365060,
