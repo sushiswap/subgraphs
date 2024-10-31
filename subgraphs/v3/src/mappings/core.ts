@@ -240,8 +240,8 @@ export function handleBurn(event: BurnEvent): void {
     upperTick.liquidityGross = upperTick.liquidityGross.minus(amount)
     upperTick.liquidityNet = upperTick.liquidityNet.plus(amount)
 
-    lowerTick.save()
-    upperTick.save()
+    updateTickFeeVarsAndSave(lowerTick, event)
+    updateTickFeeVarsAndSave(upperTick, event)
   }
 
   updateUniswapDayData(event)
@@ -251,8 +251,6 @@ export function handleBurn(event: BurnEvent): void {
   updateTokenDayData(token1 as Token, event)
   updateTokenHourData(token0 as Token, event)
   updateTokenHourData(token1 as Token, event)
-  updateTickFeeVarsAndSave(lowerTick!, event)
-  updateTickFeeVarsAndSave(upperTick!, event)
 
   token0.save()
   token1.save()
