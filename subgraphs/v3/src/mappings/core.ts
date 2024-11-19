@@ -314,8 +314,10 @@ export function handleSwap(event: SwapEvent): void {
 
   // Update the pool with the new active liquidity, price, and tick.
   pool.liquidity = event.params.liquidity
+  if (event.params.tick < 800_000 && event.params.tick > -800_000) { // workaround, someone swapped and moved the price pool to last tick.
   pool.tick = BigInt.fromI32(event.params.tick as i32)
   pool.sqrtPrice = event.params.sqrtPriceX96
+  }
   pool.totalValueLockedToken0 = pool.totalValueLockedToken0.plus(amount0)
   pool.totalValueLockedToken1 = pool.totalValueLockedToken1.plus(amount1)
 
