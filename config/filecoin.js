@@ -35,8 +35,8 @@ module.exports = {
   },
   v3: {
     // GRAFT CONFIGURATION
-    base: 'QmRPQM4ZtRJYr8WiNdg6oqKRNQHHXv5rZrD4gzqQrJpPhz',
-    startBlock: 4303000, // issue at 4303436, start a few blocks before
+    // base: 'QmRPQM4ZtRJYr8WiNdg6oqKRNQHHXv5rZrD4gzqQrJpPhz',
+    // startBlock: 4303000, // issue at 4303436, start a few blocks before
 
     factory: { // 0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
