@@ -1,11 +1,11 @@
-const NATIVE_ADDRESS = '0x039e2fB66102314Ce7b64Ce5Ce3E5183bc94aD38' // wS
-const USDC_ADDRESS = '0x391071Fe567d609E4af9d32de726d4C33679C7e2'
-const WETH_ADDRESS = '0x309C92261178fA0CF748A855e90Ae73FDb79EBc7'
+const NATIVE_ADDRESS = '0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38' // wS
+const USDC_ADDRESS = '0x29219dd400f2bf60e5a23d13be72b486d4038894'
+const WETH_ADDRESS = '0x309c92261178fa0cf748a855e90ae73fdb79ebc7'
 
 module.exports = {
   network: 'sonic',
   blocks: {
-    address: '0xB45e53277a7e0F1D35f2a77160e91e25507f1763',
+    address: '0xb45e53277a7e0f1d35f2a77160e91e25507f1763',
     startBlock: 0,
   },
   v2: {
@@ -28,11 +28,11 @@ module.exports = {
   },
   v3: {
     factory: {
-      address: '0x46B3fDF7b5CDe91Ac049936bF0bDb12c5d22202e',
+      address: '0x46b3fdf7b5cde91ac049936bf0bdb12c5d22202e',
       startBlock: 347590,
     },
     positionManager: {
-      address: '0x0389879e0156033202C44BF784ac18fC02edeE4f',
+      address: '0x0389879e0156033202c44bf784ac18fc02edee4f',
       startBlock: 347808,
     },
     native: { address: NATIVE_ADDRESS },
@@ -45,7 +45,7 @@ module.exports = {
     stableTokenAddresses: [
       USDC_ADDRESS,
     ],
-    nativePricePool: '0x05F327F9D92Ff24E6ad11fE256E1f7D9dDa37808', // wS/USDC - 0.03%
+    nativePricePool: '0xdc91e26f6131599c89be765e3c1144e8a450f0f8', // wS/USDC - 0.03%
     minimumEthLocked: 700,
   }
 }
