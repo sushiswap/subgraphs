@@ -45,7 +45,7 @@ module.exports = {
     stableTokenAddresses: [
       USDC_ADDRESS,
     ],
-    nativePricePool: '0xdc91e26f6131599c89be765e3c1144e8a450f0f8', // wS/USDC - 0.03%
+    nativePricePool: '0x48505b3047d5c2af657037034369700f4d036822', // wS/USDC - 0.03%
     minimumEthLocked: 700,
   }
 }
