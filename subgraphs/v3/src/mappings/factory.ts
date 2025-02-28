@@ -32,6 +32,10 @@ export function handlePoolCreated(event: PoolCreated): void {
   }
 
   
+  if (BLACKLISTED_TOKEN_ADDRESSES.includes(event.params.token0.toHexString()) || BLACKLISTED_TOKEN_ADDRESSES.includes(event.params.token1.toHexString())) {
+    log.debug('Blacklisted token {} found in pair {}, skipping', [event.params.token0.toHexString(), event.params.pool.toHexString()])
+    return
+  }
 
   factory.poolCount = factory.poolCount.plus(ONE_BI)
 
@@ -93,12 +97,12 @@ export function handlePoolCreated(event: PoolCreated): void {
   }
 
   // update white listed pools
-  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && !BLACKLISTED_TOKEN_ADDRESSES.includes(token1.id)) {
+  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0.id)) {
     let newPools = token1.whitelistPools
     newPools.push(pool.id)
     token1.whitelistPools = newPools
   }
-  if (WHITELISTED_TOKEN_ADDRESSES.includes(token1.id) && !BLACKLISTED_TOKEN_ADDRESSES.includes(token0.id)) {
+  if (WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
     let newPools = token0.whitelistPools
     newPools.push(pool.id)
     token0.whitelistPools = newPools

@@ -7,7 +7,7 @@ import {
   Transfer
 } from '../../generated/NonfungiblePositionManager/NonfungiblePositionManager'
 import { Bundle, DecreaseEvent, IncreaseEvent, Position, PositionSnapshot, Token } from '../../generated/schema'
-import { ADDRESS_ZERO, factoryContract, ZERO_BD, ZERO_BI } from '../constants'
+import { ADDRESS_ZERO, BLACKLISTED_TOKEN_ADDRESSES, factoryContract, ZERO_BD, ZERO_BI } from '../constants'
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { convertTokenToDecimal, loadTransaction } from '../utils'
 
@@ -89,7 +89,7 @@ export function handleIncreaseLiquidity(event: IncreaseLiquidity): void {
 
   let position = getPosition(event, event.params.tokenId)
   // position was not able to be fetched
-  if (position == null) {
+  if (position == null || BLACKLISTED_TOKEN_ADDRESSES.includes(position.token0) || BLACKLISTED_TOKEN_ADDRESSES.includes(position.token1)) {
     return
   }
 
@@ -136,7 +136,7 @@ export function handleDecreaseLiquidity(event: DecreaseLiquidity): void {
   let position = getPosition(event, event.params.tokenId)
 
   // position was not able to be fetched
-  if (position == null) {
+  if (position == null || BLACKLISTED_TOKEN_ADDRESSES.includes(position.token0) || BLACKLISTED_TOKEN_ADDRESSES.includes(position.token1)) {
     return
   }
   const tx = loadTransaction(event)
@@ -176,7 +176,7 @@ export function handleDecreaseLiquidity(event: DecreaseLiquidity): void {
 export function handleCollect(event: Collect): void {
   let position = getPosition(event, event.params.tokenId)
   // position was not able to be fetched
-  if (position == null) {
+  if (position == null || BLACKLISTED_TOKEN_ADDRESSES.includes(position.token0) || BLACKLISTED_TOKEN_ADDRESSES.includes(position.token1)) {
     return
   }
 
