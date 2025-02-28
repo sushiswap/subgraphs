@@ -11,6 +11,10 @@ const MOCHI_ADDRESS = '0xf6e932ca12afa26665dc4dde7e27be02a7c02e50'
 const TYBG_ADDRESS = '0x0d97f261b1e88845184f678e2d1e7a98d9fd38de'
 const NORMIE_ADDRESS = '0x7f12d13b34f5f4f0a9449c16bcd42f0da47af200'
 const CBETH_ADDRESS = '0x2ae3f1ec7f1f5012cfeab0185bfc7aa3cf0dec22'
+
+// BLACKLISTED TOKENS
+const MEGA_ADDRESS = '0x750647c34e4c6158940df7740d342fefcb6ee4b5'
+
 module.exports = {
   network: 'base',
   blocks: {
@@ -64,6 +68,10 @@ module.exports = {
     }
   },
   v3: {
+    graft: {
+      base: 'QmZ2R9ABG9ienaZdGyPLcDWDNDkG187RhXmh6fFuEtUaaS',
+      startBlock: 26529000,
+    },
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
       startBlock: 1759510,
@@ -92,6 +100,9 @@ module.exports = {
     stableTokenAddresses: [DAI_ADDRESS, AXL_USDC_ADDRESS, USDC_ADDRESS, USDBC_ADDRESS, DAI2_ADDRESS],
     nativePricePool: '0x6ecf6b2ca5b1681412839d9b72f43ff87acd3786', // WETH/USDC
     minimumEthLocked: 1,
+    blacklistedTokenAddresses: [
+      MEGA_ADDRESS,
+    ],
   },
   routeprocessor: {
     address: "0x0389879e0156033202c44bf784ac18fc02edee4f",

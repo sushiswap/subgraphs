@@ -14,6 +14,8 @@ export const BI_18 = BigInt.fromI32(18)
 
 export const WHITELISTED_TOKEN_ADDRESSES: string[] = '{{ v3.whitelistedTokenAddresses }}'.split(',')
 
+export const BLACKLISTED_TOKEN_ADDRESSES: string[] = '{{ v3.blacklistedTokenAddresses }}'.split(',')
+
 export const NATIVE_ADDRESS = '{{ v3.native.address }}'
 
 export const STABLE_TOKEN_ADDRESSES: string[] = '{{ v3.stableTokenAddresses }}'.split(',')

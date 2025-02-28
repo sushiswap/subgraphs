@@ -1,4 +1,4 @@
-import { FACTORY_ADDRESS, ZERO_BI, ONE_BI, ZERO_BD, ADDRESS_ZERO, WHITELISTED_TOKEN_ADDRESSES } from './../constants'
+import { FACTORY_ADDRESS, ZERO_BI, ONE_BI, ZERO_BD, ADDRESS_ZERO, WHITELISTED_TOKEN_ADDRESSES, BLACKLISTED_TOKEN_ADDRESSES } from './../constants'
 import { Factory } from '../../generated/schema'
 import { PoolCreated } from '../../generated/Factory/Factory'
 import { Pool, Token, Bundle } from '../../generated/schema'
@@ -30,6 +30,8 @@ export function handlePoolCreated(event: PoolCreated): void {
     bundle.ethPriceUSD = ZERO_BD
     bundle.save()
   }
+
+  
 
   factory.poolCount = factory.poolCount.plus(ONE_BI)
 
@@ -91,12 +93,12 @@ export function handlePoolCreated(event: PoolCreated): void {
   }
 
   // update white listed pools
-  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0.id)) {
+  if (WHITELISTED_TOKEN_ADDRESSES.includes(token0.id) && !BLACKLISTED_TOKEN_ADDRESSES.includes(token1.id)) {
     let newPools = token1.whitelistPools
     newPools.push(pool.id)
     token1.whitelistPools = newPools
   }
-  if (WHITELISTED_TOKEN_ADDRESSES.includes(token1.id)) {
+  if (WHITELISTED_TOKEN_ADDRESSES.includes(token1.id) && !BLACKLISTED_TOKEN_ADDRESSES.includes(token0.id)) {
     let newPools = token0.whitelistPools
     newPools.push(pool.id)
     token0.whitelistPools = newPools
