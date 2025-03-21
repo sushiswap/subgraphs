@@ -6,7 +6,7 @@ const AXLETH_ADDRESS = '0xb829b68f57cc546da7e5806a929e53be32a4625d'
 const STFIL_ADDRESS = '0x3c3501e6c353dbaeddfa90376975ce7ace4ac7a8'
 const RSPD_ADDRESS = '0x97aae66a1d2a41eac573397b7a5656a9cf3e5616'
 module.exports = {
-  network: 'mainnet',
+  network: 'filecoin',
   blocks: {
     address: '0x719e14fcb364bb05649bd525eb6c4a2d0d4ea2b7',
     startBlock: 2867000,
