@@ -13,46 +13,15 @@ const SUSHI_ADDRESS = '0x29dFce9c22003A4999930382Fd00f9Fd6133Acd1'
 
 module.exports = {
   network: 'celo',
+  retainBlocks: 290640,
   sushi: { address: SUSHI_ADDRESS },
-  minichef: {
-    address: '0x8084936982d089130e001b470edf58faca445008',
-    startBlock: 10186627,
-    rewarder: {
-      complex: {
-        address: '0xfa3de59edd2500ba725dad355b98e6a4346ada7d',
-        rewardToken: { address: NATIVE_ADDRESS }
-      },
-    },
-  },
   bentobox: {
     address: '0x0711b6026068f736bae6b213031fce978d48e026',
     startBlock: 9451612,
   },
-  legacy: {
-    native: {
-      address: NATIVE_ADDRESS,
-    },
-    whitelistedTokenAddresses: [
-      // IMPORTANT! Native should be included here
-      NATIVE_ADDRESS,
-      WETH_ADDRESS,
-      CEUR_ADDRESS,
-      CUSD_ADDRESS,
-      USDC_ADDRESS,
-      USDT_ADDRESS,
-      WBTC_ADDRESS,
-      DAI_ADDRESS,
-      DAI2_ADDRESS,
-    ],
-    stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, DAI2_ADDRESS],
-    minimumNativeLiquidity: 1,
-    factory: {
-      address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
-      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
-      startBlock: 7253488,
-    },
-  },
   v2: {
+    base: 'QmWX1tYofCvtw675s6ccE8ovWDkuikRBkkLk4PQpT79jRD',
+    startBlock: 30977657,
     nativeAddress: NATIVE_ADDRESS,
     whitelistAddresses: [
       // IMPORTANT! Native should be included here
@@ -83,14 +52,8 @@ module.exports = {
     stream: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
     vesting: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   },
-  auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
-  staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
   blocks: {
     address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
-    startBlock: 0,
-  },
-  xswap: {
-    address: '0x0000000000000000000000000000000000000000',
     startBlock: 0,
   },
   routeprocessor: {
