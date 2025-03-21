@@ -17,7 +17,6 @@
   "license": "MIT",
   "packageManager": "pnpm@8.15.3",
   "devDependencies": {
-    "@sushiswap/prettier-config": "^0.1.0",
     "commander": "^8.3.0",
     "mustache": "latest",
     "prettier": "^2.4.0",
