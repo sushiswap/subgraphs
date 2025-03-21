@@ -13,30 +13,14 @@ const NORMIE_ADDRESS = '0x7f12d13b34f5f4f0a9449c16bcd42f0da47af200'
 const CBETH_ADDRESS = '0x2ae3f1ec7f1f5012cfeab0185bfc7aa3cf0dec22'
 module.exports = {
   network: 'base',
+  retainBlocks: 725760,
   blocks: {
     address: '0x71524b4f93c58fcbf659783284e38825f0622859',
     startBlock: 0,
   },
-  legacy: {
-    native: { address: NATIVE_ADDRESS },
-    whitelistedTokenAddresses: [
-      // IMPORTANT! Native should be included here
-      NATIVE_ADDRESS,
-      DAI_ADDRESS,
-      AXL_USDC_ADDRESS,
-      TOSHI_ADDRESS,
-      SUSHI_TOKEN,
-      DAI2_ADDRESS,
-    ],
-    stableTokenAddresses: [DAI_ADDRESS, AXL_USDC_ADDRESS, DAI2_ADDRESS],
-    minimumNativeLiquidity: 1,
-    factory: {
-      address: '0x71524b4f93c58fcbf659783284e38825f0622859',
-      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
-      startBlock: 2631214,
-    },
-  },
   v2: {
+    base: 'QmQfYe5Ygg9A3mAiuBZYj5a64bDKLF4gF6sezfhgxKvb9y',
+    startBlock: 27887034,
     nativeAddress: NATIVE_ADDRESS,
     whitelistAddresses: [
       // IMPORTANT! Native should be included here
@@ -64,6 +48,8 @@ module.exports = {
     }
   },
   v3: {
+    base: 'QmWWh7RgdXHcxaSwhJMpH1SB7D9rFZRGLZVwRfg2BPKsHt',
+    startBlock: 27887034,
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
       startBlock: 1759510,

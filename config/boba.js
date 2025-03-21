@@ -12,55 +12,18 @@ const BUSD_ADDRESS = '0x352f2fdf653a194b42e3311f869237c66309b69e'
 
 module.exports = {
   network: 'boba',
+  retainBlocks: 1260000,
   native: { address: NATIVE_ADDRESS },
   sushi: { address: SUSHI_ADDRESS },
   weth: { address: NATIVE_ADDRESS },
   wbtc: { address: WBTC_ADDRESS },
-  minichef: {
-    address: '0x75f52766a6a23f736edefcd69dfbe6153a48c3f3',
-    startBlock: 813755,
-    rewarder: {
-      complex: {
-        address: '0xf731202a3cf7efa9368c2d7bd613926f7a144db5',
-        rewardToken: { address: BOBA_ADDRESS },
-      }
-    },
-  },
-  legacy: {
-    native: { address: NATIVE_ADDRESS },
-    whitelistedTokenAddresses: [
-      // IMPORTANT! Native should be included here
-      NATIVE_ADDRESS,
-      BOBA_ADDRESS,
-      WBTC_ADDRESS,
-      USDT_ADDRESS,
-      DAI_ADDRESS,
-      USDC_ADDRESS,
-      FRAX_ADDRESS,
-      UST_ADDRESS,
-      SUSHI_ADDRESS,
-      BUSD_ADDRESS
-    ],
-    stableTokenAddresses: [
-      USDT_ADDRESS,
-      DAI_ADDRESS,
-      USDC_ADDRESS,
-      FRAX_ADDRESS,
-      UST_ADDRESS,
-      BUSD_ADDRESS
-    ],
-    minimumNativeLiquidity: 3,
-    factory: {
-      address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
-      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
-      startBlock: 822561,
-    },
-  },
   blocks: {
     address: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
     startBlock: 0,
   },
   v2: {
+    base: 'QmSuZ3L62PyVC4RjYFikoYZhyDMGMkPNUArVMaj9G73Dxw',
+    startBlock: 15779259,
     nativeAddress: NATIVE_ADDRESS,
     whitelistAddresses: [
       // IMPORTANT! Native should be included here
@@ -86,6 +49,8 @@ module.exports = {
     }
   },
   v3: {
+    base: 'QmVbYM6wz7XnH32QzQLNBwyzx7r1HNsFP6jfUi22NRvvJu',
+    startBlock: 15779259,
     factory: {
       address: '0x0be808376ecb75a5cf9bb6d237d16cd37893d904',
       startBlock: 998556,
