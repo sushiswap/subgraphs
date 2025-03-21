@@ -1,6 +1,11 @@
 const NATIVE_ADDRESS = '0x4200000000000000000000000000000000000006'
 const USDC_ADDRESS = '0xad11a8beb98bbf61dbb1aa0f6d6f2ecd87b35afa'
 const USDT_ADDRESS = '0xbb0d083fb1be0a9f6157ec484b6c79e0a4e31c2e'
+const VUSD_ADDRESS = '0x7a06c4aef988e7925575c50261297a946ad204a8'
+const WBTC_ADDRESS = '0x03c7054bcb39f7b2e5b2c7acb37583e32d70cfa3'
+const hemiBTC_ADDRESS = '0xaa40c0c7644e0b2b224509571e10ad20d9c4ef28'
+const msUSD = '0x3ea24e3727a85a479e29e02cc70e792936fbbcad'
+const msETH = '0xbf7d0f62b64b23053949b3a88a03da5bfd35b2e2'
 
 module.exports = {
   network: 'hemi',
@@ -14,11 +19,16 @@ module.exports = {
       // IMPORTANT! Native should be included here
       NATIVE_ADDRESS,
       USDC_ADDRESS,
-      USDT_ADDRESS
+      USDT_ADDRESS,
+      VUSD_ADDRESS,
+      WBTC_ADDRESS,
+      hemiBTC_ADDRESS,
+      msUSD,
+      msETH
     ],
     stable0: USDC_ADDRESS,
     stable1: USDT_ADDRESS,
-    stable2: '0x0000000000000000000000000000000000000000',
+    stable2: VUSD_ADDRESS,
     minimumNativeLiquidity: 0.5,
     factory: {
       address: '0x9b3336186a38e1b6c21955d112dbb0343ee061ee',
@@ -40,10 +50,15 @@ module.exports = {
       // IMPORTANT! Native should be included here
       NATIVE_ADDRESS,
       USDC_ADDRESS,
-      USDT_ADDRESS
+      USDT_ADDRESS,
+      VUSD_ADDRESS,
+      WBTC_ADDRESS,
+      hemiBTC_ADDRESS,
+      msUSD,
+      msETH
     ],
     stableTokenAddresses: [
-      USDC_ADDRESS, USDT_ADDRESS
+      USDC_ADDRESS, USDT_ADDRESS, VUSD_ADDRESS
     ],
     nativePricePool: '0x9580d4519c9f27642e21085e763e761a74ef3735', // WETH/USDC - 0.03%
     minimumEthLocked: 0.5,
