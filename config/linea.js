@@ -8,7 +8,10 @@ const WBTC_ADDRESS = '0x3aab2285ddcddad8edf438c1bab47e1a9d05a9b4'
 
 module.exports = {
   network: 'linea',
+  retainBlocks: 725760,
   v2: {
+    base: 'QmcrH1y6zx6wzTBL9cKVdA81fHkPzytcx5Gy1iVJLP1Vfw',
+    startBlock: 17200734,
     nativeAddress: NATIVE_ADDRESS,
     whitelistAddresses: [
       // IMPORTANT! Native should be included here
@@ -31,6 +34,8 @@ module.exports = {
     }
   },
   v3: {
+    base: 'QmNZ9ePvxGRDHAEhb7cLsb3AvtCCPJ3qAwh1CDvDn39RMa',
+    startBlock: 17200734,
     factory: {
       address: '0xc35DADB65012eC5796536bD9864eD8773aBc74C4',
       startBlock: 53256,
@@ -57,23 +62,6 @@ module.exports = {
   blocks: {
     address: '0x0000000000000000000000000000000000000000',
     startBlock: 0,
-  },
-  legacy: {
-    native: { address: NATIVE_ADDRESS },
-    whitelistedTokenAddresses: [
-      // IMPORTANT! Native should be included here
-      NATIVE_ADDRESS,
-      DAI_ADDRESS,
-      AXL_USDC_ADDRESS,
-      WETH_ADDRESS,
-    ],
-    stableTokenAddresses: [DAI_ADDRESS, AXL_USDC_ADDRESS],
-    minimumNativeLiquidity: 1,
-    factory: {
-      address: '0xfbc12984689e5f15626bad03ad60160fe98b303c',
-      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
-      startBlock: 631714,
-    },
   },
   routeprocessor: {
     address: '0x46b3fdf7b5cde91ac049936bf0bdb12c5d22202e',

@@ -19,96 +19,19 @@ const SOLV_BTC_ADDRESS = '0x3647c54c4c2c65bc7a2d63c0da2809b399dbbdc0'
 
 module.exports = {
   network: 'arbitrum-one',
+  retainBlocks: 5796000,
   sushi: { address: SUSHI_ADDRESS },
   weth: { address: WETH_ADDRESS },
   wbtc: { address: WBTC_ADDRESS },
-  minichef: {
-    address: '0xf4d73326c13a4fc5fd7a064217e12780e9bd62c3',
-    startBlock: 226981,
-    rewarder: {
-      complex: {
-        address: '0x0000000000000000000000000000000000000000',
-        rewardToken: { address: '0x0000000000000000000000000000000000000000' }
-      }
-    }
-  },
+ 
   bentobox: {
     address: '0x74c764d41b77dbbb4fe771dab1939b00b146894a',
     // base: '',
     startBlock: 229409,
   },
-  kashi: {
-    medium: '0xa010ee0226cd071bebd8919a1f675cae1f1f5d3e',
-
-    mediumRiskMasterContractAddresses: ['0xa010ee0226cd071bebd8919a1f675cae1f1f5d3e'],
-  },
-  miso: {
-    accessControls: { address: '0x1be211d8da40bc0ae8719c6663307bfc987b1d6c', startBlock: 9930886 },
-    market: { address: '0x351447fc9bd20a917783e159e61e86edda0b0187', startBlock: 9931078 },
-  },
-  legacy: {
-    base: 'QmfKgxN71Bc7TKzQi8yccRunpiWupFdWA4638yZRxve3q1',
-    startBlock: 16548328,
-    native: { address: NATIVE_ADDRESS },
-    whitelistedTokenAddresses: [
-      // IMPORTANT! Native should be included here
-      NATIVE_ADDRESS,
-      WBTC_ADDRESS,
-      ARBY_ADDRESS,
-      USDC_ADDRESS,
-      USDC_CIRCLE_ADDRESS,
-      USDT_ADDRESS,
-      GOHM_ADDRESS,
-      DPX_ADDRESS,
-      MAGIC_ADDRESS,
-      DAI_ADDRESS,
-      MIM_ADDRESS,
-      FRAX_ADDRESS,
-    ],
-    stableTokenAddresses: [USDC_ADDRESS, USDC_CIRCLE_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, MIM_ADDRESS, FRAX_ADDRESS],
-    minimumNativeLiquidity: 3,
-    factory: {
-      address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
-      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
-      startBlock: 70,
-    },
-  },
-  trident: {
-    masterDeployer: { address: '0xf0e1f962e3e6d8e2af8190b2798c1b4f018fe48d', startBlock: 43756724 },
-    concentratedLiquidityPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
-    constantProductPoolFactory: {
-      address: '0xc79ae87e9f55761c08e346b98dddf070c9872787',
-      initCodeHash: '0x3172d82413be467c1130709f7479a07def9b99caf8e0059f248c131081e4ea09',
-    },
-    stablePoolFactory: { address: '0xc2fb256aba36852dccea92181ec6b355f09a0288' },
-    hybridPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
-    indexPoolFactory: { address: '0x0000000000000000000000000000000000000000' },
-    native: { address: NATIVE_ADDRESS },
-    whitelistedTokenAddresses: [
-      // IMPORTANT! Native should be included here
-      NATIVE_ADDRESS,
-      SUSHI_ADDRESS,
-      WETH_ADDRESS,
-      WBTC_ADDRESS,
-      USDC_ADDRESS,
-      USDC_CIRCLE_ADDRESS,
-      USDT_ADDRESS,
-      DAI_ADDRESS,
-      MIM_ADDRESS,
-      FRAX_ADDRESS,
-      ARBY_ADDRESS,
-      DPX_ADDRESS,
-      GOHM_ADDRESS,
-      MAGIC_ADDRESS
-    ],
-    stableTokenAddresses: [USDC_ADDRESS, USDC_CIRCLE_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, MIM_ADDRESS, FRAX_ADDRESS],
-    tokensToPriceOffNative: [
-      // These tokens will be priced off the NATIVE token.
-      USDC_ADDRESS,
-    ],
-    minimumNativeLiquidity: '1.2',
-  },
   v2: {
+    base: 'QmV5qTnwjz65z6TH63DYngLr1gj52KQ6Lr6m8aeNj6yxxb',
+    startBlock: 318018974,
     nativeAddress: NATIVE_ADDRESS,
     whitelistAddresses: [
       // IMPORTANT! Native should be included here
@@ -142,6 +65,8 @@ module.exports = {
     }
   },
   v3: {
+    base: 'QmS9GKBA49mDpWchU2Us1PJ7kmu4S7tWa4gAmRvE3HK42w',
+    startBlock: 318018974,
     factory: { // 0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6
       address: '0x1af415a1eba07a4986a52b6f2e7de7003d82231e',
       startBlock: 75998697,
@@ -182,25 +107,9 @@ module.exports = {
     stream: { address: '0x4ab2fc6e258a0ca7175d05ff10c5cf798a672cae', startBlock: 13964139 },
     vesting: { address: '0x0689640d190b10765f09310fcfe9c670ede4e25b', startBlock: 13964169 },
   },
-  auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
-  staking: { address: '0x8db6749c9e8f28a4a9bbc02facb9ba9c58e3c9c5', startBlock: 13883265 },
   blocks: {
     address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
     startBlock: 0,
-  },
-  xswap: {
-    address: '0x53b08dbd70327b7ba3b7886fc9987bc985d27262',
-    startBlock: 18221456,
-  },
-  stargate: {
-    address: '0x66A71Dcef29A0fFBDBE3c6a460a3B5BC225Cd675',
-    startBlock: 7920342,
-    usdcPool: { address: '0x892785f33cdee22a30aef750f285e18c18040c3e', startBlock: 8041115 },
-    usdtPool: { address: '0xb6cfcf89a7b22988bfc96632ac2a9d6dab60d641', startBlock: 8041122 },
-  },
-  router: {
-    address: '0x1b02da8cb0d097eb8d57a175b88c7d8b47997506',
-    startBlock: 29527181,
   },
   routeprocessor: {
     address: '0x544ba588efd839d2692fc31ea991cd39993c135f',

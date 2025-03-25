@@ -3,10 +3,12 @@ schema:
   file: ./schema.graphql
 features:
   - nonFatalErrors
-#  - grafting
-#graft:
-#  base: '{{ v3.base }}'
-#  block: {{ v3.startBlock }}
+  - grafting
+graft:
+  base: '{{ v3.base }}'
+  block: {{ v3.startBlock }}
+indexerHints:
+  prune: {{ retainBlocks }}
 dataSources:
   - kind: ethereum/contract
     name: Factory
