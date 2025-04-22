@@ -4,10 +4,10 @@ repository: https://github.com/sushiswap/sushiswap-subgraph
 
 features:
   - nonFatalErrors
-  - grafting
-graft:
-  base: '{{ v2.base }}'
-  block: {{ v2.startBlock }}
+#   - grafting
+# graft:
+#   base: '{{ v2.base }}'
+#   block: {{ v2.startBlock }}
 indexerHints:
   prune: {{ retainBlocks }}
 schema:
