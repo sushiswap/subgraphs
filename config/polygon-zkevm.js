@@ -8,6 +8,7 @@ const MATIC_ADDRESS = '0xa2036f0538221a77a3937f1379699f44945018d0'
 
 module.exports = {
   network: 'polygon-zkevm',
+  retainBlocks: 487200,
   // sushi: { address: SUSHI_ADDRESS },
   weth: { address: WETH_ADDRESS },
   wbtc: { address: WBTC_ADDRESS },
@@ -15,7 +16,32 @@ module.exports = {
     address: '0xb45e53277a7e0f1d35f2a77160e91e25507f1763',
     startBlock: 0,
   },
+  v2: {
+    base: 'QmQLtMYbTvxDHqc5oFH75N2b4DL3Czdv2jSCo6bk4UwKyf',
+    startBlock: 20856190,
+    nativeAddress: NATIVE_ADDRESS,
+    whitelistAddresses: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WBTC_ADDRESS,
+      USDC_ADDRESS,
+      USDT_ADDRESS,
+      DAI_ADDRESS,
+      MATIC_ADDRESS,
+    ],
+    stable0: USDC_ADDRESS,
+    stable1: USDT_ADDRESS,
+    stable2: DAI_ADDRESS,
+    minimumNativeLiquidity: 0.45,
+    factory: {
+      address: '0xb45e53277a7e0f1d35f2a77160e91e25507f1763',
+      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
+      startBlock: 6312213,
+    }
+  },
   v3: {
+    base: 'QmWH5ChjmF4Yp5Yhiaxczh5QwbG6HFSEi8bRwbKaUrJA6C',
+    startBlock: 20856190,
     factory: {
       address: '0x1b02da8cb0d097eb8d57a175b88c7d8b47997506',
       startBlock: 80860,
@@ -38,48 +64,4 @@ module.exports = {
     nativePricePool: '0x41bbde5dfa689a2e53808d752e864c013ac4b733',
     minimumEthLocked: 0.7,
   },
-  v2: {
-    nativeAddress: NATIVE_ADDRESS,
-    whitelistAddresses: [
-      // IMPORTANT! Native should be included here
-      NATIVE_ADDRESS,
-      WBTC_ADDRESS,
-      USDC_ADDRESS,
-      USDT_ADDRESS,
-      DAI_ADDRESS,
-      MATIC_ADDRESS,
-    ],
-    stable0: USDC_ADDRESS,
-    stable1: USDT_ADDRESS,
-    stable2: DAI_ADDRESS,
-    minimumNativeLiquidity: 0.45,
-    factory: {
-      address: '0xb45e53277a7e0f1d35f2a77160e91e25507f1763',
-      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
-      startBlock: 6312213,
-    }
-  },
-  legacy: {
-    native: { address: NATIVE_ADDRESS },
-    whitelistedTokenAddresses: [
-      // IMPORTANT! Native should be included here
-      NATIVE_ADDRESS,
-      WBTC_ADDRESS,
-      USDC_ADDRESS,
-      USDT_ADDRESS,
-      DAI_ADDRESS,
-      MATIC_ADDRESS,
-    ],
-    stableTokenAddresses: [USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS],
-    minimumNativeLiquidity: 0.7,
-    factory: {
-      address: '0xb45e53277a7e0f1d35f2a77160e91e25507f1763',
-      initCodeHash: '0xe18a34eb0e04b04f7a0ac29a6e80748dca96319b42c54d679cb821dca90c6303',
-      startBlock: 6312213,
-    },
-  },
-  routeprocessor: {
-    address: "0x57bffa72db682f7eb6c132dae03ff36bbeb0c459",
-    startBlock: 10227576 ,
-  }
 }

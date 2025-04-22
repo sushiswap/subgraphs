@@ -1,12 +1,14 @@
-specVersion: 0.0.4
+specVersion: 1.2.0
 schema:
   file: ./schema.graphql
 features:
   - nonFatalErrors
-#  - grafting
-#graft:
-#  base: '{{ v3.base }}'
-#  block: {{ v3.startBlock }}
+#   - grafting
+# graft:
+#   base: '{{ v3.base }}'
+#   block: {{ v3.startBlock }}
+indexerHints:
+  prune: {{ retainBlocks }}
 dataSources:
   - kind: ethereum/contract
     name: Factory

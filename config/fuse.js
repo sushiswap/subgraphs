@@ -9,42 +9,15 @@ const SUSHI_ADDRESS = '0x90708b20ccc1eb95a4fa7c8b18fd2c22a0ff9e78'
 
 module.exports = {
   network: 'fuse',
+  retainBlocks: 290640,
   sushi: { address: SUSHI_ADDRESS },
-  minichef: {
-    address: '0x182cd0c6F1faec0aed2ea83cd0e160c8bd4cb063',
-    startBlock: 14411101,
-    rewarder: {
-      complex: {
-        address: '0xef502259dd5d497d082498912031e027c4515563',
-        rewardToken: { address: NATIVE_ADDRESS }
-      }
-    },
-  },
   blocks: {
     address: '0x43ea90e2b786728520e4f930d2a71a477bf2737c',
     startBlock: 0,
   },
-  legacy: {
-    native: { address: NATIVE_ADDRESS },
-    whitelistedTokenAddresses: [
-      // IMPORTANT! Native should be included here
-      NATIVE_ADDRESS,
-      WETH_ADDRESS,
-      WBTC_ADDRESS,
-      USDC_ADDRESS,
-      DAI_ADDRESS,
-      USDT_ADDRESS,
-      FUSD_ADDRESS,
-    ],
-    stableTokenAddresses: [USDC_ADDRESS, DAI_ADDRESS, USDT_ADDRESS, FUSD_ADDRESS],
-    minimumNativeLiquidity: 10000,
-    factory: {
-      address: '0x43ea90e2b786728520e4f930d2a71a477bf2737c',
-      initCodeHash: '0x1901958ef8b470f2c0a3875a79ee0bd303866d85102c0f1ea820d317024d50b5',
-      startBlock: 12943648,
-    },
-  },
   v2: {
+    base: 'QmRcpZhksXHJjkAf7Kk9ngGQteWUNAEJ1VH3jttivdN2ft',
+    startBlock: 34808969,
     nativeAddress: NATIVE_ADDRESS,
     whitelistAddresses: [
       // IMPORTANT! Native should be included here
@@ -67,6 +40,8 @@ module.exports = {
     }
   },
   v3: {
+    base: 'QmakqW3KCpEXJGTSuyfXHGg6C8ppbrPdSqVXWj3Guor9zA',
+    startBlock: 34808969,
     factory: {
       address: '0x1b9d177ccdea3c79b6c8f40761fc8dc9d0500eaa',
       startBlock: 22556035,
@@ -93,12 +68,6 @@ module.exports = {
   furo: {
     stream: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
     vesting: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
-  },
-  auctionMaker: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
-  staking: { address: '0x0000000000000000000000000000000000000000', startBlock: 0 },
-  xswap: {
-    address: '0xd045d27c1f7e7f770a807b0a85d8e3f852e0f2be',
-    startBlock: 43250231,
   },
   routeprocessor: {
     address: "0x46b3fdf7b5cde91ac049936bf0bdb12c5d22202e",

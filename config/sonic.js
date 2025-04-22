@@ -4,11 +4,14 @@ const WETH_ADDRESS = '0x309c92261178fa0cf748a855e90ae73fdb79ebc7'
 
 module.exports = {
   network: 'sonic',
+  retainBlocks: 4200000,
   blocks: {
     address: '0xb45e53277a7e0f1d35f2a77160e91e25507f1763',
     startBlock: 0,
   },
   v2: {
+    base: 'QmXVvpbj5eC3uAZPnBKyPnz8PhEy62WmZqcJCp17rboA5C',
+    startBlock: 16136436,
     nativeAddress: NATIVE_ADDRESS,
     whitelistAddresses: [
       // IMPORTANT! Native should be included here
@@ -27,6 +30,8 @@ module.exports = {
     }
   },
   v3: {
+    base: 'QmT1CYfTZ4DD6wFwb5nSh6qZFiR2ECP8XXaVoLe8KUBh81',
+    startBlock: 16136543,
     factory: {
       address: '0x46b3fdf7b5cde91ac049936bf0bdb12c5d22202e',
       startBlock: 347590,
