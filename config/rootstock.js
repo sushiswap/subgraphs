@@ -6,6 +6,8 @@ const RIF_ADDRESS = '0x2acc95758f8b5f583470ba265eb685a8f45fc9d5'
 const SOV_ADDRESS = '0xefc78fc7d48b64958315949279ba181c2114abbd'
 const ETHS_ADDRESS = '0x1d931bf8656d795e50ef6d639562c5bd8ac2b78f'
 const XUSD_ADDRESS = '0xb5999795be0ebb5bab23144aa5fd6a02d080299f'
+const SOLV_BTC_ADDRESS = '0x541fd749419ca806a8bc7da8ac23d346f2df8b77'
+const XSOLV_BTC_ADDRESS = '0xcc0966d8418d412c599a6421b760a847eb169a8c'
 
 module.exports = {
   network: 'rootstock',
@@ -51,7 +53,9 @@ module.exports = {
       RIF_ADDRESS,
       SOV_ADDRESS,
       ETHS_ADDRESS,
-      XUSD_ADDRESS
+      XUSD_ADDRESS,
+      SOLV_BTC_ADDRESS,
+      XSOLV_BTC_ADDRESS,
     ],
     stable0: RUSDT_ADDRESS,
     stable1: RDAI_ADDRESS,
@@ -84,7 +88,9 @@ module.exports = {
       RIF_ADDRESS,
       SOV_ADDRESS,
       ETHS_ADDRESS,
-      XUSD_ADDRESS
+      XUSD_ADDRESS,
+      SOLV_BTC_ADDRESS,
+      XSOLV_BTC_ADDRESS,
     ],
     stableTokenAddresses: [
       RUSDT_ADDRESS,
