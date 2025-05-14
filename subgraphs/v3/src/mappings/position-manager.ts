@@ -109,8 +109,11 @@ export function handleIncreaseLiquidity(event: IncreaseLiquidity): void {
 
   let bundle = Bundle.load('1') as Bundle
 
-  let token0 = Token.load(position.token0) as Token
-  let token1 = Token.load(position.token1) as Token
+  let token0 = Token.load(position.token0)
+  let token1 = Token.load(position.token1)
+  if (token0 === null || token1 === null) {
+    return
+  }
 
   let amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
   let amount1 = convertTokenToDecimal(event.params.amount1, token1.decimals)
@@ -154,8 +157,12 @@ export function handleDecreaseLiquidity(event: DecreaseLiquidity): void {
 
   let bundle = Bundle.load('1') as Bundle
 
-  let token0 = Token.load(position.token0) as Token
-  let token1 = Token.load(position.token1) as Token
+  let token0 = Token.load(position.token0)
+  let token1 = Token.load(position.token1)
+
+  if (token0 === null || token1 === null) {
+    return
+  }
   let amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
   let amount1 = convertTokenToDecimal(event.params.amount1, token1.decimals)
 
@@ -181,8 +188,12 @@ export function handleCollect(event: Collect): void {
   }
 
   let bundle = Bundle.load('1') as Bundle
-  let token0 = Token.load(position.token0) as Token
-  let token1 = Token.load(position.token1) as Token
+  let token0 = Token.load(position.token0)
+  let token1 = Token.load(position.token1)
+  
+  if (token0 === null || token1 === null) {
+    return
+  }
   let amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
   let amount1 = convertTokenToDecimal(event.params.amount1, token1.decimals)
   position.collectedToken0 = position.collectedToken0.plus(amount0)
