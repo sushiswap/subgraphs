@@ -103,8 +103,6 @@ templates:
           calls:
             global0X128: Pool[event.address].feeGrowthGlobal0X128()
             global1X128: Pool[event.address].feeGrowthGlobal1X128()
-            lowerTick: Pool[event.address].ticks(event.params.tickLower)
-            upperTick: Pool[event.address].ticks(event.params.tickUpper)
         - event: Mint(address,indexed address,indexed int24,indexed int24,uint128,uint256,uint256)
           handler: handleMint
           calls:
