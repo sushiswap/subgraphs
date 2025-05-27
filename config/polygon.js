@@ -139,6 +139,77 @@ module.exports = {
     nativePricePool: '0x21988c9cfd08db3b5793c2c6782271dc94749251',
     minimumEthLocked: 1000,
   },
+  v4: {
+    poolManager: {
+      address: '0x8C693F33b401Eed74e16CA30543123f2FB2ab791',
+      startBlock: 71436977,
+    },
+    positionManager: {
+      address: '0xd0FCeab9dB24806D20b7c0725759E7aD4395B063',
+      startBlock: 71469679,
+    },
+    stablecoinWrappedNativePoolId:
+      '0x15484bc239f7554e7ead77c45834c722d3f74a9b20826fdf21bbb1b026444286',
+    stablecoinIsToken0: false,
+    wrappedNativeAddress: NATIVE_ADDRESS,
+    minimumNativeLocked: 1,
+
+    stablecoinAddresses: [
+      USDC_ADDRESS, USDT_ADDRESS, DAI_ADDRESS, FRAX_ADDRESS, USDC_CIRCLE_ADDRESS
+    ],
+
+    whitelistTokens: [
+      // IMPORTANT! Native should be included here
+      NATIVE_ADDRESS,
+      WETH_ADDRESS,
+      USDC_ADDRESS,
+      DAI_ADDRESS,
+      USDT_ADDRESS,
+      WBTC_ADDRESS,
+      SUSHI_ADDRESS,
+      AAVE_ADDRESS,
+      FRAX_ADDRESS,
+      BCT_ADDRESS,
+      AURUM_ADDRESS,
+      MSU_ADDRESS,
+      DMAGIC_ADDRESS,
+      NDEFI_ADDRESS,
+      NPM_ADDRESS,
+      USDC_CIRCLE_ADDRESS,
+      THREE_ADDRESS,
+      RENDER_ADDRESS,
+      GRAPH_ADDRESS,
+      BAL_ADDRESS,
+      SNX_ADDRESS,
+      STG_ADDRESS,
+      UNI_ADDRESS,
+      LINK_ADDRESS,
+      GRT_ADDRESS,
+      TEL_ADDRESS,
+      MANA_ADDRESS,
+      GNS_ADDRESS,
+      QUICK_ADDRESS,
+      AVAX_ADDRESS,
+      OCEAN_ADDRESS,
+    ],
+
+    tokenOverrides: [
+      // { // EXAMPLE
+      //   address: USDC_ADDRESS,
+      //   symbol: 'USDC',
+      //   decimals: 6,
+      //   name: 'USD Coin',
+      // },
+    ],
+    poolsToSkip: [],
+    poolMappings: [],
+
+    nativeTokenDetails: {
+      symbol: 'POL',
+      name: 'Polygon',
+      decimals: 18,
+    },
+  },
   furo: {
     stream: { address: '0x4ab2fc6e258a0ca7175d05ff10c5cf798a672cae', startBlock: 29273010 },
     vesting: { address: '0x0689640d190b10765f09310fcfe9c670ede4e25b', startBlock: 29273856 },
