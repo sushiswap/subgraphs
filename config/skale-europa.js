@@ -7,7 +7,7 @@ const SKL_ADDRESS = '0xe0595a049d02b7674572b0d59cd4880db60edc50'
 const WBTC_ADDRESS = '0xcb011e86df014a46f4e3ac3f3cbb114a4eb80870'
 
 module.exports = {
-  network: 'mainnet',
+  network: 'skale-europa-2',
   blocks: {
     address: '0x1aaf6eb4f85f8775400c1b10e6bbbd98b2ff8483',
     startBlock: 5124080,
