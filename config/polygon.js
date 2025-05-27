@@ -1,4 +1,4 @@
-const NATIVE_ADDRESS = '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270'
+const WNATIVE_ADDRESS = '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270'
 const SUSHI_ADDRESS = '0x0b3f868e0be5597d5db7feb59e1cadbb0fdda50a'
 const WETH_ADDRESS = '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619'
 const WBTC_ADDRESS = '0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6'
@@ -44,10 +44,10 @@ module.exports = {
   v2: {
     base: 'QmebwDJ8a8uGf5sW6inqVfJwDGgYrvCvif19wnQqHN8GzQ',
     startBlock: 69321624,
-    nativeAddress: NATIVE_ADDRESS,
+    nativeAddress: WNATIVE_ADDRESS,
     whitelistAddresses: [
       // IMPORTANT! Native should be included here
-      NATIVE_ADDRESS,
+      WNATIVE_ADDRESS,
       WETH_ADDRESS,
       USDC_ADDRESS,
       DAI_ADDRESS,
@@ -100,10 +100,10 @@ module.exports = {
       address: '0xb7402ee99f0a008e461098ac3a27f4957df89a40',
       startBlock: 41046124,
     },
-    native: { address: NATIVE_ADDRESS },
+    native: { address: WNATIVE_ADDRESS },
     whitelistedTokenAddresses: [
       // IMPORTANT! Native should be included here
-      NATIVE_ADDRESS,
+      WNATIVE_ADDRESS,
       WETH_ADDRESS,
       USDC_ADDRESS,
       DAI_ADDRESS,
@@ -149,9 +149,9 @@ module.exports = {
       startBlock: 71469679,
     },
     stablecoinWrappedNativePoolId:
-      '0x15484bc239f7554e7ead77c45834c722d3f74a9b20826fdf21bbb1b026444286',
+      '0x71b1a9ab280c3e7877af9a66b7a09600418dfe708170f5dd7539458833eb653d',
     stablecoinIsToken0: false,
-    wrappedNativeAddress: NATIVE_ADDRESS,
+    wrappedNativeAddress: WNATIVE_ADDRESS,
     minimumNativeLocked: 1,
 
     stablecoinAddresses: [
@@ -160,7 +160,7 @@ module.exports = {
 
     whitelistTokens: [
       // IMPORTANT! Native should be included here
-      NATIVE_ADDRESS,
+      WNATIVE_ADDRESS,
       WETH_ADDRESS,
       USDC_ADDRESS,
       DAI_ADDRESS,
