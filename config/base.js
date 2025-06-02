@@ -48,8 +48,8 @@ module.exports = {
     }
   },
   v3: {
-    base: 'QmWWh7RgdXHcxaSwhJMpH1SB7D9rFZRGLZVwRfg2BPKsHt',
-    startBlock: 27887034,
+    base: 'QmNw2ShqcGgu9iqxhAXdi89jCJn5DMU77tYJVLHg7HjZQ9',
+    startBlock: 30156135,
     factory: {
       address: '0xc35dadb65012ec5796536bd9864ed8773abc74c4',
       startBlock: 1759510,

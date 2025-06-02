@@ -1,9 +1,9 @@
 specVersion: 1.2.0
 schema:
   file: ./schema.graphql
-features:
-  - nonFatalErrors
-#   - grafting
+# features:
+#   - nonFatalErrors
+  # - grafting
 # graft:
 #   base: '{{ v3.base }}'
 #   block: {{ v3.startBlock }}
