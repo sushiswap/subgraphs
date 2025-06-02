@@ -6,6 +6,7 @@ const vbWBTC_ADDRESS = '0x0913da6da4b42f538b445599b46bb4622342cf52'
 
 module.exports = {
   network: 'katana',
+  retainBlocks: 725760,
   blocks: {
     address: '0x72d111b4d6f31b38919ae39779f570b747d6acd9',
     startBlock: 0,
