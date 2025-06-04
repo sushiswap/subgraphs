@@ -1,8 +1,6 @@
 specVersion: 1.0.0
 description: Blocks
 repository: https://github.com/sushiswap/subgraphs
-indexerHints:
-  prune: {{ retainBlocks }}
 schema:
   file: ./schema.graphql
 dataSources:
