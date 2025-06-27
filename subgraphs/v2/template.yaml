@@ -2,8 +2,8 @@ specVersion: 1.2.0
 description: Sushiswap
 repository: https://github.com/sushiswap/sushiswap-subgraph
 
-features:
-  - nonFatalErrors
+# features:
+#   - nonFatalErrors
 #   - grafting
 # graft:
 #   base: '{{ v2.base }}'
