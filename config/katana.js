@@ -17,11 +17,11 @@ const YFI_ADDRESS = '0x476eacd417cd65421bd34fca054377658bb5e02b'
 const LBTC_ADDRESS = '0xecac9c5f704e954931349da37f60e39f515c11c1'
 const BTCK_ADDRESS = '0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072'
 const wstETH_ADDRESS = '0x7fb4d0f51544f24f385a421db6e7d4fc71ad8e5c'
-const unKAT_ADDRESS  = '0xfa8df5ecbc41ced29aa417852d40dab9a855107d'
+const unKAT_ADDRESS  = '0xa6c996a8d401271e8c4f95927443538d4a1f3fa2'
 
 module.exports = {
   network: 'katana',
-  retainBlocks: 725760,
+  retainBlocks: 1451520,
   blocks: {
     address: '0x72d111b4d6f31b38919ae39779f570b747d6acd9',
     startBlock: 0,
