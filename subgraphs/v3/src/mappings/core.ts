@@ -152,6 +152,8 @@ export function handleMint(event: MintEvent): void {
   // level requires reimplementing some of the swapping code from v3-core.
 
   updateUniswapDayData(event)
+  pool.save() // This has to be saved because it's reloaded below, unlike token where it's being passed in.
+
   updatePoolDayData(event)
   updatePoolHourData(event)
   updateTokenDayData(token0, event)
@@ -161,7 +163,6 @@ export function handleMint(event: MintEvent): void {
 
   token0.save()
   token1.save()
-  pool.save()
   factory.save()
   mint.save()
 
