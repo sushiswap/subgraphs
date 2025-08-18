@@ -152,6 +152,8 @@ export function handleMint(event: MintEvent): void {
   // level requires reimplementing some of the swapping code from v3-core.
 
   updateUniswapDayData(event)
+  pool.save() // Pool bucket functions below will initialize the pool from db again. ALMs + inactive pools will not get the tvl update if this isn't saved first.
+
   updatePoolDayData(event)
   updatePoolHourData(event)
   updateTokenDayData(token0, event)
@@ -161,7 +163,6 @@ export function handleMint(event: MintEvent): void {
 
   token0.save()
   token1.save()
-  pool.save()
   factory.save()
   mint.save()
 
