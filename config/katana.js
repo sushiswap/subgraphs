@@ -18,6 +18,8 @@ const LBTC_ADDRESS = '0xecac9c5f704e954931349da37f60e39f515c11c1'
 const BTCK_ADDRESS = '0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072'
 const wstETH_ADDRESS = '0x7fb4d0f51544f24f385a421db6e7d4fc71ad8e5c'
 const unKAT_ADDRESS  = '0xa6c996a8d401271e8c4f95927443538d4a1f3fa2'
+const SFRXUSD_ADDRESS = '0x5bff88ca1442c2496f7e475e9e7786383bc070c0'
+const FRXUSD_ADDRESS = '0x80eede496655fb9047dd39d9f418d5483ed600df'
 
 module.exports = {
   network: 'katana',
@@ -49,7 +51,9 @@ module.exports = {
       LBTC_ADDRESS,
       BTCK_ADDRESS,
       wstETH_ADDRESS,
-      unKAT_ADDRESS
+      unKAT_ADDRESS,
+      SFRXUSD_ADDRESS,
+      FRXUSD_ADDRESS
     ],
     stable0: vbUSDC_ADDRESS,
     stable1: vbUSDT_ADDRESS,
@@ -99,7 +103,8 @@ module.exports = {
       vbUSDT_ADDRESS,
       vbUSDS_ADDRESS,
       AUSD_ADDRESS,
-      bvUSD_ADDRESS
+      bvUSD_ADDRESS,
+      FRXUSD_ADDRESS
     ],
     nativePricePool: '0x105f833d8522f33d8dc3e9599455e9412b63d049', // WETH/USDC - 0.03%
     minimumEthLocked: 0.5,
