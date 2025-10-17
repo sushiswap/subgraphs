@@ -96,7 +96,9 @@ module.exports = {
       LBTC_ADDRESS,
       BTCK_ADDRESS,
       wstETH_ADDRESS,
-      unKAT_ADDRESS
+      unKAT_ADDRESS,
+      SFRXUSD_ADDRESS,
+      FRXUSD_ADDRESS
     ],
     stableTokenAddresses: [
       vbUSDC_ADDRESS,
