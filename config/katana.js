@@ -66,6 +66,8 @@ module.exports = {
     }
   },
   v3: {
+    base: 'QmZZqHXmw6hZZBbYYsJJ5NmfdyueMxLU4dRh6Q743mrz1b',
+    startBlock: 17886525,
     factory: {
       address: '0x203e8740894c8955cb8950759876d7e7e45e04c1',
       startBlock: 1858972,

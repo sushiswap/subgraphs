@@ -1,12 +1,11 @@
 specVersion: 1.2.0
 schema:
   file: ./schema.graphql
-# features:
-#   - nonFatalErrors
-  # - grafting
-# graft:
-#   base: '{{ v3.base }}'
-#   block: {{ v3.startBlock }}
+features:
+  - grafting
+graft:
+  base: '{{ v3.base }}'
+  block: {{ v3.startBlock }}
 indexerHints:
   prune: {{ retainBlocks }}
 dataSources:
