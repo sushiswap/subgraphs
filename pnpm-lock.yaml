@@ -86,6 +86,24 @@ importers:
         specifier: 1.0.24
         version: 1.0.24
 
+  subgraphs/launchpad:
+    devDependencies:
+      '@graphprotocol/graph-cli':
+        specifier: ^0.96.0
+        version: 0.96.0(typescript@5.8.2)
+      '@graphprotocol/graph-ts':
+        specifier: ^0.27.0
+        version: 0.27.0
+      assemblyscript:
+        specifier: ^0.19.20
+        version: 0.19.23
+      matchstick-as:
+        specifier: 0.6.0
+        version: 0.6.0
+      wabt:
+        specifier: 1.0.24
+        version: 1.0.24
+
   subgraphs/route-processor:
     devDependencies:
       '@graphprotocol/graph-cli':

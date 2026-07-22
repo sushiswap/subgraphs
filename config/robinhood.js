@@ -44,4 +44,15 @@ module.exports = {
     nativePricePool: "0xc5a01c57b2851202dcf8507a0f2bd08a8025e2c8", // WETH/USDG - 0.3% (deterministic address)
     minimumEthLocked: 0.5,
   },
+  launchpad: {
+    deployments: [
+      {
+        // Replace the pending address and block when SushiLaunchpad v1 is deployed.
+        name: "SushiLaunchpad",
+        chainId: 4663,
+        address: "0x0000000000000000000000000000000000000000",
+        startBlock: 0,
+      },
+    ],
+  },
 };

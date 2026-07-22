@@ -1,0 +1,23 @@
+{
+  "name": "launchpad",
+  "license": "MIT",
+  "repository": {
+    "url": "sushiswap/subgraphs",
+    "directory": "subgraphs/launchpad"
+  },
+  "files": [
+    "generated"
+  ],
+  "scripts": {
+    "generate": "mustache ../../config/$NETWORK.js template.yaml > subgraph.yaml && graph codegen",
+    "build": "graph build",
+    "test": "graph test -r"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.96.0",
+    "@graphprotocol/graph-ts": "^0.27.0",
+    "assemblyscript": "^0.19.20",
+    "matchstick-as": "0.6.0",
+    "wabt": "1.0.24"
+  }
+}
