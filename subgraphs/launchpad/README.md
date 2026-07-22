@@ -61,8 +61,9 @@ generated ABI bindings, while later entries use unique names such as
 `SushiLaunchpadV2`.
 
 The mapping is split by responsibility: `helpers.ts` owns chain-scoped IDs and
-entity loading, `token.ts` owns token/pool/position and token-level flows, and
-`launchpad.ts` owns factory-wide settings and provides the manifest exports.
+entity loading, `pool.ts` owns pool discovery and initial launch positions,
+`token.ts` owns token-level flows, and `launchpad.ts` owns factory-wide settings
+and provides the manifest exports.
 
 Robinhood currently contains a zero-address build placeholder because the
 production factory address and deployment block are still an explicit launch
@@ -79,3 +80,59 @@ pnpm test
 `abis/SushiLaunchpad.json` is pinned from the current contract artifact in the
 `sushi-launchpad` repository. Refresh it together with mappings and tests when
 an indexed event changes.
+
+## Local end-to-end test
+
+The E2E harness runs the real Launchpad and launched token contracts against a
+Hardhat chain, indexes their events with a local Graph Node, and compares every
+entity with an independently constructed expected projection. The Sushi V3
+factory, pools, position manager, and WETH use the contract repository's
+behavioral mocks so fee collection and canonical token ordering remain fast and
+deterministic.
+
+Prerequisites:
+
+- Node.js 24 and pnpm/Corepack;
+- Docker with either the Compose plugin or the `docker-compose` command;
+- a sibling `sushi-launchpad` checkout with dependencies installed. From this
+  package, the default location resolves to `../../../sushi-launchpad`.
+
+Run the default deterministic matrix:
+
+```sh
+pnpm test:e2e
+```
+
+The deterministic planner and Node.js harness can be checked without starting
+Docker or Hardhat:
+
+```sh
+pnpm test:e2e:planner
+pnpm test:e2e:typecheck
+```
+
+Reproduce one scenario or point to a different contract checkout:
+
+```sh
+pnpm test:e2e -- --seed 202
+LAUNCHPAD_CONTRACTS_DIR=/path/to/sushi-launchpad pnpm test:e2e -- --seed 202
+```
+
+The default seeds are `101`, `202`, and `303`. Each scenario is fully prepared
+before transactions are sent and varies actors, launch ranges, fees, canonical
+token ordering, and valid action ordering while guaranteeing coverage of every
+indexed lifecycle event. The first launch and factory-default changes are mined
+in one block to exercise Graph Node's block-visible contract-call semantics.
+
+The runner requires ports `8545`, `8000`, `8001`, `8020`, `8030`, `8040`,
+`5001`, and `5432`. It fails before startup if any are occupied. On success or
+failure it stops Hardhat and removes the E2E containers and volumes. Plans,
+transaction traces, GraphQL snapshots, expected projections, and service logs
+are retained in the ignored `.e2e-artifacts/` directory; the failing seed and
+artifact path are printed for reproduction.
+
+The harness uses its own minimal Hardhat node configuration targeting Cancun
+with a 60M block and transaction gas cap. Cancun matches the contracts' compile
+target while avoiding newer per-transaction protocol caps below Graph Node's
+50M historical contract-call allowance. The contract repository's development
+and production config remains unchanged.

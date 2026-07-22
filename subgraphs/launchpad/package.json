@@ -11,13 +11,20 @@
   "scripts": {
     "generate": "mustache ../../config/$NETWORK.js template.yaml > subgraph.yaml && graph codegen",
     "build": "graph build",
-    "test": "graph test -r"
+    "test": "graph test -r",
+    "test:e2e": "tsx e2e/run.ts",
+    "test:e2e:planner": "tsx --test e2e/scenario.test.ts",
+    "test:e2e:typecheck": "tsc -p e2e/tsconfig.json"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.96.0",
     "@graphprotocol/graph-ts": "^0.27.0",
+    "@types/node": "^22.13.11",
     "assemblyscript": "^0.19.20",
+    "ethers": "^6.14.0",
     "matchstick-as": "0.6.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.2",
     "wabt": "1.0.24"
   }
 }
