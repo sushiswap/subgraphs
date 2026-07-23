@@ -5,7 +5,6 @@ type Launchpad @entity {
   address: Bytes!
 
   # Deployment configuration
-  quoteToken: Bytes!
   positionManager: Bytes!
 
   # Current protocol configuration
@@ -50,6 +49,7 @@ type Token @entity {
   launchpad: Launchpad!
   creator: Creator!
   pool: Pool!
+  quoteToken: Bytes!
 
   # ERC-20 metadata
   name: String!

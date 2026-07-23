@@ -21,7 +21,6 @@ export interface PoolConfiguration {
 export interface ExpectedModelInput {
   chainId: bigint;
   launchpadAddress: string;
-  quoteToken: string;
   positionManager: string;
   protocolRecipient: string;
   launchFee: bigint;
@@ -101,7 +100,6 @@ export function buildExpectedSnapshot(
     id: launchpadId,
     chainId: input.chainId.toString(),
     address: input.launchpadAddress.toLowerCase(),
-    quoteToken: input.quoteToken.toLowerCase(),
     positionManager: input.positionManager.toLowerCase(),
     protocolRecipient: input.protocolRecipient.toLowerCase(),
     launchFee: input.launchFee.toString(),
@@ -134,6 +132,15 @@ export function buildExpectedSnapshot(
       const idForPool = addressId(input.chainId, poolAddress);
       let pool = pools.get(idForPool);
       if (!pool) {
+        const launchedToken = lower(args.token);
+        const tokenIs0 =
+          poolConfiguration.token0.toLowerCase() === launchedToken;
+        const tokenIs1 =
+          poolConfiguration.token1.toLowerCase() === launchedToken;
+        assert(
+          tokenIs0 !== tokenIs1,
+          `Launch token is not exactly one side of pool ${poolAddress}`
+        );
         pool = {
           id: idForPool,
           chainId: input.chainId.toString(),
@@ -196,6 +203,22 @@ export function buildExpectedSnapshot(
       const idForToken = addressId(input.chainId, args.token);
       const idForCreator = `${launchpadId}:${lower(args.creator)}`;
       const idForPool = addressId(input.chainId, args.pool);
+      const pool = pools.get(idForPool);
+      assert(pool, `Missing launch pool ${idForPool}`);
+      const tokenAddress = lower(args.token);
+      const quoteToken = lower(args.quoteToken);
+      assert(
+        (lower(pool.token0) === tokenAddress &&
+          lower(pool.token1) === quoteToken) ||
+          (lower(pool.token1) === tokenAddress &&
+            lower(pool.token0) === quoteToken),
+        `TokenLaunched pair does not match pool ${idForPool}`
+      );
+      assert.equal(
+        pool.positionCount,
+        integer(args.positionCount),
+        `TokenLaunched position count does not match pool ${idForPool}`
+      );
       let creator = creators.get(idForCreator);
       if (!creator) {
         creator = {
@@ -219,6 +242,7 @@ export function buildExpectedSnapshot(
         launchpad: relation(launchpadId),
         creator: relation(idForCreator),
         pool: relation(idForPool),
+        quoteToken,
         name: String(args.name),
         symbol: String(args.symbol),
         decimals: integer(args.decimals),
@@ -267,21 +291,21 @@ export function buildExpectedSnapshot(
       const tokenIs0 = lower(pool.token0) === lower(args.token);
       const amount0Collected = tokenIs0
         ? decimal(args.tokenCollected)
-        : decimal(args.wethCollected);
+        : decimal(args.quoteCollected);
       const amount1Collected = tokenIs0
-        ? decimal(args.wethCollected)
+        ? decimal(args.quoteCollected)
         : decimal(args.tokenCollected);
       const amount0ToSushi = tokenIs0
         ? decimal(args.tokenToSushi)
-        : decimal(args.wethToSushi);
+        : decimal(args.quoteToSushi);
       const amount1ToSushi = tokenIs0
-        ? decimal(args.wethToSushi)
+        ? decimal(args.quoteToSushi)
         : decimal(args.tokenToSushi);
       const amount0ToCreator = tokenIs0
         ? decimal(args.tokenToCreator)
-        : decimal(args.wethToCreator);
+        : decimal(args.quoteToCreator);
       const amount1ToCreator = tokenIs0
-        ? decimal(args.wethToCreator)
+        ? decimal(args.quoteToCreator)
         : decimal(args.tokenToCreator);
       const distribution: Entity = {
         id,

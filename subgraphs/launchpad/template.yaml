@@ -36,7 +36,7 @@ dataSources:
         - name: SushiV3Pool
           file: ../v3/abis/pool.json
       eventHandlers:
-        - event: TokenLaunched(indexed address,indexed address,indexed address,string,string,uint8,uint256,uint16,uint256,uint64,uint16,uint256)
+        - event: TokenLaunched(indexed address,indexed address,indexed address,address,string,string,uint8,uint256,uint16,uint256,uint64,uint16,uint256)
           handler: handleTokenLaunched
         - event: PositionCreated(indexed address,indexed address,indexed uint256,int24,int24,uint256,uint256,uint128)
           handler: handlePositionCreated

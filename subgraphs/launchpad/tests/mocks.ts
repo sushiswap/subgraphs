@@ -62,6 +62,9 @@ export const POOL_THREE = Address.fromString(
 export const QUOTE_TOKEN = Address.fromString(
   "0x8000000000000000000000000000000000000008"
 );
+export const QUOTE_TOKEN_TWO = Address.fromString(
+  "0xf00000000000000000000000000000000000000f"
+);
 export const POSITION_MANAGER = Address.fromString(
   "0x9000000000000000000000000000000000000009"
 );
@@ -71,9 +74,6 @@ export function mockDeploymentContext(): void {
   context.setBigInt("chainId", CHAIN_ID);
   dataSourceMock.setAddressAndContext(FACTORY.toHexString(), context);
 
-  createMockedFunction(FACTORY, "WETH", "WETH():(address)").returns([
-    ethereum.Value.fromAddress(QUOTE_TOKEN),
-  ]);
   createMockedFunction(
     FACTORY,
     "positionManager",
@@ -178,6 +178,7 @@ export function createTokenLaunched(
   token: Address = TOKEN,
   pool: Address = POOL,
   creator: Address = CREATOR,
+  quoteToken: Address = QUOTE_TOKEN,
   initialSushiFeeBps: i32 = 7_000,
   reserveBps: i32 = 300
 ): TokenLaunched {
@@ -192,6 +193,12 @@ export function createTokenLaunched(
   );
   event.parameters.push(
     new ethereum.EventParam("pool", ethereum.Value.fromAddress(pool))
+  );
+  event.parameters.push(
+    new ethereum.EventParam(
+      "quoteToken",
+      ethereum.Value.fromAddress(quoteToken)
+    )
   );
   event.parameters.push(
     new ethereum.EventParam("name", ethereum.Value.fromString("Sushi Test"))
@@ -390,7 +397,7 @@ export function createFeesDistributed(
   );
   event.parameters.push(
     new ethereum.EventParam(
-      "wethCollected",
+      "quoteCollected",
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(100))
     )
   );
@@ -402,7 +409,7 @@ export function createFeesDistributed(
   );
   event.parameters.push(
     new ethereum.EventParam(
-      "wethToSushi",
+      "quoteToSushi",
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(65))
     )
   );
@@ -414,7 +421,7 @@ export function createFeesDistributed(
   );
   event.parameters.push(
     new ethereum.EventParam(
-      "wethToCreator",
+      "quoteToCreator",
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(35))
     )
   );

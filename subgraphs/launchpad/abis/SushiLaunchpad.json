@@ -107,6 +107,17 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "quoteToken",
+        "type": "address"
+      }
+    ],
+    "name": "InvalidQuoteToken",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "index",
         "type": "uint256"
@@ -234,7 +245,7 @@
         "type": "uint256"
       }
     ],
-    "name": "NonzeroWethUsed",
+    "name": "NonzeroQuoteTokenUsed",
     "type": "error"
   },
   {
@@ -567,7 +578,7 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "wethCollected",
+        "name": "quoteCollected",
         "type": "uint256"
       },
       {
@@ -579,7 +590,7 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "wethToSushi",
+        "name": "quoteToSushi",
         "type": "uint256"
       },
       {
@@ -591,7 +602,7 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "wethToCreator",
+        "name": "quoteToCreator",
         "type": "uint256"
       },
       {
@@ -846,6 +857,12 @@
       },
       {
         "indexed": false,
+        "internalType": "address",
+        "name": "quoteToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
         "internalType": "string",
         "name": "name",
         "type": "string"
@@ -904,19 +921,6 @@
   },
   {
     "inputs": [],
-    "name": "WETH",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "acceptOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -947,7 +951,7 @@
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "wethCollected",
+        "name": "quoteCollected",
         "type": "uint256"
       },
       {
@@ -957,7 +961,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "wethToSushi",
+        "name": "quoteToSushi",
         "type": "uint256"
       },
       {
@@ -987,6 +991,11 @@
         "internalType": "struct ISushiLaunchpad.TokenConfig",
         "name": "tokenConfig",
         "type": "tuple"
+      },
+      {
+        "internalType": "address",
+        "name": "quoteToken",
+        "type": "address"
       },
       {
         "components": [
@@ -1065,6 +1074,11 @@
           {
             "internalType": "address",
             "name": "creator",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "quoteToken",
             "type": "address"
           },
           {

@@ -11,8 +11,8 @@ data-api market projection.
   aggregate token, creator, and position counts.
 - `Creator` provides the per-Launchpad identity needed to count distinct
   creators and links each creator to their tokens.
-- `Token` stores ERC-20 metadata, its creator, current Sushi fee, reserve state,
-  cumulative fee amounts, and its pool.
+- `Token` stores ERC-20 metadata, its creator, per-launch quote token, current
+  Sushi fee, reserve state, cumulative fee amounts, and its pool.
 - `Pool` stores the immutable V3 configuration (`token0`, `token1`, fee, tick
   spacing, and position manager) and links to its initial launch positions.
 - `LaunchPosition` stores only the V3 NFTs minted in the token launch
@@ -51,8 +51,11 @@ launchpad: {
 }
 ```
 
-All deployments on a network share the schema and mappings. The mapping reads
-the quote token, position manager, protocol recipient, launch fee, and initial
+All deployments on a network share the schema and mappings. A quote token is
+selected independently for each launch and persisted on its `Token` entity.
+The subgraph indexes every valid quote token emitted by the contract; public
+allowlisting and market filtering belong downstream in data-api. The mapping
+reads the position manager, protocol recipient, launch fee, and initial
 defaults from the Launchpad contract, then reads canonical token ordering, fee,
 and tick spacing from each created V3 pool. Add old and new factory versions to
 the array during a rotation; do not replace historical entries. Keep the first
@@ -77,18 +80,18 @@ pnpm build
 pnpm test
 ```
 
-`abis/SushiLaunchpad.json` is pinned from the current contract artifact in the
-`sushi-launchpad` repository. Refresh it together with mappings and tests when
-an indexed event changes.
+`abis/SushiLaunchpad.json` is pinned from the `SushiLaunchpad` artifact at
+contract commit `ee5f8bb`. Refresh it together with mappings and tests when an
+indexed event changes.
 
 ## Local end-to-end test
 
 The E2E harness runs the real Launchpad and launched token contracts against a
 Hardhat chain, indexes their events with a local Graph Node, and compares every
 entity with an independently constructed expected projection. The Sushi V3
-factory, pools, position manager, and WETH use the contract repository's
-behavioral mocks so fee collection and canonical token ordering remain fast and
-deterministic.
+factory, pools, position manager, and per-launch quote tokens use the contract
+repository's behavioral mocks so fee collection and canonical token ordering
+remain fast and deterministic.
 
 Prerequisites:
 

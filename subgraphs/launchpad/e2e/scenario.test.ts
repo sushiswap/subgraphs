@@ -24,6 +24,12 @@ test("the default matrix satisfies all scenario invariants", () => {
   for (const seed of DEFAULT_SEEDS) {
     const plan = planScenario(seed);
     assert.doesNotThrow(() => validateScenario(plan));
+    const launches = plan.actions
+      .flatMap((action) =>
+        action.kind === "sameBlock" ? action.actions : [action]
+      )
+      .filter((action) => action.kind === "launch");
+    assert.equal(new Set(launches.map((launch) => launch.quoteToken)).size, 2);
   }
 });
 

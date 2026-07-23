@@ -23,6 +23,8 @@ import {
 import {
   CHAIN_ID,
   DEFAULT_SEEDS,
+  HIGH_QUOTE_TOKEN_ADDRESS,
+  LOW_QUOTE_TOKEN_ADDRESS,
   planScenario,
   stringifyPlan,
   type LaunchPlan,
@@ -53,7 +55,7 @@ interface HardhatArtifact {
 interface ContractArtifacts {
   launchpad: HardhatArtifact;
   launchToken: HardhatArtifact;
-  weth: HardhatArtifact;
+  quoteToken: HardhatArtifact;
   factory: HardhatArtifact;
   positionManager: HardhatArtifact;
   pool: HardhatArtifact;
@@ -63,8 +65,7 @@ interface Fixture {
   launchpad: Contract;
   launchpadAddress: string;
   launchpadDeploymentBlock: number;
-  weth: Contract;
-  wethAddress: string;
+  quoteTokens: Map<string, Contract>;
   factory: Contract;
   positionManager: Contract;
   positionManagerAddress: string;
@@ -76,6 +77,7 @@ interface LaunchedToken {
   tokenKey: string;
   address: string;
   pool: string;
+  quoteToken: string;
   positionIds: bigint[];
   token: Contract;
 }
@@ -359,7 +361,7 @@ async function loadArtifacts(
     launchToken: await readArtifact(
       artifact("SushiLaunchpadToken.sol", "SushiLaunchpadToken.json")
     ),
-    weth: await readArtifact(
+    quoteToken: await readArtifact(
       artifact("test/MockSushiV3.sol", "MockERC20.json")
     ),
     factory: await readArtifact(
@@ -421,18 +423,26 @@ async function deployFixture(
 ): Promise<Fixture> {
   const owner = signers[plan.actors.owner]!;
   const recipient = signers[plan.actors.protocolRecipients[0]]!;
-  const wethTemplate = await deploy(artifacts.weth, owner, [
-    "Wrapped Ether",
-    "WETH",
+  const quoteTokenTemplate = await deploy(artifacts.quoteToken, owner, [
+    "Quote Token",
+    "QUOTE",
     18,
   ]);
-  const runtimeCode = await provider.getCode(await wethTemplate.getAddress());
-  await provider.send("hardhat_setCode", [plan.wethAddress, runtimeCode]);
-  const weth = new Contract(plan.wethAddress, artifacts.weth.abi, owner);
+  const runtimeCode = await provider.getCode(
+    await quoteTokenTemplate.getAddress()
+  );
+  const quoteTokens = new Map<string, Contract>();
+  for (const address of [LOW_QUOTE_TOKEN_ADDRESS, HIGH_QUOTE_TOKEN_ADDRESS]) {
+    await provider.send("hardhat_setCode", [address, runtimeCode]);
+    quoteTokens.set(
+      address,
+      new Contract(address, artifacts.quoteToken.abi, owner)
+    );
+  }
   const factory = await deploy(artifacts.factory, owner);
   const positionManager = await deploy(artifacts.positionManager, owner, [
     await factory.getAddress(),
-    plan.wethAddress,
+    LOW_QUOTE_TOKEN_ADDRESS,
   ]);
   await (await positionManager.setConsumptionBps(plan.consumptionBps)).wait();
   const launchpad = await deploy(artifacts.launchpad, owner, [
@@ -448,8 +458,7 @@ async function deployFixture(
     launchpad,
     launchpadAddress: (await launchpad.getAddress()).toLowerCase(),
     launchpadDeploymentBlock: deploymentReceipt.blockNumber,
-    weth,
-    wethAddress: plan.wethAddress.toLowerCase(),
+    quoteTokens,
     factory,
     positionManager,
     positionManagerAddress: (await positionManager.getAddress()).toLowerCase(),
@@ -598,6 +607,7 @@ async function executeScenario(
     ) as Contract;
     return await connected.launch(
       { name: action.name, symbol: action.symbol },
+      action.quoteToken,
       action.ranges,
       BigInt(block.timestamp + 3_600),
       { value: action.launchFee }
@@ -620,6 +630,16 @@ async function executeScenario(
       `Missing TokenLaunched for ${action.tokenKey}`
     );
     const launchEvent = launchEvents[0]!;
+    const quoteToken = String(launchEvent.args.quoteToken).toLowerCase();
+    assert.equal(
+      quoteToken,
+      action.quoteToken,
+      `TokenLaunched quote token drifted for ${action.tokenKey}`
+    );
+    assert(
+      fixture.quoteTokens.has(quoteToken),
+      `Unknown quote token for ${action.tokenKey}: ${quoteToken}`
+    );
     const positionEvents = events.filter(
       (event) =>
         event.transactionHash === receipt.hash.toLowerCase() &&
@@ -635,6 +655,7 @@ async function executeScenario(
       tokenKey: action.tokenKey,
       address,
       pool: String(launchEvent.args.pool).toLowerCase(),
+      quoteToken,
       positionIds: positionEvents.map((event) =>
         BigInt(event.args.positionId as bigint)
       ),
@@ -693,17 +714,19 @@ async function executeScenario(
       const tokenIs0 =
         String(await pool.token0()).toLowerCase() ===
         token.address.toLowerCase();
+      const quoteToken = fixture.quoteTokens.get(token.quoteToken);
+      assert(quoteToken, `Unknown quote token ${token.quoteToken}`);
       await (
-        await fixture.weth.mint(
+        await quoteToken.mint(
           fixture.positionManagerAddress,
-          action.wethAmount
+          action.quoteAmount
         )
       ).wait();
       await (
         await fixture.positionManager.seedFees(
           token.positionIds[action.positionIndex],
-          tokenIs0 ? action.tokenAmount : action.wethAmount,
-          tokenIs0 ? action.wethAmount : action.tokenAmount
+          tokenIs0 ? action.tokenAmount : action.quoteAmount,
+          tokenIs0 ? action.quoteAmount : action.tokenAmount
         )
       ).wait();
       const connected = fixture.launchpad.connect(
@@ -835,7 +858,7 @@ async function waitForIndexedHead(
 const snapshotQuery = `
   query E2ESnapshot {
     launchpads(first: 1000, orderBy: id) {
-      id chainId address quoteToken positionManager protocolRecipient launchFee
+      id chainId address positionManager protocolRecipient launchFee
       defaultSushiFeeBps protocolReserveBps tokenCount creatorCount positionCount
       tokens { id } pools { id } creators { id } launchFeeWithdrawals { id }
     }
@@ -844,7 +867,7 @@ const snapshotQuery = `
     }
     tokens(first: 1000, orderBy: id) {
       id chainId address launchpad { id } creator { id } pool { id }
-      name symbol decimals totalSupply sushiFeeBps reserveBps reserveAmount
+      quoteToken name symbol decimals totalSupply sushiFeeBps reserveBps reserveAmount
       reserveUnlockAt reserveWithdrawn reserveWithdrawal { id }
       totalAmount0Collected totalAmount1Collected totalAmount0ToSushi
       totalAmount1ToSushi totalAmount0ToCreator totalAmount1ToCreator
@@ -918,7 +941,6 @@ async function runSeed(
   const expected = buildExpectedSnapshot({
     chainId: CHAIN_ID,
     launchpadAddress: fixture.launchpadAddress,
-    quoteToken: fixture.wethAddress,
     positionManager: fixture.positionManagerAddress,
     protocolRecipient: String(await fixture.launchpad.protocolRecipient()),
     launchFee: BigInt(await fixture.launchpad.launchFee()),

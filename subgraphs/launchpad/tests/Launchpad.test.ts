@@ -25,6 +25,7 @@ import {
   PROTOCOL_RECIPIENT,
   PROTOCOL_RECIPIENT_TWO,
   QUOTE_TOKEN,
+  QUOTE_TOKEN_TWO,
   TOKEN,
   TOKEN_THREE,
   TOKEN_TWO,
@@ -84,12 +85,6 @@ test("builds Launchpad, Token, Pool, and canonical initial positions", () => {
   assert.fieldEquals(
     "Launchpad",
     LAUNCHPAD_ID,
-    "quoteToken",
-    QUOTE_TOKEN.toHexString()
-  );
-  assert.fieldEquals(
-    "Launchpad",
-    LAUNCHPAD_ID,
     "positionManager",
     POSITION_MANAGER.toHexString()
   );
@@ -112,6 +107,12 @@ test("builds Launchpad, Token, Pool, and canonical initial positions", () => {
   assert.fieldEquals("Token", TOKEN_ID, "launchpad", LAUNCHPAD_ID);
   assert.fieldEquals("Token", TOKEN_ID, "creator", CREATOR_ID);
   assert.fieldEquals("Token", TOKEN_ID, "pool", POOL_ID);
+  assert.fieldEquals(
+    "Token",
+    TOKEN_ID,
+    "quoteToken",
+    QUOTE_TOKEN.toHexString()
+  );
   assert.fieldEquals("Token", TOKEN_ID, "name", "Sushi Test");
   assert.fieldEquals("Token", TOKEN_ID, "symbol", "SUSHIT");
   assert.fieldEquals("Token", TOKEN_ID, "decimals", "18");
@@ -152,12 +153,19 @@ test("counts distinct creators and canonicalizes either token ordering", () => {
     createTokenLaunched(1, 21, TOKEN_TWO, OTHER_POOL, CREATOR)
   );
 
-  mockV3Pool(POOL_THREE, QUOTE_TOKEN, TOKEN_THREE);
+  mockV3Pool(POOL_THREE, TOKEN_THREE, QUOTE_TOKEN_TWO);
   handlePositionCreated(
     createPositionCreated(103, 30, POOL_THREE, TOKEN_THREE)
   );
   handleTokenLaunched(
-    createTokenLaunched(1, 31, TOKEN_THREE, POOL_THREE, CREATOR_TWO)
+    createTokenLaunched(
+      1,
+      31,
+      TOKEN_THREE,
+      POOL_THREE,
+      CREATOR_TWO,
+      QUOTE_TOKEN_TWO
+    )
   );
 
   assert.fieldEquals("Launchpad", LAUNCHPAD_ID, "tokenCount", "3");
@@ -166,6 +174,20 @@ test("counts distinct creators and canonicalizes either token ordering", () => {
   assert.fieldEquals("Creator", CREATOR_ID, "tokenCount", "2");
 
   const secondPoolId = CHAIN_ID.toString() + ":" + OTHER_POOL.toHexString();
+  const secondTokenId = CHAIN_ID.toString() + ":" + TOKEN_TWO.toHexString();
+  const thirdTokenId = CHAIN_ID.toString() + ":" + TOKEN_THREE.toHexString();
+  assert.fieldEquals(
+    "Token",
+    secondTokenId,
+    "quoteToken",
+    QUOTE_TOKEN.toHexString()
+  );
+  assert.fieldEquals(
+    "Token",
+    thirdTokenId,
+    "quoteToken",
+    QUOTE_TOKEN_TWO.toHexString()
+  );
   assert.fieldEquals("Pool", secondPoolId, "token0", QUOTE_TOKEN.toHexString());
   assert.fieldEquals("Pool", secondPoolId, "token1", TOKEN_TWO.toHexString());
   assert.fieldEquals(
@@ -233,7 +255,7 @@ test("tracks current Launchpad defaults", () => {
 test("keeps token launch snapshots scoped to Token", () => {
   handlePositionCreated(createPositionCreated(101, 10));
   handleTokenLaunched(
-    createTokenLaunched(1, 11, TOKEN, POOL, CREATOR, 6_000, 500)
+    createTokenLaunched(1, 11, TOKEN, POOL, CREATOR, QUOTE_TOKEN, 6_000, 500)
   );
 
   assert.fieldEquals("Launchpad", LAUNCHPAD_ID, "defaultSushiFeeBps", "7000");
@@ -390,6 +412,17 @@ test(
   () => {
     handlePositionCreated(createPositionCreated(101, 10));
     handleTokenLaunched(createTokenLaunched(2, 11));
+  },
+  true
+);
+
+test(
+  "fails deterministically when the emitted quote token does not match the pool",
+  () => {
+    handlePositionCreated(createPositionCreated(101, 10));
+    handleTokenLaunched(
+      createTokenLaunched(1, 11, TOKEN, POOL, CREATOR, QUOTE_TOKEN_TWO)
+    );
   },
   true
 );

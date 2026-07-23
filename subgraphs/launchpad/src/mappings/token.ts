@@ -35,8 +35,10 @@ export function handleTokenLaunched(event: TokenLaunchedEvent): void {
   const pool = requirePool(context, event.params.pool);
   assert(
     pool.launchpad == launchpad.id &&
-      (pool.token0.equals(event.params.token) ||
-        pool.token1.equals(event.params.token)) &&
+      ((pool.token0.equals(event.params.token) &&
+        pool.token1.equals(event.params.quoteToken)) ||
+        (pool.token1.equals(event.params.token) &&
+          pool.token0.equals(event.params.quoteToken))) &&
       event.params.positionCount.equals(BigInt.fromI32(pool.positionCount)),
     "Token launch does not reconcile with pool " + pool.id
   );
@@ -61,6 +63,7 @@ export function handleTokenLaunched(event: TokenLaunchedEvent): void {
   token.address = event.params.token;
   token.creator = creator.id;
   token.pool = pool.id;
+  token.quoteToken = event.params.quoteToken;
   token.name = event.params.name;
   token.symbol = event.params.symbol;
   token.decimals = event.params.decimals;
@@ -115,8 +118,8 @@ export function handleFeesDistributed(event: FeesDistributedEvent): void {
       token.pool == pool.id &&
       tokenCreator.address.equals(event.params.creator) &&
       token.sushiFeeBps == event.params.sushiFeeBps &&
-      event.params.wethCollected.equals(
-        event.params.wethToSushi.plus(event.params.wethToCreator)
+      event.params.quoteCollected.equals(
+        event.params.quoteToSushi.plus(event.params.quoteToCreator)
       ) &&
       event.params.tokenCollected.equals(
         event.params.tokenToSushi.plus(event.params.tokenToCreator)
@@ -137,21 +140,21 @@ export function handleFeesDistributed(event: FeesDistributedEvent): void {
   distribution.sushiFeeBps = event.params.sushiFeeBps;
   distribution.amount0Collected = tokenIs0
     ? event.params.tokenCollected
-    : event.params.wethCollected;
+    : event.params.quoteCollected;
   distribution.amount1Collected = tokenIs0
-    ? event.params.wethCollected
+    ? event.params.quoteCollected
     : event.params.tokenCollected;
   distribution.amount0ToSushi = tokenIs0
     ? event.params.tokenToSushi
-    : event.params.wethToSushi;
+    : event.params.quoteToSushi;
   distribution.amount1ToSushi = tokenIs0
-    ? event.params.wethToSushi
+    ? event.params.quoteToSushi
     : event.params.tokenToSushi;
   distribution.amount0ToCreator = tokenIs0
     ? event.params.tokenToCreator
-    : event.params.wethToCreator;
+    : event.params.quoteToCreator;
   distribution.amount1ToCreator = tokenIs0
-    ? event.params.wethToCreator
+    ? event.params.quoteToCreator
     : event.params.tokenToCreator;
   distribution.transactionHash = event.transaction.hash;
   distribution.logIndex = event.logIndex;

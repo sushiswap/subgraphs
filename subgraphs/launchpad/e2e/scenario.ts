@@ -8,8 +8,10 @@ export const INITIAL_SUSHI_FEE_BPS = 7_000;
 export const INITIAL_RESERVE_BPS = 300;
 export const RESERVE_LOCK_SECONDS = 365 * 24 * 60 * 60;
 
-export const LOW_WETH_ADDRESS = "0x0000000000000000000000000000000000001000";
-export const HIGH_WETH_ADDRESS = "0xfffffffffffffffffffffffffffffffffffffffe";
+export const LOW_QUOTE_TOKEN_ADDRESS =
+  "0x0000000000000000000000000000000000001000";
+export const HIGH_QUOTE_TOKEN_ADDRESS =
+  "0xfffffffffffffffffffffffffffffffffffffffe";
 
 export interface SaleRangePlan {
   startTick: number;
@@ -21,6 +23,7 @@ export interface LaunchPlan {
   kind: "launch";
   tokenKey: string;
   creatorAccount: number;
+  quoteToken: string;
   name: string;
   symbol: string;
   ranges: SaleRangePlan[];
@@ -47,7 +50,7 @@ export type ScenarioAction =
       tokenKey: string;
       callerAccount: number;
       positionIndex: number;
-      wethAmount: bigint;
+      quoteAmount: bigint;
       tokenAmount: bigint;
     }
   | { kind: "withdrawLaunchFees" }
@@ -56,7 +59,6 @@ export type ScenarioAction =
 
 export interface ScenarioPlan {
   seed: number;
-  wethAddress: string;
   consumptionBps: number;
   actors: {
     owner: 0;
@@ -122,6 +124,8 @@ function launchPlan(
     kind: "launch",
     tokenKey: `token-${index}`,
     creatorAccount,
+    quoteToken:
+      index % 2 === 0 ? HIGH_QUOTE_TOKEN_ADDRESS : LOW_QUOTE_TOKEN_ADDRESS,
     name: `Launchpad Agent ${index + 1}`,
     symbol: `LPA${index + 1}`,
     ranges,
@@ -140,7 +144,7 @@ function distribution(
     tokenKey,
     callerAccount,
     positionIndex: random.int(0, maxPositionIndex),
-    wethAmount: BigInt(random.int(51, 500)),
+    quoteAmount: BigInt(random.int(51, 500)),
     tokenAmount: BigInt(random.int(51, 500)),
   };
 }
@@ -263,7 +267,6 @@ export function planScenario(seed: number): ScenarioPlan {
 
   const plan: ScenarioPlan = {
     seed,
-    wethAddress: seed % 2 === 0 ? HIGH_WETH_ADDRESS : LOW_WETH_ADDRESS,
     consumptionBps: [10_000, 9_999, 9_750][seed % 3]!,
     actors: {
       owner: 0,
@@ -293,6 +296,16 @@ export function validateScenario(plan: ScenarioPlan): void {
   }
   if (new Set(launches.map((launch) => launch.creatorAccount)).size !== 3) {
     throw new Error("Every scenario must contain exactly three creators");
+  }
+  const quoteTokens = new Set(launches.map((launch) => launch.quoteToken));
+  if (
+    quoteTokens.size !== 2 ||
+    !quoteTokens.has(LOW_QUOTE_TOKEN_ADDRESS) ||
+    !quoteTokens.has(HIGH_QUOTE_TOKEN_ADDRESS)
+  ) {
+    throw new Error(
+      "Every scenario must launch against both quote-token orderings"
+    );
   }
   if (!launchKeys.has(plan.intentionallyUnwithdrawnToken)) {
     throw new Error("The intentionally unwithdrawn token must be launched");

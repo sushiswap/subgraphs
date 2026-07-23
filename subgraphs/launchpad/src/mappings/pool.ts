@@ -24,12 +24,11 @@ export function handlePositionCreated(event: PositionCreatedEvent): void {
     const contract = SushiV3Pool.bind(event.params.pool);
     const token0 = contract.token0();
     const token1 = contract.token1();
+    const tokenIs0 = token0.equals(event.params.token);
+    const tokenIs1 = token1.equals(event.params.token);
     assert(
-      (token0.equals(event.params.token) &&
-        token1.equals(launchpad.quoteToken)) ||
-        (token0.equals(launchpad.quoteToken) &&
-          token1.equals(event.params.token)),
-      "Launch position references unexpected pool pair " + idForPool
+      tokenIs0 != tokenIs1,
+      "Launch position token must be exactly one side of pool " + idForPool
     );
     pool = new Pool(idForPool);
     pool.chainId = context.chainId;
@@ -46,12 +45,13 @@ export function handlePositionCreated(event: PositionCreatedEvent): void {
     pool.creationBlockHash = event.block.hash;
     pool.createdAt = event.block.timestamp;
   } else {
+    const tokenIs0 = pool.token0.equals(event.params.token);
+    const tokenIs1 = pool.token1.equals(event.params.token);
     assert(
       pool.launchpad == launchpad.id &&
         pool.address.equals(event.params.pool) &&
         pool.positionManager.equals(launchpad.positionManager) &&
-        (pool.token0.equals(event.params.token) ||
-          pool.token1.equals(event.params.token)),
+        tokenIs0 != tokenIs1,
       "Inconsistent ordered position events for pool " + idForPool
     );
   }

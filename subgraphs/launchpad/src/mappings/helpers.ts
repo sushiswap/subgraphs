@@ -66,7 +66,6 @@ export function getOrCreateLaunchpad(
     launchpad = new Launchpad(id);
     launchpad.chainId = context.chainId;
     launchpad.address = factory;
-    launchpad.quoteToken = contract.WETH();
     launchpad.positionManager = contract.positionManager();
     launchpad.protocolRecipient = contract.protocolRecipient();
     launchpad.launchFee = contract.launchFee();
