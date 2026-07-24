@@ -68,9 +68,24 @@ entity loading, `pool.ts` owns pool discovery and initial launch positions,
 `token.ts` owns token-level flows, and `launchpad.ts` owns factory-wide settings
 and provides the manifest exports.
 
-Robinhood currently contains a zero-address build placeholder because the
-production factory address and deployment block are still an explicit launch
-gate in the contract specification. Replace both values before deployment.
+Robinhood is configured for the SushiLaunchpad v1 production deployment at
+`0x30DD6230EAD9312D5d00AD58EF6eF6A0093B0554`, starting at block `18149814`.
+
+## Goldsky deployment
+
+Generate and validate the Robinhood manifest, then deploy it to the existing
+`sushiswap` Goldsky project:
+
+```sh
+NETWORK=robinhood pnpm --filter launchpad generate
+pnpm --filter launchpad build
+goldsky subgraph deploy sushiswap/launchpad-robinhood/1.0.0 \
+  --path subgraphs/launchpad/build \
+  --description "Sushi Launchpad on Robinhood"
+```
+
+The generated `subgraph.yaml` and `build/` output are ignored build artifacts;
+regenerate them after checking out a fresh tree.
 
 ## Development
 
@@ -80,9 +95,10 @@ pnpm build
 pnpm test
 ```
 
-`abis/SushiLaunchpad.json` is pinned from the `SushiLaunchpad` artifact at
-contract commit `ee5f8bb`. Refresh it together with mappings and tests when an
-indexed event changes.
+`abis/SushiLaunchpad.json` is ABI-equivalent to the current `SushiLaunchpad`
+artifact at contract commit `050bfbd`; the indexed interface is unchanged from
+the previous `ee5f8bb` revision. Refresh it together with mappings and tests
+when an indexed event changes.
 
 ## Local end-to-end test
 

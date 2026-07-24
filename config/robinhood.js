@@ -47,11 +47,11 @@ module.exports = {
   launchpad: {
     deployments: [
       {
-        // Replace the pending address and block when SushiLaunchpad v1 is deployed.
+        // SushiLaunchpad v1 production deployment.
         name: "SushiLaunchpad",
         chainId: 4663,
-        address: "0x0000000000000000000000000000000000000000",
-        startBlock: 0,
+        address: "0x30DD6230EAD9312D5d00AD58EF6eF6A0093B0554",
+        startBlock: 18149814,
       },
     ],
   },
