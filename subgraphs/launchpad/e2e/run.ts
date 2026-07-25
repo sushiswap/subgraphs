@@ -858,33 +858,37 @@ async function waitForIndexedHead(
 const snapshotQuery = `
   query E2ESnapshot {
     launchpads(first: 1000, orderBy: id) {
-      id chainId address positionManager protocolRecipient launchFee
+      id chainId address addressHex positionManager positionManagerHex
+      protocolRecipient protocolRecipientHex launchFee
       defaultSushiFeeBps protocolReserveBps tokenCount creatorCount positionCount
       tokens { id } pools { id } creators { id } launchFeeWithdrawals { id }
     }
     creators(first: 1000, orderBy: id) {
-      id chainId address launchpad { id } tokenCount tokens { id }
+      id chainId address addressHex launchpad { id } tokenCount tokens { id }
     }
     tokens(first: 1000, orderBy: id) {
-      id chainId address launchpad { id } creator { id } pool { id }
-      quoteToken name symbol decimals totalSupply sushiFeeBps reserveBps reserveAmount
+      id chainId address addressHex launchpad { id } creator { id } pool { id }
+      quoteToken quoteTokenHex name symbol decimals totalSupply sushiFeeBps
+      reserveBps reserveAmount
       reserveUnlockAt reserveWithdrawn reserveWithdrawal { id }
       totalAmount0Collected totalAmount1Collected totalAmount0ToSushi
       totalAmount1ToSushi totalAmount0ToCreator totalAmount1ToCreator
       feeDistributions { id }
-      creationTransactionHash creationLogIndex creationBlockNumber
-      creationBlockHash createdAt
+      creationTransactionHash creationTransactionHashHex creationLogIndex
+      creationBlockNumber creationBlockHash creationBlockHashHex createdAt
     }
     pools(first: 1000, orderBy: id) {
-      id chainId address launchpad { id } positions { id }
-      token0 token1 fee tickSpacing positionManager positionCount
-      creationTransactionHash creationBlockNumber creationBlockHash createdAt
+      id chainId address addressHex launchpad { id } positions { id }
+      token0 token0Hex token1 token1Hex fee tickSpacing
+      positionManager positionManagerHex positionCount
+      creationTransactionHash creationTransactionHashHex creationBlockNumber
+      creationBlockHash creationBlockHashHex createdAt
     }
     launchPositions(first: 1000, orderBy: id) {
-      id chainId positionManager positionId index pool { id }
+      id chainId positionManager positionManagerHex positionId index pool { id }
       tickLower tickUpper liquidity amount0Desired amount1Desired amount0 amount1
-      creationTransactionHash creationLogIndex creationBlockNumber
-      creationBlockHash createdAt
+      creationTransactionHash creationTransactionHashHex creationLogIndex
+      creationBlockNumber creationBlockHash creationBlockHashHex createdAt
     }
     feeDistributions(first: 1000, orderBy: id) {
       id chainId token { id } pool { id } caller sushiRecipient creatorRecipient

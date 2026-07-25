@@ -4,6 +4,7 @@ import { SushiV3Pool } from "../../generated/SushiLaunchpad/SushiV3Pool";
 import { LaunchPosition, Pool, Token } from "../../generated/schema";
 import {
   addressId,
+  canonicalHex,
   deploymentContext,
   getOrCreateLaunchpad,
   positionId,
@@ -34,15 +35,21 @@ export function handlePositionCreated(event: PositionCreatedEvent): void {
     pool.chainId = context.chainId;
     pool.launchpad = launchpad.id;
     pool.address = event.params.pool;
+    pool.addressHex = canonicalHex(event.params.pool);
     pool.token0 = token0;
+    pool.token0Hex = canonicalHex(token0);
     pool.token1 = token1;
+    pool.token1Hex = canonicalHex(token1);
     pool.fee = contract.fee();
     pool.tickSpacing = contract.tickSpacing();
     pool.positionManager = launchpad.positionManager;
+    pool.positionManagerHex = canonicalHex(launchpad.positionManager);
     pool.positionCount = 0;
     pool.creationTransactionHash = event.transaction.hash;
+    pool.creationTransactionHashHex = canonicalHex(event.transaction.hash);
     pool.creationBlockNumber = event.block.number;
     pool.creationBlockHash = event.block.hash;
+    pool.creationBlockHashHex = canonicalHex(event.block.hash);
     pool.createdAt = event.block.timestamp;
   } else {
     const tokenIs0 = pool.token0.equals(event.params.token);
@@ -72,6 +79,7 @@ export function handlePositionCreated(event: PositionCreatedEvent): void {
   position.chainId = context.chainId;
   position.pool = pool.id;
   position.positionManager = launchpad.positionManager;
+  position.positionManagerHex = canonicalHex(launchpad.positionManager);
   position.positionId = event.params.positionId;
   position.index = pool.positionCount;
   position.tickLower = event.params.tickLower;
@@ -82,9 +90,11 @@ export function handlePositionCreated(event: PositionCreatedEvent): void {
   position.amount1 = tokenIs0 ? zero : event.params.tokenUsed;
   position.liquidity = event.params.liquidity;
   position.creationTransactionHash = event.transaction.hash;
+  position.creationTransactionHashHex = canonicalHex(event.transaction.hash);
   position.creationLogIndex = event.logIndex;
   position.creationBlockNumber = event.block.number;
   position.creationBlockHash = event.block.hash;
+  position.creationBlockHashHex = canonicalHex(event.block.hash);
   position.createdAt = event.block.timestamp;
   position.save();
 

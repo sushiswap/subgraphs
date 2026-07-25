@@ -13,6 +13,7 @@ import {
 } from "../../generated/schema";
 import {
   addressId,
+  canonicalHex,
   creatorId,
   deploymentContext,
   eventId,
@@ -50,6 +51,7 @@ export function handleTokenLaunched(event: TokenLaunchedEvent): void {
     creator.chainId = context.chainId;
     creator.launchpad = launchpad.id;
     creator.address = event.params.creator;
+    creator.addressHex = canonicalHex(event.params.creator);
     creator.tokenCount = 0;
     launchpad.creatorCount += 1;
   }
@@ -61,9 +63,11 @@ export function handleTokenLaunched(event: TokenLaunchedEvent): void {
   token.chainId = context.chainId;
   token.launchpad = launchpad.id;
   token.address = event.params.token;
+  token.addressHex = canonicalHex(event.params.token);
   token.creator = creator.id;
   token.pool = pool.id;
   token.quoteToken = event.params.quoteToken;
+  token.quoteTokenHex = canonicalHex(event.params.quoteToken);
   token.name = event.params.name;
   token.symbol = event.params.symbol;
   token.decimals = event.params.decimals;
@@ -80,9 +84,11 @@ export function handleTokenLaunched(event: TokenLaunchedEvent): void {
   token.totalAmount0ToCreator = zero;
   token.totalAmount1ToCreator = zero;
   token.creationTransactionHash = event.transaction.hash;
+  token.creationTransactionHashHex = canonicalHex(event.transaction.hash);
   token.creationLogIndex = event.logIndex;
   token.creationBlockNumber = event.block.number;
   token.creationBlockHash = event.block.hash;
+  token.creationBlockHashHex = canonicalHex(event.block.hash);
   token.createdAt = event.block.timestamp;
   token.save();
 

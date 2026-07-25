@@ -3,12 +3,15 @@ type Launchpad @entity {
   id: ID!
   chainId: BigInt!
   address: Bytes!
+  addressHex: String!
 
   # Deployment configuration
   positionManager: Bytes!
+  positionManagerHex: String!
 
   # Current protocol configuration
   protocolRecipient: Bytes!
+  protocolRecipientHex: String!
   launchFee: BigInt!
   defaultSushiFeeBps: Int!
   protocolReserveBps: Int!
@@ -30,6 +33,7 @@ type Creator @entity {
   id: ID!
   chainId: BigInt!
   address: Bytes!
+  addressHex: String!
 
   # Relationships
   launchpad: Launchpad!
@@ -44,12 +48,14 @@ type Token @entity {
   id: ID!
   chainId: BigInt!
   address: Bytes!
+  addressHex: String!
 
   # Relationships
   launchpad: Launchpad!
   creator: Creator!
   pool: Pool!
   quoteToken: Bytes!
+  quoteTokenHex: String!
 
   # ERC-20 metadata
   name: String!
@@ -78,9 +84,11 @@ type Token @entity {
 
   # Creation metadata
   creationTransactionHash: Bytes!
+  creationTransactionHashHex: String!
   creationLogIndex: BigInt!
   creationBlockNumber: BigInt!
   creationBlockHash: Bytes!
+  creationBlockHashHex: String!
   createdAt: BigInt!
 }
 
@@ -89,6 +97,7 @@ type Pool @entity {
   id: ID!
   chainId: BigInt!
   address: Bytes!
+  addressHex: String!
 
   # Relationships
   launchpad: Launchpad!
@@ -96,18 +105,23 @@ type Pool @entity {
 
   # Immutable pool configuration
   token0: Bytes!
+  token0Hex: String!
   token1: Bytes!
+  token1Hex: String!
   fee: Int!
   tickSpacing: Int!
   positionManager: Bytes!
+  positionManagerHex: String!
 
   # Aggregate metrics
   positionCount: Int!
 
   # Creation metadata
   creationTransactionHash: Bytes!
+  creationTransactionHashHex: String!
   creationBlockNumber: BigInt!
   creationBlockHash: Bytes!
+  creationBlockHashHex: String!
   createdAt: BigInt!
 }
 
@@ -116,6 +130,7 @@ type LaunchPosition @entity(immutable: true) {
   id: ID!
   chainId: BigInt!
   positionManager: Bytes!
+  positionManagerHex: String!
   positionId: BigInt!
   index: Int!
 
@@ -135,9 +150,11 @@ type LaunchPosition @entity(immutable: true) {
 
   # Creation metadata
   creationTransactionHash: Bytes!
+  creationTransactionHashHex: String!
   creationLogIndex: BigInt!
   creationBlockNumber: BigInt!
   creationBlockHash: Bytes!
+  creationBlockHashHex: String!
   createdAt: BigInt!
 }
 

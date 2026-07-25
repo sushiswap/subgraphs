@@ -30,6 +30,10 @@ export function addressId(chainId: BigInt, address: Bytes): string {
   return chainId.toString().concat(":").concat(address.toHexString());
 }
 
+export function canonicalHex(value: Bytes): string {
+  return value.toHexString().toLowerCase();
+}
+
 export function creatorId(launchpad: Launchpad, address: Bytes): string {
   return launchpad.id.concat(":").concat(address.toHexString());
 }
@@ -65,9 +69,14 @@ export function getOrCreateLaunchpad(
     const contract = SushiLaunchpadContract.bind(factory);
     launchpad = new Launchpad(id);
     launchpad.chainId = context.chainId;
+    const positionManager = contract.positionManager();
+    const protocolRecipient = contract.protocolRecipient();
     launchpad.address = factory;
-    launchpad.positionManager = contract.positionManager();
-    launchpad.protocolRecipient = contract.protocolRecipient();
+    launchpad.addressHex = canonicalHex(factory);
+    launchpad.positionManager = positionManager;
+    launchpad.positionManagerHex = canonicalHex(positionManager);
+    launchpad.protocolRecipient = protocolRecipient;
+    launchpad.protocolRecipientHex = canonicalHex(protocolRecipient);
     launchpad.launchFee = contract.launchFee();
     launchpad.defaultSushiFeeBps = contract.defaultSushiFeeBps();
     launchpad.protocolReserveBps = contract.protocolReserveBps();

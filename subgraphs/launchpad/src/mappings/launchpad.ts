@@ -6,7 +6,12 @@ import {
   ProtocolReserveBpsUpdated as ProtocolReserveBpsUpdatedEvent,
 } from "../../generated/SushiLaunchpad/SushiLaunchpad";
 import { LaunchFeeWithdrawal } from "../../generated/schema";
-import { deploymentContext, eventId, getOrCreateLaunchpad } from "./helpers";
+import {
+  canonicalHex,
+  deploymentContext,
+  eventId,
+  getOrCreateLaunchpad,
+} from "./helpers";
 
 const BPS_DENOMINATOR = 10_000;
 const MAX_PROTOCOL_RESERVE_BPS = 1_000;
@@ -45,6 +50,7 @@ export function handleProtocolRecipientUpdated(
   const context = deploymentContext();
   const launchpad = getOrCreateLaunchpad(context, event.address);
   launchpad.protocolRecipient = event.params.newRecipient;
+  launchpad.protocolRecipientHex = canonicalHex(event.params.newRecipient);
   launchpad.save();
 }
 

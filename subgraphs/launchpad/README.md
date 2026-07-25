@@ -30,8 +30,11 @@ needed: the pool and positions are permanent domain records even though the
 contract emits `TokenLaunched` last.
 
 Every stable entity ID is chain-scoped even though each deployment indexes one
-network. Addresses are stored as `Bytes`, whose GraphQL representation is
-normalized lowercase hexadecimal.
+network. Address and hash values remain available as `Bytes` for Graph-native
+consumers. The five entities mirrored into data-api also expose parallel
+`*Hex` string fields containing canonical lowercase, `0x`-prefixed hexadecimal.
+Those strings avoid connector-specific binary encodings such as PostgreSQL
+bytea's `\x` prefix and are the source of truth for text columns downstream.
 
 ## Configuration
 
@@ -79,9 +82,9 @@ Generate and validate the Robinhood manifest, then deploy it to the existing
 ```sh
 NETWORK=robinhood pnpm --filter launchpad generate
 pnpm --filter launchpad build
-goldsky subgraph deploy sushiswap/launchpad-robinhood/1.0.0 \
+goldsky subgraph deploy sushiswap/launchpad-robinhood-v2 \
   --path subgraphs/launchpad/build \
-  --description "Sushi Launchpad on Robinhood"
+  --description "Sushi Launchpad on Robinhood with canonical hex strings"
 ```
 
 The generated `subgraph.yaml` and `build/` output are ignored build artifacts;

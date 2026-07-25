@@ -85,14 +85,32 @@ test("builds Launchpad, Token, Pool, and canonical initial positions", () => {
   assert.fieldEquals(
     "Launchpad",
     LAUNCHPAD_ID,
+    "addressHex",
+    FACTORY.toHexString().toLowerCase()
+  );
+  assert.fieldEquals(
+    "Launchpad",
+    LAUNCHPAD_ID,
     "positionManager",
     POSITION_MANAGER.toHexString()
   );
   assert.fieldEquals(
     "Launchpad",
     LAUNCHPAD_ID,
+    "positionManagerHex",
+    POSITION_MANAGER.toHexString().toLowerCase()
+  );
+  assert.fieldEquals(
+    "Launchpad",
+    LAUNCHPAD_ID,
     "protocolRecipient",
     PROTOCOL_RECIPIENT.toHexString()
+  );
+  assert.fieldEquals(
+    "Launchpad",
+    LAUNCHPAD_ID,
+    "protocolRecipientHex",
+    PROTOCOL_RECIPIENT.toHexString().toLowerCase()
   );
   assert.fieldEquals("Launchpad", LAUNCHPAD_ID, "launchFee", "500000000000000");
   assert.fieldEquals("Launchpad", LAUNCHPAD_ID, "defaultSushiFeeBps", "7000");
@@ -101,9 +119,21 @@ test("builds Launchpad, Token, Pool, and canonical initial positions", () => {
   assert.fieldEquals("Launchpad", LAUNCHPAD_ID, "creatorCount", "1");
 
   assert.fieldEquals("Creator", CREATOR_ID, "address", CREATOR.toHexString());
+  assert.fieldEquals(
+    "Creator",
+    CREATOR_ID,
+    "addressHex",
+    CREATOR.toHexString().toLowerCase()
+  );
   assert.fieldEquals("Creator", CREATOR_ID, "tokenCount", "1");
 
   assert.fieldEquals("Token", TOKEN_ID, "address", TOKEN.toHexString());
+  assert.fieldEquals(
+    "Token",
+    TOKEN_ID,
+    "addressHex",
+    TOKEN.toHexString().toLowerCase()
+  );
   assert.fieldEquals("Token", TOKEN_ID, "launchpad", LAUNCHPAD_ID);
   assert.fieldEquals("Token", TOKEN_ID, "creator", CREATOR_ID);
   assert.fieldEquals("Token", TOKEN_ID, "pool", POOL_ID);
@@ -112,6 +142,12 @@ test("builds Launchpad, Token, Pool, and canonical initial positions", () => {
     TOKEN_ID,
     "quoteToken",
     QUOTE_TOKEN.toHexString()
+  );
+  assert.fieldEquals(
+    "Token",
+    TOKEN_ID,
+    "quoteTokenHex",
+    QUOTE_TOKEN.toHexString().toLowerCase()
   );
   assert.fieldEquals("Token", TOKEN_ID, "name", "Sushi Test");
   assert.fieldEquals("Token", TOKEN_ID, "symbol", "SUSHIT");
@@ -123,12 +159,30 @@ test("builds Launchpad, Token, Pool, and canonical initial positions", () => {
   assert.fieldEquals("Token", TOKEN_ID, "reserveWithdrawn", "false");
 
   assert.fieldEquals("Pool", POOL_ID, "token0", TOKEN.toHexString());
+  assert.fieldEquals(
+    "Pool",
+    POOL_ID,
+    "token0Hex",
+    TOKEN.toHexString().toLowerCase()
+  );
   assert.fieldEquals("Pool", POOL_ID, "token1", QUOTE_TOKEN.toHexString());
+  assert.fieldEquals(
+    "Pool",
+    POOL_ID,
+    "token1Hex",
+    QUOTE_TOKEN.toHexString().toLowerCase()
+  );
   assert.fieldEquals("Pool", POOL_ID, "fee", "10000");
   assert.fieldEquals("Pool", POOL_ID, "tickSpacing", "200");
 
   const firstPositionId = POSITION_PREFIX + "101";
   assert.fieldEquals("LaunchPosition", firstPositionId, "pool", POOL_ID);
+  assert.fieldEquals(
+    "LaunchPosition",
+    firstPositionId,
+    "positionManagerHex",
+    POSITION_MANAGER.toHexString().toLowerCase()
+  );
   assert.fieldEquals("LaunchPosition", firstPositionId, "index", "0");
   assert.fieldEquals("LaunchPosition", firstPositionId, "tickLower", "-400");
   assert.fieldEquals("LaunchPosition", firstPositionId, "tickUpper", "-200");
@@ -289,6 +343,12 @@ test("tracks Launchpad recipient, launch fee, and fee withdrawals", () => {
     LAUNCHPAD_ID,
     "protocolRecipient",
     PROTOCOL_RECIPIENT_TWO.toHexString()
+  );
+  assert.fieldEquals(
+    "Launchpad",
+    LAUNCHPAD_ID,
+    "protocolRecipientHex",
+    PROTOCOL_RECIPIENT_TWO.toHexString().toLowerCase()
   );
   assert.fieldEquals(
     "Launchpad",
