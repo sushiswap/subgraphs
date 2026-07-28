@@ -1,30 +1,29 @@
+import { Address, store } from "@graphprotocol/graph-ts";
 import {
   DefaultSushiFeeBpsUpdated as DefaultSushiFeeBpsUpdatedEvent,
   LaunchFeesWithdrawn as LaunchFeesWithdrawnEvent,
   LaunchFeeUpdated as LaunchFeeUpdatedEvent,
   ProtocolRecipientUpdated as ProtocolRecipientUpdatedEvent,
   ProtocolReserveBpsUpdated as ProtocolReserveBpsUpdatedEvent,
+  QuoteTokenPriceFeedUpdated as QuoteTokenPriceFeedUpdatedEvent,
 } from "../../generated/SushiLaunchpad/SushiLaunchpad";
-import { LaunchFeeWithdrawal } from "../../generated/schema";
+import {
+  LaunchFeeWithdrawal,
+  QuoteTokenPriceFeed,
+} from "../../generated/schema";
 import {
   canonicalHex,
   deploymentContext,
   eventId,
   getOrCreateLaunchpad,
-} from "./helpers";
-
-const BPS_DENOMINATOR = 10_000;
-const MAX_PROTOCOL_RESERVE_BPS = 1_000;
+  quoteTokenPriceFeedId,
+} from "./shared";
 
 export function handleDefaultSushiFeeBpsUpdated(
   event: DefaultSushiFeeBpsUpdatedEvent
 ): void {
   const context = deploymentContext();
   const launchpad = getOrCreateLaunchpad(context, event.address);
-  assert(
-    event.params.newBps <= BPS_DENOMINATOR,
-    "Invalid default Sushi fee update for " + launchpad.id
-  );
 
   launchpad.defaultSushiFeeBps = event.params.newBps;
   launchpad.save();
@@ -35,10 +34,6 @@ export function handleProtocolReserveBpsUpdated(
 ): void {
   const context = deploymentContext();
   const launchpad = getOrCreateLaunchpad(context, event.address);
-  assert(
-    event.params.newBps <= MAX_PROTOCOL_RESERVE_BPS,
-    "Invalid protocol reserve update for " + launchpad.id
-  );
 
   launchpad.protocolReserveBps = event.params.newBps;
   launchpad.save();
@@ -49,8 +44,7 @@ export function handleProtocolRecipientUpdated(
 ): void {
   const context = deploymentContext();
   const launchpad = getOrCreateLaunchpad(context, event.address);
-  launchpad.protocolRecipient = event.params.newRecipient;
-  launchpad.protocolRecipientHex = canonicalHex(event.params.newRecipient);
+  launchpad.protocolRecipient = canonicalHex(event.params.newRecipient);
   launchpad.save();
 }
 
@@ -75,21 +69,50 @@ export function handleLaunchFeesWithdrawn(
   const withdrawal = new LaunchFeeWithdrawal(id);
   withdrawal.chainId = context.chainId;
   withdrawal.launchpad = launchpad.id;
-  withdrawal.recipient = event.params.recipient;
+  withdrawal.recipient = canonicalHex(event.params.recipient);
   withdrawal.amount = event.params.amount;
-  withdrawal.transactionHash = event.transaction.hash;
+  withdrawal.transactionHash = canonicalHex(event.transaction.hash);
   withdrawal.logIndex = event.logIndex;
   withdrawal.blockNumber = event.block.number;
-  withdrawal.blockHash = event.block.hash;
+  withdrawal.blockHash = canonicalHex(event.block.hash);
   withdrawal.timestamp = event.block.timestamp;
   withdrawal.save();
 }
 
-export {
-  handleFeesDistributed,
-  handleProtocolReserveWithdrawn,
-  handleSushiFeeBpsUpdated,
-  handleTokenLaunched,
-} from "./token";
-
-export { handlePositionCreated } from "./pool";
+export function handleQuoteTokenPriceFeedUpdated(
+  event: QuoteTokenPriceFeedUpdatedEvent
+): void {
+  const context = deploymentContext();
+  const launchpad = getOrCreateLaunchpad(context, event.address);
+  const id = quoteTokenPriceFeedId(launchpad, event.params.quoteToken);
+  let configuration = QuoteTokenPriceFeed.load(id);
+  if (configuration == null) {
+    assert(
+      event.params.previousPriceFeed.equals(Address.zero()),
+      "New quote token price feed has a nonzero predecessor " + id
+    );
+    if (event.params.newPriceFeed.equals(Address.zero())) {
+      return;
+    }
+    configuration = new QuoteTokenPriceFeed(id);
+    configuration.chainId = context.chainId;
+    configuration.launchpad = launchpad.id;
+    configuration.quoteToken = canonicalHex(event.params.quoteToken);
+  } else {
+    assert(
+      configuration.priceFeed == canonicalHex(event.params.previousPriceFeed),
+      "Quote token price feed update does not reconcile " + id
+    );
+    if (event.params.newPriceFeed.equals(Address.zero())) {
+      store.remove("QuoteTokenPriceFeed", id);
+      return;
+    }
+  }
+  configuration.priceFeed = canonicalHex(event.params.newPriceFeed);
+  configuration.updatedTransactionHash = canonicalHex(event.transaction.hash);
+  configuration.updatedLogIndex = event.logIndex;
+  configuration.updatedBlockNumber = event.block.number;
+  configuration.updatedBlockHash = canonicalHex(event.block.hash);
+  configuration.updatedAt = event.block.timestamp;
+  configuration.save();
+}

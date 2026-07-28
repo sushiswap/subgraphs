@@ -6,7 +6,7 @@ import {
   ethereum,
 } from "@graphprotocol/graph-ts";
 import { SushiLaunchpad as SushiLaunchpadContract } from "../../generated/SushiLaunchpad/SushiLaunchpad";
-import { Launchpad, Pool, Token } from "../../generated/schema";
+import { Launch, Launchpad } from "../../generated/schema";
 
 export class DeploymentContext {
   chainId: BigInt;
@@ -22,39 +22,31 @@ export function deploymentContext(): DeploymentContext {
     context.get("chainId") != null,
     "Launchpad data source context is incomplete"
   );
-
   return new DeploymentContext(context.getBigInt("chainId"));
 }
 
 export function addressId(chainId: BigInt, address: Bytes): string {
-  return chainId.toString().concat(":").concat(address.toHexString());
+  return chainId.toString().concat(":").concat(canonicalHex(address));
 }
 
 export function canonicalHex(value: Bytes): string {
   return value.toHexString().toLowerCase();
 }
 
-export function creatorId(launchpad: Launchpad, address: Bytes): string {
-  return launchpad.id.concat(":").concat(address.toHexString());
-}
-
-export function positionId(
-  chainId: BigInt,
-  positionManager: Bytes,
-  onchainPositionId: BigInt
-): string {
-  return addressId(chainId, positionManager)
-    .concat(":")
-    .concat(onchainPositionId.toString());
-}
-
 export function eventId(chainId: BigInt, event: ethereum.Event): string {
   return chainId
     .toString()
     .concat(":")
-    .concat(event.transaction.hash.toHexString())
+    .concat(canonicalHex(event.transaction.hash))
     .concat(":")
     .concat(event.logIndex.toString());
+}
+
+export function quoteTokenPriceFeedId(
+  launchpad: Launchpad,
+  quoteToken: Bytes
+): string {
+  return launchpad.id.concat(":").concat(canonicalHex(quoteToken));
 }
 
 export function getOrCreateLaunchpad(
@@ -64,43 +56,31 @@ export function getOrCreateLaunchpad(
   const id = addressId(context.chainId, factory);
   let launchpad = Launchpad.load(id);
   if (launchpad == null) {
-    // Contract calls establish the first block-visible state. Mutable values
-    // are subsequently owned exclusively by their dedicated update handlers.
+    // These deployment/current settings are not present in every event. The
+    // dedicated update handlers exclusively own them after initialization.
     const contract = SushiLaunchpadContract.bind(factory);
     launchpad = new Launchpad(id);
     launchpad.chainId = context.chainId;
     const positionManager = contract.positionManager();
     const protocolRecipient = contract.protocolRecipient();
-    launchpad.address = factory;
-    launchpad.addressHex = canonicalHex(factory);
-    launchpad.positionManager = positionManager;
-    launchpad.positionManagerHex = canonicalHex(positionManager);
-    launchpad.protocolRecipient = protocolRecipient;
-    launchpad.protocolRecipientHex = canonicalHex(protocolRecipient);
+    launchpad.address = canonicalHex(factory);
+    launchpad.positionManager = canonicalHex(positionManager);
+    launchpad.initialFdvUsd = contract.INITIAL_FDV_USD();
+    launchpad.protocolRecipient = canonicalHex(protocolRecipient);
     launchpad.launchFee = contract.launchFee();
     launchpad.defaultSushiFeeBps = contract.defaultSushiFeeBps();
     launchpad.protocolReserveBps = contract.protocolReserveBps();
-    launchpad.tokenCount = 0;
-    launchpad.creatorCount = 0;
-    launchpad.positionCount = 0;
     launchpad.save();
   }
   return changetype<Launchpad>(launchpad);
 }
 
-export function requireToken(
+export function requireLaunch(
   context: DeploymentContext,
-  address: Bytes
-): Token {
-  const id = addressId(context.chainId, address);
-  const token = Token.load(id);
-  assert(token != null, "Launchpad event references unknown token " + id);
-  return changetype<Token>(token);
-}
-
-export function requirePool(context: DeploymentContext, address: Bytes): Pool {
-  const id = addressId(context.chainId, address);
-  const pool = Pool.load(id);
-  assert(pool != null, "Launchpad event references unknown pool " + id);
-  return changetype<Pool>(pool);
+  token: Bytes
+): Launch {
+  const id = addressId(context.chainId, token);
+  const launch = Launch.load(id);
+  assert(launch != null, "Launchpad event references unknown launch " + id);
+  return changetype<Launch>(launch);
 }

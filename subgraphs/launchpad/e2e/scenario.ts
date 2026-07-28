@@ -2,7 +2,6 @@ export const DEFAULT_SEEDS = [101, 202, 303] as const;
 
 export const CHAIN_ID = 31_337n;
 export const UNIT = 10n ** 18n;
-export const TOKEN_SUPPLY = 1_000_000_000n * UNIT;
 export const INITIAL_LAUNCH_FEE = 500_000_000_000_000n;
 export const INITIAL_SUSHI_FEE_BPS = 7_000;
 export const INITIAL_RESERVE_BPS = 300;
@@ -13,12 +12,6 @@ export const LOW_QUOTE_TOKEN_ADDRESS =
 export const HIGH_QUOTE_TOKEN_ADDRESS =
   "0xfffffffffffffffffffffffffffffffffffffffe";
 
-export interface SaleRangePlan {
-  startTick: number;
-  endTick: number;
-  amount: bigint;
-}
-
 export interface LaunchPlan {
   kind: "launch";
   tokenKey: string;
@@ -26,7 +19,7 @@ export interface LaunchPlan {
   quoteToken: string;
   name: string;
   symbol: string;
-  ranges: SaleRangePlan[];
+  initialBuyAmount: bigint;
   launchFee: bigint;
 }
 
@@ -44,12 +37,12 @@ export type ScenarioAction =
   | { kind: "setProtocolReserveBps"; value: number }
   | { kind: "setProtocolRecipient"; account: number }
   | { kind: "setLaunchFee"; value: bigint }
+  | { kind: "transferCreator"; tokenKey: string; newCreatorAccount: number }
   | { kind: "setTokenSushiFeeBps"; tokenKey: string; value: number }
   | {
       kind: "distributeFees";
       tokenKey: string;
       callerAccount: number;
-      positionIndex: number;
       quoteAmount: bigint;
       tokenAmount: bigint;
     }
@@ -108,18 +101,6 @@ function launchPlan(
   index: number,
   creatorAccount: number
 ): LaunchPlan {
-  const rangeCount = random.int(1, 4);
-  const firstTick = -rangeCount * 200;
-  const ranges: SaleRangePlan[] = [];
-
-  for (let rangeIndex = 0; rangeIndex < rangeCount; rangeIndex += 1) {
-    ranges.push({
-      startTick: firstTick + rangeIndex * 200,
-      endTick: firstTick + (rangeIndex + 1) * 200,
-      amount: BigInt(random.int(80, 140)) * 1_000_000n * UNIT,
-    });
-  }
-
   return {
     kind: "launch",
     tokenKey: `token-${index}`,
@@ -128,7 +109,7 @@ function launchPlan(
       index % 2 === 0 ? HIGH_QUOTE_TOKEN_ADDRESS : LOW_QUOTE_TOKEN_ADDRESS,
     name: `Launchpad Agent ${index + 1}`,
     symbol: `LPA${index + 1}`,
-    ranges,
+    initialBuyAmount: index % 2 === 1 ? BigInt(random.int(1, 5)) * UNIT : 0n,
     launchFee: INITIAL_LAUNCH_FEE,
   };
 }
@@ -136,14 +117,12 @@ function launchPlan(
 function distribution(
   random: SeededRandom,
   tokenKey: string,
-  callerAccount: number,
-  maxPositionIndex: number
+  callerAccount: number
 ): ScenarioAction {
   return {
     kind: "distributeFees",
     tokenKey,
     callerAccount,
-    positionIndex: random.int(0, maxPositionIndex),
     quoteAmount: BigInt(random.int(51, 500)),
     tokenAmount: BigInt(random.int(51, 500)),
   };
@@ -213,6 +192,13 @@ export function planScenario(seed: number): ScenarioPlan {
     { kind: "setDefaultSushiFeeBps", value: finalDefault },
     { kind: "setProtocolReserveBps", value: finalReserve }
   );
+  actions.push({
+    kind: "transferCreator",
+    tokenKey: firstLaunch.tokenKey,
+    newCreatorAccount: [3, 4, 5].find(
+      (account) => account !== firstLaunch.creatorAccount
+    )!,
+  });
 
   const firstTokenFee = random.pick([1_234, 3_333, 5_000, 8_765]);
   const secondTokenFee = random.pick([777, 2_222, 6_666, 9_999]);
@@ -225,8 +211,7 @@ export function planScenario(seed: number): ScenarioPlan {
     distribution(
       random,
       firstLaunch.tokenKey,
-      random.pick([6, 7]),
-      firstLaunch.ranges.length - 1
+      random.pick([6, 7])
     )
   );
   actions.push({ kind: "setProtocolRecipient", account: 2 });
@@ -234,8 +219,7 @@ export function planScenario(seed: number): ScenarioPlan {
     distribution(
       random,
       firstLaunch.tokenKey,
-      random.pick([6, 7]),
-      firstLaunch.ranges.length - 1
+      random.pick([6, 7])
     )
   );
   actions.push({
@@ -247,8 +231,7 @@ export function planScenario(seed: number): ScenarioPlan {
     distribution(
       random,
       firstRemaining.tokenKey,
-      random.pick([6, 7]),
-      firstRemaining.ranges.length - 1
+      random.pick([6, 7])
     )
   );
 
@@ -312,26 +295,12 @@ export function validateScenario(plan: ScenarioPlan): void {
   }
 
   for (const launch of launches) {
-    if (launch.ranges.length < 1 || launch.ranges.length > 16) {
-      throw new Error(`Invalid range count for ${launch.tokenKey}`);
+    if (launch.initialBuyAmount < 0n) {
+      throw new Error(`Invalid initial buy for ${launch.tokenKey}`);
     }
-    let amountSum = 0n;
-    for (let index = 0; index < launch.ranges.length; index += 1) {
-      const range = launch.ranges[index]!;
-      if (
-        range.amount <= 0n ||
-        range.startTick >= range.endTick ||
-        range.startTick % 200 !== 0 ||
-        range.endTick % 200 !== 0 ||
-        (index > 0 && range.startTick !== launch.ranges[index - 1]!.endTick)
-      ) {
-        throw new Error(`Invalid range ${index} for ${launch.tokenKey}`);
-      }
-      amountSum += range.amount;
-    }
-    if (amountSum > (TOKEN_SUPPLY * 9_000n) / 10_000n) {
-      throw new Error(`Range allocation is unsafe for ${launch.tokenKey}`);
-    }
+  }
+  if (launches.filter((launch) => launch.initialBuyAmount > 0n).length !== 2) {
+    throw new Error("Every scenario must cover two atomic initial buys");
   }
 
   const count = (kind: ScenarioAction["kind"]): number =>
@@ -340,6 +309,7 @@ export function validateScenario(plan: ScenarioPlan): void {
     count("distributeFees") !== 3 ||
     count("withdrawLaunchFees") !== 2 ||
     count("withdrawReserve") !== 3 ||
+    count("transferCreator") !== 1 ||
     count("setProtocolRecipient") !== 1
   ) {
     throw new Error("Scenario is missing required lifecycle coverage");
