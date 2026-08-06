@@ -1,0 +1,61 @@
+services:
+  graph-node:
+    image: graphprotocol/graph-node:v0.41.2@sha256:5dd0622b0bcb52ce581911cf25ade5dc3c7c3d66638d2acab713cefa6d7f76f8
+    ports:
+      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:8001:8001"
+      - "127.0.0.1:8020:8020"
+      - "127.0.0.1:8030:8030"
+      - "127.0.0.1:8040:8040"
+    depends_on:
+      ipfs:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      postgres_host: postgres
+      postgres_user: graph-node
+      postgres_pass: launchpad-e2e
+      postgres_db: graph-node
+      ipfs: "ipfs:5001"
+      ethereum: "hardhat:http://host.docker.internal:8545"
+      GRAPH_LOG: info
+
+  ipfs:
+    image: ipfs/kubo:v0.17.0@sha256:803fac58ba15bd763b97a1ce17bca57f75348f2088d384a908b77e8540f35560
+    ports:
+      - "127.0.0.1:5001:5001"
+    healthcheck:
+      test: ["CMD", "ipfs", "id"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+    volumes:
+      - ipfs-data:/data/ipfs
+
+  postgres:
+    image: postgres:16-alpine@sha256:57c72fd2a128e416c7fcc499958864df5301e940bca0a56f58fddf30ffc07777
+    ports:
+      - "127.0.0.1:5432:5432"
+    command:
+      - postgres
+      - -cshared_preload_libraries=pg_stat_statements
+      - -cmax_connections=200
+    environment:
+      POSTGRES_USER: graph-node
+      POSTGRES_PASSWORD: launchpad-e2e
+      POSTGRES_DB: graph-node
+      POSTGRES_INITDB_ARGS: "-E UTF8 --locale=C"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U graph-node -d graph-node"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  ipfs-data:
+  postgres-data:

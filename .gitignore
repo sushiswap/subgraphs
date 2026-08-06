@@ -17,3 +17,6 @@ deploy.sh
 .turbo
 build/**
 dist/**
+
+# Local subgraph E2E diagnostics
+subgraphs/launchpad/.e2e-artifacts/

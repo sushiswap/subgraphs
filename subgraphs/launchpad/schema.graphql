@@ -1,0 +1,230 @@
+type Launchpad @entity {
+  # Identity
+  id: ID!
+  chainId: BigInt!
+  address: Bytes!
+  addressHex: String!
+
+  # Deployment configuration
+  positionManager: Bytes!
+  positionManagerHex: String!
+
+  # Current protocol configuration
+  protocolRecipient: Bytes!
+  protocolRecipientHex: String!
+  launchFee: BigInt!
+  defaultSushiFeeBps: Int!
+  protocolReserveBps: Int!
+
+  # Aggregate metrics
+  tokenCount: Int!
+  creatorCount: Int!
+  positionCount: Int!
+
+  # Relationships
+  tokens: [Token!]! @derivedFrom(field: "launchpad")
+  pools: [Pool!]! @derivedFrom(field: "launchpad")
+  creators: [Creator!]! @derivedFrom(field: "launchpad")
+  launchFeeWithdrawals: [LaunchFeeWithdrawal!]! @derivedFrom(field: "launchpad")
+}
+
+type Creator @entity {
+  # Identity
+  id: ID!
+  chainId: BigInt!
+  address: Bytes!
+  addressHex: String!
+
+  # Relationships
+  launchpad: Launchpad!
+  tokens: [Token!]! @derivedFrom(field: "creator")
+
+  # Aggregate metrics
+  tokenCount: Int!
+}
+
+type Token @entity {
+  # Identity
+  id: ID!
+  chainId: BigInt!
+  address: Bytes!
+  addressHex: String!
+
+  # Relationships
+  launchpad: Launchpad!
+  creator: Creator!
+  pool: Pool!
+  quoteToken: Bytes!
+  quoteTokenHex: String!
+
+  # ERC-20 metadata
+  name: String!
+  symbol: String!
+  decimals: Int!
+  totalSupply: BigInt!
+
+  # Current fee configuration
+  sushiFeeBps: Int!
+
+  # Reserve state
+  reserveBps: Int!
+  reserveAmount: BigInt!
+  reserveUnlockAt: BigInt!
+  reserveWithdrawn: Boolean!
+  reserveWithdrawal: ReserveWithdrawal
+
+  # Fee distribution metrics
+  totalAmount0Collected: BigInt!
+  totalAmount1Collected: BigInt!
+  totalAmount0ToSushi: BigInt!
+  totalAmount1ToSushi: BigInt!
+  totalAmount0ToCreator: BigInt!
+  totalAmount1ToCreator: BigInt!
+  feeDistributions: [FeeDistribution!]! @derivedFrom(field: "token")
+
+  # Creation metadata
+  creationTransactionHash: Bytes!
+  creationTransactionHashHex: String!
+  creationLogIndex: BigInt!
+  creationBlockNumber: BigInt!
+  creationBlockHash: Bytes!
+  creationBlockHashHex: String!
+  createdAt: BigInt!
+}
+
+type Pool @entity {
+  # Identity
+  id: ID!
+  chainId: BigInt!
+  address: Bytes!
+  addressHex: String!
+
+  # Relationships
+  launchpad: Launchpad!
+  positions: [LaunchPosition!]! @derivedFrom(field: "pool")
+
+  # Immutable pool configuration
+  token0: Bytes!
+  token0Hex: String!
+  token1: Bytes!
+  token1Hex: String!
+  fee: Int!
+  tickSpacing: Int!
+  positionManager: Bytes!
+  positionManagerHex: String!
+
+  # Aggregate metrics
+  positionCount: Int!
+
+  # Creation metadata
+  creationTransactionHash: Bytes!
+  creationTransactionHashHex: String!
+  creationBlockNumber: BigInt!
+  creationBlockHash: Bytes!
+  creationBlockHashHex: String!
+  createdAt: BigInt!
+}
+
+type LaunchPosition @entity(immutable: true) {
+  # Identity
+  id: ID!
+  chainId: BigInt!
+  positionManager: Bytes!
+  positionManagerHex: String!
+  positionId: BigInt!
+  index: Int!
+
+  # Relationships
+  pool: Pool!
+
+  # Position configuration
+  tickLower: Int!
+  tickUpper: Int!
+  liquidity: BigInt!
+
+  # Initial amounts
+  amount0Desired: BigInt!
+  amount1Desired: BigInt!
+  amount0: BigInt!
+  amount1: BigInt!
+
+  # Creation metadata
+  creationTransactionHash: Bytes!
+  creationTransactionHashHex: String!
+  creationLogIndex: BigInt!
+  creationBlockNumber: BigInt!
+  creationBlockHash: Bytes!
+  creationBlockHashHex: String!
+  createdAt: BigInt!
+}
+
+type FeeDistribution @entity(immutable: true) {
+  # Identity
+  id: ID!
+  chainId: BigInt!
+
+  # Relationships
+  token: Token!
+  pool: Pool!
+
+  # Participants and fee configuration
+  caller: Bytes!
+  sushiRecipient: Bytes!
+  creatorRecipient: Bytes!
+  sushiFeeBps: Int!
+
+  # Distributed amounts
+  amount0Collected: BigInt!
+  amount1Collected: BigInt!
+  amount0ToSushi: BigInt!
+  amount1ToSushi: BigInt!
+  amount0ToCreator: BigInt!
+  amount1ToCreator: BigInt!
+
+  # Event metadata
+  transactionHash: Bytes!
+  logIndex: BigInt!
+  blockNumber: BigInt!
+  blockHash: Bytes!
+  timestamp: BigInt!
+}
+
+type ReserveWithdrawal @entity(immutable: true) {
+  # Identity
+  id: ID!
+  chainId: BigInt!
+
+  # Relationships
+  token: Token!
+
+  # Withdrawal
+  recipient: Bytes!
+  amount: BigInt!
+
+  # Event metadata
+  transactionHash: Bytes!
+  logIndex: BigInt!
+  blockNumber: BigInt!
+  blockHash: Bytes!
+  timestamp: BigInt!
+}
+
+type LaunchFeeWithdrawal @entity(immutable: true) {
+  # Identity
+  id: ID!
+  chainId: BigInt!
+
+  # Relationships
+  launchpad: Launchpad!
+
+  # Withdrawal
+  recipient: Bytes!
+  amount: BigInt!
+
+  # Event metadata
+  transactionHash: Bytes!
+  logIndex: BigInt!
+  blockNumber: BigInt!
+  blockHash: Bytes!
+  timestamp: BigInt!
+}
