@@ -20,26 +20,33 @@ dataSources:
       kind: ethereum/events
       apiVersion: 0.0.9
       language: wasm/assemblyscript
-      file: ./src/mappings/launchpad.ts
+      file: ./src/mapping.ts
       entities:
         - Launchpad
-        - Creator
-        - Token
-        - Pool
-        - LaunchPosition
+        - Launch
+        - PendingLaunch
+        - QuoteTokenPriceFeed
+        - CreatorTransfer
+        - InitialBuy
         - FeeDistribution
         - ReserveWithdrawal
         - LaunchFeeWithdrawal
       abis:
         - name: SushiLaunchpad
           file: ./abis/SushiLaunchpad.json
-        - name: SushiV3Pool
+        - name: LaunchToken
+          file: ../v3/abis/ERC20.json
+        - name: LaunchPool
           file: ../v3/abis/pool.json
       eventHandlers:
-        - event: TokenLaunched(indexed address,indexed address,indexed address,address,string,string,uint8,uint256,uint16,uint256,uint64,uint16,uint256)
+        - event: TokenLaunched(indexed address,indexed address,indexed address,address,int24,string,string,uint16,uint256,uint64,uint16)
           handler: handleTokenLaunched
         - event: PositionCreated(indexed address,indexed address,indexed uint256,int24,int24,uint256,uint256,uint128)
           handler: handlePositionCreated
+        - event: InitialBuyExecuted(indexed address,indexed address,indexed address,address,address,uint256,uint256)
+          handler: handleInitialBuyExecuted
+        - event: CreatorTransferred(indexed address,indexed address,indexed address)
+          handler: handleCreatorTransferred
         - event: SushiFeeBpsUpdated(indexed address,uint16,uint16)
           handler: handleSushiFeeBpsUpdated
         - event: DefaultSushiFeeBpsUpdated(uint16,uint16)
@@ -56,4 +63,6 @@ dataSources:
           handler: handleFeesDistributed
         - event: ProtocolReserveWithdrawn(indexed address,indexed address,uint256)
           handler: handleProtocolReserveWithdrawn
+        - event: QuoteTokenPriceFeedUpdated(indexed address,indexed address,indexed address)
+          handler: handleQuoteTokenPriceFeedUpdated
   {{/launchpad.deployments}}

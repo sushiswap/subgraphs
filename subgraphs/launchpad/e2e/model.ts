@@ -10,34 +10,35 @@ export interface IndexedEvent {
   timestamp: number;
 }
 
-export interface PoolConfiguration {
-  address: string;
-  token0: string;
-  token1: string;
-  fee: number;
-  tickSpacing: number;
-}
-
 export interface ExpectedModelInput {
   chainId: bigint;
   launchpadAddress: string;
   positionManager: string;
   protocolRecipient: string;
   launchFee: bigint;
+  initialFdvUsd: bigint;
   defaultSushiFeeBps: number;
   protocolReserveBps: number;
+  launchpadObservation: LaunchObservation | null;
   events: IndexedEvent[];
-  pools: Map<string, PoolConfiguration>;
+}
+
+export interface LaunchObservation {
+  decimals: number;
+  totalSupply: bigint;
+  poolFee: number;
+  poolTickSpacing: number;
 }
 
 type Entity = Record<string, unknown> & { id: string };
 
 export interface EntitySnapshot {
   launchpads: Entity[];
-  creators: Entity[];
-  tokens: Entity[];
-  pools: Entity[];
-  launchPositions: Entity[];
+  launches: Entity[];
+  pendingLaunches: Entity[];
+  quoteTokenPriceFeeds: Entity[];
+  creatorTransfers: Entity[];
+  initialBuys: Entity[];
   feeDistributions: Entity[];
   reserveWithdrawals: Entity[];
   launchFeeWithdrawals: Entity[];
@@ -56,16 +57,6 @@ function eventId(chainId: bigint, event: IndexedEvent): string {
   return `${chainId}:${event.transactionHash.toLowerCase()}:${event.logIndex}`;
 }
 
-function positionId(
-  chainId: bigint,
-  positionManager: string,
-  onchainPositionId: unknown
-): string {
-  return `${chainId}:${positionManager.toLowerCase()}:${decimal(
-    onchainPositionId
-  )}`;
-}
-
 function metadata(event: IndexedEvent): Record<string, unknown> {
   return {
     transactionHash: event.transactionHash.toLowerCase(),
@@ -80,18 +71,15 @@ function values<T>(entities: Map<string, T>): T[] {
   return [...entities.values()];
 }
 
-function add(value: unknown, amount: unknown): string {
-  return (BigInt(String(value)) + BigInt(amount as bigint)).toString();
-}
-
 export function buildExpectedSnapshot(
   input: ExpectedModelInput
 ): EntitySnapshot {
   const launchpadId = addressId(input.chainId, input.launchpadAddress);
-  const creators = new Map<string, Entity>();
-  const tokens = new Map<string, Entity>();
-  const pools = new Map<string, Entity>();
-  const launchPositions = new Map<string, Entity>();
+  const launches = new Map<string, Entity>();
+  const pendingLaunches = new Map<string, Entity>();
+  const quoteTokenPriceFeeds = new Map<string, Entity>();
+  const creatorTransfers = new Map<string, Entity>();
+  const initialBuys = new Map<string, Entity>();
   const feeDistributions = new Map<string, Entity>();
   const reserveWithdrawals = new Map<string, Entity>();
   const launchFeeWithdrawals = new Map<string, Entity>();
@@ -100,20 +88,18 @@ export function buildExpectedSnapshot(
     id: launchpadId,
     chainId: input.chainId.toString(),
     address: input.launchpadAddress.toLowerCase(),
-    addressHex: input.launchpadAddress.toLowerCase(),
     positionManager: input.positionManager.toLowerCase(),
-    positionManagerHex: input.positionManager.toLowerCase(),
     protocolRecipient: input.protocolRecipient.toLowerCase(),
-    protocolRecipientHex: input.protocolRecipient.toLowerCase(),
     launchFee: input.launchFee.toString(),
+    initialFdvUsd: input.initialFdvUsd.toString(),
     defaultSushiFeeBps: input.defaultSushiFeeBps,
     protocolReserveBps: input.protocolReserveBps,
-    tokenCount: 0,
-    creatorCount: 0,
-    positionCount: 0,
-    tokens: [],
-    pools: [],
-    creators: [],
+    launchTokenDecimals: null,
+    launchTokenTotalSupply: null,
+    launchPoolFee: null,
+    launchPoolTickSpacing: null,
+    launches: [],
+    quoteTokenPriceFeeds: [],
     launchFeeWithdrawals: [],
   };
 
@@ -125,297 +111,280 @@ export function buildExpectedSnapshot(
   for (const event of orderedEvents) {
     const args = event.args;
 
-    if (event.name === "PositionCreated") {
-      const poolAddress = lower(args.pool);
-      const poolConfiguration = input.pools.get(poolAddress);
-      assert(
-        poolConfiguration,
-        `Missing pool configuration for ${poolAddress}`
-      );
-      const idForPool = addressId(input.chainId, poolAddress);
-      let pool = pools.get(idForPool);
-      if (!pool) {
-        const launchedToken = lower(args.token);
-        const tokenIs0 =
-          poolConfiguration.token0.toLowerCase() === launchedToken;
-        const tokenIs1 =
-          poolConfiguration.token1.toLowerCase() === launchedToken;
-        assert(
-          tokenIs0 !== tokenIs1,
-          `Launch token is not exactly one side of pool ${poolAddress}`
-        );
-        pool = {
-          id: idForPool,
-          chainId: input.chainId.toString(),
-          address: poolAddress,
-          addressHex: poolAddress,
-          launchpad: relation(launchpadId),
-          token0: poolConfiguration.token0.toLowerCase(),
-          token0Hex: poolConfiguration.token0.toLowerCase(),
-          token1: poolConfiguration.token1.toLowerCase(),
-          token1Hex: poolConfiguration.token1.toLowerCase(),
-          fee: poolConfiguration.fee,
-          tickSpacing: poolConfiguration.tickSpacing,
-          positionManager: input.positionManager.toLowerCase(),
-          positionManagerHex: input.positionManager.toLowerCase(),
-          positionCount: 0,
-          creationTransactionHash: event.transactionHash.toLowerCase(),
-          creationTransactionHashHex: event.transactionHash.toLowerCase(),
-          creationBlockNumber: event.blockNumber.toString(),
-          creationBlockHash: event.blockHash.toLowerCase(),
-          creationBlockHashHex: event.blockHash.toLowerCase(),
-          createdAt: event.timestamp.toString(),
-          positions: [],
-        };
-        pools.set(idForPool, pool);
-      }
-
-      const tokenIs0 =
-        poolConfiguration.token0.toLowerCase() === lower(args.token);
-      const idForPosition = positionId(
-        input.chainId,
-        input.positionManager,
-        args.positionId
-      );
-      const index = pool.positionCount as number;
-      const zero = "0";
-      const desired = decimal(args.tokenDesired);
-      const used = decimal(args.tokenUsed);
-      const position: Entity = {
-        id: idForPosition,
-        chainId: input.chainId.toString(),
-        positionManager: input.positionManager.toLowerCase(),
-        positionManagerHex: input.positionManager.toLowerCase(),
-        positionId: decimal(args.positionId),
-        index,
-        pool: relation(idForPool),
-        tickLower: integer(args.tickLower),
-        tickUpper: integer(args.tickUpper),
-        liquidity: decimal(args.liquidity),
-        amount0Desired: tokenIs0 ? desired : zero,
-        amount1Desired: tokenIs0 ? zero : desired,
-        amount0: tokenIs0 ? used : zero,
-        amount1: tokenIs0 ? zero : used,
-        creationTransactionHash: event.transactionHash.toLowerCase(),
-        creationTransactionHashHex: event.transactionHash.toLowerCase(),
-        creationLogIndex: event.logIndex.toString(),
-        creationBlockNumber: event.blockNumber.toString(),
-        creationBlockHash: event.blockHash.toLowerCase(),
-        creationBlockHashHex: event.blockHash.toLowerCase(),
-        createdAt: event.timestamp.toString(),
-      };
-      launchPositions.set(idForPosition, position);
-      (pool.positions as Array<{ id: string }>).push(relation(idForPosition));
-      pool.positionCount = index + 1;
-      launchpad.positionCount = (launchpad.positionCount as number) + 1;
-      continue;
-    }
-
     if (event.name === "TokenLaunched") {
-      const idForToken = addressId(input.chainId, args.token);
-      const idForCreator = `${launchpadId}:${lower(args.creator)}`;
-      const idForPool = addressId(input.chainId, args.pool);
-      const pool = pools.get(idForPool);
-      assert(pool, `Missing launch pool ${idForPool}`);
-      const tokenAddress = lower(args.token);
+      const id = addressId(input.chainId, args.token);
+      const token = lower(args.token);
       const quoteToken = lower(args.quoteToken);
-      assert(
-        (lower(pool.token0) === tokenAddress &&
-          lower(pool.token1) === quoteToken) ||
-          (lower(pool.token1) === tokenAddress &&
-            lower(pool.token0) === quoteToken),
-        `TokenLaunched pair does not match pool ${idForPool}`
-      );
-      assert.equal(
-        pool.positionCount,
-        integer(args.positionCount),
-        `TokenLaunched position count does not match pool ${idForPool}`
-      );
-      let creator = creators.get(idForCreator);
-      if (!creator) {
-        creator = {
-          id: idForCreator,
-          chainId: input.chainId.toString(),
-          address: lower(args.creator),
-          addressHex: lower(args.creator),
-          launchpad: relation(launchpadId),
-          tokenCount: 0,
-          tokens: [],
-        };
-        creators.set(idForCreator, creator);
-        launchpad.creatorCount = (launchpad.creatorCount as number) + 1;
+      if (launchpad.launchTokenDecimals === null) {
+        const observation = input.launchpadObservation;
+        assert(
+          observation,
+          `Missing observed launchpad values for ${launchpadId}`
+        );
+        launchpad.launchTokenDecimals = observation.decimals;
+        launchpad.launchTokenTotalSupply = observation.totalSupply.toString();
+        launchpad.launchPoolFee = observation.poolFee;
+        launchpad.launchPoolTickSpacing = observation.poolTickSpacing;
       }
-      creator.tokenCount = (creator.tokenCount as number) + 1;
-      (creator.tokens as Array<{ id: string }>).push(relation(idForToken));
-
-      const token: Entity = {
-        id: idForToken,
+      assert(!pendingLaunches.has(id) && !launches.has(id));
+      pendingLaunches.set(id, {
+        id,
         chainId: input.chainId.toString(),
-        address: lower(args.token),
-        addressHex: lower(args.token),
         launchpad: relation(launchpadId),
-        creator: relation(idForCreator),
-        pool: relation(idForPool),
+        token,
+        creator: lower(args.creator),
         quoteToken,
-        quoteTokenHex: quoteToken,
+        pool: lower(args.pool),
+        launchTokenIsToken0: token < quoteToken,
         name: String(args.name),
         symbol: String(args.symbol),
-        decimals: integer(args.decimals),
-        totalSupply: decimal(args.totalSupply),
+        startTick: integer(args.startTick),
         sushiFeeBps: integer(args.initialSushiFeeBps),
         reserveBps: integer(args.reserveBps),
         reserveAmount: decimal(args.reserveAmount),
         reserveUnlockAt: decimal(args.reserveUnlockAt),
-        reserveWithdrawn: false,
-        reserveWithdrawal: null,
-        totalAmount0Collected: "0",
-        totalAmount1Collected: "0",
-        totalAmount0ToSushi: "0",
-        totalAmount1ToSushi: "0",
-        totalAmount0ToCreator: "0",
-        totalAmount1ToCreator: "0",
-        feeDistributions: [],
         creationTransactionHash: event.transactionHash.toLowerCase(),
-        creationTransactionHashHex: event.transactionHash.toLowerCase(),
         creationLogIndex: event.logIndex.toString(),
         creationBlockNumber: event.blockNumber.toString(),
         creationBlockHash: event.blockHash.toLowerCase(),
-        creationBlockHashHex: event.blockHash.toLowerCase(),
         createdAt: event.timestamp.toString(),
+      });
+      continue;
+    }
+
+    if (event.name === "PositionCreated") {
+      const id = addressId(input.chainId, args.token);
+      const pending = pendingLaunches.get(id);
+      assert(pending, `Missing pending launch ${id}`);
+      assert.equal(pending.pool, lower(args.pool));
+      assert.equal(
+        pending.creationTransactionHash,
+        event.transactionHash.toLowerCase()
+      );
+      const launch: Entity = {
+        id,
+        chainId: input.chainId.toString(),
+        launchpad: relation(launchpadId),
+        token: pending.token,
+        initialCreator: pending.creator,
+        creator: pending.creator,
+        quoteToken: pending.quoteToken,
+        pool: pending.pool,
+        launchTokenIsToken0: pending.launchTokenIsToken0,
+        name: pending.name,
+        symbol: pending.symbol,
+        decimals: launchpad.launchTokenDecimals,
+        totalSupply: launchpad.launchTokenTotalSupply,
+        initialFdvUsd: launchpad.initialFdvUsd,
+        startTick: pending.startTick,
+        poolFee: launchpad.launchPoolFee,
+        poolTickSpacing: launchpad.launchPoolTickSpacing,
+        positionManager: input.positionManager.toLowerCase(),
+        positionId: decimal(args.positionId),
+        tickLower: integer(args.tickLower),
+        tickUpper: integer(args.tickUpper),
+        tokenDesired: decimal(args.tokenDesired),
+        tokenUsed: decimal(args.tokenUsed),
+        liquidity: decimal(args.liquidity),
+        sushiFeeBps: pending.sushiFeeBps,
+        reserveBps: pending.reserveBps,
+        reserveAmount: pending.reserveAmount,
+        reserveUnlockAt: pending.reserveUnlockAt,
+        reserveWithdrawn: false,
+        reserveWithdrawal: null,
+        initialBuy: null,
+        feeDistributions: [],
+        creatorTransfers: [],
+        creationTransactionHash: pending.creationTransactionHash,
+        creationLogIndex: pending.creationLogIndex,
+        positionCreationLogIndex: event.logIndex.toString(),
+        creationBlockNumber: pending.creationBlockNumber,
+        creationBlockHash: pending.creationBlockHash,
+        createdAt: pending.createdAt,
       };
-      tokens.set(idForToken, token);
-      launchpad.tokenCount = (launchpad.tokenCount as number) + 1;
+      pendingLaunches.delete(id);
+      launches.set(id, launch);
+      continue;
+    }
+
+    if (event.name === "InitialBuyExecuted") {
+      const launch = launches.get(addressId(input.chainId, args.token));
+      assert(launch, `Unknown initial buy launch ${lower(args.token)}`);
+      const id = eventId(input.chainId, event);
+      initialBuys.set(id, {
+        id,
+        chainId: input.chainId.toString(),
+        launch: relation(launch.id),
+        creator: lower(args.creator),
+        recipient: lower(args.recipient),
+        quoteToken: lower(args.quoteToken),
+        pool: lower(args.pool),
+        amountIn: decimal(args.amountIn),
+        amountOut: decimal(args.amountOut),
+        ...metadata(event),
+      });
+      launch.initialBuy = relation(id);
+      continue;
+    }
+
+    if (event.name === "CreatorTransferred") {
+      const launch = launches.get(addressId(input.chainId, args.token));
+      assert(launch, `Unknown creator transfer launch ${lower(args.token)}`);
+      assert.equal(launch.creator, lower(args.previousCreator));
+      const id = eventId(input.chainId, event);
+      creatorTransfers.set(id, {
+        id,
+        chainId: input.chainId.toString(),
+        launch: relation(launch.id),
+        previousCreator: lower(args.previousCreator),
+        newCreator: lower(args.newCreator),
+        ...metadata(event),
+      });
+      launch.creator = lower(args.newCreator);
+      (launch.creatorTransfers as Array<{ id: string }>).push(relation(id));
       continue;
     }
 
     if (event.name === "SushiFeeBpsUpdated") {
-      const token = tokens.get(addressId(input.chainId, args.token));
-      assert(
-        token,
-        `Unknown token in SushiFeeBpsUpdated: ${lower(args.token)}`
-      );
-      token.sushiFeeBps = integer(args.newSushiFeeBps);
+      const launch = launches.get(addressId(input.chainId, args.token));
+      assert(launch, `Unknown fee update launch ${lower(args.token)}`);
+      launch.sushiFeeBps = integer(args.newSushiFeeBps);
       continue;
     }
 
     if (event.name === "FeesDistributed") {
-      const idForToken = addressId(input.chainId, args.token);
-      const idForPool = addressId(input.chainId, args.pool);
-      const token = tokens.get(idForToken);
-      const pool = pools.get(idForPool);
-      assert(token && pool, `Unknown fee distribution target ${idForToken}`);
+      const launch = launches.get(addressId(input.chainId, args.token));
+      assert(launch, `Unknown fee distribution launch ${lower(args.token)}`);
       const id = eventId(input.chainId, event);
-      const tokenIs0 = lower(pool.token0) === lower(args.token);
-      const amount0Collected = tokenIs0
-        ? decimal(args.tokenCollected)
-        : decimal(args.quoteCollected);
-      const amount1Collected = tokenIs0
-        ? decimal(args.quoteCollected)
-        : decimal(args.tokenCollected);
-      const amount0ToSushi = tokenIs0
-        ? decimal(args.tokenToSushi)
-        : decimal(args.quoteToSushi);
-      const amount1ToSushi = tokenIs0
-        ? decimal(args.quoteToSushi)
-        : decimal(args.tokenToSushi);
-      const amount0ToCreator = tokenIs0
-        ? decimal(args.tokenToCreator)
-        : decimal(args.quoteToCreator);
-      const amount1ToCreator = tokenIs0
-        ? decimal(args.quoteToCreator)
-        : decimal(args.tokenToCreator);
-      const distribution: Entity = {
+      const tokenIs0 = Boolean(launch.launchTokenIsToken0);
+      feeDistributions.set(id, {
         id,
         chainId: input.chainId.toString(),
-        token: relation(idForToken),
-        pool: relation(idForPool),
+        launch: relation(launch.id),
+        pool: lower(args.pool),
         caller: lower(args.caller),
         sushiRecipient: lower(args.protocolRecipient),
         creatorRecipient: lower(args.creator),
         sushiFeeBps: integer(args.sushiFeeBps),
-        amount0Collected,
-        amount1Collected,
-        amount0ToSushi,
-        amount1ToSushi,
-        amount0ToCreator,
-        amount1ToCreator,
+        amount0Collected: decimal(
+          tokenIs0 ? args.tokenCollected : args.quoteCollected
+        ),
+        amount1Collected: decimal(
+          tokenIs0 ? args.quoteCollected : args.tokenCollected
+        ),
+        amount0ToSushi: decimal(
+          tokenIs0 ? args.tokenToSushi : args.quoteToSushi
+        ),
+        amount1ToSushi: decimal(
+          tokenIs0 ? args.quoteToSushi : args.tokenToSushi
+        ),
+        amount0ToCreator: decimal(
+          tokenIs0 ? args.tokenToCreator : args.quoteToCreator
+        ),
+        amount1ToCreator: decimal(
+          tokenIs0 ? args.quoteToCreator : args.tokenToCreator
+        ),
         ...metadata(event),
-      };
-      feeDistributions.set(id, distribution);
-      (token.feeDistributions as Array<{ id: string }>).push(relation(id));
-      token.totalAmount0Collected = add(
-        token.totalAmount0Collected,
-        amount0Collected
-      );
-      token.totalAmount1Collected = add(
-        token.totalAmount1Collected,
-        amount1Collected
-      );
-      token.totalAmount0ToSushi = add(
-        token.totalAmount0ToSushi,
-        amount0ToSushi
-      );
-      token.totalAmount1ToSushi = add(
-        token.totalAmount1ToSushi,
-        amount1ToSushi
-      );
-      token.totalAmount0ToCreator = add(
-        token.totalAmount0ToCreator,
-        amount0ToCreator
-      );
-      token.totalAmount1ToCreator = add(
-        token.totalAmount1ToCreator,
-        amount1ToCreator
-      );
+      });
+      (launch.feeDistributions as Array<{ id: string }>).push(relation(id));
       continue;
     }
 
     if (event.name === "ProtocolReserveWithdrawn") {
-      const idForToken = addressId(input.chainId, args.token);
-      const token = tokens.get(idForToken);
-      assert(token, `Unknown reserve withdrawal target ${idForToken}`);
+      const launch = launches.get(addressId(input.chainId, args.token));
+      assert(launch, `Unknown reserve withdrawal launch ${lower(args.token)}`);
       const id = eventId(input.chainId, event);
-      const withdrawal: Entity = {
+      reserveWithdrawals.set(id, {
         id,
         chainId: input.chainId.toString(),
-        token: relation(idForToken),
+        launch: relation(launch.id),
         recipient: lower(args.recipient),
         amount: decimal(args.amount),
         ...metadata(event),
-      };
-      reserveWithdrawals.set(id, withdrawal);
-      token.reserveWithdrawn = true;
-      token.reserveWithdrawal = relation(id);
+      });
+      launch.reserveWithdrawn = true;
+      launch.reserveWithdrawal = relation(id);
+      continue;
+    }
+
+    if (event.name === "DefaultSushiFeeBpsUpdated") {
+      launchpad.defaultSushiFeeBps = integer(args.newBps);
+      continue;
+    }
+    if (event.name === "ProtocolReserveBpsUpdated") {
+      launchpad.protocolReserveBps = integer(args.newBps);
+      continue;
+    }
+    if (event.name === "ProtocolRecipientUpdated") {
+      launchpad.protocolRecipient = lower(args.newRecipient);
+      continue;
+    }
+    if (event.name === "LaunchFeeUpdated") {
+      launchpad.launchFee = decimal(args.newFee);
+      continue;
+    }
+
+    if (event.name === "QuoteTokenPriceFeedUpdated") {
+      const id = `${launchpadId}:${lower(args.quoteToken)}`;
+      const current = quoteTokenPriceFeeds.get(id);
+      if (current) {
+        assert.equal(current.priceFeed, lower(args.previousPriceFeed));
+      } else {
+        assert.equal(
+          lower(args.previousPriceFeed),
+          "0x0000000000000000000000000000000000000000"
+        );
+      }
+      if (
+        lower(args.newPriceFeed) ===
+        "0x0000000000000000000000000000000000000000"
+      ) {
+        quoteTokenPriceFeeds.delete(id);
+        continue;
+      }
+      quoteTokenPriceFeeds.set(id, {
+        id,
+        chainId: input.chainId.toString(),
+        launchpad: relation(launchpadId),
+        quoteToken: lower(args.quoteToken),
+        priceFeed: lower(args.newPriceFeed),
+        updatedTransactionHash: event.transactionHash.toLowerCase(),
+        updatedLogIndex: event.logIndex.toString(),
+        updatedBlockNumber: event.blockNumber.toString(),
+        updatedBlockHash: event.blockHash.toLowerCase(),
+        updatedAt: event.timestamp.toString(),
+      });
       continue;
     }
 
     if (event.name === "LaunchFeesWithdrawn") {
       const id = eventId(input.chainId, event);
-      const withdrawal: Entity = {
+      launchFeeWithdrawals.set(id, {
         id,
         chainId: input.chainId.toString(),
         launchpad: relation(launchpadId),
         recipient: lower(args.recipient),
         amount: decimal(args.amount),
         ...metadata(event),
-      };
-      launchFeeWithdrawals.set(id, withdrawal);
+      });
     }
   }
 
-  launchpad.tokens = values(tokens).map((entity) => relation(entity.id));
-  launchpad.pools = values(pools).map((entity) => relation(entity.id));
-  launchpad.creators = values(creators).map((entity) => relation(entity.id));
+  launchpad.launches = values(launches).map((entity) => relation(entity.id));
+  launchpad.quoteTokenPriceFeeds = values(quoteTokenPriceFeeds).map((entity) =>
+    relation(entity.id)
+  );
   launchpad.launchFeeWithdrawals = values(launchFeeWithdrawals).map((entity) =>
     relation(entity.id)
   );
 
   return normalizeSnapshot({
     launchpads: [launchpad],
-    creators: values(creators),
-    tokens: values(tokens),
-    pools: values(pools),
-    launchPositions: values(launchPositions),
+    launches: values(launches),
+    pendingLaunches: values(pendingLaunches),
+    quoteTokenPriceFeeds: values(quoteTokenPriceFeeds),
+    creatorTransfers: values(creatorTransfers),
+    initialBuys: values(initialBuys),
     feeDistributions: values(feeDistributions),
     reserveWithdrawals: values(reserveWithdrawals),
     launchFeeWithdrawals: values(launchFeeWithdrawals),

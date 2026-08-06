@@ -18,7 +18,7 @@ import {
   normalizeSnapshot,
   type EntitySnapshot,
   type IndexedEvent,
-  type PoolConfiguration,
+  type LaunchObservation,
 } from "./model";
 import {
   CHAIN_ID,
@@ -56,7 +56,9 @@ interface ContractArtifacts {
   launchpad: HardhatArtifact;
   launchToken: HardhatArtifact;
   quoteToken: HardhatArtifact;
+  priceFeed: HardhatArtifact;
   factory: HardhatArtifact;
+  weth: HardhatArtifact;
   positionManager: HardhatArtifact;
   pool: HardhatArtifact;
 }
@@ -78,13 +80,14 @@ interface LaunchedToken {
   address: string;
   pool: string;
   quoteToken: string;
+  creatorAccount: number;
   positionIds: bigint[];
   token: Contract;
 }
 
 interface ScenarioExecution {
   events: IndexedEvent[];
-  pools: Map<string, PoolConfiguration>;
+  launchpadObservation: LaunchObservation | null;
   finalBlock: number;
 }
 
@@ -364,9 +367,13 @@ async function loadArtifacts(
     quoteToken: await readArtifact(
       artifact("test/MockSushiV3.sol", "MockERC20.json")
     ),
+    priceFeed: await readArtifact(
+      artifact("test/MockSushiV3.sol", "MockChainlinkAggregator.json")
+    ),
     factory: await readArtifact(
       artifact("test/MockSushiV3.sol", "MockSushiV3Factory.json")
     ),
+    weth: await readArtifact(artifact("test/MockSushiV3.sol", "MockWETH.json")),
     positionManager: await readArtifact(
       artifact("test/MockSushiV3.sol", "MockPositionManager.json")
     ),
@@ -440,9 +447,10 @@ async function deployFixture(
     );
   }
   const factory = await deploy(artifacts.factory, owner);
+  const weth = await deploy(artifacts.weth, owner);
   const positionManager = await deploy(artifacts.positionManager, owner, [
     await factory.getAddress(),
-    LOW_QUOTE_TOKEN_ADDRESS,
+    await weth.getAddress(),
   ]);
   await (await positionManager.setConsumptionBps(plan.consumptionBps)).wait();
   const launchpad = await deploy(artifacts.launchpad, owner, [
@@ -453,6 +461,18 @@ async function deployFixture(
   ]);
   const deploymentReceipt = await launchpad.deploymentTransaction()!.wait();
   assert(deploymentReceipt, "Launchpad deployment did not produce a receipt");
+  for (const address of [LOW_QUOTE_TOKEN_ADDRESS, HIGH_QUOTE_TOKEN_ADDRESS]) {
+    const priceFeed = await deploy(artifacts.priceFeed, owner, [
+      8,
+      100_000_000n,
+    ]);
+    await (
+      await launchpad.setQuoteTokenPriceFeed(
+        address,
+        await priceFeed.getAddress()
+      )
+    ).wait();
+  }
 
   return {
     launchpad,
@@ -552,11 +572,44 @@ async function executeScenario(
   plan: ScenarioPlan
 ): Promise<ScenarioExecution> {
   const events: IndexedEvent[] = [];
+  let launchpadObservation: LaunchObservation | null = null;
   const tokens = new Map<string, LaunchedToken>();
   const blockTimestamps = new Map<number, number>();
   const launchpadInterface = new Interface(
     fixture.launchpad.interface.fragments
   );
+
+  // The data source starts at deployment, before scenario execution. Include
+  // the quote-token feed configuration logs emitted while preparing the
+  // fixture so the independent expected model covers the full indexed range.
+  const setupLogs = await provider.getLogs({
+    address: fixture.launchpadAddress,
+    fromBlock: fixture.launchpadDeploymentBlock,
+    toBlock: "latest",
+  });
+  for (const log of setupLogs) {
+    const parsed = launchpadInterface.parseLog({
+      topics: [...log.topics],
+      data: log.data,
+    });
+    if (!parsed) continue;
+    let timestamp = blockTimestamps.get(log.blockNumber);
+    if (timestamp === undefined) {
+      const block = await provider.getBlock(log.blockNumber);
+      assert(block, `Missing block ${log.blockNumber}`);
+      timestamp = block.timestamp;
+      blockTimestamps.set(log.blockNumber, timestamp);
+    }
+    events.push({
+      name: parsed.name,
+      args: eventArguments(parsed),
+      transactionHash: log.transactionHash.toLowerCase(),
+      logIndex: log.index,
+      blockNumber: log.blockNumber,
+      blockHash: log.blockHash.toLowerCase(),
+      timestamp,
+    });
+  }
 
   const recordReceipt = async (
     transaction: TransactionResponse
@@ -605,11 +658,38 @@ async function executeScenario(
     const connected = fixture.launchpad.connect(
       signers[action.creatorAccount]!
     ) as Contract;
-    return await connected.launch(
+    const deadline = BigInt(block.timestamp + 3_600);
+    if (action.initialBuyAmount === 0n) {
+      return await connected.launch(
+        { name: action.name, symbol: action.symbol },
+        action.quoteToken,
+        deadline,
+        { value: action.launchFee }
+      );
+    }
+    const quoteToken = fixture.quoteTokens.get(action.quoteToken);
+    assert(quoteToken, `Unknown quote token ${action.quoteToken}`);
+    const creator = signers[action.creatorAccount]!;
+    const creatorAddress = await creator.getAddress();
+    await (
+      await quoteToken.mint(creatorAddress, action.initialBuyAmount)
+    ).wait();
+    const creatorQuoteToken = quoteToken.connect(creator) as Contract;
+    await (
+      await creatorQuoteToken.approve(
+        fixture.launchpadAddress,
+        action.initialBuyAmount
+      )
+    ).wait();
+    return await connected.launchAndBuy(
       { name: action.name, symbol: action.symbol },
       action.quoteToken,
-      action.ranges,
-      BigInt(block.timestamp + 3_600),
+      deadline,
+      {
+        amountIn: action.initialBuyAmount,
+        amountOutMinimum: 0,
+        recipient: creatorAddress,
+      },
       { value: action.launchFee }
     );
   };
@@ -647,19 +727,49 @@ async function executeScenario(
     );
     assert.equal(
       positionEvents.length,
-      action.ranges.length,
+      1,
       `Unexpected position count for ${action.tokenKey}`
     );
+    const launchpadEvents = events.filter(
+      (event) => event.transactionHash === receipt.hash.toLowerCase()
+    );
+    const launchIndex = launchpadEvents.findIndex(
+      (event) => event.name === "TokenLaunched"
+    );
+    const positionIndex = launchpadEvents.findIndex(
+      (event) => event.name === "PositionCreated"
+    );
+    const buyIndex = launchpadEvents.findIndex(
+      (event) => event.name === "InitialBuyExecuted"
+    );
+    assert(launchIndex >= 0 && positionIndex > launchIndex);
+    assert.equal(buyIndex > positionIndex, action.initialBuyAmount > 0n);
     const address = String(launchEvent.args.token).toLowerCase();
+    const poolAddress = String(launchEvent.args.pool).toLowerCase();
+    const token = new Contract(address, fixture.tokenArtifact.abi, signers[0]);
+    if (launchpadObservation === null) {
+      const pool = new Contract(
+        poolAddress,
+        fixture.poolArtifact.abi,
+        signers[0]
+      );
+      launchpadObservation = {
+        decimals: Number(await token.decimals()),
+        totalSupply: BigInt(await token.totalSupply()),
+        poolFee: Number(await pool.fee()),
+        poolTickSpacing: Number(await pool.tickSpacing()),
+      };
+    }
     tokens.set(action.tokenKey, {
       tokenKey: action.tokenKey,
       address,
-      pool: String(launchEvent.args.pool).toLowerCase(),
+      pool: poolAddress,
       quoteToken,
+      creatorAccount: action.creatorAccount,
       positionIds: positionEvents.map((event) =>
         BigInt(event.args.positionId as bigint)
       ),
-      token: new Contract(address, fixture.tokenArtifact.abi, signers[0]),
+      token,
     });
   };
 
@@ -695,6 +805,21 @@ async function executeScenario(
       await recordReceipt(await fixture.launchpad.setLaunchFee(action.value));
       return;
     }
+    if (action.kind === "transferCreator") {
+      const token = tokens.get(action.tokenKey);
+      assert(token, `Unknown planned token ${action.tokenKey}`);
+      const connected = fixture.launchpad.connect(
+        signers[token.creatorAccount]!
+      ) as Contract;
+      await recordReceipt(
+        await connected.transferCreator(
+          token.address,
+          await signers[action.newCreatorAccount]!.getAddress()
+        )
+      );
+      token.creatorAccount = action.newCreatorAccount;
+      return;
+    }
     if (action.kind === "setTokenSushiFeeBps") {
       const token = tokens.get(action.tokenKey);
       assert(token, `Unknown planned token ${action.tokenKey}`);
@@ -716,15 +841,10 @@ async function executeScenario(
         token.address.toLowerCase();
       const quoteToken = fixture.quoteTokens.get(token.quoteToken);
       assert(quoteToken, `Unknown quote token ${token.quoteToken}`);
-      await (
-        await quoteToken.mint(
-          fixture.positionManagerAddress,
-          action.quoteAmount
-        )
-      ).wait();
+      await (await quoteToken.mint(token.pool, action.quoteAmount)).wait();
       await (
         await fixture.positionManager.seedFees(
-          token.positionIds[action.positionIndex],
+          token.positionIds[0],
           tokenIs0 ? action.tokenAmount : action.quoteAmount,
           tokenIs0 ? action.quoteAmount : action.tokenAmount
         )
@@ -788,26 +908,9 @@ async function executeScenario(
     }
   }
 
-  const pools = new Map<string, PoolConfiguration>();
-  for (const token of tokens.values()) {
-    if (pools.has(token.pool)) continue;
-    const contract = new Contract(
-      token.pool,
-      fixture.poolArtifact.abi,
-      signers[0]
-    );
-    pools.set(token.pool, {
-      address: token.pool,
-      token0: String(await contract.token0()).toLowerCase(),
-      token1: String(await contract.token1()).toLowerCase(),
-      fee: Number(await contract.fee()),
-      tickSpacing: Number(await contract.tickSpacing()),
-    });
-  }
-
   return {
     events,
-    pools,
+    launchpadObservation,
     finalBlock: await provider.getBlockNumber(),
   };
 }
@@ -858,51 +961,59 @@ async function waitForIndexedHead(
 const snapshotQuery = `
   query E2ESnapshot {
     launchpads(first: 1000, orderBy: id) {
-      id chainId address addressHex positionManager positionManagerHex
-      protocolRecipient protocolRecipientHex launchFee
-      defaultSushiFeeBps protocolReserveBps tokenCount creatorCount positionCount
-      tokens { id } pools { id } creators { id } launchFeeWithdrawals { id }
+      id chainId address positionManager protocolRecipient launchFee initialFdvUsd
+      defaultSushiFeeBps protocolReserveBps
+      launchTokenDecimals launchTokenTotalSupply launchPoolFee
+      launchPoolTickSpacing
+      launches { id } quoteTokenPriceFeeds { id } launchFeeWithdrawals { id }
     }
-    creators(first: 1000, orderBy: id) {
-      id chainId address addressHex launchpad { id } tokenCount tokens { id }
+    launches(first: 1000, orderBy: id) {
+      id chainId launchpad { id }
+      token initialCreator creator quoteToken pool launchTokenIsToken0
+      name symbol decimals totalSupply initialFdvUsd startTick
+      poolFee poolTickSpacing positionManager positionId
+      tickLower tickUpper tokenDesired tokenUsed liquidity sushiFeeBps
+      reserveBps reserveAmount reserveUnlockAt reserveWithdrawn
+      reserveWithdrawal { id } initialBuy { id }
+      feeDistributions { id } creatorTransfers { id }
+      creationTransactionHash creationLogIndex
+      positionCreationLogIndex creationBlockNumber creationBlockHash
+      createdAt
     }
-    tokens(first: 1000, orderBy: id) {
-      id chainId address addressHex launchpad { id } creator { id } pool { id }
-      quoteToken quoteTokenHex name symbol decimals totalSupply sushiFeeBps
-      reserveBps reserveAmount
-      reserveUnlockAt reserveWithdrawn reserveWithdrawal { id }
-      totalAmount0Collected totalAmount1Collected totalAmount0ToSushi
-      totalAmount1ToSushi totalAmount0ToCreator totalAmount1ToCreator
-      feeDistributions { id }
-      creationTransactionHash creationTransactionHashHex creationLogIndex
-      creationBlockNumber creationBlockHash creationBlockHashHex createdAt
+    pendingLaunches(first: 1000, orderBy: id) {
+      id chainId launchpad { id }
+      token creator quoteToken pool launchTokenIsToken0
+      name symbol startTick
+      sushiFeeBps reserveBps reserveAmount reserveUnlockAt
+      creationTransactionHash creationLogIndex creationBlockNumber
+      creationBlockHash createdAt
     }
-    pools(first: 1000, orderBy: id) {
-      id chainId address addressHex launchpad { id } positions { id }
-      token0 token0Hex token1 token1Hex fee tickSpacing
-      positionManager positionManagerHex positionCount
-      creationTransactionHash creationTransactionHashHex creationBlockNumber
-      creationBlockHash creationBlockHashHex createdAt
+    quoteTokenPriceFeeds(first: 1000, orderBy: id) {
+      id chainId launchpad { id } quoteToken priceFeed
+      updatedTransactionHash updatedLogIndex updatedBlockNumber updatedBlockHash
+      updatedAt
     }
-    launchPositions(first: 1000, orderBy: id) {
-      id chainId positionManager positionManagerHex positionId index pool { id }
-      tickLower tickUpper liquidity amount0Desired amount1Desired amount0 amount1
-      creationTransactionHash creationTransactionHashHex creationLogIndex
-      creationBlockNumber creationBlockHash creationBlockHashHex createdAt
+    creatorTransfers(first: 1000, orderBy: id) {
+      id chainId launch { id } previousCreator newCreator transactionHash
+      logIndex blockNumber blockHash timestamp
+    }
+    initialBuys(first: 1000, orderBy: id) {
+      id chainId launch { id } creator recipient quoteToken pool
+      amountIn amountOut transactionHash logIndex blockNumber blockHash timestamp
     }
     feeDistributions(first: 1000, orderBy: id) {
-      id chainId token { id } pool { id } caller sushiRecipient creatorRecipient
-      sushiFeeBps amount0Collected amount1Collected amount0ToSushi amount1ToSushi
-      amount0ToCreator amount1ToCreator transactionHash logIndex blockNumber
-      blockHash timestamp
+      id chainId launch { id } pool caller sushiRecipient creatorRecipient
+      sushiFeeBps amount0Collected amount1Collected amount0ToSushi
+      amount1ToSushi amount0ToCreator amount1ToCreator transactionHash
+      logIndex blockNumber blockHash timestamp
     }
     reserveWithdrawals(first: 1000, orderBy: id) {
-      id chainId token { id } recipient amount transactionHash logIndex
-      blockNumber blockHash timestamp
+      id chainId launch { id } recipient amount transactionHash
+      logIndex blockNumber blockHash timestamp
     }
     launchFeeWithdrawals(first: 1000, orderBy: id) {
-      id chainId launchpad { id } recipient amount transactionHash logIndex
-      blockNumber blockHash timestamp
+      id chainId launchpad { id } recipient amount transactionHash
+      logIndex blockNumber blockHash timestamp
     }
   }
 `;
@@ -948,10 +1059,11 @@ async function runSeed(
     positionManager: fixture.positionManagerAddress,
     protocolRecipient: String(await fixture.launchpad.protocolRecipient()),
     launchFee: BigInt(await fixture.launchpad.launchFee()),
+    initialFdvUsd: BigInt(await fixture.launchpad.INITIAL_FDV_USD()),
     defaultSushiFeeBps: Number(await fixture.launchpad.defaultSushiFeeBps()),
     protocolReserveBps: Number(await fixture.launchpad.protocolReserveBps()),
+    launchpadObservation: execution.launchpadObservation,
     events: execution.events,
-    pools: execution.pools,
   });
   await writeFile(
     path.join(seedDirectory, "graphql.json"),

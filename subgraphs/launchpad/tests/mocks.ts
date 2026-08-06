@@ -10,19 +10,35 @@ import {
   newMockEvent,
 } from "matchstick-as";
 import {
+  CreatorTransferred,
   DefaultSushiFeeBpsUpdated,
   FeesDistributed,
+  InitialBuyExecuted,
   LaunchFeesWithdrawn,
   LaunchFeeUpdated,
   PositionCreated,
   ProtocolRecipientUpdated,
   ProtocolReserveBpsUpdated,
   ProtocolReserveWithdrawn,
+  QuoteTokenPriceFeedUpdated,
   SushiFeeBpsUpdated,
   TokenLaunched,
 } from "../generated/SushiLaunchpad/SushiLaunchpad";
 
 export const CHAIN_ID = BigInt.fromI32(4663);
+export const INITIAL_FDV_USD = BigInt.fromI32(12_345);
+export const LAUNCH_TOKEN_DECIMALS = 6;
+export const LAUNCH_TOKEN_TOTAL_SUPPLY = BigInt.fromString(
+  "2000000000000000000000000000"
+);
+export const LAUNCH_POOL_FEE = 3_000;
+export const LAUNCH_POOL_TICK_SPACING = 100;
+export const LAUNCH_TOKEN_DESIRED = BigInt.fromString(
+  "1970000000000000000000000000"
+);
+export const LAUNCH_TOKEN_USED = BigInt.fromString(
+  "1969999999999999999999999999"
+);
 export const FACTORY = Address.fromString(
   "0x1000000000000000000000000000000000000001"
 );
@@ -68,6 +84,27 @@ export const QUOTE_TOKEN_TWO = Address.fromString(
 export const POSITION_MANAGER = Address.fromString(
   "0x9000000000000000000000000000000000000009"
 );
+export const PRICE_FEED = Address.fromString(
+  "0x1100000000000000000000000000000000000011"
+);
+export const PRICE_FEED_TWO = Address.fromString(
+  "0x1200000000000000000000000000000000000012"
+);
+
+function mockLaunchContracts(token: Address, pool: Address): void {
+  createMockedFunction(token, "decimals", "decimals():(uint8)").returns([
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(LAUNCH_TOKEN_DECIMALS)),
+  ]);
+  createMockedFunction(token, "totalSupply", "totalSupply():(uint256)").returns(
+    [ethereum.Value.fromUnsignedBigInt(LAUNCH_TOKEN_TOTAL_SUPPLY)]
+  );
+  createMockedFunction(pool, "fee", "fee():(uint24)").returns([
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(LAUNCH_POOL_FEE)),
+  ]);
+  createMockedFunction(pool, "tickSpacing", "tickSpacing():(int24)").returns([
+    ethereum.Value.fromI32(LAUNCH_POOL_TICK_SPACING),
+  ]);
+}
 
 export function mockDeploymentContext(): void {
   const context = new DataSourceContext();
@@ -79,6 +116,11 @@ export function mockDeploymentContext(): void {
     "positionManager",
     "positionManager():(address)"
   ).returns([ethereum.Value.fromAddress(POSITION_MANAGER)]);
+  createMockedFunction(
+    FACTORY,
+    "INITIAL_FDV_USD",
+    "INITIAL_FDV_USD():(uint256)"
+  ).returns([ethereum.Value.fromUnsignedBigInt(INITIAL_FDV_USD)]);
   createMockedFunction(
     FACTORY,
     "defaultSushiFeeBps",
@@ -97,26 +139,8 @@ export function mockDeploymentContext(): void {
   createMockedFunction(FACTORY, "launchFee", "launchFee():(uint256)").returns([
     ethereum.Value.fromUnsignedBigInt(BigInt.fromString("500000000000000")),
   ]);
-  mockV3Pool(POOL, TOKEN, QUOTE_TOKEN);
-}
 
-export function mockV3Pool(
-  pool: Address,
-  token0: Address,
-  token1: Address
-): void {
-  createMockedFunction(pool, "token0", "token0():(address)").returns([
-    ethereum.Value.fromAddress(token0),
-  ]);
-  createMockedFunction(pool, "token1", "token1():(address)").returns([
-    ethereum.Value.fromAddress(token1),
-  ]);
-  createMockedFunction(pool, "fee", "fee():(uint24)").returns([
-    ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(10_000)),
-  ]);
-  createMockedFunction(pool, "tickSpacing", "tickSpacing():(int24)").returns([
-    ethereum.Value.fromI32(200),
-  ]);
+  mockLaunchContracts(TOKEN, POOL);
 }
 
 function configureEvent(event: ethereum.Event, logIndex: i32): void {
@@ -132,6 +156,8 @@ export function createPositionCreated(
 ): PositionCreated {
   const event = changetype<PositionCreated>(newMockEvent());
   configureEvent(event, logIndex);
+  const tokenIs0 =
+    token.toHexString().toLowerCase() < QUOTE_TOKEN.toHexString().toLowerCase();
   event.parameters = new Array();
   event.parameters.push(
     new ethereum.EventParam("token", ethereum.Value.fromAddress(token))
@@ -146,21 +172,27 @@ export function createPositionCreated(
     )
   );
   event.parameters.push(
-    new ethereum.EventParam("tickLower", ethereum.Value.fromI32(-400))
+    new ethereum.EventParam(
+      "tickLower",
+      ethereum.Value.fromI32(tokenIs0 ? -12_400 : -887_200)
+    )
   );
   event.parameters.push(
-    new ethereum.EventParam("tickUpper", ethereum.Value.fromI32(-200))
+    new ethereum.EventParam(
+      "tickUpper",
+      ethereum.Value.fromI32(tokenIs0 ? 887_200 : 12_400)
+    )
   );
   event.parameters.push(
     new ethereum.EventParam(
       "tokenDesired",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(1_000))
+      ethereum.Value.fromUnsignedBigInt(LAUNCH_TOKEN_DESIRED)
     )
   );
   event.parameters.push(
     new ethereum.EventParam(
       "tokenUsed",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(999))
+      ethereum.Value.fromUnsignedBigInt(LAUNCH_TOKEN_USED)
     )
   );
   event.parameters.push(
@@ -172,8 +204,19 @@ export function createPositionCreated(
   return event;
 }
 
+export function createPositionCreatedWithInvalidTicks(
+  onchainPositionId: i32,
+  logIndex: i32
+): PositionCreated {
+  const event = createPositionCreated(onchainPositionId, logIndex);
+  event.parameters[3] = new ethereum.EventParam(
+    "tickLower",
+    ethereum.Value.fromI32(-400)
+  );
+  return event;
+}
+
 export function createTokenLaunched(
-  positionCount: i32,
   logIndex: i32,
   token: Address = TOKEN,
   pool: Address = POOL,
@@ -201,21 +244,13 @@ export function createTokenLaunched(
     )
   );
   event.parameters.push(
+    new ethereum.EventParam("startTick", ethereum.Value.fromI32(-12_400))
+  );
+  event.parameters.push(
     new ethereum.EventParam("name", ethereum.Value.fromString("Sushi Test"))
   );
   event.parameters.push(
     new ethereum.EventParam("symbol", ethereum.Value.fromString("SUSHIT"))
-  );
-  event.parameters.push(
-    new ethereum.EventParam("decimals", ethereum.Value.fromI32(18))
-  );
-  event.parameters.push(
-    new ethereum.EventParam(
-      "totalSupply",
-      ethereum.Value.fromUnsignedBigInt(
-        BigInt.fromString("1000000000000000000")
-      )
-    )
   );
   event.parameters.push(
     new ethereum.EventParam("reserveBps", ethereum.Value.fromI32(reserveBps))
@@ -223,7 +258,9 @@ export function createTokenLaunched(
   event.parameters.push(
     new ethereum.EventParam(
       "reserveAmount",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromString("30000000000000000"))
+      ethereum.Value.fromUnsignedBigInt(
+        BigInt.fromString("30000000000000000000000000")
+      )
     )
   );
   event.parameters.push(
@@ -238,10 +275,75 @@ export function createTokenLaunched(
       ethereum.Value.fromI32(initialSushiFeeBps)
     )
   );
+  return event;
+}
+
+export function createInitialBuyExecuted(
+  logIndex: i32,
+  token: Address = TOKEN,
+  pool: Address = POOL,
+  creator: Address = CREATOR,
+  quoteToken: Address = QUOTE_TOKEN,
+  recipient: Address = CREATOR
+): InitialBuyExecuted {
+  const event = changetype<InitialBuyExecuted>(newMockEvent());
+  configureEvent(event, logIndex);
+  event.parameters = new Array();
+  event.parameters.push(
+    new ethereum.EventParam("creator", ethereum.Value.fromAddress(creator))
+  );
+  event.parameters.push(
+    new ethereum.EventParam("token", ethereum.Value.fromAddress(token))
+  );
+  event.parameters.push(
+    new ethereum.EventParam("pool", ethereum.Value.fromAddress(pool))
+  );
+  event.parameters.push(
+    new ethereum.EventParam("recipient", ethereum.Value.fromAddress(recipient))
+  );
   event.parameters.push(
     new ethereum.EventParam(
-      "positionCount",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(positionCount))
+      "quoteToken",
+      ethereum.Value.fromAddress(quoteToken)
+    )
+  );
+  event.parameters.push(
+    new ethereum.EventParam(
+      "amountIn",
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(100))
+    )
+  );
+  event.parameters.push(
+    new ethereum.EventParam(
+      "amountOut",
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(99))
+    )
+  );
+  return event;
+}
+
+export function createCreatorTransferred(
+  logIndex: i32,
+  token: Address = TOKEN,
+  previousCreator: Address = CREATOR,
+  newCreator: Address = CREATOR_TWO
+): CreatorTransferred {
+  const event = changetype<CreatorTransferred>(newMockEvent());
+  configureEvent(event, logIndex);
+  event.parameters = new Array();
+  event.parameters.push(
+    new ethereum.EventParam("token", ethereum.Value.fromAddress(token))
+  );
+  event.parameters.push(
+    new ethereum.EventParam(
+      "previousCreator",
+      ethereum.Value.fromAddress(previousCreator)
+    )
+  );
+  event.parameters.push(
+    new ethereum.EventParam(
+      "newCreator",
+      ethereum.Value.fromAddress(newCreator)
     )
   );
   return event;
@@ -453,7 +555,39 @@ export function createProtocolReserveWithdrawn(
   event.parameters.push(
     new ethereum.EventParam(
       "amount",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromString("30000000000000000"))
+      ethereum.Value.fromUnsignedBigInt(
+        BigInt.fromString("30000000000000000000000000")
+      )
+    )
+  );
+  return event;
+}
+
+export function createQuoteTokenPriceFeedUpdated(
+  previousPriceFeed: Address,
+  newPriceFeed: Address,
+  logIndex: i32,
+  quoteToken: Address = QUOTE_TOKEN
+): QuoteTokenPriceFeedUpdated {
+  const event = changetype<QuoteTokenPriceFeedUpdated>(newMockEvent());
+  configureEvent(event, logIndex);
+  event.parameters = new Array();
+  event.parameters.push(
+    new ethereum.EventParam(
+      "quoteToken",
+      ethereum.Value.fromAddress(quoteToken)
+    )
+  );
+  event.parameters.push(
+    new ethereum.EventParam(
+      "previousPriceFeed",
+      ethereum.Value.fromAddress(previousPriceFeed)
+    )
+  );
+  event.parameters.push(
+    new ethereum.EventParam(
+      "newPriceFeed",
+      ethereum.Value.fromAddress(newPriceFeed)
     )
   );
   return event;

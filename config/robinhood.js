@@ -50,8 +50,8 @@ module.exports = {
         // SushiLaunchpad v1 production deployment.
         name: "SushiLaunchpad",
         chainId: 4663,
-        address: "0x30DD6230EAD9312D5d00AD58EF6eF6A0093B0554",
-        startBlock: 18149814,
+        address: "0x104F1Ab42674565EC3DF0BFEbCcC4186f72fA7ED",
+        startBlock: 21957383,
       },
     ],
   },
