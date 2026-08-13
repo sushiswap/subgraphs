@@ -1,0 +1,29 @@
+{
+  "name": "v3-reduced",
+  "license": "MIT",
+  "repository": {
+    "url": "sushiswap/subgraphs",
+    "directory": "subgraphs/v3-reduced"
+  },
+  "files": [
+    "generated"
+  ],
+  "scripts": {
+    "generate": "node scripts/render.js clean && graph codegen",
+    "generate:graft": "node scripts/render.js graft && graph codegen",
+    "generate:immutable-graft": "node scripts/render.js immutable-graft && graph codegen",
+    "build": "graph build",
+    "test": "graph test -r",
+    "create-local": "graph create --node http://localhost:8020/ sushiswap/v3-reduced-robinhood",
+    "remove-local": "graph remove --node http://localhost:8020/ sushiswap/v3-reduced-robinhood",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sushiswap/v3-reduced-robinhood"
+  },
+  "devDependencies": {
+    "abi": "workspace:*",
+    "@graphprotocol/graph-cli": "^0.96.0",
+    "@graphprotocol/graph-ts": "^0.27.0",
+    "assemblyscript": "^0.19.20",
+    "matchstick-as": "0.5.0",
+    "wabt": "1.0.24"
+  }
+}
