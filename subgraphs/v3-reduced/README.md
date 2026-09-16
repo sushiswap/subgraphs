@@ -68,3 +68,16 @@ goldsky subgraph deploy sushiswap/v3-reduced-robinhood-clean \
   --path subgraphs/v3-reduced \
   --remove-graft
 ```
+
+## Arc deployment
+
+Arc uses USDC as its native currency, so its USD price is fixed at one without
+a reference pool.
+
+```sh
+NETWORK=arc pnpm --filter v3-reduced generate
+pnpm --filter v3-reduced build
+goldsky subgraph deploy sushiswap/v3-reduced-arc \
+  --path subgraphs/v3-reduced \
+  --remove-graft
+```

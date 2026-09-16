@@ -32,6 +32,12 @@ export function sqrtPriceX96ToTokenPrices(
 }
 
 export function getEthPriceInUSD(): BigDecimal {
+  // Stable-native chains such as Arc are already denominated in USD; all
+  // other chains fall through to their configured native/stable price pool.
+  if (STABLE_TOKEN_ADDRESSES.includes(NATIVE_ADDRESS.toLowerCase())) {
+    return ONE_BD;
+  }
+
   // fetch eth prices for each stablecoin
   let nativeAndStablePool = Pool.load(NATIVE_PRICE_POOL);
 
