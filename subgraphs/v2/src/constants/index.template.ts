@@ -26,6 +26,7 @@ export function generatePoolAddress(token0: string, token1: string, factoryAddre
 }
 
 export const NATIVE_ADDRESS = Address.fromHexString('{{ v2.nativeAddress }}')
+export const STABLE0_ADDRESS = Address.fromHexString('{{ v2.stable0 }}')
 export const WHITELIST: string[] = '{{ v2.whitelistAddresses }}'.toLowerCase().split(',')
 
 export const STABLE0_NATIVE_PAIR = generatePoolAddress('{{ v2.stable0 }}'.toLowerCase(), NATIVE_ADDRESS.toHexString(), '{{ v2.factory.address }}')

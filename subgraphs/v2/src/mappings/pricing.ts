@@ -1,12 +1,18 @@
 /* eslint-disable prefer-const */
 import { Address, BigDecimal, Bytes } from '@graphprotocol/graph-ts/index'
 import { Bundle, Pair, Token } from '../../generated/schema'
-import { FACTORY_ADDRESS, MINIMUM_LIQUIDITY_THRESHOLD_ETH, NATIVE_ADDRESS, STABLE0_NATIVE_PAIR, STABLE1_NATIVE_PAIR, STABLE2_NATIVE_PAIR, WHITELIST, generatePoolAddress } from './../constants'
+import { FACTORY_ADDRESS, MINIMUM_LIQUIDITY_THRESHOLD_ETH, NATIVE_ADDRESS, STABLE0_ADDRESS, STABLE0_NATIVE_PAIR, STABLE1_NATIVE_PAIR, STABLE2_NATIVE_PAIR, WHITELIST, generatePoolAddress } from './../constants'
 import { ADDRESS_ZERO, ONE_BD, ZERO_BD } from './helpers'
 
 
 
 export function getEthPriceInUSD(): BigDecimal {
+  // Stable-native chains such as Arc are already denominated in USD; all
+  // other chains fall through to their configured native/stable price pairs.
+  if (NATIVE_ADDRESS.toHexString() == STABLE0_ADDRESS.toHexString()) {
+    return ONE_BD
+  }
+
   // fetch eth prices for each stablecoin
   let stable0Pair = Pair.load(Address.fromHexString(STABLE0_NATIVE_PAIR))
   let stable1Pair = Pair.load(Address.fromHexString(STABLE1_NATIVE_PAIR))
