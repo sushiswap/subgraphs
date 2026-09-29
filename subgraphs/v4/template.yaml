@@ -1,0 +1,67 @@
+specVersion: 1.2.0
+description: SushiSwap V4 subgraph
+schema:
+  file: ./schema.graphql
+# features:
+#   - nonFatalErrors
+indexerHints:
+  prune: {{ retainBlocks }}
+dataSources:
+  - kind: ethereum/contract
+    name: PoolManager
+    network: {{ network }}
+    source:
+      abi: PoolManager
+      address: '{{ v4.poolManager.address }}'
+      startBlock: {{ v4.poolManager.startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/index.ts
+      entities:
+        - Pool
+        - Token
+      abis:
+        - name: ERC20
+          file: ./abis/ERC20.json
+        - name: ERC20SymbolBytes
+          file: ./abis/ERC20SymbolBytes.json
+        - name: ERC20NameBytes
+          file: ./abis/ERC20NameBytes.json
+        - name: PoolManager
+          file: ./abis/PoolManager.json
+      eventHandlers:
+        - event: Initialize(indexed bytes32,indexed address,indexed
+            address,address,uint24,bytes32,uint160,int24)
+          handler: handleInitialize
+        - event: ModifyLiquidity(indexed bytes32,indexed
+            address,int24,int24,int256,bytes32)
+          handler: handleModifyLiquidity
+        - event: Swap(indexed bytes32,indexed
+            address,int128,int128,uint160,uint128,int24,uint24,uint16)
+          handler: handleSwap
+  - kind: ethereum/contract
+    name: PositionManager
+    network: {{ network }}
+    source:
+      abi: PositionManager
+      address: '{{ v4.positionManager.address }}'
+      startBlock: {{ v4.positionManager.startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/index.ts
+      entities:
+        - Position
+      abis:
+        - name: PositionManager
+          file: ./abis/PositionManager.json
+      eventHandlers:
+        - event: Subscription(indexed uint256,indexed address)
+          handler: handleSubscription
+        - event: Unsubscription(indexed uint256,indexed address)
+          handler: handleUnsubscription
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
