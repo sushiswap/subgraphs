@@ -5,8 +5,6 @@ features:
 {{/graft}}
 schema:
   file: ./schema{{#graftSchema}}.graft{{/graftSchema}}.graphql
-indexerHints:
-  prune: auto
 dataSources:
   - kind: ethereum/contract
     name: Factory
