@@ -24,6 +24,10 @@ module.exports = {
       address: "0x7282249282902e1f99c2CB0A04230091bd30FE3A",
       startBlock: 21006899,
     },
+    positionManager: {
+      address: "0x287c6A19395800cD53B16368df2121F1f336A7f3",
+      startBlock: 21006899,
+    },
     native: { address: USDC_ADDRESS },
     whitelistedTokenAddresses: [USDC_ADDRESS, EURC_ADDRESS, CIRBTC_ADDRESS],
     stableTokenAddresses: [USDC_ADDRESS],
